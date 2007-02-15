@@ -3,4 +3,4 @@ contributed in some way or another to shunit2.
 
 None at this time
 
-$Revision: 346 $
+$Revision$
