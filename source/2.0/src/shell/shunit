@@ -1,0 +1,392 @@
+# $Id: shunit 2578 2007-01-28 23:53:59Z kward $
+# vim:syntax=sh:sts=2
+#
+# shUnit 2.0.0
+# Shell Unit Test Framework
+#
+# written by Kate Ward <kate.ward@forestent.com>
+# released under the LGPL
+#
+# this module implements a unit test framework similar to JUnit
+#
+
+# shell flags for shunit:
+# u - treat unset variables as an error when performing parameter expansion
+__SHUNIT_SHELL_FLAGS='u'
+
+# save the current set of shell flags, and then set some for ourselves
+__shunit_oldShellFlags="$-"
+for _shunit_shellFlag in `echo "${__SHUNIT_SHELL_FLAGS}" |sed 's/\(.\)/\1 /g'`
+do
+  set -${_shunit_shellFlag}
+done
+
+# constants
+
+__SHUNIT_VERSION='2.0.0pre'
+
+__SHUNIT_TRUE=0
+__SHUNIT_FALSE=1
+
+__SHUNIT_ASSERT_MSG_PREFIX='ASSERT:'
+
+for _su_const in `set |grep "^__SHUNIT_" |cut -d= -f1`; do
+  readonly ${_su_const}
+done
+unset _su_const
+
+# variables
+__shunit_suite=''
+
+__shunit_testsPassed=0
+__shunit_testsFailed=0
+__shunit_testsTotal=0
+
+#------------------------------------------------------------------------------
+# unit test functions
+#
+
+assertEquals()
+{
+  _su_message=''
+  if [ $# -eq 3 ]; then
+    _su_message=$1
+    shift
+  fi
+  _su_expected=$1
+  _su_actual=$2
+
+  if [ "${_su_expected}" = "${_su_actual}" ]; then
+    _shunit_testPassed
+    return ${__SHUNIT_TRUE}
+  else
+    _shunit_testFailed "${_su_message}"
+    return ${__SHUNIT_FALSE}
+  fi
+
+  unset _su_message _su_expected _su_actual
+}
+
+assertNull()
+{
+  _su_message=''
+  if [ $# -eq 2 ]; then
+    _su_message=$1
+    shift
+  fi
+  _su_value=$1
+
+  _su_value2=`eval echo "${_su_value}"`
+  if [ -z "${_su_value2}" ]; then
+    _shunit_testPassed
+    return ${__SHUNIT_TRUE}
+  else
+    _shunit_testFailed "${_su_message}"
+    return ${__SHUNIT_FALSE}
+  fi
+
+  unset _su_message _su_value _su_value2
+}
+
+assertNotNull()
+{
+  _su_message=''
+  if [ $# -eq 2 ]; then
+    _su_message=$1
+    shift
+  fi
+  _su_value=$1
+
+  _su_value2=`eval echo "${_su_value}"`
+  if [ -n "${_su_value2}" ]; then
+    _shunit_testPassed
+    return ${__SHUNIT_TRUE}
+  else
+    _shunit_testFailed "${_su_message}"
+    return ${__SHUNIT_FALSE}
+  fi
+
+  unset _su_message _su_value _su_value2
+}
+
+assertSame()
+{
+  failNotEquals "$@"
+}
+
+assertNotSame()
+{
+  assertEquals "$@"
+}
+
+assertTrue()
+{
+  _su_message=''
+  if [ $# -eq 2 ]; then
+    _su_message=$1
+    shift
+  fi
+  _su_condition=$1
+
+  ( eval ${_su_condition} ) >/dev/null 2>&1
+  if [ $? -eq ${__SHUNIT_TRUE} ]; then
+    _shunit_testPassed
+    return ${__SHUNIT_TRUE}
+  else
+    _shunit_testFailed "${_su_message}"
+    return ${__SHUNIT_FALSE}
+  fi
+
+  unset _su_message _su_condition
+}
+
+assertFalse()
+{
+  _su_message=''
+  if [ $# -eq 2 ]; then
+    _su_message=$1
+    shift
+  fi
+  _su_condition=$1
+
+  ( eval ${_su_condition} ) >/dev/null 2>&1
+  if [ $? -eq ${__SHUNIT_FALSE} ]; then
+    _shunit_testPassed
+    return ${__SHUNIT_TRUE}
+  else
+    _shunit_testFailed "${_su_message}"
+    return ${__SHUNIT_FALSE}
+  fi
+
+  unset _su_message _su_condition
+}
+
+fail()
+{
+  _shunit_testFailed
+}
+
+failNotEquals()
+{
+  _su_message=''
+  if [ $# -eq 3 ]; then
+    _su_message=$1
+    shift
+  fi
+  _su_expected=$1
+  _su_actual=$2
+
+  if [ "${_su_expected}" != "${_su_actual}" ]; then
+    _shunit_testPassed
+    return ${__SHUNIT_TRUE}
+  else
+    _shunit_testFailed "${_su_message}"
+    return ${__SHUNIT_FALSE}
+  fi
+
+  unset _su_message _su_expected _su_actual
+}
+
+failNotSame()
+{
+  assertEquals "$@"
+}
+
+failSame()
+{
+  failNotEquals "$@"
+}
+
+suite_addTest()
+{
+  _su_func=$1
+
+  __shunit_suite="${__shunit_suite:+${__shunit_suite} }${_su_func}"
+
+  unset _su_func
+}
+
+#------------------------------------------------------------------------------
+# shUnit functions
+#
+
+_shunit_cleanup()
+{
+  name=$1
+
+  case ${name} in
+    EXIT) signal=0 ;;
+    INT) signal=2 ;;
+    TERM) signal=15 ;;
+  esac
+
+  # do our work
+  rm -fr "${__shunit_tmpDir}"
+
+  # exit for all non-EXIT signals
+  if [ ${name} != 'EXIT' ]; then
+    echo "trapped and now handling the ${name} signal" >&2
+    _shunit_generateReport
+    # disable EXIT trap
+    trap 0
+    # add 127 to signal and exit
+    signal=`expr ${signal} + 127`
+    exit ${signal}
+  fi
+}
+
+_shunit_execSuite()
+{
+  echo '#'
+  echo '# Performing tests'
+  echo '#'
+  for _su_func in ${__shunit_suite}; do
+    # execute the per-test setup function
+    setUp
+
+    # execute the test
+    echo "${_su_func}"
+    eval ${_su_func}
+
+    # execute the per-test tear-down function
+    tearDown
+  done
+
+  unset _su_func
+}
+
+_shunit_functionExists()
+{
+  _su__func=$1
+  type ${_su__func} 2>/dev/null |grep "is a function$" >/dev/null
+  _su__return=$?
+  unset _su__func
+  return ${_su__return}
+}
+
+_shunit_generateReport()
+{
+  if [ ${__shunit_testsTotal} -gt 0 ]; then
+    _su__success=`expr ${__shunit_testsPassed} \* 100 / ${__shunit_testsTotal}`
+  else
+    _su__success=0
+  fi
+
+  cat <<EOF
+
+#
+# Test report
+#
+tests passed: ${__shunit_testsPassed}
+tests failed: ${__shunit_testsFailed}
+tests total:  ${__shunit_testsTotal}
+success rate: ${_su__success}%
+EOF
+
+  unset _su__success
+}
+
+_shunit_mktempDir()
+{
+  # try the standard mktemp function
+  ( exec mktemp -dqt shunit.XXXXXX 2>/dev/null ) && return
+
+  # the standard mktemp didn't work.  doing our own.
+  if [ -n "${RANDOM:-}" ]; then
+    # $RANDOM works
+    _su__random=${RANDOM}${RANDOM}${RANDOM}$$
+  else
+    # $RANDOM doesn't work
+    _su__date=`date '+%Y%m%d%H%M%S'`
+    _su__random=`expr ${_su__date} / $$`
+  fi
+
+  _su__tmpDir="${TMPDIR-/tmp}/shunit.${_su__random}"
+  ( umask 077 && mkdir "${_su__tmpDir}" ) || {
+    echo 'shUnit:FATAL could not create temporary directory! exiting' >&2
+    exit 1
+  }
+
+  echo ${_su__tmpDir}
+  unset _su__date _su__random _su__tmpDir
+}
+
+# this function is here to work around issues in Cygwin
+_shunit_mktempFunc()
+{
+  for _su__func in oneTimeSetUp oneTimeTearDown setUp tearDown suite; do
+    _su__file="${__shunit_tmpDir}/${_su__func}"
+    cat <<EOF >"${_su__file}"
+#! /bin/sh
+exit 0
+EOF
+    chmod +x "${_su__file}"
+  done
+
+  unset _su__file
+}
+
+_shunit_testPassed()
+{
+  __shunit_testsPassed=`expr ${__shunit_testsPassed} + 1`
+  __shunit_testsTotal=`expr ${__shunit_testsTotal} + 1`
+}
+
+_shunit_testFailed()
+{
+  [ $# -eq 1 ] && _su__msg=$1
+
+  __shunit_testsFailed=`expr ${__shunit_testsFailed} + 1`
+  __shunit_testsTotal=`expr ${__shunit_testsTotal} + 1`
+
+  [ -z "${_su__msg:-}" ] && _su__msg='failed'
+  echo "${__SHUNIT_ASSERT_MSG_PREFIX} ${_su__msg}" >&2
+  unset _su__msg
+}
+
+#------------------------------------------------------------------------------
+# main
+#
+
+# create a temporary storage location
+__shunit_tmpDir=`_shunit_mktempDir`
+
+# setup traps to clean up after ourselves
+trap '_shunit_cleanup EXIT' 0
+trap '_shunit_cleanup INT' 2
+trap '_shunit_cleanup TERM' 15
+
+# create phantom functions to work around issues with Cygwin
+_shunit_mktempFunc
+PATH="${__shunit_tmpDir}:${PATH}"
+
+# execute the oneTimeSetUp function (if it exists)
+#_shunit_functionExists oneTimeSetUp && oneTimeSetUp
+oneTimeSetUp
+
+# deprecated: execute the suite function defined in the parent test script
+suite
+
+# if no suite function was defined, dynamically build a list of functions
+if [ -z "${__shunit_suite}" ]; then
+  funcs=`grep "^[ \t]*test[A-Za-z0-9_]*()" $0 |sed 's/[^A-Za-z0-9_]//g'`
+  for func in ${funcs}; do
+    suite_addTest ${func}
+  done
+fi
+
+# execute the tests
+_shunit_execSuite
+
+# execute the oneTimeTearDown function (if it exists)
+oneTimeTearDown
+
+# generate report
+_shunit_generateReport
+
+# restore the previous set of shell flags
+for _shunit_shellFlag in ${__SHUNIT_SHELL_FLAGS}; do
+  echo ${__shunit_oldShellFlags} |grep ${_shunit_shellFlag} >/dev/null \
+    || set +${_shunit_shellFlag}
+done
+unset _shunit_shellFlag
