@@ -23,7 +23,7 @@ done
 
 # constants
 
-__SHUNIT_VERSION='2.0.0pre'
+__SHUNIT_VERSION='2.0.0'
 
 __SHUNIT_TRUE=0
 __SHUNIT_FALSE=1
