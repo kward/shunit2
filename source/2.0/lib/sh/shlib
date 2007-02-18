@@ -17,7 +17,7 @@ shlib_relToAbsPath()
   fi
 
   # clean up the path
-  echo "${_shlib_path}" |sed -r 's/[^/]*\/+\.{2}\/*//g;s/\.\///;s/\/+$//'
+  echo "${_shlib_path}" |sed 's/[^/]*\/*\.\.\/*//g;s/\/\.\//\//'
 
   unset _shlib_path
 }
