@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: shelldoc.xslt 357 2006-12-25 20:04:00Z sfsetse $ -->
+<!-- $Id$ -->
 <!--
 example ways to process this xslt:
 $ java -cp xalan-2.6.0.jar \
