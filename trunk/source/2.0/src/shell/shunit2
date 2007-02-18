@@ -1,14 +1,20 @@
 # $Id$
 # vim:syntax=sh:sts=2
 #
+#/**
+# <?xml version="1.0" encoding="UTF-8"?>
+# <s:shelldoc xmlns:s="http://www.forestent.com/projects/shelldoc/xsl/2005.1">
+# <s:header>
 # shUnit 2.0.0
 # Shell Unit Test Framework
 #
-# written by Kate Ward <kate.ward@forestent.com>
+# written by Kate Ward &lt;kate.ward@forestent.com&gt;
 # released under the LGPL
 #
 # this module implements a unit test framework similar to JUnit
 #
+# </s:header>
+#*/
 
 # shell flags for shunit:
 # u - treat unset variables as an error when performing parameter expansion
@@ -46,6 +52,33 @@ __shunit_testsTotal=0
 # unit test functions
 #
 
+#/**
+# <s:function group="asserts">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>assertEquals</function></funcdef>
+#       <paramdef>[string <parameter>message</parameter>]</paramdef>
+#       <paramdef>string <parameter>expected</parameter></paramdef>
+#       <paramdef>string <parameter>actual</parameter></paramdef>
+#     </funcprototype>
+#   </funcsynopsis>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>assertEquals</function></funcdef>
+#       <paramdef>[string <parameter>message</parameter>]</paramdef>
+#       <paramdef>string <parameter>expected</parameter></paramdef>
+#       <paramdef>integer <parameter>actual</parameter></paramdef>
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>Asserts that <emphasis>expected</emphasis> and
+#   <emphasis>actual</emphasis> are equal to one another.</para>
+# </entry>
+# </s:function>
+#*/
 assertEquals()
 {
   _su_message=''
@@ -390,3 +423,7 @@ for _shunit_shellFlag in ${__SHUNIT_SHELL_FLAGS}; do
     || set +${_shunit_shellFlag}
 done
 unset _shunit_shellFlag
+
+#/**
+# </s:shelldoc>
+#*/
