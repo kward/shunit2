@@ -1,17 +1,19 @@
 # $Id$
 
-DOCBOOK_SRC_DIR=$(PWD)/src/docbook
-EXAMPLES_SRC_DIR=$(PWD)/src/examples
-SHELL_SRC_DIR=$(PWD)/src/shell
-TEST_SRC_DIR=$(PWD)/src/test
-
 BIN_DIR=$(PWD)/bin
 BUILD_DIR=$(PWD)/build
 DIST_DIR=$(PWD)/dist
-DOCBOOK_BUILD_DIR=$(BUILD_DIR)/docbook
 LIB_DIR=$(PWD)/lib
+SRC_DIR=$(PWD)/src
 TEST_DIR=$(PWD)/test
 TMP_DIR=$(PWD)/tmp
+
+DOCBOOK_BUILD_DIR=$(BUILD_DIR)/docbook
+
+DOCBOOK_SRC_DIR=$(SRC_DIR)/docbook
+EXAMPLES_SRC_DIR=$(SRC_DIR)/examples
+SHELL_SRC_DIR=$(SRC_DIR)/shell
+TEST_SRC_DIR=$(SRC_DIR)/test
 
 HTML_XSL=$(PWD)/share/docbook/tldp-xsl/21MAR2004/html/tldp-one-page.xsl
 
