@@ -16,17 +16,7 @@ $ xsltproc tldp-one-page.xsl log4sh.xml |xmllint -noblanks -
 
 <!DOCTYPE book
   PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd" [
-  <!--
-  <!ENTITY advancedusage SYSTEM "advancedusage.xml">
-  <!ENTITY conclusion SYSTEM "conclusion.xml">
-  <!ENTITY introduction SYSTEM "introduction.xml">
   <!ENTITY functions SYSTEM "functions.xml">
-  <!ENTITY configuration SYSTEM "configuration.xml">
-  -->
-  <!ENTITY quickstart SYSTEM "quickstart.xml">
-  <!--
-  <!ENTITY usage SYSTEM "usage.xml">
-  -->
 
   <!ENTITY myEmail "kate.ward@forestent.com">
   <!ENTITY isoDate "@@ISO_DATE@@">
@@ -66,15 +56,5 @@ $ xsltproc tldp-one-page.xsl log4sh.xml |xmllint -noblanks -
     </abstract>
   </bookinfo>
 
-  <!--
-  &introduction;
-  -->
-  &quickstart;
-  <!--
-  &usage;
-  &configuration;
-  &advancedusage;
   &functions;
-  &conclusion;
-  -->
 </book>
