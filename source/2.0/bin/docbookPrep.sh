@@ -68,7 +68,7 @@ mkdir -p "${xml_dir}"
 cd "${xml_dir}"
 unzip -oq "${DL_DIR}/${XML_FILE}.zip"
 cd ..
-rm current
+rm -f current
 ln -s "${XML_VERSION}" current
 
 # get the docbook xslt files
@@ -83,5 +83,5 @@ cd "${xsl_dir}"
 rm -fr ${XSL_VERSION}
 bzip2 -dc ${DL_DIR}/${XSL_FILE}.tar.bz2 |tar xf -
 mv ${XSL_FILE} ${XSL_VERSION}
-rm current
+rm -f current
 ln -s "${XSL_VERSION}" current
