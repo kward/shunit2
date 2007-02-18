@@ -31,8 +31,8 @@ Steps:
 
 WRITE RELEASE NOTES
 
-Again, pretty self explainatory. Use one of the release notes from a previous
-release as an example.
+This should be pretty self explainatory. Use one of the release notes from a
+previous release as an example.
 
 To get the versions of the various shells, do the following:
 Cygwin
