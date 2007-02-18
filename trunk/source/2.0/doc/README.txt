@@ -145,6 +145,19 @@ $ ./run-test-suite
 # Related documentation
 #
 
+Docbook XML
+  docbook-xml-4.4.zip
+    http://www.docbook.org/xml/4.4/docbook-xml-4.4.zip
+    http://www.oasis-open.org/docbook/xml/4.4/docbook-xml-4.4.zip
+  docbook-xml-4.5.zip
+    http://www.docbook.org/xml/4.5/docbook-xml-4.5.zip
+
+Docbook XSL
+  docbook-xsl-1.71.0.tar.bz2
+    http://prdownloads.sourceforge.net/docbook/docbook-xsl-1.71.0.tar.bz2?download
+  docbook-xsl-1.71.1.tar.bz2
+    http://downloads.sourceforge.net/docbook/docbook-xsl-1.71.1.tar.bz2?use_mirror=puzzle
+
 JUnit
   http://www.junit.org
 
