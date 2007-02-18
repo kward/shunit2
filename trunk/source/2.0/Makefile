@@ -76,6 +76,7 @@ dist: build docs
 	cp -p $(BUILD_DIR)/log4sh.html $(DIST_DIR)
 
 clean: build-clean test-clean
+	rm -fr $(TMP_DIR)
 
 distclean: clean
 	rm -fr $(DIST_DIR)
