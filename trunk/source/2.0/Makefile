@@ -1,4 +1,4 @@
-# $Id: Makefile 469 2007-01-29 00:02:31Z sfsetse $
+# $Id$
 
 DOCBOOK_SRC_DIR=$(PWD)/src/docbook
 EXAMPLES_SRC_DIR=$(PWD)/src/examples
