@@ -6,6 +6,7 @@ BIN_DIR=$(PWD)/bin
 BUILD_DIR=$(PWD)/build
 DIST_DIR=$(PWD)/dist
 LIB_DIR=$(PWD)/lib
+SHARE_DIR=$(PWD)/share
 SRC_DIR=$(PWD)/src
 TEST_DIR=$(PWD)/test
 TMP_DIR=$(PWD)/tmp
