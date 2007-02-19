@@ -61,7 +61,7 @@ __shunit_testsTotal=0
 #   <funcsynopsis>
 #     <funcprototype>
 #       <funcdef><function>assertEquals</function></funcdef>
-#       <paramdef>string (optional)<parameter>message</parameter></paramdef>
+#       <paramdef>string <parameter>[message]</parameter></paramdef>
 #       <paramdef>string <parameter>expected</parameter></paramdef>
 #       <paramdef>string <parameter>actual</parameter></paramdef>
 #     </funcprototype>
@@ -102,7 +102,7 @@ assertEquals()
 #   <funcsynopsis>
 #     <funcprototype>
 #       <funcdef><function>assertNull</function></funcdef>
-#       <paramdef>string (optional)<parameter>message</parameter></paramdef>
+#       <paramdef>string <parameter>[message]</parameter></paramdef>
 #       <paramdef>string <parameter>value</parameter></paramdef>
 #     </funcprototype>
 #   </funcsynopsis>
@@ -141,7 +141,7 @@ assertNull()
 #   <funcsynopsis>
 #     <funcprototype>
 #       <funcdef><function>assertNotNull</function></funcdef>
-#       <paramdef>string (optional)<parameter>message</parameter></paramdef>
+#       <paramdef>string <parameter>[message]</parameter></paramdef>
 #       <paramdef>string <parameter>value</parameter></paramdef>
 #     </funcprototype>
 #   </funcsynopsis>
@@ -181,7 +181,7 @@ assertNotNull()
 #   <funcsynopsis>
 #     <funcprototype>
 #       <funcdef><function>assertSame</function></funcdef>
-#       <paramdef>string (optional)<parameter>message</parameter></paramdef>
+#       <paramdef>string <parameter>[message]</parameter></paramdef>
 #       <paramdef>string <parameter>expected</parameter></paramdef>
 #       <paramdef>string <parameter>actual</parameter></paramdef>
 #     </funcprototype>
@@ -205,7 +205,7 @@ assertSame()
 #   <funcsynopsis>
 #     <funcprototype>
 #       <funcdef><function>assertNotSame</function></funcdef>
-#       <paramdef>string (optional)<parameter>message</parameter></paramdef>
+#       <paramdef>string <parameter>[message]</parameter></paramdef>
 #       <paramdef>string <parameter>expected</parameter></paramdef>
 #       <paramdef>string <parameter>actual</parameter></paramdef>
 #     </funcprototype>
@@ -229,7 +229,7 @@ assertNotSame()
 #   <funcsynopsis>
 #     <funcprototype>
 #       <funcdef><function>assertTrue</function></funcdef>
-#       <paramdef>string (optional)<parameter>message</parameter></paramdef>
+#       <paramdef>string <parameter>[message]</parameter></paramdef>
 #       <paramdef>boolean <parameter>value</parameter></paramdef>
 #     </funcprototype>
 #   </funcsynopsis>
@@ -270,7 +270,7 @@ assertTrue()
 #   <funcsynopsis>
 #     <funcprototype>
 #       <funcdef><function>assertFalse</function></funcdef>
-#       <paramdef>string (optional)<parameter>message</parameter></paramdef>
+#       <paramdef>string <parameter>[message]</parameter></paramdef>
 #       <paramdef>boolean <parameter>value</parameter></paramdef>
 #     </funcprototype>
 #   </funcsynopsis>
@@ -311,7 +311,7 @@ assertFalse()
 #   <funcsynopsis>
 #     <funcprototype>
 #       <funcdef><function>fail</function></funcdef>
-#       <paramdef>string (optional)<parameter>message</parameter></paramdef>
+#       <paramdef>string <parameter>[message]</parameter></paramdef>
 #     </funcprototype>
 #   </funcsynopsis>
 #   <para>Fails the test immediately, with the optional message.</para>
@@ -332,7 +332,7 @@ fail()
 #   <funcsynopsis>
 #     <funcprototype>
 #       <funcdef><function>failNotEquals</function></funcdef>
-#       <paramdef>string (optional)<parameter>message</parameter></paramdef>
+#       <paramdef>string <parameter>[message]</parameter></paramdef>
 #       <paramdef>string <parameter>expected</parameter></paramdef>
 #       <paramdef>string <parameter>actual</parameter></paramdef>
 #     </funcprototype>
@@ -373,7 +373,7 @@ failNotEquals()
 #   <funcsynopsis>
 #     <funcprototype>
 #       <funcdef><function>failSame</function></funcdef>
-#       <paramdef>string (optional)<parameter>message</parameter></paramdef>
+#       <paramdef>string <parameter>[message]</parameter></paramdef>
 #       <paramdef>string <parameter>expected</parameter></paramdef>
 #       <paramdef>string <parameter>actual</parameter></paramdef>
 #     </funcprototype>
@@ -398,7 +398,7 @@ failSame()
 #   <funcsynopsis>
 #     <funcprototype>
 #       <funcdef><function>failNotSame</function></funcdef>
-#       <paramdef>string (optional)<parameter>message</parameter></paramdef>
+#       <paramdef>string <parameter>[message]</parameter></paramdef>
 #       <paramdef>string <parameter>expected</parameter></paramdef>
 #       <paramdef>string <parameter>actual</parameter></paramdef>
 #     </funcprototype>
@@ -434,7 +434,7 @@ failNotSame()
 # </entry>
 # </s:function>
 #*/
-#suite() { :; }
+# suite() { :; }
 
 #/**
 # <s:function group="suites">
@@ -462,6 +462,11 @@ suite_addTest()
 
   unset _su_func
 }
+
+# oneTimeSetUp() { :; }
+# setUp() { :; }
+# tearDown() { :; }
+# oneTimeTearDown() { :; }
 
 #------------------------------------------------------------------------------
 # shUnit functions
