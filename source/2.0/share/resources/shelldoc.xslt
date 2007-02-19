@@ -9,7 +9,7 @@ $ xsltproc shelldoc.xslt log4sh.xml |xmllint -noblanks -
 -->
 <xsl:stylesheet version="1.0"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-    xmlns:s="http://www.forestent.com/2005/XSL/ShellDoc">
+    xmlns:s="http://www.forestent.com/projects/shelldoc/xsl/2005.0">
   <xsl:output
       method="xml"
       version="1.0"
@@ -29,20 +29,28 @@ $ xsltproc shelldoc.xslt log4sh.xml |xmllint -noblanks -
     <xsl:for-each select="//s:function[generate-id(.)=generate-id(key('groups', @group)[1])]">
       <xsl:sort select="@group" />
 
-      <section>
+      <section id="shelldoc-section-@group">
         <title><xsl:value-of select="@group"/></title>
-        <table>
-	  <title><xsl:value-of select="@group"/></title>
+        <table id="shelldoc-function-@group">
+          <title><xsl:value-of select="@group"/></title>
           <tgroup cols="2"><tbody>
           <xsl:for-each select="key('groups', @group)">
-            <xsl:sort select="entry/funcsynopsis/funcprototype/funcdef/function" />
+            <!--<xsl:sort select="entry/funcsynopsis/funcprototype/funcdef/function" />-->
             <xsl:choose>
-              <xsl:when test="@modifier = 'public'">
+              <xsl:when test="@modifier">
+                <xsl:if test="@modifier != 'private'">
+                  <row valign="top">
+                    <xsl:copy-of select="entry" />
+                    <!--<xsl:apply-templates select="entry" />-->
+                  </row>
+                </xsl:if>
+              </xsl:when>
+              <xsl:otherwise>
                 <row valign="top">
                   <xsl:copy-of select="entry" />
                   <!--<xsl:apply-templates select="entry" />-->
                 </row>
-              </xsl:when>
+              </xsl:otherwise>
             </xsl:choose>
           </xsl:for-each>
           </tbody></tgroup>

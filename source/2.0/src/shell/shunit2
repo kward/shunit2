@@ -3,7 +3,7 @@
 #
 #/**
 # <?xml version="1.0" encoding="UTF-8"?>
-# <s:shelldoc xmlns:s="http://www.forestent.com/projects/shelldoc/xsl/2005.1">
+# <s:shelldoc xmlns:s="http://www.forestent.com/projects/shelldoc/xsl/2005.0">
 # <s:header>
 # shUnit 2.0.0
 # Shell Unit Test Framework
@@ -61,21 +61,14 @@ __shunit_testsTotal=0
 #   <funcsynopsis>
 #     <funcprototype>
 #       <funcdef><function>assertEquals</function></funcdef>
-#       <paramdef>[string <parameter>message</parameter>]</paramdef>
+#       <paramdef>string (optional)<parameter>message</parameter></paramdef>
 #       <paramdef>string <parameter>expected</parameter></paramdef>
 #       <paramdef>string <parameter>actual</parameter></paramdef>
 #     </funcprototype>
 #   </funcsynopsis>
-#   <funcsynopsis>
-#     <funcprototype>
-#       <funcdef><function>assertEquals</function></funcdef>
-#       <paramdef>[string <parameter>message</parameter>]</paramdef>
-#       <paramdef>string <parameter>expected</parameter></paramdef>
-#       <paramdef>integer <parameter>actual</parameter></paramdef>
-#     </funcprototype>
-#   </funcsynopsis>
 #   <para>Asserts that <emphasis>expected</emphasis> and
-#   <emphasis>actual</emphasis> are equal to one another.</para>
+#   <emphasis>actual</emphasis> are equal to one another. The message is
+#   optional.</para>
 # </entry>
 # </s:function>
 #*/
@@ -100,6 +93,24 @@ assertEquals()
   unset _su_message _su_expected _su_actual
 }
 
+#/**
+# <s:function group="asserts">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>assertNull</function></funcdef>
+#       <paramdef>string (optional)<parameter>message</parameter></paramdef>
+#       <paramdef>string <parameter>value</parameter></paramdef>
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>Asserts that <emphasis>value</emphasis> is <literal>null</literal>,
+#   or in shell terms a zero-length string. The message is optional.</para>
+# </entry>
+# </s:function>
+#*/
 assertNull()
 {
   _su_message=''
@@ -121,6 +132,25 @@ assertNull()
   unset _su_message _su_value _su_value2
 }
 
+#/**
+# <s:function group="asserts">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>assertNotNull</function></funcdef>
+#       <paramdef>string (optional)<parameter>message</parameter></paramdef>
+#       <paramdef>string <parameter>value</parameter></paramdef>
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>Asserts that <emphasis>value</emphasis> is <emphasis
+#   role="strong">not</emphasis> <literal>null</literal>, or in shell terms not
+#   a zero-length string. The message is optional.</para>
+# </entry>
+# </s:function>
+#*/
 assertNotNull()
 {
   _su_message=''
@@ -142,16 +172,74 @@ assertNotNull()
   unset _su_message _su_value _su_value2
 }
 
+#/**
+# <s:function group="asserts">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>assertSame</function></funcdef>
+#       <paramdef>string (optional)<parameter>message</parameter></paramdef>
+#       <paramdef>string <parameter>expected</parameter></paramdef>
+#       <paramdef>string <parameter>actual</parameter></paramdef>
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>This function is functionally equivalent to
+#   <function>assertEquals</function>.</para>
+# </entry>
+# </s:function>
+#*/
 assertSame()
-{
-  failNotEquals "$@"
-}
-
-assertNotSame()
 {
   assertEquals "$@"
 }
 
+#/**
+# <s:function group="asserts">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>assertNotSame</function></funcdef>
+#       <paramdef>string (optional)<parameter>message</parameter></paramdef>
+#       <paramdef>string <parameter>expected</parameter></paramdef>
+#       <paramdef>string <parameter>actual</parameter></paramdef>
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>Asserts that <emphasis>expected</emphasis> and
+#   <emphasis>actual</emphasis> are <emphasis role="strong">not</emphasis> equal to one another. The message is optional.</para>
+# </entry>
+# </s:function>
+#*/
+assertNotSame()
+{
+  failNotEquals "$@"
+}
+
+#/**
+# <s:function group="asserts">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>assertTrue</function></funcdef>
+#       <paramdef>string (optional)<parameter>message</parameter></paramdef>
+#       <paramdef>boolean <parameter>value</parameter></paramdef>
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>Asserts that <emphasis>value</emphasis> is <literal>true</literal>.
+#   The message is optional. Note that unlike other programming languages,
+#   <literal>true</literal> in shell is <literal>0</literal> and
+#   <literal>false</literal> is <literal>1</literal>.</para>
+# </entry>
+# </s:function>
+#*/
 assertTrue()
 {
   _su_message=''
@@ -173,6 +261,26 @@ assertTrue()
   unset _su_message _su_condition
 }
 
+#/**
+# <s:function group="asserts">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>assertFalse</function></funcdef>
+#       <paramdef>string (optional)<parameter>message</parameter></paramdef>
+#       <paramdef>boolean <parameter>value</parameter></paramdef>
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>Asserts that <emphasis>value</emphasis> is <literal>false</literal>.
+#   The message is optional. Note that unlike other programming languages,
+#   <literal>true</literal> in shell is <literal>0</literal> and
+#   <literal>false</literal> is <literal>1</literal>.</para>
+# </entry>
+# </s:function>
+#*/
 assertFalse()
 {
   _su_message=''
@@ -194,11 +302,47 @@ assertFalse()
   unset _su_message _su_condition
 }
 
+#/**
+# <s:function group="fails">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>fail</function></funcdef>
+#       <paramdef>string (optional)<parameter>message</parameter></paramdef>
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>Fails the test immediately, with the optional message.</para>
+# </entry>
+# </s:function>
+#*/
 fail()
 {
   _shunit_testFailed
 }
 
+#/**
+# <s:function group="fails">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>failNotEquals</function></funcdef>
+#       <paramdef>string (optional)<parameter>message</parameter></paramdef>
+#       <paramdef>string <parameter>expected</parameter></paramdef>
+#       <paramdef>string <parameter>actual</parameter></paramdef>
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>Fails the test immediately if <emphasis>expected</emphasis> and
+#   <emphasis>actual</emphasis> are <emphasis role="strong">not</emphasis>
+#   equal to one another. The message is optional.</para>
+# </entry>
+# </s:function>
+#*/
 failNotEquals()
 {
   _su_message=''
@@ -220,16 +364,96 @@ failNotEquals()
   unset _su_message _su_expected _su_actual
 }
 
-failNotSame()
+#/**
+# <s:function group="fails">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>failSame</function></funcdef>
+#       <paramdef>string (optional)<parameter>message</parameter></paramdef>
+#       <paramdef>string <parameter>expected</parameter></paramdef>
+#       <paramdef>string <parameter>actual</parameter></paramdef>
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>Fails the test immediately if <emphasis>expected</emphasis> and
+#   <emphasis>actual</emphasis> are equal to one another. The message is
+#   optional.</para>
+# </entry>
+# </s:function>
+#*/
+failSame()
 {
   assertEquals "$@"
 }
 
-failSame()
+#/**
+# <s:function group="fails">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>failNotSame</function></funcdef>
+#       <paramdef>string (optional)<parameter>message</parameter></paramdef>
+#       <paramdef>string <parameter>expected</parameter></paramdef>
+#       <paramdef>string <parameter>actual</parameter></paramdef>
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>This function is functionally equivalent to
+#   <function>failNotEquals</function>.</para>
+# </entry>
+# </s:function>
+#*/
+failNotSame()
 {
   failNotEquals "$@"
 }
 
+#/**
+# <s:function group="suites">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>suite</function></funcdef>
+#       <paramdef />
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>This function should be optionally overridden by the user in their
+#   test suite. If it is declared, it will be called when
+#   <command>shunit2</command> is sourced. If it is not declared,
+#   <command>shunit2</command> will search the parent script for all functions
+#   beginning with the word <literal>test</literal>, and they will be added
+#   dynamically to the test suite.</para>
+# </entry>
+# </s:function>
+#*/
+#suite() { :; }
+
+#/**
+# <s:function group="suites">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>suite_addTest</function></funcdef>
+#       <paramdef>string <parameter>function</parameter></paramdef>
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>This function adds a function name to the list of tests scheduled for
+#   execution as part of this test suite. This function should only be called
+#   from within the <function>suite()</function> function.</para>
+# </entry>
+# </s:function>
+#*/
 suite_addTest()
 {
   _su_func=$1
