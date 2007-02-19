@@ -1,0 +1,6 @@
+CHANGES WITH 2.0.0
+
+Made the first stand-alone release!
+
+
+$Revision$
