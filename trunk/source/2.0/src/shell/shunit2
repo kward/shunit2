@@ -48,8 +48,8 @@ __shunit_testsPassed=0
 __shunit_testsFailed=0
 __shunit_testsTotal=0
 
-#------------------------------------------------------------------------------
-# unit test functions
+#-----------------------------------------------------------------------------
+# assert functions
 #
 
 #/**
@@ -302,8 +302,12 @@ assertFalse()
   unset _su_message _su_condition
 }
 
+#-----------------------------------------------------------------------------
+# failure functions
+#
+
 #/**
-# <s:function group="fails">
+# <s:function group="failures">
 # <entry align="right">
 #   <emphasis>void</emphasis>
 # </entry>
@@ -324,7 +328,7 @@ fail()
 }
 
 #/**
-# <s:function group="fails">
+# <s:function group="failures">
 # <entry align="right">
 #   <emphasis>void</emphasis>
 # </entry>
@@ -365,7 +369,7 @@ failNotEquals()
 }
 
 #/**
-# <s:function group="fails">
+# <s:function group="failures">
 # <entry align="right">
 #   <emphasis>void</emphasis>
 # </entry>
@@ -390,7 +394,7 @@ failSame()
 }
 
 #/**
-# <s:function group="fails">
+# <s:function group="failures">
 # <entry align="right">
 #   <emphasis>void</emphasis>
 # </entry>
@@ -413,6 +417,10 @@ failNotSame()
   failNotEquals "$@"
 }
 
+#-----------------------------------------------------------------------------
+# suite functions
+#
+
 #/**
 # <s:function group="suites">
 # <entry align="right">
@@ -425,15 +433,17 @@ failNotSame()
 #       <paramdef />
 #     </funcprototype>
 #   </funcsynopsis>
-#   <para>This function should be optionally overridden by the user in their
-#   test suite. If it is declared, it will be called when
-#   <command>shunit2</command> is sourced. If it is not declared,
+#   <para>This function can be optionally overridden by the user in their test
+#   suite.</para>
+#   <para>If this function exists, it will be called when
+#   <command>shunit2</command> is sourced. If it does not exist,
 #   <command>shunit2</command> will search the parent script for all functions
 #   beginning with the word <literal>test</literal>, and they will be added
 #   dynamically to the test suite.</para>
 # </entry>
 # </s:function>
 #*/
+# Note: see _shunit_mktempFunc() for actual implementation
 # suite() { :; }
 
 #/**
@@ -463,10 +473,93 @@ suite_addTest()
   unset _su_func
 }
 
+#/**
+# <s:function group="suites">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>oneTimeSetUp</function></funcdef>
+#       <paramdef />
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>This function can be be optionally overridden by the user in their
+#   test suite.</para>
+#   <para>If this function exists, it will be called once before any tests are
+#   run. It is useful to prepare a common environment for all tests.</para>
+# </entry>
+# </s:function>
+#*/
+# Note: see _shunit_mktempFunc() for actual implementation
 # oneTimeSetUp() { :; }
-# setUp() { :; }
-# tearDown() { :; }
+
+#/**
+# <s:function group="suites">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>oneTimeTearDown</function></funcdef>
+#       <paramdef />
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>This function can be be optionally overridden by the user in their
+#   test suite.</para>
+#   <para>If this function exists, it will be called once after all tests are
+#   completed. It is useful to clean up the environment after all tests.</para>
+# </entry>
+# </s:function>
+#*/
+# Note: see _shunit_mktempFunc() for actual implementation
 # oneTimeTearDown() { :; }
+
+#/**
+# <s:function group="suites">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>setUp</function></funcdef>
+#       <paramdef />
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>This function can be be optionally overridden by the user in their
+#   test suite.</para>
+#   <para>If this function exists, it will be called before each test is run.
+#   It is useful to reset the environment before each test.</para>
+# </entry>
+# </s:function>
+#*/
+# Note: see _shunit_mktempFunc() for actual implementation
+# setUp() { :; }
+
+#/**
+# <s:function group="suites">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>tearDown</function></funcdef>
+#       <paramdef />
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>This function can be be optionally overridden by the user in their
+#   test suite.</para>
+#   <para>If this function exists, it will be called after each test completes.
+#   It is useful to clean up the environment after each test.</para>
+# </entry>
+# </s:function>
+#*/
+# Note: see _shunit_mktempFunc() for actual implementation
+# tearDown() { :; }
 
 #------------------------------------------------------------------------------
 # shUnit functions
@@ -548,13 +641,16 @@ EOF
   unset _su__success
 }
 
+# this function is a cross-platform temporary directory creation tool. not all OSes have the mktemp function, so 
 _shunit_mktempDir()
 {
   # try the standard mktemp function
   ( exec mktemp -dqt shunit.XXXXXX 2>/dev/null ) && return
 
   # the standard mktemp didn't work.  doing our own.
-  if [ -n "${RANDOM:-}" ]; then
+  if [ -r '/dev/urandom' ]; then
+    _su__random=`od -vAn -N4 -tx4 </dev/urandom |sed 's/^[^0-9a-f]*//'`
+  elif [ -n "${RANDOM:-}" ]; then
     # $RANDOM works
     _su__random=${RANDOM}${RANDOM}${RANDOM}$$
   else
@@ -631,7 +727,7 @@ suite
 
 # if no suite function was defined, dynamically build a list of functions
 if [ -z "${__shunit_suite}" ]; then
-  funcs=`grep "^[ \t]*test[A-Za-z0-9_]*()" $0 |sed 's/[^A-Za-z0-9_]//g'`
+  funcs=`grep "^[ \t]*test[A-Za-z0-9_]* *()" $0 |sed 's/[^A-Za-z0-9_]//g'`
   for func in ${funcs}; do
     suite_addTest ${func}
   done
