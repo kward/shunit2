@@ -25,7 +25,7 @@ Steps:
 * tag the release
 * export the release
 * create tarball
-* md5sum the tarball
+* md5sum the tarball and sign with gpg
 * update website
 * post to SourceForge and Freshmeat
 
@@ -101,17 +101,17 @@ CREATE TARBALL
 
 $ tar cfz ../releases/shunit2-2.0.0.tgz shunit2-2.0.0
 
-MD5SUM THE TARBALL
+MD5SUM THE TARBALL AND SIGN WITH GPG
 
 $ cd ../releases
 $ md5sum shunit2-2.0.0.tgz >shunit2-2.0.0.tgz.md5
+$ gpg --default-key kate.ward@forestent.com --detach-sign shunit2-2.0.0.tgz
 
 UPDATE WEBSITE
 
-Again, pretty self-explainatory.
-
-Once that is done, make sure to tag the website so we can go back in time if
-needed.
+Again, pretty self-explainatory. Make sure to copy the MD5 and GPG signature
+files. Once that is done, make sure to tag the website so we can go back in
+time if needed.
 
 $ pwd
 .../shunit2
@@ -128,18 +128,6 @@ POST TO SOURCEFORGE AND FRESHMEAT
 
 http://sourceforge.net/projects/shunit2/
 http://freshmeat.net/
-
-#------------------------------------------------------------------------------
-# Testing a release
-#
-
-To test a release, shUnit unit tests are included. Prepare the test
-environment, and then you can run the tests. Hopefully all of the tests will
-pass with a 100% success rate.
-
-$ make test-prep
-$ cd test
-$ ./run-test-suite
 
 #------------------------------------------------------------------------------
 # Related documentation
