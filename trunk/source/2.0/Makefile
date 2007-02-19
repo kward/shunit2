@@ -1,5 +1,7 @@
 # $Id$
 
+PROG=shunit2
+
 BIN_DIR=$(PWD)/bin
 BUILD_DIR=$(PWD)/build
 DIST_DIR=$(PWD)/dist
@@ -20,7 +22,7 @@ HTML_XSL=$(PWD)/share/docbook/tldp-xsl/21MAR2004/html/tldp-one-page.xsl
 all: build docs
 
 build: build-prep
-	cp -p $(SHELL_SRC_DIR)/shunit2 $(BUILD_DIR)
+	cp -p $(SHELL_SRC_DIR)/$(PROG) $(BUILD_DIR)
 
 build-clean:
 	rm -fr $(BUILD_DIR)
@@ -42,22 +44,22 @@ docs-prep:
 
 docs-extract-shelldoc: docs-prep
 	@echo "Extracting the ShellDoc"
-	@$(BIN_DIR)/extractDocs.pl $(SHELL_SRC_DIR)/shunit2 >$(BUILD_DIR)/shunit2_shelldoc.xml
+	@$(BIN_DIR)/extractDocs.pl $(SHELL_SRC_DIR)/$(PROG) >$(BUILD_DIR)/$(PROG)_shelldoc.xml
 
 docs-transform-shelldoc: docs-prep docs-extract-shelldoc
 	@echo "Parsing the extracted ShellDoc"
-	@xsltproc $(PWD)/share/resources/shelldoc.xslt $(BUILD_DIR)/shunit2_shelldoc.xml >$(DOCBOOK_BUILD_DIR)/functions.xml
+	@xsltproc $(PWD)/share/resources/shelldoc.xslt $(BUILD_DIR)/$(PROG)_shelldoc.xml >$(DOCBOOK_BUILD_DIR)/functions.xml
 
 docs-transform-docbook: docs-prep
 	@echo "Parsing the documentation with DocBook"
-	@xsltproc $(HTML_XSL) $(DOCBOOK_BUILD_DIR)/shunit2.xml >$(BUILD_DIR)/shunit2.html
+	@xsltproc $(HTML_XSL) $(DOCBOOK_BUILD_DIR)/$(PROG).xml >$(BUILD_DIR)/$(PROG).html
 
 docs-docbook-prep:
 	@echo "Preparing DocBook structure"
 	@$(BIN_DIR)/docbookPrep.sh $(PWD)/share/docbook
 
 test: test-prep
-	@echo "executing log4sh unit tests"
+	@echo "executing $(PROG) unit tests"
 	( cd $(TEST_DIR); $(TEST_SRC_DIR)/run-test-suite )
 
 test-clean:
@@ -65,20 +67,17 @@ test-clean:
 
 test-prep: build test-clean
 	@mkdir -p $(TEST_DIR)
-	cp -p $(EXAMPLES_SRC_DIR)/hello_world $(TEST_DIR)
 	cp -p $(TEST_SRC_DIR)/test* $(TEST_DIR)
 	cp -p $(TEST_SRC_DIR)/run-test-suite $(TEST_DIR)
-	cp -p $(TEST_SRC_DIR)/*.data $(TEST_DIR)
-	cp -p $(LIB_DIR)/sh/shunit $(TEST_DIR)
-	cp -p $(BUILD_DIR)/log4sh $(TEST_DIR)
+	cp -p $(BUILD_DIR)/$(PROG) $(TEST_DIR)
 
-dist: build docs
+dist: dist-clean build docs
 	@mkdir $(DIST_DIR)
-	cp -p $(BUILD_DIR)/log4sh $(DIST_DIR)
-	cp -p $(BUILD_DIR)/log4sh.html $(DIST_DIR)
+	cp -p $(BUILD_DIR)/$(PROG) $(DIST_DIR)
+	cp -p $(BUILD_DIR)/$(PROG).html $(DIST_DIR)
 
 clean: build-clean test-clean
 	rm -fr $(TMP_DIR)
 
-distclean: clean
+dist-clean: clean
 	rm -fr $(DIST_DIR)
