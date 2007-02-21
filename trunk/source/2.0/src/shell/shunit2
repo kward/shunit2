@@ -5,7 +5,7 @@
 # <?xml version="1.0" encoding="UTF-8"?>
 # <s:shelldoc xmlns:s="http://www.forestent.com/projects/shelldoc/xsl/2005.0">
 # <s:header>
-# shUnit 2.0.0
+# shUnit 2.0.1
 # Shell Unit Test Framework
 #
 # written by Kate Ward &lt;kate.ward@forestent.com&gt;
@@ -29,7 +29,7 @@ done
 
 # constants
 
-__SHUNIT_VERSION='2.0.0'
+__SHUNIT_VERSION='2.0.1pre'
 
 __SHUNIT_TRUE=0
 __SHUNIT_FALSE=1
