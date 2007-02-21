@@ -217,7 +217,23 @@ assertSame()
 #*/
 assertNotSame()
 {
-  failNotEquals "$@"
+  _su_message=''
+  if [ $# -eq 3 ]; then
+    _su_message=$1
+    shift
+  fi
+  _su_expected=$1
+  _su_actual=$2
+
+  if [ "${_su_expected}" != "${_su_actual}" ]; then
+    _shunit_testPassed
+    return ${__SHUNIT_TRUE}
+  else
+    _shunit_testFailed "${_su_message}"
+    return ${__SHUNIT_FALSE}
+  fi
+
+  unset _su_message _su_expected _su_actual
 }
 
 #/**
@@ -230,13 +246,20 @@ assertNotSame()
 #     <funcprototype>
 #       <funcdef><function>assertTrue</function></funcdef>
 #       <paramdef>string <parameter>[message]</parameter></paramdef>
-#       <paramdef>boolean <parameter>value</parameter></paramdef>
+#       <paramdef>string <parameter>condition</parameter></paramdef>
 #     </funcprototype>
 #   </funcsynopsis>
-#   <para>Asserts that <emphasis>value</emphasis> is <literal>true</literal>.
-#   The message is optional. Note that unlike other programming languages,
-#   <literal>true</literal> in shell is <literal>0</literal> and
-#   <literal>false</literal> is <literal>1</literal>.</para>
+#   <para>Asserts that a given shell test condition is true. The message is
+#   optional.</para>
+#   <para>Testing whether something is true or false is easy enough by using
+#   the assertEquals/assertNotSame functions. Shell supports much more
+#   complicated tests though, and a means to support them was needed. As such,
+#   this function tests that conditions are true or false through evaluation
+#   rather than just looking for a true or false.</para>
+#   <funcsynopsis>
+#     The following test will succeed: <funcsynopsisinfo>assertTrue "[ 34 -gt 23 ]"</funcsynopsisinfo>
+#     The folloing test will fail with a message: <funcsynopsisinfo>assertTrue "test failed" "[ -r '/non/existant/file' ]"</funcsynopsisinfo>
+#   </funcsynopsis>
 # </entry>
 # </s:function>
 #*/
@@ -271,13 +294,20 @@ assertTrue()
 #     <funcprototype>
 #       <funcdef><function>assertFalse</function></funcdef>
 #       <paramdef>string <parameter>[message]</parameter></paramdef>
-#       <paramdef>boolean <parameter>value</parameter></paramdef>
+#       <paramdef>string <parameter>condition</parameter></paramdef>
 #     </funcprototype>
 #   </funcsynopsis>
-#   <para>Asserts that <emphasis>value</emphasis> is <literal>false</literal>.
-#   The message is optional. Note that unlike other programming languages,
-#   <literal>true</literal> in shell is <literal>0</literal> and
-#   <literal>false</literal> is <literal>1</literal>.</para>
+#   <para>Asserts that a given shell test condition is false. The message is
+#   optional.</para>
+#   <para>Testing whether something is true or false is easy enough by using
+#   the assertEquals/assertNotSame functions. Shell supports much more
+#   complicated tests though, and a means to support them was needed. As such,
+#   this function tests that conditions are true or false through evaluation
+#   rather than just looking for a true or false.</para>
+#   <funcsynopsis>
+#     The following test will succeed: <funcsynopsisinfo>assertFalse "[ 'apples' = 'oranges' ]"</funcsynopsisinfo>
+#     The folloing test will fail with a message: <funcsynopsisinfo>assertFalse "test failed" "[ 1 -eq 1 -a 2 -eq 2 ]"</funcsynopsisinfo>
+#   </funcsynopsis>
 # </entry>
 # </s:function>
 #*/
@@ -341,7 +371,7 @@ fail()
 #       <paramdef>string <parameter>actual</parameter></paramdef>
 #     </funcprototype>
 #   </funcsynopsis>
-#   <para>Fails the test immediately if <emphasis>expected</emphasis> and
+#   <para>Fails the test if <emphasis>expected</emphasis> and
 #   <emphasis>actual</emphasis> are <emphasis role="strong">not</emphasis>
 #   equal to one another. The message is optional.</para>
 # </entry>
@@ -349,23 +379,7 @@ fail()
 #*/
 failNotEquals()
 {
-  _su_message=''
-  if [ $# -eq 3 ]; then
-    _su_message=$1
-    shift
-  fi
-  _su_expected=$1
-  _su_actual=$2
-
-  if [ "${_su_expected}" != "${_su_actual}" ]; then
-    _shunit_testPassed
-    return ${__SHUNIT_TRUE}
-  else
-    _shunit_testFailed "${_su_message}"
-    return ${__SHUNIT_FALSE}
-  fi
-
-  unset _su_message _su_expected _su_actual
+  assertEquals "$@"
 }
 
 #/**
@@ -382,7 +396,7 @@ failNotEquals()
 #       <paramdef>string <parameter>actual</parameter></paramdef>
 #     </funcprototype>
 #   </funcsynopsis>
-#   <para>Fails the test immediately if <emphasis>expected</emphasis> and
+#   <para>Fails the test if <emphasis>expected</emphasis> and
 #   <emphasis>actual</emphasis> are equal to one another. The message is
 #   optional.</para>
 # </entry>
@@ -390,7 +404,7 @@ failNotEquals()
 #*/
 failSame()
 {
-  assertEquals "$@"
+  assertNotSame "$@"
 }
 
 #/**
@@ -407,14 +421,15 @@ failSame()
 #       <paramdef>string <parameter>actual</parameter></paramdef>
 #     </funcprototype>
 #   </funcsynopsis>
-#   <para>This function is functionally equivalent to
-#   <function>failNotEquals</function>.</para>
+#   <para>Fails the test if <emphasis>expected</emphasis> and
+#   <emphasis>actual</emphasis> are equal to one another. The message is
+#   optional.</para>
 # </entry>
 # </s:function>
 #*/
 failNotSame()
 {
-  failNotEquals "$@"
+  assertEquals "$@"
 }
 
 #-----------------------------------------------------------------------------
