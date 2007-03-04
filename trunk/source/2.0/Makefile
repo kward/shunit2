@@ -18,7 +18,7 @@ EXAMPLES_SRC_DIR=$(SRC_DIR)/examples
 SHELL_SRC_DIR=$(SRC_DIR)/shell
 TEST_SRC_DIR=$(SRC_DIR)/test
 
-HTML_XSL=$(PWD)/share/docbook/tldp-xsl/21MAR2004/html/tldp-one-page.xsl
+HTML_XSL=$(SHARE_DIR)/docbook/tldp-xsl/21MAR2004/html/tldp-one-page.xsl
 
 all: build docs
 
@@ -49,7 +49,7 @@ docs-extract-shelldoc: docs-prep
 
 docs-transform-shelldoc: docs-prep docs-extract-shelldoc
 	@echo "Parsing the extracted ShellDoc"
-	@xsltproc $(PWD)/share/resources/shelldoc.xslt $(BUILD_DIR)/$(PROG)_shelldoc.xml >$(DOCBOOK_BUILD_DIR)/functions.xml
+	@xsltproc $(SHARE_DIR)/resources/shelldoc.xslt $(BUILD_DIR)/$(PROG)_shelldoc.xml >$(DOCBOOK_BUILD_DIR)/functions.xml
 
 docs-transform-docbook: docs-prep
 	@echo "Parsing the documentation with DocBook"
@@ -57,7 +57,7 @@ docs-transform-docbook: docs-prep
 
 docs-docbook-prep:
 	@echo "Preparing DocBook structure"
-	@$(BIN_DIR)/docbookPrep.sh $(PWD)/share/docbook
+	@$(BIN_DIR)/docbookPrep.sh $(SHARE_DIR)/docbook
 
 test: test-prep
 	@echo "executing $(PROG) unit tests"
