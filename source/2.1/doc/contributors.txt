@@ -1,0 +1,6 @@
+The original author of shunit2 is Kate Ward. The following people have
+contributed in some way or another to shunit2.
+
+None at this time
+
+$Revision$
