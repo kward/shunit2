@@ -356,7 +356,7 @@ assertFalse()
 #*/
 fail()
 {
-  _shunit_testFailed
+  _shunit_testFailed "$@"
 }
 
 #/**
