@@ -1,8 +1,8 @@
 Changes in shUnit2 2.1.X
 ========================
 
-Changes with 2.1.0
-------------------
+Changes with 2.1.0 (since 2.0.1)
+--------------------------------
 
 This release is a branch of the 2.0.1 release.
 
