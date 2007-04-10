@@ -1,5 +1,6 @@
 # $Id$
 # vim:syntax=sh:sts=2
+# vim:foldmethod=marker:foldmarker=/**,*/
 #
 #/**
 # <?xml version="1.0" encoding="UTF-8"?>
@@ -8,11 +9,12 @@
 # shUnit 2.0.1
 # Shell Unit Test Framework
 #
+# http://shunit2.sourceforge.net/
+#
 # written by Kate Ward &lt;kate.ward@forestent.com&gt;
 # released under the LGPL
 #
-# this module implements a unit test framework similar to JUnit
-#
+# this module implements a xUnit based unit test framework similar to JUnit
 # </s:header>
 #*/
 
@@ -354,7 +356,7 @@ assertFalse()
 #*/
 fail()
 {
-  _shunit_testFailed
+  _shunit_testFailed "$@"
 }
 
 #/**
