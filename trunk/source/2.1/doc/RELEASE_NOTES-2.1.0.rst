@@ -60,6 +60,8 @@ Moving to the use of `reStructured Text
 <http://docutils.sourceforge.net/rst.html>`_ for documentation. It is easy to
 read and edit in textual form, but converts nicely to HTML.
 
+See the ``CHANGES-2.1.rst`` file for a full list of changes.
+
 
 Bug Fixes
 ---------
