@@ -29,9 +29,12 @@ $ xsltproc shelldoc.xslt log4sh.xml |xmllint -noblanks -
     <xsl:for-each select="//s:function[generate-id(.)=generate-id(key('groups', @group)[1])]">
       <xsl:sort select="@group" />
 
-      <section id="shelldoc-section-@group">
+      <xsl:variable name="group"><xsl:value-of select="@group" /></xsl:variable>
+      <section>
+        <xsl:attribute name="id">shelldoc-section-<xsl:value-of select="@group" /></xsl:attribute>
         <title><xsl:value-of select="@group"/></title>
-        <table id="shelldoc-function-@group">
+        <table>
+          <xsl:attribute name="id">shelldoc-function-<xsl:value-of select="@group" /></xsl:attribute>
           <title><xsl:value-of select="@group"/></title>
           <tgroup cols="2"><tbody>
           <xsl:for-each select="key('groups', @group)">
