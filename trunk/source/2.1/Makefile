@@ -58,7 +58,7 @@ docs-transform-docbook: docs-docbook-prep docs-prep
 
 docs-docbook-prep:
 	@if [ ! -d "$(DOCBOOK_SHARE_DIR)/docbook-xml" \
-	  -o ! -d "$(DOCBOOK_SHARE_DIR)/docbook-xsl" ] \
+	  -o ! -d "$(DOCBOOK_SHARE_DIR)/docbook-xsl" ]; \
 	then \
 	  @echo "Preparing DocBook structure"; \
 	  @$(BIN_DIR)/docbookPrep.sh "$(DOCBOOK_SHARE_DIR)"; \
