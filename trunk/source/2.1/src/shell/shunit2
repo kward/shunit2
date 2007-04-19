@@ -33,8 +33,8 @@ done
 
 __SHUNIT_VERSION='2.1.0pre'
 
-__SHUNIT_TRUE=0
-__SHUNIT_FALSE=1
+SHUNIT_TRUE=0
+SHUNIT_FALSE=1
 
 __SHUNIT_ASSERT_MSG_PREFIX='ASSERT:'
 
@@ -44,10 +44,12 @@ done
 unset _su_const
 
 # variables
+__shunit_skip=${SHUNIT_FALSE}
 __shunit_suite=''
 
 __shunit_testsPassed=0
 __shunit_testsFailed=0
+__shunit_testsSkipped=0
 __shunit_testsTotal=0
 
 #-----------------------------------------------------------------------------
@@ -76,6 +78,8 @@ __shunit_testsTotal=0
 #*/
 assertEquals()
 {
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
   _su_message=''
   if [ $# -eq 3 ]; then
     _su_message=$1
@@ -86,10 +90,10 @@ assertEquals()
 
   if [ "${_su_expected}" = "${_su_actual}" ]; then
     _shunit_testPassed
-    return ${__SHUNIT_TRUE}
+    return ${SHUNIT_TRUE}
   else
     _shunit_testFailed "${_su_message}"
-    return ${__SHUNIT_FALSE}
+    return ${SHUNIT_FALSE}
   fi
 
   unset _su_message _su_expected _su_actual
@@ -115,6 +119,8 @@ assertEquals()
 #*/
 assertNull()
 {
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
   _su_message=''
   if [ $# -eq 2 ]; then
     _su_message=$1
@@ -125,10 +131,10 @@ assertNull()
   _su_value2=`eval echo "${_su_value}"`
   if [ -z "${_su_value2}" ]; then
     _shunit_testPassed
-    return ${__SHUNIT_TRUE}
+    return ${SHUNIT_TRUE}
   else
     _shunit_testFailed "${_su_message}"
-    return ${__SHUNIT_FALSE}
+    return ${SHUNIT_FALSE}
   fi
 
   unset _su_message _su_value _su_value2
@@ -155,6 +161,8 @@ assertNull()
 #*/
 assertNotNull()
 {
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
   _su_message=''
   if [ $# -eq 2 ]; then
     _su_message=$1
@@ -165,10 +173,10 @@ assertNotNull()
   _su_value2=`eval echo "${_su_value}"`
   if [ -n "${_su_value2}" ]; then
     _shunit_testPassed
-    return ${__SHUNIT_TRUE}
+    return ${SHUNIT_TRUE}
   else
     _shunit_testFailed "${_su_message}"
-    return ${__SHUNIT_FALSE}
+    return ${SHUNIT_FALSE}
   fi
 
   unset _su_message _su_value _su_value2
@@ -219,6 +227,8 @@ assertSame()
 #*/
 assertNotSame()
 {
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
   _su_message=''
   if [ $# -eq 3 ]; then
     _su_message=$1
@@ -229,10 +239,10 @@ assertNotSame()
 
   if [ "${_su_expected}" != "${_su_actual}" ]; then
     _shunit_testPassed
-    return ${__SHUNIT_TRUE}
+    return ${SHUNIT_TRUE}
   else
     _shunit_testFailed "${_su_message}"
-    return ${__SHUNIT_FALSE}
+    return ${SHUNIT_FALSE}
   fi
 
   unset _su_message _su_expected _su_actual
@@ -267,6 +277,8 @@ assertNotSame()
 #*/
 assertTrue()
 {
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
   _su_message=''
   if [ $# -eq 2 ]; then
     _su_message=$1
@@ -275,12 +287,12 @@ assertTrue()
   _su_condition=$1
 
   ( eval ${_su_condition} ) >/dev/null 2>&1
-  if [ $? -eq ${__SHUNIT_TRUE} ]; then
+  if [ $? -eq ${SHUNIT_TRUE} ]; then
     _shunit_testPassed
-    return ${__SHUNIT_TRUE}
+    return ${SHUNIT_TRUE}
   else
     _shunit_testFailed "${_su_message}"
-    return ${__SHUNIT_FALSE}
+    return ${SHUNIT_FALSE}
   fi
 
   unset _su_message _su_condition
@@ -315,6 +327,8 @@ assertTrue()
 #*/
 assertFalse()
 {
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
   _su_message=''
   if [ $# -eq 2 ]; then
     _su_message=$1
@@ -323,12 +337,12 @@ assertFalse()
   _su_condition=$1
 
   ( eval ${_su_condition} ) >/dev/null 2>&1
-  if [ $? -eq ${__SHUNIT_FALSE} ]; then
+  if [ $? -eq ${SHUNIT_FALSE} ]; then
     _shunit_testPassed
-    return ${__SHUNIT_TRUE}
+    return ${SHUNIT_TRUE}
   else
     _shunit_testFailed "${_su_message}"
-    return ${__SHUNIT_FALSE}
+    return ${SHUNIT_FALSE}
   fi
 
   unset _su_message _su_condition
@@ -432,6 +446,76 @@ failSame()
 failNotSame()
 {
   assertEquals "$@"
+}
+
+#-----------------------------------------------------------------------------
+# control functions
+#
+
+#/**
+# <s:function group="control">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>startSkipping</function></funcdef>
+#       <paramdef />
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>This function forces the remaining assert and fail functions to be
+#   "skipped", i.e. they will have no effect. Each function skipped will be
+#   recorded so that the total of asserts and fails will not be altered.</para>
+# </entry>
+# </s:function>
+#*/
+startSkipping()
+{
+  __shunit_skip=${SHUNIT_TRUE}
+}
+
+#/**
+# <s:function group="control">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>endSkipping</function></funcdef>
+#       <paramdef />
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>This function returns calls to the assert and fail functions to their
+#   default behavior, i.e. they will be called.</para>
+# </entry>
+# </s:function>
+#*/
+endSkipping()
+{
+  __shunit_skip=${SHUNIT_FALSE}
+}
+
+#/**
+# <s:function group="control">
+# <entry align="right">
+#   <emphasis>boolean</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>isSkipping</function></funcdef>
+#       <paramdef />
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>This function returns the state of skipping.</para>
+# </entry>
+# </s:function>
+#*/
+isSkipping()
+{
+  return ${__shunit_skip}
 }
 
 #-----------------------------------------------------------------------------
@@ -579,7 +663,7 @@ suite_addTest()
 # tearDown() { :; }
 
 #------------------------------------------------------------------------------
-# shUnit functions
+# internal shUnit functions
 #
 
 _shunit_cleanup()
@@ -613,6 +697,9 @@ _shunit_execSuite()
   echo '# Performing tests'
   echo '#'
   for _su_func in ${__shunit_suite}; do
+    # disable skipping
+    endSkipping
+
     # execute the per-test setup function
     setUp
 
@@ -638,10 +725,21 @@ _shunit_functionExists()
 
 _shunit_generateReport()
 {
+  _su__awk='{printf("%4d %3.0f%%", $1, $1*100/$2)}'
   if [ ${__shunit_testsTotal} -gt 0 ]; then
-    _su__success=`expr ${__shunit_testsPassed} \* 100 / ${__shunit_testsTotal}`
+    _su__passed=`echo ${__shunit_testsPassed} ${__shunit_testsTotal} |\
+        awk "${_su__awk}"`
+    _su__failed=`echo ${__shunit_testsFailed} ${__shunit_testsTotal} |\
+        awk "${_su__awk}"`
+    _su__skipped=`echo ${__shunit_testsSkipped} ${__shunit_testsTotal} |\
+        awk "${_su__awk}"`
+    _su__total=`echo ${__shunit_testsTotal} 100 |\
+        awk '{printf("%4d %3d%%", $1, $2)}'`
   else
-    _su__success=0
+    _su__passed=`echo 0 0 |awk '{printf("%4d %3d%%", $1, $2)}'`
+    _su__failed=${_su__passed}
+    _su__skipped=${_su__passed}
+    _su__total=${_su__passed}
   fi
 
   cat <<EOF
@@ -649,16 +747,17 @@ _shunit_generateReport()
 #
 # Test report
 #
-tests passed: ${__shunit_testsPassed}
-tests failed: ${__shunit_testsFailed}
-tests total:  ${__shunit_testsTotal}
-success rate: ${_su__success}%
+tests passed:  ${_su__passed}
+tests failed:  ${_su__failed}
+tests skipped: ${_su__skipped}
+tests total:   ${_su__total}
 EOF
 
-  unset _su__success
+  unset _su__awk _su__passed _su__failed _su__skipped _su__total
 }
 
-# this function is a cross-platform temporary directory creation tool. not all OSes have the mktemp function, so 
+# this function is a cross-platform temporary directory creation tool. not all
+# OSes have the mktemp function, so one is included here.
 _shunit_mktempDir()
 {
   # try the standard mktemp function
@@ -701,6 +800,12 @@ EOF
   unset _su__file
 }
 
+_shunit_shouldSkip()
+{
+  [ ${__shunit_skip} -eq ${SHUNIT_FALSE} ] && return ${SHUNIT_FALSE}
+  _shunit_testSkipped
+}
+
 _shunit_testPassed()
 {
   __shunit_testsPassed=`expr ${__shunit_testsPassed} + 1`
@@ -717,6 +822,12 @@ _shunit_testFailed()
   [ -z "${_su__msg:-}" ] && _su__msg='failed'
   echo "${__SHUNIT_ASSERT_MSG_PREFIX} ${_su__msg}" >&2
   unset _su__msg
+}
+
+_shunit_testSkipped()
+{
+  __shunit_testsSkipped=`expr ${__shunit_testsSkipped} + 1`
+  __shunit_testsTotal=`expr ${__shunit_testsTotal} + 1`
 }
 
 #------------------------------------------------------------------------------
