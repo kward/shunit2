@@ -658,7 +658,8 @@ EOF
   unset _su__success
 }
 
-# this function is a cross-platform temporary directory creation tool. not all OSes have the mktemp function, so 
+# this function is a cross-platform temporary directory creation tool. not all
+# OSes have the mktemp function, so one is included here.
 _shunit_mktempDir()
 {
   # try the standard mktemp function
