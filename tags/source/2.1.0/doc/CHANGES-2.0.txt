@@ -1,0 +1,13 @@
+CHANGES WITH 2.0.1
+
+Fixed some really stupid mistakes with the fail* functions. They were doing the
+exact opposite of what they were supposed to be doing.
+
+
+CHANGES WITH 2.0.0
+
+Made the first stand-alone release!
+
+
+$Revision$
+vim:spell
