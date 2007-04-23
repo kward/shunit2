@@ -86,9 +86,9 @@ TAG THE RELEASE
 $ pwd
 .../shunit2/source
 $ ls
-1.2  1.3
+2.0  2.1
 $ svn cp -m "Release 2.0.0" \
-1.3 https://shunit2.svn.sourceforge.net/svnroot/shunit2/tags/source/2.0.0
+2.0 https://shunit2.svn.sourceforge.net/svnroot/shunit2/tags/source/2.0.0
 
 EXPORT THE RELEASE
 
