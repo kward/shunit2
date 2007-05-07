@@ -1,6 +1,7 @@
 # $Id$
 
 Options +Indexes
+IndexOptions NameWidth=*
 
 AddType multipart/digest .md5
 <Files *.tgz.md5>
