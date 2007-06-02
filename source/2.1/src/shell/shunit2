@@ -31,7 +31,7 @@ done
 
 # constants
 
-__SHUNIT_VERSION='2.1.0'
+__SHUNIT_VERSION='2.1.1pre'
 
 SHUNIT_TRUE=0
 SHUNIT_FALSE=1
@@ -370,7 +370,9 @@ assertFalse()
 #*/
 fail()
 {
-  _shunit_testFailed "$@"
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
+  _shunit_testFailed "${@:-}"
 }
 
 #/**
