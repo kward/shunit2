@@ -1,6 +1,11 @@
 Changes in shUnit2 2.1.X
 ========================
 
+Changes with 2.1.1
+
+Fixed bug where fail() was not honoring skipping.
+
+
 Changes with 2.1.0 (since 2.0.1)
 --------------------------------
 
