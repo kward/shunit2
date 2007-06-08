@@ -12,6 +12,7 @@ TEST_DIR=$(PWD)/test
 TMP_DIR=$(PWD)/tmp
 
 DOCBOOK_BUILD_DIR=$(BUILD_DIR)/docbook
+DOCBOOK_SHARE_DIR=$(SHARE_DIR)/docbook
 
 DOCBOOK_SRC_DIR=$(SRC_DIR)/docbook
 EXAMPLES_SRC_DIR=$(SRC_DIR)/examples
@@ -56,10 +57,11 @@ docs-transform-docbook: docs-docbook-prep docs-prep
 	@xsltproc $(HTML_XSL) $(DOCBOOK_BUILD_DIR)/$(PROG).xml >$(BUILD_DIR)/$(PROG).html
 
 docs-docbook-prep:
-	@if [ ! -d "$(SHARE_DIR)/docbook/docbook-xml" \
-	  -o ! -d "$(SHARE_DIR)/docbook/docbook-xsl" ]; then \
+	@if [ ! -d "$(DOCBOOK_SHARE_DIR)/docbook-xml" \
+	  -o ! -d "$(DOCBOOK_SHARE_DIR)/docbook-xsl" ]; \
+	then \
 	  echo "Preparing DocBook structure"; \
-	  $(BIN_DIR)/docbookPrep.sh $(SHARE_DIR)/docbook; \
+	  $(BIN_DIR)/docbookPrep.sh "$(DOCBOOK_SHARE_DIR)"; \
 	fi
 
 test: test-prep
