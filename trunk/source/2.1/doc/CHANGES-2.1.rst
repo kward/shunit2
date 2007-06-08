@@ -5,6 +5,9 @@ Changes with 2.1.1
 
 Fixed bug where fail() was not honoring skipping.
 
+Fixed problem with ``docs-docbook-prep`` target that prevented it from working.
+(Thanks to Bryan Larsen for pointing this out.)
+
 
 Changes with 2.1.0 (since 2.0.1)
 --------------------------------

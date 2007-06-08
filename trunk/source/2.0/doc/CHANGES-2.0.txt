@@ -1,3 +1,9 @@
+CHANGES WITH 2.0.3
+
+Backported the Makefile from 2.1.1pre that included changes to the
+docs-docbook-prep target.
+
+
 CHANGES WITH 2.0.2
 
 Fixed problem with fail(). The failure message was not properly printed.
