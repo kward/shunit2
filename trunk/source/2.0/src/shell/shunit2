@@ -323,7 +323,7 @@ assertFalse()
   _su_condition=$1
 
   ( eval ${_su_condition} ) >/dev/null 2>&1
-  if [ $? -eq ${__SHUNIT_FALSE} ]; then
+  if [ $? -ne ${__SHUNIT_TRUE} ]; then
     _shunit_testPassed
     return ${__SHUNIT_TRUE}
   else
