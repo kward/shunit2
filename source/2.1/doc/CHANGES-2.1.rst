@@ -3,10 +3,13 @@ Changes in shUnit2 2.1.X
 
 Changes with 2.1.1
 
-Fixed bug where fail() was not honoring skipping.
+Fixed bug where ``fail()`` was not honoring skipping.
 
 Fixed problem with ``docs-docbook-prep`` target that prevented it from working.
 (Thanks to Bryan Larsen for pointing this out.)
+
+Changed the test in ``assertFalse()`` so that any non-zero value registeres as
+false. (Credits to Bryan Larsen)
 
 
 Changes with 2.1.0 (since 2.0.1)
