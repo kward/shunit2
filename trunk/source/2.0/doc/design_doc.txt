@@ -1,4 +1,5 @@
-Design Doc for shUnit
+Design Doc for shUnit2
+======================
 
 shUnit is based upon JUnit. The initial ideas for the script came from the book
 "Pragmatic Unit Testing - In Java with JUnit" by Andrew Hunt and David Thomas.
@@ -13,7 +14,8 @@ where shell allows. In the initial version, there will be no concept of
 exceptions (as normal POSIX shell has no concept of them) but attempts to trap
 problems will be done.
 
-Programatic Standards:
+Programatic Standards
+---------------------
 
 * SHUNIT_TRUE - public global constant
 * __SHUNIT_SHELL_FLAGS - private global constant
@@ -31,4 +33,22 @@ Programatic Standards:
   reduce the chances that a variable in a shUnit public function, or a variable
   outside of shUnit will be overridden.
 
-$Revision$
+List of functions
+-----------------
+
+assertTrue([message,] boolean)
+assertFalse([message,] boolean)
+fail([message])
+assertEquals([message,] expected, actual)
+#isEquals(expected, actual)
+#assertArrayEquals([message,] expecteds, actuals)
+#isArray(expected)
+assertNotNull([message,] object)
+assertNull([message,], object)
+assertSame([message,], expected, actual)
+assertNotSame([message,], unexpected, actual)
+failSame(message)
+failNotSame([message,] expected, actual)
+
+.. $Revision$
+.. vim:syntax=rst
