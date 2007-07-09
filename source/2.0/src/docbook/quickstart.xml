@@ -72,7 +72,7 @@ testPartyLikeItIs1999()
 {
   year=`date '+%Y'`
   assertEquals "It's not 1999 :-( This is ${year}." \
-      "${year}" '1999'
+      '1999' "${year}"
 }
 
 # load shunit2
