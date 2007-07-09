@@ -1,6 +1,8 @@
 ﻿RELEASE NOTES FOR 2.0.3
 
-This is solely a bug-fix release.
+This release incorporates a realignment with the JUnit 4 code. Asserts now
+provide better failure messages, and the failure functions no longer perform
+tests.
 
 See the CHANGES-2.0.txt file for a full list of changes.
 
@@ -47,10 +49,16 @@ CHANGES AND ENHANCEMENTS
 The internal test in assertFalse() was changed so that any non-zero value is
 considered false, rather than any only values equal to 1.
 
+The assertTrue() and assertFalse() functions now accept an integer value for a
+conditional test. A value of '0' is considered 'true', while any non-zero value
+is considered 'false'.
+
+Self-testing unit tests were added.
+
 
 BUG FIXES
 
-None.
+All asserts now properly unset their variables.
 
 
 DEPRECATED FEATURES
@@ -60,7 +68,7 @@ None.
 
 KNOWN BUGS AND ISSUES
 
-None.
+Functions do not properly test for an invalid number of arguments.
 
 
 $Revision: 44 $
