@@ -382,11 +382,11 @@ fail()
 #     <funcprototype>
 #       <funcdef><function>failNotEquals</function></funcdef>
 #       <paramdef>string <parameter>[message]</parameter></paramdef>
-#       <paramdef>string <parameter>expected</parameter></paramdef>
+#       <paramdef>string <parameter>unexpected</parameter></paramdef>
 #       <paramdef>string <parameter>actual</parameter></paramdef>
 #     </funcprototype>
 #   </funcsynopsis>
-#   <para>Fails the test if <emphasis>expected</emphasis> and
+#   <para>Fails the test if <emphasis>unexpected</emphasis> and
 #   <emphasis>actual</emphasis> are <emphasis role="strong">not</emphasis>
 #   equal to one another. The message is optional.</para>
 # </entry>
@@ -419,9 +419,8 @@ failNotEquals()
 #       <paramdef>string <parameter>[message]</parameter></paramdef>
 #     </funcprototype>
 #   </funcsynopsis>
-#   <para>Fails the test if <emphasis>expected</emphasis> and
-#   <emphasis>actual</emphasis> are equal to one another. The message is
-#   optional.</para>
+#   <para>Indicate test failure because arguments were not the same. The
+#   message is optional.</para>
 # </entry>
 # </s:function>
 #*/
@@ -478,10 +477,10 @@ failNotSame()
 #   <para>This function can be optionally overridden by the user in their test
 #   suite.</para>
 #   <para>If this function exists, it will be called when
-#   <command>shunit2</command> is sourced. If it does not exist,
-#   <command>shunit2</command> will search the parent script for all functions
-#   beginning with the word <literal>test</literal>, and they will be added
-#   dynamically to the test suite.</para>
+#   <command>shunit2</command> is sourced. If it does not exist, shUnit2 will
+#   search the parent script for all functions beginning with the word
+#   <literal>test</literal>, and they will be added dynamically to the test
+#   suite.</para>
 # </entry>
 # </s:function>
 #*/
@@ -604,7 +603,7 @@ suite_addTest()
 # tearDown() { :; }
 
 #------------------------------------------------------------------------------
-# shUnit functions
+# internal shUnit2 functions
 #
 
 _shunit_cleanup()
