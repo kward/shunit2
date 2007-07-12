@@ -18,7 +18,7 @@
 # </s:header>
 #*/
 
-# shell flags for shunit:
+# shell flags for shunit2:
 # u - treat unset variables as an error when performing parameter expansion
 __SHUNIT_SHELL_FLAGS='u'
 
@@ -85,18 +85,19 @@ assertEquals()
     _su_message=$1
     shift
   fi
-  _su_expected=$1
-  _su_actual=$2
+  _su_expected=${1:-}
+  _su_actual=${2:-}
 
+  shunit_return=${SHUNIT_TRUE}
   if [ "${_su_expected}" = "${_su_actual}" ]; then
     _shunit_testPassed
-    return ${SHUNIT_TRUE}
   else
-    _shunit_testFailed "${_su_message}"
-    return ${SHUNIT_FALSE}
+    failNotEquals "${_su_message}" "${_su_expected}" "${_su_actual}"
+    shunit_return=${SHUNIT_FALSE}
   fi
 
   unset _su_message _su_expected _su_actual
+  return ${shunit_return}
 }
 
 #/**
@@ -121,23 +122,11 @@ assertNull()
 {
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
-  _su_message=''
   if [ $# -eq 2 ]; then
-    _su_message=$1
-    shift
-  fi
-  _su_value=$1
-
-  _su_value2=`eval echo "${_su_value}"`
-  if [ -z "${_su_value2}" ]; then
-    _shunit_testPassed
-    return ${SHUNIT_TRUE}
+    assertTrue "$1" "[ -z '$2' ]"
   else
-    _shunit_testFailed "${_su_message}"
-    return ${SHUNIT_FALSE}
+    assertTrue "[ -z '${1:-}' ]"
   fi
-
-  unset _su_message _su_value _su_value2
 }
 
 #/**
@@ -163,23 +152,11 @@ assertNotNull()
 {
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
-  _su_message=''
   if [ $# -eq 2 ]; then
-    _su_message=$1
-    shift
-  fi
-  _su_value=$1
-
-  _su_value2=`eval echo "${_su_value}"`
-  if [ -n "${_su_value2}" ]; then
-    _shunit_testPassed
-    return ${SHUNIT_TRUE}
+    assertTrue "$1" "[ -n '$2' ]"
   else
-    _shunit_testFailed "${_su_message}"
-    return ${SHUNIT_FALSE}
+    assertTrue "[ -n '${1:-}' ]"
   fi
-
-  unset _su_message _su_value _su_value2
 }
 
 #/**
@@ -203,7 +180,7 @@ assertNotNull()
 #*/
 assertSame()
 {
-  assertEquals "$@"
+  assertEquals "${@:-}"
 }
 
 #/**
@@ -216,12 +193,13 @@ assertSame()
 #     <funcprototype>
 #       <funcdef><function>assertNotSame</function></funcdef>
 #       <paramdef>string <parameter>[message]</parameter></paramdef>
-#       <paramdef>string <parameter>expected</parameter></paramdef>
+#       <paramdef>string <parameter>unexpected</parameter></paramdef>
 #       <paramdef>string <parameter>actual</parameter></paramdef>
 #     </funcprototype>
 #   </funcsynopsis>
-#   <para>Asserts that <emphasis>expected</emphasis> and
-#   <emphasis>actual</emphasis> are <emphasis role="strong">not</emphasis> equal to one another. The message is optional.</para>
+#   <para>Asserts that <emphasis>unexpected</emphasis> and
+#   <emphasis>actual</emphasis> are <emphasis role="strong">not</emphasis>
+#   equal to one another. The message is optional.</para>
 # </entry>
 # </s:function>
 #*/
@@ -234,18 +212,19 @@ assertNotSame()
     _su_message=$1
     shift
   fi
-  _su_expected=$1
-  _su_actual=$2
+  _su_unexpected=${1:-}
+  _su_actual=${2:-}
 
-  if [ "${_su_expected}" != "${_su_actual}" ]; then
+  shunit_return=${SHUNIT_TRUE}
+  if [ "${_su_unexpected}" != "${_su_actual}" ]; then
     _shunit_testPassed
-    return ${SHUNIT_TRUE}
   else
-    _shunit_testFailed "${_su_message}"
-    return ${SHUNIT_FALSE}
+    failSame "${_su_message}"
+    shunit_return=${SHUNIT_FALSE}
   fi
 
-  unset _su_message _su_expected _su_actual
+  unset _su_message _su_unexpected _su_actual
+  return ${shunit_return}
 }
 
 #/**
@@ -284,18 +263,33 @@ assertTrue()
     _su_message=$1
     shift
   fi
-  _su_condition=$1
+  _su_condition=${1:-}
 
-  ( eval ${_su_condition} ) >/dev/null 2>&1
-  if [ $? -eq ${SHUNIT_TRUE} ]; then
-    _shunit_testPassed
-    return ${SHUNIT_TRUE}
+  shunit_return=${SHUNIT_TRUE}
+
+  # see if condition is an integer, i.e. a return value
+  _su_match=`expr "${_su_condition}" : '\([0-9]*\)'`
+  if [ -z "${_su_condition}" ]; then
+    # null condition
+    shunit_return=${SHUNIT_FALSE}
+  elif [ "${_su_condition}" = "${_su_match}" ]; then
+    # possible return value. treating 0 as true, and non-zero as false.
+    [ ${_su_condition} -ne 0 ] && shunit_return=${SHUNIT_FALSE}
   else
-    _shunit_testFailed "${_su_message}"
-    return ${SHUNIT_FALSE}
+    # (hopefully) a condition
+    ( eval ${_su_condition} ) >/dev/null 2>&1
+    [ $? -ne 0 ] && shunit_return=${SHUNIT_FALSE}
   fi
 
-  unset _su_message _su_condition
+  # record the test
+  if [ ${shunit_return} -eq ${SHUNIT_TRUE} ]; then
+    _shunit_testPassed
+  else
+    _shunit_testFailed "${_su_message}"
+  fi
+
+  unset _su_message _su_condition _su_match
+  return ${shunit_return}
 }
 
 #/**
@@ -334,18 +328,33 @@ assertFalse()
     _su_message=$1
     shift
   fi
-  _su_condition=$1
+  _su_condition=${1:-}
 
-  ( eval ${_su_condition} ) >/dev/null 2>&1
-  if [ $? -ne ${SHUNIT_TRUE} ]; then
-    _shunit_testPassed
-    return ${SHUNIT_TRUE}
+  shunit_return=${SHUNIT_TRUE}
+
+  # see if condition is an integer, i.e. a return value
+  _su_match=`expr "${_su_condition}" : '\([0-9]*\)'`
+  if [ -z "${_su_condition}" ]; then
+    # null condition
+    shunit_return=${SHUNIT_FALSE}
+  elif [ "${_su_condition}" = "${_su_match}" ]; then
+    # possible return value. treating 0 as true, and non-zero as false.
+    [ ${_su_condition} -eq 0 ] && shunit_return=${SHUNIT_FALSE}
   else
-    _shunit_testFailed "${_su_message}"
-    return ${SHUNIT_FALSE}
+    # (hopefully) a condition
+    ( eval ${_su_condition} ) >/dev/null 2>&1
+    [ $? -eq 0 ] && shunit_return=${SHUNIT_FALSE}
   fi
 
-  unset _su_message _su_condition
+  # record the test
+  if [ ${shunit_return} -eq ${SHUNIT_TRUE} ]; then
+    _shunit_testPassed
+  else
+    _shunit_testFailed "${_su_message}"
+  fi
+
+  unset _su_message _su_condition _su_match
+  return ${shunit_return}
 }
 
 #-----------------------------------------------------------------------------
@@ -372,7 +381,11 @@ fail()
 {
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
-  _shunit_testFailed "${@:-}"
+  _su_message=${1:-}
+
+  _shunit_testFailed "${_su_message}"
+
+  unset _su_message
 }
 
 #/**
@@ -385,11 +398,11 @@ fail()
 #     <funcprototype>
 #       <funcdef><function>failNotEquals</function></funcdef>
 #       <paramdef>string <parameter>[message]</parameter></paramdef>
-#       <paramdef>string <parameter>expected</parameter></paramdef>
+#       <paramdef>string <parameter>unexpected</parameter></paramdef>
 #       <paramdef>string <parameter>actual</parameter></paramdef>
 #     </funcprototype>
 #   </funcsynopsis>
-#   <para>Fails the test if <emphasis>expected</emphasis> and
+#   <para>Fails the test if <emphasis>unexpected</emphasis> and
 #   <emphasis>actual</emphasis> are <emphasis role="strong">not</emphasis>
 #   equal to one another. The message is optional.</para>
 # </entry>
@@ -397,7 +410,19 @@ fail()
 #*/
 failNotEquals()
 {
-  assertEquals "$@"
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
+  _su_message=''
+  if [ $# -eq 3 ]; then
+    _su_message=$1
+    shift
+  fi
+  _su_unexpected=${1:-}
+  _su_actual=${2:-}
+
+  _shunit_testFailed "${_su_message:+${_su_message} }expected:<${_su_unexpected}> but was:<${_su_actual}>"
+
+  unset _su_message _su_unexpected _su_actual
 }
 
 #/**
@@ -410,19 +435,22 @@ failNotEquals()
 #     <funcprototype>
 #       <funcdef><function>failSame</function></funcdef>
 #       <paramdef>string <parameter>[message]</parameter></paramdef>
-#       <paramdef>string <parameter>expected</parameter></paramdef>
-#       <paramdef>string <parameter>actual</parameter></paramdef>
 #     </funcprototype>
 #   </funcsynopsis>
-#   <para>Fails the test if <emphasis>expected</emphasis> and
-#   <emphasis>actual</emphasis> are equal to one another. The message is
-#   optional.</para>
+#   <para>Indicate test failure because arguments were not the same. The
+#   message is optional.</para>
 # </entry>
 # </s:function>
 #*/
 failSame()
 {
-  assertNotSame "$@"
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
+  _su_message=${1:-}
+
+  _shunit_testFailed "${_su_message:+${_su_message} }expected not same"
+
+  unset _su_message
 }
 
 #/**
@@ -447,7 +475,7 @@ failSame()
 #*/
 failNotSame()
 {
-  assertEquals "$@"
+  failNotEquals "${@:-}"
 }
 
 #-----------------------------------------------------------------------------
@@ -539,10 +567,10 @@ isSkipping()
 #   <para>This function can be optionally overridden by the user in their test
 #   suite.</para>
 #   <para>If this function exists, it will be called when
-#   <command>shunit2</command> is sourced. If it does not exist,
-#   <command>shunit2</command> will search the parent script for all functions
-#   beginning with the word <literal>test</literal>, and they will be added
-#   dynamically to the test suite.</para>
+#   <command>shunit2</command> is sourced. If it does not exist, shUnit2 will
+#   search the parent script for all functions beginning with the word
+#   <literal>test</literal>, and they will be added dynamically to the test
+#   suite.</para>
 # </entry>
 # </s:function>
 #*/
@@ -569,7 +597,7 @@ isSkipping()
 #*/
 suite_addTest()
 {
-  _su_func=$1
+  _su_func=${1:-}
 
   __shunit_suite="${__shunit_suite:+${__shunit_suite} }${_su_func}"
 
@@ -665,7 +693,7 @@ suite_addTest()
 # tearDown() { :; }
 
 #------------------------------------------------------------------------------
-# internal shUnit functions
+# internal shUnit2 functions
 #
 
 _shunit_cleanup()
@@ -727,14 +755,14 @@ _shunit_functionExists()
 
 _shunit_generateReport()
 {
-  _su__awk='{printf("%4d %3.0f%%", $1, $1*100/$2)}'
+  _su__awkPercent='{printf("%4d %3.0f%%", $1, $1*100/$2)}'
   if [ ${__shunit_testsTotal} -gt 0 ]; then
     _su__passed=`echo ${__shunit_testsPassed} ${__shunit_testsTotal} |\
-        awk "${_su__awk}"`
+        awk "${_su__awkPercent}"`
     _su__failed=`echo ${__shunit_testsFailed} ${__shunit_testsTotal} |\
-        awk "${_su__awk}"`
+        awk "${_su__awkPercent}"`
     _su__skipped=`echo ${__shunit_testsSkipped} ${__shunit_testsTotal} |\
-        awk "${_su__awk}"`
+        awk "${_su__awkPercent}"`
     _su__total=`echo ${__shunit_testsTotal} 100 |\
         awk '{printf("%4d %3d%%", $1, $2)}'`
   else
@@ -755,7 +783,7 @@ tests skipped: ${_su__skipped}
 tests total:   ${_su__total}
 EOF
 
-  unset _su__awk _su__passed _su__failed _su__skipped _su__total
+  unset _su__awkPercent _su__passed _su__failed _su__skipped _su__total
 }
 
 # this function is a cross-platform temporary directory creation tool. not all
@@ -816,13 +844,12 @@ _shunit_testPassed()
 
 _shunit_testFailed()
 {
-  [ $# -eq 1 ] && _su__msg=$1
+  _su__msg=$1
 
   __shunit_testsFailed=`expr ${__shunit_testsFailed} + 1`
   __shunit_testsTotal=`expr ${__shunit_testsTotal} + 1`
+  echo "${__SHUNIT_ASSERT_MSG_PREFIX}${_su__msg}" >&2
 
-  [ -z "${_su__msg:-}" ] && _su__msg='failed'
-  echo "${__SHUNIT_ASSERT_MSG_PREFIX} ${_su__msg}" >&2
   unset _su__msg
 }
 
