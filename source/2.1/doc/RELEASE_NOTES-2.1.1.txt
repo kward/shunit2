@@ -56,6 +56,12 @@ Changes and Enhancements
 
 The internal test in ``assertFalse()`` now accepts any non-zero value as false.
 
+The ``assertTrue()`` and ``assertFalse()`` functions now accept an integer value
+for a conditional test. A value of '0' is considered 'true', while any non-zero
+value is considered 'false'.
+
+Self-testing unit tests were added.
+
 
 Bug Fixes
 ---------
@@ -63,6 +69,8 @@ Bug Fixes
 The ``fail()`` assert now honors skipping.
 
 The ``docs-docbook-prep`` target now works properly.
+
+All asserts now properly unset their variables.
 
 
 Deprecated Features
@@ -74,7 +82,7 @@ None.
 Known Bugs and Issues
 ---------------------
 
-None.
+Functions do not properly test for an invalid number of arguments.
 
 
 .. $Revision: 52 $
