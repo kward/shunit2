@@ -1,9 +1,11 @@
 ﻿Release Notes for shUnit2 2.1.1
 ===============================
 
-This is mainly a bug fix release.
+This is mainly a bug fix release, but it also incorporates a realignment with
+the JUnit 4 code. Asserts now provide better failure messages, and the failure
+functions no longer perform tests.
 
-See the ``CHANGES-2.1.rst`` file for a full list of changes.
+See the ``CHANGES-2.1.txt`` file for a full list of changes.
 
 
 Tested Platforms
@@ -76,4 +78,4 @@ None.
 
 
 .. $Revision: 52 $
-.. vim:spell
+.. vim:spell:syntax=rst:textwidth=80
