@@ -24,12 +24,12 @@ $ xsltproc tldp-one-page.xsl log4sh.xml |xmllint -noblanks -
   <!ENTITY myEmail "kate.ward@forestent.com">
   <!ENTITY isoDate "@@ISO_DATE@@">
 
-  <!ENTITY shunit "<command>shunit</command>">
+  <!ENTITY shunit2 "<command>shunit2</command>">
 ]>
 
 <book id="shUnit2" lang="en-US"><title>shUnit2</title>
   <bookinfo>
-    <title>shUnit version 2.0.3</title>
+    <title>shUnit2 version 2.0.3</title>
     <authorgroup>
       <author>
         <firstname>Kate</firstname><surname>Ward</surname>

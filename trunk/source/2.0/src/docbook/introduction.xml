@@ -39,7 +39,7 @@ Introduction
 
   <!-- Give credit where credit is due...very important -->
   <section id="credits"><title>Credits / Contributors</title>
-    <para>A list of contributors to <command>shunit2</command> can be found in the source archive as <filename>doc/contributors.txt</filename>. I want to personally thank all those who have contributed to make this a better tool.</para>
+    <para>A list of contributors to shUnit2 can be found in the source archive as <filename>doc/contributors.txt</filename>. I want to personally thank all those who have contributed to make this a better tool.</para>
   </section>
 
   <!-- Feedback -->
