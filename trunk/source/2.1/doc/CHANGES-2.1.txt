@@ -67,4 +67,4 @@ result, rather than just those successful.
 
 
 .. $Revision$
-.. vim:spell
+.. vim:spell:syntax=rst:textwidth=80

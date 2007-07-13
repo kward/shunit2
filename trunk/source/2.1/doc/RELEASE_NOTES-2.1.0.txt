@@ -101,4 +101,4 @@ None.
 
 
 .. $Revision$
-.. vim:spell
+.. vim:spell:syntax=rst:textwidth=80
