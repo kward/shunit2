@@ -57,5 +57,4 @@ KNOWN BUGS AND ISSUES
 Functions do not properly test for an invalid number of arguments.
 
 
-$Revision: 44 $
 vim:spell
