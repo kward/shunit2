@@ -30,7 +30,7 @@ $ xsltproc tldp-one-page.xsl log4sh.xml |xmllint -noblanks -
 
 <book id="shUnit2" lang="en-US"><title>shUnit2</title>
   <bookinfo>
-    <title>shUnit2 version 2.1.0</title>
+    <title>shUnit2 version 2.1.1</title>
     <authorgroup>
       <author>
         <firstname>Kate</firstname><surname>Ward</surname>
@@ -49,6 +49,12 @@ $ xsltproc tldp-one-page.xsl log4sh.xml |xmllint -noblanks -
 
     <!-- Most recent revision goes at the top; list in descending order -->
     <revhistory>
+      <revision>
+        <revnumber>2.1.1</revnumber>
+        <date>2007-07-13</date>
+        <authorinitials>Kate Ward &lt;&myEmail;&gt;</authorinitials>
+      </revision>
+
       <revision>
         <revnumber>2.1.0</revnumber>
         <date>2007-04-22</date>
