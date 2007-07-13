@@ -95,7 +95,8 @@ EXPORT THE RELEASE
 $ pwd
 .../shunit2/builds
 $ svn export \
-https://svn.sourceforge.net/svnroot/shunit2/tags/source/2.0.0 shunit2-2.0.0
+https://shunit2.svn.sourceforge.net/svnroot/shunit2/tags/source/2.0.0 \
+shunit2-2.0.0
 
 CREATE TARBALL
 
