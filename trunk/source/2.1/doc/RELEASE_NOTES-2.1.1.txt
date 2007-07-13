@@ -85,5 +85,5 @@ Known Bugs and Issues
 Functions do not properly test for an invalid number of arguments.
 
 
-.. $Revision: 52 $
+.. $Revision$
 .. vim:spell:syntax=rst:textwidth=80
