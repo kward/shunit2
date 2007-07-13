@@ -121,9 +121,8 @@ source  website
 $ svn cp -m "Release 2.0.0" \
 website https://shunit2.svn.sourceforge.net/svnroot/shunit2/tags/website/20060916
 
-Now, copy the website into place
-
-$ rsync -aP --delete --exclude '.svn' website/ sf.net:www/projects/shunit2
+Now, update the website. It too is held in Subversion, so ssh into SourceForge
+and use 'svn up' to grab the latest version.
 
 POST TO SOURCEFORGE AND FRESHMEAT
 
