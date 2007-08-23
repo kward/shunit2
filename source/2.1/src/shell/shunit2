@@ -6,7 +6,7 @@
 # <?xml version="1.0" encoding="UTF-8"?>
 # <s:shelldoc xmlns:s="http://www.forestent.com/projects/shelldoc/xsl/2005.0">
 # <s:header>
-# shUnit 2.1.1
+# shUnit 2.1.2
 # Shell Unit Test Framework
 #
 # http://shunit2.sourceforge.net/
@@ -28,10 +28,11 @@ for _shunit_shellFlag in `echo "${__SHUNIT_SHELL_FLAGS}" |sed 's/\(.\)/\1 /g'`
 do
   set -${_shunit_shellFlag}
 done
+unset _shunit_shellFlag
 
 # constants
 
-__SHUNIT_VERSION='2.1.1'
+__SHUNIT_VERSION='2.1.2pre'
 
 SHUNIT_TRUE=0
 SHUNIT_FALSE=1
