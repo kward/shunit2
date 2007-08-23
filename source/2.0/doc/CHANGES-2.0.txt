@@ -1,3 +1,8 @@
+CHANGES WITH 2.0.4
+
+Unset additional variables that were missed.
+
+
 CHANGES WITH 2.0.3
 
 Back ported the Makefile from 2.1.1pre that included changes to the
