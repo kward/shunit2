@@ -6,6 +6,8 @@ Changes with 2.1.2
 
 Unset additional variables that were missed.
 
+Added fixes to improve zsh compatibility.
+
 
 Changes with 2.1.1
 ------------------
@@ -73,4 +75,4 @@ result, rather than just those successful.
 
 
 .. $Revision$
-.. vim:spell:syntax=rst:textwidth=80
+.. vim:ft=rst:spell:textwidth=80
