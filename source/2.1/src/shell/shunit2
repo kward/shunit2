@@ -1,12 +1,12 @@
 # $Id$
-# vim:syntax=sh:sts=2
+# vim:ft=sh:sts=2:sw=2
 # vim:foldmethod=marker:foldmarker=/**,*/
 #
 #/**
 # <?xml version="1.0" encoding="UTF-8"?>
 # <s:shelldoc xmlns:s="http://www.forestent.com/projects/shelldoc/xsl/2005.0">
 # <s:header>
-# shUnit 2.1.2
+# shUnit 2.1.1
 # Shell Unit Test Framework
 #
 # http://shunit2.sourceforge.net/
@@ -18,31 +18,48 @@
 # </s:header>
 #*/
 
+SHUNIT_TRUE=0
+SHUNIT_FALSE=1
+SHUNIT_ERROR=2
+
+# specific shell checks
+if [ -n "${ZSH_VERSION:-}" ]; then
+  if [ "`set -o |grep "^shwordsplit" |awk '{print $2}'`" = 'off' ]; then
+    echo 'shunit2:FATAL shwordsplit is required for proper operation' >&2
+    exit ${SHUNIT_ERROR}
+  fi
+fi
+
+__SHUNIT_VERSION='2.1.2pre'
+
 # shell flags for shunit2:
 # u - treat unset variables as an error when performing parameter expansion
 __SHUNIT_SHELL_FLAGS='u'
 
-# save the current set of shell flags, and then set some for ourselves
-__shunit_oldShellFlags="$-"
+# save the current set of shell flags, and then set some for ourself
+_shunit_shellFlags="$-"
 for _shunit_shellFlag in `echo "${__SHUNIT_SHELL_FLAGS}" |sed 's/\(.\)/\1 /g'`
 do
   set -${_shunit_shellFlag}
 done
-unset _shunit_shellFlag
 
+#
 # constants
-
-__SHUNIT_VERSION='2.1.2pre'
-
-SHUNIT_TRUE=0
-SHUNIT_FALSE=1
+#
 
 __SHUNIT_ASSERT_MSG_PREFIX='ASSERT:'
 
-for _su_const in `set |grep "^__SHUNIT_" |cut -d= -f1`; do
-  readonly ${_su_const}
+# set the constants readonly
+if [ -z "${ZSH_VERSION:-}" ]; then
+  _shunit_constants=`set |grep "^__SHUNIT_" |cut -d= -f1`
+else
+  # zsh sometimes gives binary output
+  _shunit_constants=`set |grep -a "^__SHUNIT_" |cut -d= -f1 |xargs echo`
+fi
+for _shunit_const in ${_shunit_constants}; do
+  readonly ${_shunit_const}
 done
-unset _su_const
+unset _shunit_const _shunit_constants
 
 # variables
 __shunit_skip=${SHUNIT_FALSE}
@@ -902,10 +919,10 @@ _shunit_generateReport
 
 # restore the previous set of shell flags
 for _shunit_shellFlag in ${__SHUNIT_SHELL_FLAGS}; do
-  echo ${__shunit_oldShellFlags} |grep ${_shunit_shellFlag} >/dev/null \
+  echo ${_shunit_shellFlags} |grep ${_shunit_shellFlag} >/dev/null \
     || set +${_shunit_shellFlag}
 done
-unset _shunit_shellFlag
+unset _shunit_shellFlag _shunit_shellFlags
 
 #/**
 # </s:shelldoc>
