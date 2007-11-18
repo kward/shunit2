@@ -32,6 +32,7 @@ Introduction
       <listitem><para><ulink url="http://gondor.apana.org.au/~herbert/dash/">DASH</ulink> (<command>dash</command>)</para></listitem>
       <listitem><para><ulink url="http://www.kornshell.com/">Korn Shell</ulink> (<command>ksh</command>)</para></listitem>
       <listitem><para><ulink url="http://web.cs.mun.ca/~michael/pdksh/">pdksh</ulink> - Public Domain Korn Shell (<command>pdksh</command>)</para></listitem>
+      <listitem><para><ulink url="http://www.zsh.org/">zsh</ulink> - ZSH (<command>zsh</command>) (since 2.1.2) &mdash; please see the <link linkend="zsh">ZSH</link> shell erratta for more information.</para></listitem>
     </itemizedlist>
   </blockquote></para>
 

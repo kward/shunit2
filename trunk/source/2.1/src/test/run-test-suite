@@ -1,10 +1,10 @@
 #! /bin/sh
-# $Id: run-test-suite 432 2007-01-05 14:58:37Z sfsetse $
+# $Id$
 
 MY_NAME=`basename $0`
 MY_PATH=`dirname $0`
 
-SHELLS='/bin/sh /bin/bash /bin/dash /bin/ksh /bin/pdksh'
+SHELLS='/bin/sh /bin/bash /bin/dash /bin/ksh /bin/pdksh /bin/zsh'
 for f in test[A-Z]*; do
   [ -x "${f}" ] && TESTS="${TESTS:+${TESTS} }${f}"
 done
@@ -91,7 +91,9 @@ for shell in ${shells}; do
 #
 EOF
 
-  case `basename ${shell}` in
+  shell_name=`basename ${shell}`
+  shell_opts=''
+  case ${shell_name} in
     bash) echo; ${shell} --version; ;;
     dash) ;;
     ksh)
@@ -103,7 +105,10 @@ EOF
       fi
       ;;
     pdksh) ;;
-    zsh) ;;
+    zsh)
+      echo ${ZSH_VERSION}
+      shell_opts='-o shwordsplit --'
+      ;;
   esac
 
   # execute the tests
@@ -111,6 +116,6 @@ EOF
     suiteName=`expr "${suite}" : 'test\(.*\)'`
     echo
     echo "--- Executing the '${suiteName}' test suite ---" >&2
-    ( exec ${shell} ./${suite}; )
+    ( exec ${shell} ${shell_opts} ./${suite}; )
   done
 done
