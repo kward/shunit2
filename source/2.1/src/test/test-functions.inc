@@ -1,4 +1,4 @@
-# $Id: test-functions.inc 416 2007-01-04 00:50:14Z sfsetse $
+# $Id$
 # vim:syntax=sh:sts=2
 
 #

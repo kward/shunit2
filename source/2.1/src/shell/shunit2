@@ -18,6 +18,9 @@
 # </s:header>
 #*/
 
+_shunit_error() { echo "shunit2:ERROR $@" >&2; }
+_shunit_fatal() { echo "shunit2:FATAL $@" >&2; }
+
 SHUNIT_TRUE=0
 SHUNIT_FALSE=1
 SHUNIT_ERROR=2
@@ -25,7 +28,11 @@ SHUNIT_ERROR=2
 # specific shell checks
 if [ -n "${ZSH_VERSION:-}" ]; then
   if [ "`set -o |grep "^shwordsplit" |awk '{print $2}'`" = 'off' ]; then
-    echo 'shunit2:FATAL shwordsplit is required for proper operation' >&2
+    _shunit_fatal 'shwordsplit option required for proper zfs operation'
+    exit ${SHUNIT_ERROR}
+  fi
+  if [ -z "${SHUNIT_PARENT:-}" ]; then
+    _shunit_fatal 'zsh does not pass $0 through properly. please declare "SHUNIT_PARENT=$0" before calling shUnit2'
     exit ${SHUNIT_ERROR}
   fi
 fi
@@ -48,6 +55,7 @@ done
 #
 
 __SHUNIT_ASSERT_MSG_PREFIX='ASSERT:'
+__SHUNIT_PARENT=${SHUNIT_PARENT:-$0}
 
 # set the constants readonly
 if [ -z "${ZSH_VERSION:-}" ]; then
@@ -99,7 +107,10 @@ assertEquals()
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
   _su_message=''
-  if [ $# -eq 3 ]; then
+  if [ $# -lt 2 ]; then
+    _shunit_error 'assertEquals()/assertSame() requires at least two arguments'
+    return ${SHUNIT_ERROR}
+  elif [ $# -eq 3 ]; then
     _su_message=$1
     shift
   fi
@@ -140,7 +151,10 @@ assertNull()
 {
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
-  if [ $# -eq 2 ]; then
+  if [ $# -lt 1 ]; then
+    _shunit_error 'assertNull() requires at least one arguments'
+    return ${SHUNIT_ERROR}
+  elif [ $# -eq 2 ]; then
     assertTrue "$1" "[ -z '$2' ]"
   else
     assertTrue "[ -z '${1:-}' ]"
@@ -902,7 +916,8 @@ suite
 
 # if no suite function was defined, dynamically build a list of functions
 if [ -z "${__shunit_suite}" ]; then
-  funcs=`grep "^[ \t]*test[A-Za-z0-9_]* *()" $0 |sed 's/[^A-Za-z0-9_]//g'`
+  funcs=`grep "^[ \t]*test[A-Za-z0-9_]* *()" ${__SHUNIT_PARENT} \
+      |sed 's/[^A-Za-z0-9_]//g'`
   for func in ${funcs}; do
     suite_addTest ${func}
   done

@@ -18,6 +18,7 @@ $ xsltproc tldp-one-page.xsl log4sh.xml |xmllint -noblanks -
   PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd" [
 
   <!ENTITY advancedUsage SYSTEM "advanced_usage.xml">
+  <!ENTITY appendix SYSTEM "appendix.xml">
   <!ENTITY functions SYSTEM "functions.xml">
   <!ENTITY introduction SYSTEM "introduction.xml">
   <!ENTITY quickstart SYSTEM "quickstart.xml">
@@ -30,7 +31,7 @@ $ xsltproc tldp-one-page.xsl log4sh.xml |xmllint -noblanks -
 
 <book id="shUnit2" lang="en-US"><title>shUnit2</title>
   <bookinfo>
-    <title>shUnit2 version 2.1.1</title>
+    <title>shUnit2 version 2.1.2</title>
     <authorgroup>
       <author>
         <firstname>Kate</firstname><surname>Ward</surname>
@@ -49,6 +50,12 @@ $ xsltproc tldp-one-page.xsl log4sh.xml |xmllint -noblanks -
 
     <!-- Most recent revision goes at the top; list in descending order -->
     <revhistory>
+      <revision>
+        <revnumber>2.1.2</revnumber>
+        <date>2007-11-17</date>
+        <authorinitials>Kate Ward &lt;&myEmail;&gt;</authorinitials>
+      </revision>
+
       <revision>
         <revnumber>2.1.1</revnumber>
         <date>2007-07-13</date>
@@ -84,4 +91,5 @@ $ xsltproc tldp-one-page.xsl log4sh.xml |xmllint -noblanks -
   &quickstart;
   &advancedUsage;
   &functions;
+  &appendix;
 </book>
