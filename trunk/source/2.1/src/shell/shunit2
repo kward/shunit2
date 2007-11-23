@@ -6,7 +6,7 @@
 # <?xml version="1.0" encoding="UTF-8"?>
 # <s:shelldoc xmlns:s="http://www.forestent.com/projects/shelldoc/xsl/2005.0">
 # <s:header>
-# shUnit 2.1.1
+# shUnit 2.1.2
 # Shell Unit Test Framework
 #
 # http://shunit2.sourceforge.net/
@@ -108,7 +108,7 @@ assertEquals()
 
   _su_message=''
   if [ $# -lt 2 ]; then
-    _shunit_error 'assertEquals()/assertSame() requires at least two arguments'
+    _shunit_error 'assertEquals()/assertSame() require at least two arguments'
     return ${SHUNIT_ERROR}
   elif [ $# -eq 3 ]; then
     _su_message=$1
