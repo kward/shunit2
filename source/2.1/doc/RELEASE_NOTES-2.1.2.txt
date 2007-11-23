@@ -88,5 +88,8 @@ Known Bugs and Issues
 
 Functions do not properly test for an invalid number of arguments.
 
+ksh and pdksh do not pass null arguments (i.e. empty strings as '') properly,
+and as such checks do not work properly.
+
 
 .. vim:ft=rst:spell:textwidth=80
