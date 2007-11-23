@@ -35,16 +35,19 @@ commonEqualsSame()
   assertFalse "${msg}; failure" ${rtrn}
 
   msg='null values'
-  rslt=`${fn} '' '' 2>&1`
+  rslt=`${fn} '' '' 2>"${stderrF}"`
   rtrn=$?
-  assertSame "${msg}" '' "${rslt}"
   assertTrue "${msg}; failure" ${rtrn}
+  [ ${rtrn} -ne ${SHUNIT_TRUE} ] && cat "${stderrF}"
+  assertNull 'expected no output to STDOUT' "${rslt}"
+  assertNull 'expected no output to STDERR' "`cat \"${stderrF}\"`"
 
   msg='too few arguments'
-  rslt=`${fn} 2>&1`
+  rslt=`${fn} 2>"${stderrF}"`
   rtrn=$?
-  assertNotSame "${msg}" '' "${rslt}"
   assertFalse "${msg}; failure" ${rtrn}
+  assertNull 'expected no output to STDOUT' "${rslt}"
+  assertNotNull 'expected output to STDERR' "`cat \"${stderrF}\"`"
 }
 
 testAssertEquals()
@@ -237,6 +240,14 @@ testAssertFalse()
 #-----------------------------------------------------------------------------
 # suite functions
 #
+
+oneTimeSetUp()
+{
+  tmpDir="${__shunit_tmpDir}/output"
+  mkdir "${tmpDir}"
+  stdoutF="${tmpDir}/stdout"
+  stderrF="${tmpDir}/stderr"
+}
 
 # load and run shUnit2
 [ -n "${ZSH_VERSION}" ] && SHUNIT_PARENT=$0
