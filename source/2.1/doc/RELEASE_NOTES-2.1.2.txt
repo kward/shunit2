@@ -35,8 +35,8 @@ Cygwin
 
 Linux
 
-- bash 3.1.17(1), 3.2.10(1)
-- dash 0.5.3
+- bash 3.2.25(1)
+- dash 0.5.4
 - ksh 1993-12-28
 - pdksh 5.2.14
 - zsh 4.3.4
@@ -46,17 +46,18 @@ Mac OS X 1.4.9 (Darwin 8.9.1)
 ? bash 2.05b.0(1)
 ? ksh 1993-12-28
 
-Solaris 8 U3 (x86)
+Solaris 9 U6 (x86)
 
 ? /bin/sh
 ? bash 2.03.0(1)
 ? ksh M-11/16/88i
 
-Solaris 10 U3 (sparc, x86)
+Solaris 10 U3 (x86)
 
-? /bin/sh
-? bash 3.00.16(1)
-? ksh M-11/16/88i
+- /bin/sh
+- bash 3.00.16(1)
+- ksh M-11/16/88i
+- zsh 4.2.1
 
 
 New Features
