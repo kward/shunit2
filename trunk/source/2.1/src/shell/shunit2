@@ -18,6 +18,8 @@
 # </s:header>
 #*/
 
+__SHUNIT_VERSION='2.1.2pre'
+
 _shunit_error() { echo "shunit2:ERROR $@" >&2; }
 _shunit_fatal() { echo "shunit2:FATAL $@" >&2; }
 
@@ -36,8 +38,6 @@ if [ -n "${ZSH_VERSION:-}" ]; then
     exit ${SHUNIT_ERROR}
   fi
 fi
-
-__SHUNIT_VERSION='2.1.2pre'
 
 # shell flags for shunit2:
 # u - treat unset variables as an error when performing parameter expansion
@@ -58,14 +58,18 @@ __SHUNIT_ASSERT_MSG_PREFIX='ASSERT:'
 __SHUNIT_PARENT=${SHUNIT_PARENT:-$0}
 
 # set the constants readonly
-if [ -z "${ZSH_VERSION:-}" ]; then
-  _shunit_constants=`set |grep "^__SHUNIT_" |cut -d= -f1`
-else
-  # zsh sometimes gives binary output
-  _shunit_constants=`set |grep -a "^__SHUNIT_" |cut -d= -f1 |xargs echo`
+_shunit_constants=`set |grep "^__SHUNIT_" |cut -d= -f1`
+echo "${_shunit_constants}" |grep "^Binary file" >/dev/null
+if [ $? -eq 0 ]; then
+  # deal with binary junk in 'set' output
+  _shunit_constants=`set |grep -a "^__SHUNIT_" |cut -d= -f1`
 fi
 for _shunit_const in ${_shunit_constants}; do
-  readonly ${_shunit_const}
+  if [ -n "${ZSH_VERSION:-}" ]; then
+    readonly -g ${_shunit_const}  # declare readonly constants globally
+  else
+    readonly ${_shunit_const}
+  fi
 done
 unset _shunit_const _shunit_constants
 
