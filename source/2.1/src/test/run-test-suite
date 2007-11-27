@@ -106,8 +106,9 @@ EOF
       ;;
     pdksh) ;;
     zsh)
-      echo ${ZSH_VERSION}
       shell_opts='-o shwordsplit --'
+      echo
+      ${shell} --version
       ;;
   esac
 
