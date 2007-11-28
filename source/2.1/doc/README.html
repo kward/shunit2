@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.4.1: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
 <title>shUnit2 2.1.x README</title>
 <style type="text/css">
 
@@ -13,7 +13,6 @@
 :Date: $Date: 2007-04-11 11:48:16 +0100 (Wed, 11 Apr 2007) $
 :Revision: $Revision: 2791 $
 :Copyright: This stylesheet has been placed in the public domain.
-:Modified by: Kate Ward <kate.ward@forestent.com>
 
 Default cascading style sheet for the HTML output of Docutils.
 
@@ -344,48 +343,49 @@ previous release as an example.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="9%" />
-<col width="1%" />
-<col width="9%" />
-<col width="80%" />
+<col width="12%" />
+<col width="79%" />
 </colgroup>
 <thead valign="bottom">
 <tr><th class="head">Shell</th>
-<th class="head" colspan="2">OS</th>
+<th class="head">OS</th>
 <th class="head">Notes</th>
 </tr>
 </thead>
 <tbody valign="top">
 <tr><td>bash</td>
-<td colspan="2">&nbsp;</td>
+<td>&nbsp;</td>
 <td><tt class="docutils literal"><span class="pre">$</span> <span class="pre">bash</span> <span class="pre">--version</span></tt></td>
 </tr>
 <tr><td>dash</td>
-<td colspan="2">Linux</td>
+<td>Linux</td>
 <td><tt class="docutils literal"><span class="pre">$</span> <span class="pre">dpkg</span> <span class="pre">-l</span> <span class="pre">|grep</span> <span class="pre">dash</span></tt></td>
 </tr>
 <tr><td rowspan="3">ksh</td>
-<td colspan="2">&nbsp;</td>
-<td><tt class="docutils literal"><span class="pre">$</span> <span class="pre">ksh</span> <span class="pre">--version</span></tt></td>
+<td>&nbsp;</td>
+<td><tt class="docutils literal"><span class="pre">$</span> <span class="pre">ksh</span> <span class="pre">--version</span></tt>
+-or-
+<tt class="docutils literal"><span class="pre">$</span> <span class="pre">echo</span> <span class="pre">'echo</span> <span class="pre">$KSH_VERSION'</span> <span class="pre">|ksh</span></tt></td>
 </tr>
-<tr><td colspan="2">Cygwin</td>
+<tr><td>Cygwin</td>
 <td>see pdksh</td>
 </tr>
-<tr><td colspan="2">Solaris</td>
+<tr><td>Solaris</td>
 <td><tt class="docutils literal"><span class="pre">$</span> <span class="pre">strings</span> <span class="pre">/usr/bin/ksh</span> <span class="pre">|grep</span> <span class="pre">'Version'</span></tt></td>
 </tr>
 <tr><td rowspan="2">pdksh</td>
-<td colspan="2">&nbsp;</td>
+<td>&nbsp;</td>
 <td><tt class="docutils literal"><span class="pre">$</span> <span class="pre">strings</span> <span class="pre">/bin/pdksh</span> <span class="pre">|grep</span> <span class="pre">'PD</span> <span class="pre">KSH'</span></tt></td>
 </tr>
-<tr><td colspan="2">Cygwin</td>
+<tr><td>Cygwin</td>
 <td>look in the downloaded Cygwin directory</td>
 </tr>
 <tr><td>sh</td>
-<td colspan="2">Solaris</td>
+<td>Solaris</td>
 <td>not possible</td>
 </tr>
 <tr><td>zsh</td>
-<td colspan="2">&nbsp;</td>
+<td>&nbsp;</td>
 <td><tt class="docutils literal"><span class="pre">$</span> <span class="pre">zsh</span> <span class="pre">--version</span></tt></td>
 </tr>
 </tbody>
@@ -438,7 +438,7 @@ $ svn cp -m &quot;Release 2.0.0&quot; 2.0 https://shunit2.svn.sourceforge.net/sv
 <pre class="literal-block">
 $ pwd
 .../shunit2/builds
-$ svn export https://svn.sourceforge.net/svnroot/shunit2/tags/source/2.0.0 shunit2-2.0.0
+$ svn export https://shunit2.svn.sourceforge.net/svnroot/shunit2/tags/source/2.0.0 shunit2-2.0.0
 </pre>
 </div>
 <div class="section">
@@ -468,10 +468,8 @@ source  website
 $ svn cp -m &quot;Release 2.0.0&quot; \
 website https://shunit2.svn.sourceforge.net/svnroot/shunit2/tags/website/20060916
 </pre>
-<p>Now, copy the website into place</p>
-<pre class="literal-block">
-$ rsync -aP --delete --exclude '.svn' website/ sf.net:www/projects/shunit2
-</pre>
+<p>Now, update the website. It too is held in Subversion, so <strong>ssh</strong> into
+SourceForge and use <tt class="docutils literal"><span class="pre">svn</span> <span class="pre">up</span></tt> to grab the latest version.</p>
 </div>
 <div class="section">
 <h2><a id="post-to-sourceforge-and-freshmeat" name="post-to-sourceforge-and-freshmeat">Post to SourceForge and Freshmeat</a></h2>
@@ -529,7 +527,7 @@ $ rsync -aP --delete --exclude '.svn' website/ sf.net:www/projects/shunit2
 <!-- http://docutils.sourceforge.net/ -->
 <!--  -->
 <!-- vim:syntax=rst:textwidth=80 -->
-<!-- $Revision: 67 $ -->
+<!-- $Revision: 99 $ -->
 </div>
 </div>
 </body>
