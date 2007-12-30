@@ -5,7 +5,7 @@ XML_VERSION='4.4'
 XML_FILE="docbook-xml-${XML_VERSION}"
 XML_URL="http://www.docbook.org/xml/${XML_VERSION}/${XML_FILE}.zip"
 
-XSL_VERSION='1.72.0'
+XSL_VERSION='1.73.2'
 XSL_FILE="docbook-xsl-${XSL_VERSION}"
 XSL_URL="http://downloads.sourceforge.net/docbook/${XSL_FILE}.tar.bz2"
 
@@ -36,10 +36,13 @@ METHOD_CURL=2
 get_url()
 {
   url=$1
+  echo '  downloading'
+  cd "${DL_DIR}"
   case ${method} in
     ${METHOD_CURL}) ${curl} ${CURL_OPTS} "${url}" ;;
     ${METHOD_WGET}) ${wget} ${WGET_OPTS} "${url}" ;;
   esac
+  [ $? -ne 0 ] && echo '  downlaoding failed.'
 }
 
 # determine method
@@ -58,8 +61,6 @@ mkdir -p "${DL_DIR}"
 
 # get the docbook xml files
 echo 'Docbook XML'
-echo '  downloading'
-cd ${DL_DIR}
 get_url "${XML_URL}"
 if [ -f "${DL_DIR}/${XML_FILE}.zip" ]; then
   echo '  extracting'
@@ -78,8 +79,6 @@ fi
 
 # get the docbook xslt files
 echo 'Docbook XSLT'
-echo '  downloading'
-cd ${DL_DIR}
 get_url "${XSL_URL}"
 if [ -f "${DL_DIR}/${XSL_FILE}.tar.bz2" ]; then
   echo '  extracting'
