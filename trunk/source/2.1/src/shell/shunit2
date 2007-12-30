@@ -29,14 +29,8 @@ SHUNIT_ERROR=2
 
 # specific shell checks
 if [ -n "${ZSH_VERSION:-}" ]; then
-  if [ "`set -o |grep "^shwordsplit" |awk '{print $2}'`" = 'off' ]; then
-    _shunit_fatal 'shwordsplit option required for proper zfs operation'
-    exit ${SHUNIT_ERROR}
-  fi
-  if [ -z "${SHUNIT_PARENT:-}" ]; then
-    _shunit_fatal 'zsh does not pass $0 through properly. please declare "SHUNIT_PARENT=$0" before calling shUnit2'
-    exit ${SHUNIT_ERROR}
-  fi
+  emulate -LR sh
+  unsetopt function_argzero
 fi
 
 # shell flags for shunit2:
@@ -55,7 +49,6 @@ done
 #
 
 __SHUNIT_ASSERT_MSG_PREFIX='ASSERT:'
-__SHUNIT_PARENT=${SHUNIT_PARENT:-$0}
 
 # set the constants readonly
 _shunit_constants=`set |grep "^__SHUNIT_" |cut -d= -f1`
@@ -920,7 +913,7 @@ suite
 
 # if no suite function was defined, dynamically build a list of functions
 if [ -z "${__shunit_suite}" ]; then
-  funcs=`grep "^[ \t]*test[A-Za-z0-9_]* *()" ${__SHUNIT_PARENT} \
+  funcs=`grep "^[ \t]*test[A-Za-z0-9_]* *()" $0 \
       |sed 's/[^A-Za-z0-9_]//g'`
   for func in ${funcs}; do
     suite_addTest ${func}
