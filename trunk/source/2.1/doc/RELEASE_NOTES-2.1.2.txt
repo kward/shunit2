@@ -6,17 +6,11 @@ with this shell as compared with others, some special checks have been added,
 and there are some extra requirements necessary when this shell is to be used.
 
 To use zsh with shUnit2, the following two requirements must be met:
-* To match behavior with other shells, the shwordsplit option must be set. When
-  invoking zsh from either the command-line or via script, make sure to add the
-  '-y' option.
-* shUnit2 needs the name of the unit test script so that it can glean the
-  test function names automatically. zsh does not pass the $0 variable through
-  to a sourced library (it replaces it with the name of the library) so a
-  separate variable must be used so that shUnit2 has the name of the parent
-  script from which test functions will be found. Change the shUnit2 call line
-  in the unit test if zsh support is needed. ::
+* The ``shwordsplit`` option must be set.
+* The ``function_argzero`` option must be unset.
 
-    SHUNIT_PARENT=$0 . /path/to/shunit2
+Please read the Shell Errata section of the documentation for guidance on how
+to meet these requirements.
 
 
 See the ``CHANGES-2.1.txt`` file for a full list of changes.
@@ -91,6 +85,9 @@ Functions do not properly test for an invalid number of arguments.
 
 ksh and pdksh do not pass null arguments (i.e. empty strings as '') properly,
 and as such checks do not work properly.
+
+zsh requires the ``shwordsplit`` option to be set, and the ``function_argzero``
+option to be unset for proper operation.
 
 
 .. vim:ft=rst:spell:textwidth=80
