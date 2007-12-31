@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 $Id$
-vim:softtabstop=2 shiftwidth=2
+vim:et:sts=2:sw=2
 -->
 
 <!-- =========================================================================
@@ -12,18 +12,32 @@ Appendix
   <section id="shell_errata"><title>Shell Errata</title>
 
     <section id="zsh"><title>ZSH</title>
-      <para>To use <command>zsh</command> with shUnit2, the following two requirements must be met:</para>
-      <itemizedlist>
-        <listitem><para>To match behavior with other shells, the <option>shwordsplit</option> option must be set. When invoking <command>zsh</command> from either the command-line or as a script with <code>#!</code>, make sure to add the <parameter>-y</parameter> parameter.</para></listitem>
+      <para>For compatibility with ZSH, there are two requirements that must be met.</para>
+
+      <orderedlist numeration="upperroman">
         <listitem>
-          <para>shUnit2 needs the name of the unit test script so that it can glean the test function names automatically. <command>zsh</command> does not pass the <varname>$0</varname> variable through to a sourced library (it replaces it with the name of the library) so a separate <varname>SHUNIT_PARENT</varname> variable must be defined so that shUnit2 has the name of the parent script from which test functions should be found. Change the &shunit2; call line in the unit test script as follows if <command>zsh</command> support is needed.</para>
-          <programlisting>
-<![CDATA[
-SHUNIT_PARENT=$0 . /path/to/shunit2
-]]>
-          </programlisting>
+          <para>The <option>shwordsplit</option> option must be set. There are three ways to accomplish this.</para>
+          <orderedlist numeration="lowerroman">
+            <listitem>
+              <para>In the unit-test script, add the following shell code before sourcing the &shunit2; library.</para>
+              <programlisting><![CDATA[emulate -LR sh]]></programlisting>
+            </listitem>
+            <listitem>
+              <para>When invoking <command>zsh</command> from either the command-line or as a script with <code>#!</code>, add the <parameter>-y</parameter> parameter.</para>
+              <programlisting><![CDATA[#! /bin/zsh -y]]></programlisting>
+            </listitem>
+            <listitem>
+              <para>When invoking <command>zsh</command> from the command-line, add <parameter>-o shwordsplit --</parameter> as parameters before the script name.</para>
+              <programlisting><![CDATA[$ zsh -o shwordsplit -- some_script]]></programlisting>
+            </listitem>
+          </orderedlist>
         </listitem>
-      </itemizedlist>
+
+        <listitem>
+          <para>The <option>function_argzero</option> option must be unset. In the unit-test script, add the following shell code before sourcing the &shunit2; library.</para>
+          <programlisting><![CDATA[unsetopt function_argzero]]></programlisting>
+        </listitem>
+      </orderedlist>
 
     </section>
   </section>
