@@ -2,6 +2,15 @@
 # vim:syntax=sh:sts=2
 
 #
+# shell workarounds
+#
+
+if [ -n "${ZSH_VERSION}" ]; then
+  emulate -LR sh
+  unsetopt function_argzero
+fi
+
+#
 # constants
 #
 

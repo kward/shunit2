@@ -105,11 +105,7 @@ EOF
       fi
       ;;
     pdksh) ;;
-    zsh)
-      shell_opts='-o shwordsplit --'
-      echo
-      ${shell} --version
-      ;;
+    zsh) echo; ${shell} --version; ;;
   esac
 
   # execute the tests
