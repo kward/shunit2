@@ -8,9 +8,9 @@ tests="testAsserts testFailures"
 
 # system info
 $ date
-Wed Nov 28 20:09:55 GMT 2007
+Mon Dec 31 00:51:14 GMT 2007
 $ uname -mprsv
-Linux 2.6.18.5-gg13-mixed64-32 #1 SMP Thu Jul 5 18:55:45 IST 2007 x86_64 unknown
+Linux 2.6.18.5-gg19workstation-mixed64-32 #1 SMP Tue Nov 20 16:02:52 PST 2007 x86_64 unknown
 
 
 #------------------------------------------------------------------------------
