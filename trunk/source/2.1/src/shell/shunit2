@@ -29,8 +29,10 @@ SHUNIT_ERROR=2
 
 # specific shell checks
 if [ -n "${ZSH_VERSION:-}" ]; then
-  emulate -LR sh
-  unsetopt function_argzero
+  if [ "`set -o |grep "^shwordsplit" |awk '{print $2}'`" = 'off' ]; then
+    _shunit_fatal 'shwordsplit option required for proper zfs operation'
+    exit ${SHUNIT_ERROR}
+  fi
 fi
 
 # shell flags for shunit2:

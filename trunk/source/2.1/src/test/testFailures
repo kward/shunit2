@@ -8,6 +8,9 @@
 
 MSG='This is a test message'
 
+# load common unit-test functions
+. ./test-functions.inc
+
 #-----------------------------------------------------------------------------
 # suite tests
 #
@@ -86,5 +89,4 @@ testFailNotSame()
 #
 
 # load and run shUnit2
-[ -n "${ZSH_VERSION}" ] && SHUNIT_PARENT=$0
 . ./shunit2
