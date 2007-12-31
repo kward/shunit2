@@ -8,9 +8,9 @@ tests="testAsserts testFailures"
 
 # system info
 $ date
-Tue Nov 27 06:13:53 GMT 2007
+Mon Dec 31 00:48:41 GMT 2007
 $ uname -mprsv
-SunOS 5.10 Generic_127112-01 i86pc i386
+SunOS 5.10 Generic_127112-05 i86pc i386
 
 
 #------------------------------------------------------------------------------
