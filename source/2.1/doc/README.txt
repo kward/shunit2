@@ -97,12 +97,15 @@ we'd better build it. ::
   ...
   $ cp -p build/shunit2.html doc
   $ rst2html --stylesheet-path=share/css/rst2html.css doc/README.txt >doc/README.html
-  $ svn ci -m "" doc/shunit2.html
 
 Check In All the Code
 ---------------------
 
-This step is pretty self-explainatory
+This step is pretty self-explainatory ::
+
+  $ pwd
+  .../shunit2/source/2.0
+  $ svn ci -m "finalizing release"
 
 Tag the Release
 ---------------

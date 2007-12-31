@@ -6,7 +6,7 @@ Changes with 2.1.2
 
 Unset additional variables that were missed.
 
-Added checks and fixes to improve zsh compatibility.
+Added checks and workarounds to improve zsh compatibility.
 
 Added some argument count checks ``assertEquals()``, ``assertNull()``, and
 ``assertSame()``

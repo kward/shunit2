@@ -52,7 +52,7 @@ $ xsltproc tldp-one-page.xsl log4sh.xml |xmllint -noblanks -
     <revhistory>
       <revision>
         <revnumber>2.1.2</revnumber>
-        <date>2007-11-17</date>
+        <date>2007-12-31</date>
         <authorinitials>Kate Ward &lt;&myEmail;&gt;</authorinitials>
       </revision>
 
