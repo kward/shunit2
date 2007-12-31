@@ -8,9 +8,9 @@ tests="testAsserts testFailures"
 
 # system info
 $ date
-Thu Nov 22 22:37:50 CST 2007
+Mon Dec 24 21:45:53 GMT 2007
 $ uname -mprsv
-Linux 2.6.22-14-generic #1 SMP Sun Oct 14 23:05:12 GMT 2007 i686 unknown
+Linux 2.6.22-14-server #1 SMP Tue Dec 18 08:31:40 UTC 2007 i686 unknown
 
 
 #------------------------------------------------------------------------------
@@ -238,6 +238,7 @@ tests total:     17 100%
 # Running the test suite with /bin/zsh
 #
 
+zsh 4.3.4 (i686-pc-linux-gnu)
 
 --- Executing the 'Asserts' test suite ---
 #
