@@ -1,5 +1,6 @@
 #! /bin/sh
 # $Id$
+# vim:et
 
 XML_VERSION='4.4'
 XML_FILE="docbook-xml-${XML_VERSION}"
@@ -26,7 +27,7 @@ BASE_DIR=`shlib_relToAbsPath "${MY_DIR}/.."`
 DL_DIR="${BASE_DIR}/tmp"
 DOCBOOK_DIR="${BASE_DIR}/share/docbook"
 
-CURL_OPTS='-C - -Os'
+CURL_OPTS='-C - -L -Os'
 WGET_OPTS='-cq'
 
 METHOD_NONE=0
@@ -37,12 +38,26 @@ get_url()
 {
   url=$1
   echo '  downloading'
+  cwd=`pwd`
   cd "${DL_DIR}"
   case ${method} in
-    ${METHOD_CURL}) ${curl} ${CURL_OPTS} "${url}" ;;
-    ${METHOD_WGET}) ${wget} ${WGET_OPTS} "${url}" ;;
+    ${METHOD_CURL})
+      ${curl} ${CURL_OPTS} "${url}"
+      case $? in
+        0) ;;  # download successful
+        18) ;;  # file exists
+        *) echo "    curl failed with $?"
+      esac
+      ;;
+    ${METHOD_WGET})
+      ${wget} ${WGET_OPTS} "${url}"
+      case $? in
+        0) ;;  # download successful
+        *) echo "    wget failed with $?"
+      esac
+      ;;
   esac
-  [ $? -ne 0 ] && echo '  downlaoding failed.'
+  cd "${cwd}"
 }
 
 # determine method
@@ -61,36 +76,46 @@ mkdir -p "${DL_DIR}"
 
 # get the docbook xml files
 echo 'Docbook XML'
-get_url "${XML_URL}"
-if [ -f "${DL_DIR}/${XML_FILE}.zip" ]; then
+xml_file="${XML_FILE}.zip"
+xml_path="${DL_DIR}/${xml_file}"
+if [ ! -f "${xml_path}" ]; then
+  get_url "${XML_URL}"
+fi
+if [ -f "${xml_path}" ]; then
   echo '  extracting'
+  cd "${DL_DIR}"
   xml_dir="${DOCBOOK_DIR}/docbook-xml/${XML_VERSION}"
   rm -fr "${xml_dir}"
   mkdir -p "${xml_dir}"
   cd "${xml_dir}"
-  unzip -oq "${DL_DIR}/${XML_FILE}.zip"
+  unzip -oq "${xml_path}"
   cd ..
   rm -f current
   ln -s "${XML_VERSION}" current
 else
-  echo "error: unable to extract (${XML_FILE}.zip)" >&2
+  echo "error: unable to extract (${xml_file})" >&2
   exit 1
 fi
 
 # get the docbook xslt files
 echo 'Docbook XSLT'
-get_url "${XSL_URL}"
-if [ -f "${DL_DIR}/${XSL_FILE}.tar.bz2" ]; then
+xsl_file="${XSL_FILE}.tar.bz2"
+xsl_path="${DL_DIR}/${xsl_file}"
+if [ ! -f "${xsl_path}" ]; then
+  get_url "${XSL_URL}"
+fi
+if [ -f "${xsl_path}" ]; then
   echo '  extracting'
+  cd "${DL_DIR}"
   xsl_dir="${DOCBOOK_DIR}/docbook-xsl"
   mkdir -p "${xsl_dir}"
   cd "${xsl_dir}"
   rm -fr ${XSL_VERSION}
-  bzip2 -dc "${DL_DIR}/${XSL_FILE}.tar.bz2" |tar xf -
+  bzip2 -dc "${xsl_path}" |tar xf -
   mv ${XSL_FILE} ${XSL_VERSION}
   rm -f current
   ln -s "${XSL_VERSION}" current
 else
-  echo "error: unable to extract (${XSL_FILE}.tar.bz2)" >&2
+  echo "error: unable to extract (${xsl_file})" >&2
   exit 1
 fi
