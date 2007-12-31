@@ -18,7 +18,7 @@
 # </s:header>
 #*/
 
-__SHUNIT_VERSION='2.1.2pre'
+__SHUNIT_VERSION='2.1.2'
 
 _shunit_error() { echo "shunit2:ERROR $@" >&2; }
 _shunit_fatal() { echo "shunit2:FATAL $@" >&2; }
