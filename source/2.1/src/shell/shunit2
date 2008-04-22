@@ -6,7 +6,7 @@
 # <?xml version="1.0" encoding="UTF-8"?>
 # <s:shelldoc xmlns:s="http://www.forestent.com/projects/shelldoc/xsl/2005.0">
 # <s:header>
-# shUnit 2.1.2
+# shUnit 2.1.3
 # Shell Unit Test Framework
 #
 # http://shunit2.sourceforge.net/
@@ -18,7 +18,7 @@
 # </s:header>
 #*/
 
-__SHUNIT_VERSION='2.1.2'
+__SHUNIT_VERSION='2.1.3pre'
 
 _shunit_error() { echo "shunit2:ERROR $@" >&2; }
 _shunit_fatal() { echo "shunit2:FATAL $@" >&2; }
@@ -31,6 +31,11 @@ SHUNIT_ERROR=2
 if [ -n "${ZSH_VERSION:-}" ]; then
   if [ "`set -o |grep "^shwordsplit" |awk '{print $2}'`" = 'off' ]; then
     _shunit_fatal 'shwordsplit option required for proper zfs operation'
+    exit ${SHUNIT_ERROR}
+  fi
+  if [ -z "${SHUNIT_PARENT:-}" ]; then
+    _shunit_fatal "zsh does not pass \$0 through properly. please declare' \
+\"SHUNIT_PARENT=\$0\" before calling shUnit2"
     exit ${SHUNIT_ERROR}
   fi
 fi
@@ -51,6 +56,7 @@ done
 #
 
 __SHUNIT_ASSERT_MSG_PREFIX='ASSERT:'
+__SHUNIT_PARENT=${SHUNIT_PARENT:-$0}
 
 # set the constants readonly
 _shunit_constants=`set |grep "^__SHUNIT_" |cut -d= -f1`
@@ -787,7 +793,7 @@ _shunit_functionExists()
 _shunit_generateReport()
 {
   _su__awkPercent='{printf("%4d %3.0f%%", $1, $1*100/$2)}'
-  if [ ${__shunit_testsTotal} -gt 0 ]; then
+  if [ ${__shunit_testsTotal:-0} -gt 0 ]; then
     _su__passed=`echo ${__shunit_testsPassed} ${__shunit_testsTotal} |\
         awk "${_su__awkPercent}"`
     _su__failed=`echo ${__shunit_testsFailed} ${__shunit_testsTotal} |\
@@ -910,12 +916,13 @@ PATH="${__shunit_tmpDir}:${PATH}"
 #_shunit_functionExists oneTimeSetUp && oneTimeSetUp
 oneTimeSetUp
 
-# deprecated: execute the suite function defined in the parent test script
+# execute the suite function defined in the parent test script
+# deprecated as of 2.1.0
 suite
 
 # if no suite function was defined, dynamically build a list of functions
 if [ -z "${__shunit_suite}" ]; then
-  funcs=`grep "^[ \t]*test[A-Za-z0-9_]* *()" $0 \
+  funcs=`grep "^[ \t]*test[A-Za-z0-9_]* *()" ${__SHUNIT_PARENT} \
       |sed 's/[^A-Za-z0-9_]//g'`
   for func in ${funcs}; do
     suite_addTest ${func}
