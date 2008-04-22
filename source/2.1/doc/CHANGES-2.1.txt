@@ -1,6 +1,15 @@
 Changes in shUnit2 2.1.X
 ========================
 
+Changes with 2.1.3
+------------------
+
+Added some explicit variable defaults, even though the variables are set, as
+they sometimes behave strange when the script is canceled.
+
+Additional workarounds for zsh compatibility.
+
+
 Changes with 2.1.2
 ------------------
 
