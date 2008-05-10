@@ -1,10 +1,3 @@
-cp -p /home/kward/var/wa/shunit2/source/2.1/src/shell/shunit2 /home/kward/var/wa/shunit2/source/2.1/build
-rm -fr /home/kward/var/wa/shunit2/source/2.1/test
-ln -s /home/kward/var/wa/shunit2/source/2.1/src/test/test* /home/kward/var/wa/shunit2/source/2.1/test
-ln -s /home/kward/var/wa/shunit2/source/2.1/src/test/run-test-suite /home/kward/var/wa/shunit2/source/2.1/test
-ln -s /home/kward/var/wa/shunit2/source/2.1/src/shell/shunit2 /home/kward/var/wa/shunit2/source/2.1/test
-executing shunit2 unit tests
-( cd /home/kward/var/wa/shunit2/source/2.1/test; /home/kward/var/wa/shunit2/source/2.1/src/test/run-test-suite )
 #------------------------------------------------------------------------------
 # System data
 #
@@ -15,7 +8,7 @@ tests="testAsserts testFailures"
 
 # system info
 $ date
-Sat May 10 20:36:18 UTC 2008
+Sat May 10 22:07:59 UTC 2008
 $ uname -mprsv
 Linux 2.6.24-16-generic #1 SMP Thu Apr 10 13:23:42 UTC 2008 i686 unknown
 
@@ -148,8 +141,138 @@ tests failed:     0   0%
 tests skipped:    0   0%
 tests total:     17 100%
 
-run-test-suite:WARN unable to run tests with the /bin/ksh shell
 
-run-test-suite:WARN unable to run tests with the /bin/pdksh shell
+#------------------------------------------------------------------------------
+# Running the test suite with /bin/ksh
+#
 
-run-test-suite:WARN unable to run tests with the /bin/zsh shell
+  version         sh (AT&T Research) 1993-12-28 s+
+
+--- Executing the 'Asserts' test suite ---
+#
+# Performing tests
+#
+testAssertEquals
+testAssertSame
+ASSERT:null values; failure
+shunit2:ERROR assertEquals()/assertSame() require at least two arguments
+ASSERT:expected no output to STDERR
+testAssertNotSame
+testAssertNull
+testAssertNotNull
+testAssertTrue
+testAssertFalse
+
+#
+# Test report
+#
+tests passed:    76  97%
+tests failed:     2   3%
+tests skipped:    0   0%
+tests total:     78 100%
+
+--- Executing the 'Failures' test suite ---
+#
+# Performing tests
+#
+testFail
+testFailNotEquals
+testFailSame
+testFailNotSame
+
+#
+# Test report
+#
+tests passed:    17 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     17 100%
+
+
+#------------------------------------------------------------------------------
+# Running the test suite with /bin/pdksh
+#
+
+--- Executing the 'Asserts' test suite ---
+#
+# Performing tests
+#
+testAssertEquals
+testAssertSame
+ASSERT:null values; failure
+shunit2:ERROR assertEquals()/assertSame() require at least two arguments
+ASSERT:expected no output to STDERR
+testAssertNotSame
+testAssertNull
+testAssertNotNull
+testAssertTrue
+testAssertFalse
+
+#
+# Test report
+#
+tests passed:    76  97%
+tests failed:     2   3%
+tests skipped:    0   0%
+tests total:     78 100%
+
+--- Executing the 'Failures' test suite ---
+#
+# Performing tests
+#
+testFail
+testFailNotEquals
+testFailSame
+testFailNotSame
+
+#
+# Test report
+#
+tests passed:    17 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     17 100%
+
+
+#------------------------------------------------------------------------------
+# Running the test suite with /bin/zsh
+#
+
+zsh 4.3.4 (i686-pc-linux-gnu)
+
+--- Executing the 'Asserts' test suite ---
+#
+# Performing tests
+#
+testAssertEquals
+testAssertSame
+testAssertNotSame
+testAssertNull
+testAssertNotNull
+testAssertTrue
+testAssertFalse
+
+#
+# Test report
+#
+tests passed:    78 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     78 100%
+
+--- Executing the 'Failures' test suite ---
+#
+# Performing tests
+#
+testFail
+testFailNotEquals
+testFailSame
+testFailNotSame
+
+#
+# Test report
+#
+tests passed:    17 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     17 100%
