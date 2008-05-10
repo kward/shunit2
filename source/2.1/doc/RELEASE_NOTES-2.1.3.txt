@@ -18,8 +18,10 @@ See the ``CHANGES-2.1.txt`` file for a full list of changes.
 Tested Platforms
 ----------------
 
-This list of platforms comes from the latest version of log4sh as shUnit2 is
-used in the testing of log4sh on each of these platforms.
+Cygwin
+
+- bash 3.2.33(18)
+- pdksh 5.2.14
 
 Linux
 
@@ -35,12 +37,12 @@ Mac OS X 10.5.2 (Darwin 9.2.2)
 - ksh 1993-12-28
 - zsh 4.3.4
 
-Solaris 10 U3 (x86)
+Solaris 11 x86 (Nevada 77)
 
 - /bin/sh
-- bash 3.00.16(1)
+- bash 3.2.25(1)
 - ksh M-11/16/88i
-- zsh 4.2.1
+- zsh 4.3.4
 
 
 New Features
