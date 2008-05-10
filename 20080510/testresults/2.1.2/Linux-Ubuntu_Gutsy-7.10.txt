@@ -1,0 +1,278 @@
+#------------------------------------------------------------------------------
+# System data
+#
+
+# test run info
+shells="/bin/sh /bin/bash /bin/dash /bin/ksh /bin/pdksh /bin/zsh"
+tests="testAsserts testFailures"
+
+# system info
+$ date
+Mon Dec 24 21:45:53 GMT 2007
+$ uname -mprsv
+Linux 2.6.22-14-server #1 SMP Tue Dec 18 08:31:40 UTC 2007 i686 unknown
+
+
+#------------------------------------------------------------------------------
+# Running the test suite with /bin/sh
+#
+
+--- Executing the 'Asserts' test suite ---
+#
+# Performing tests
+#
+testAssertEquals
+testAssertSame
+testAssertNotSame
+testAssertNull
+testAssertNotNull
+testAssertTrue
+testAssertFalse
+
+#
+# Test report
+#
+tests passed:    78 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     78 100%
+
+--- Executing the 'Failures' test suite ---
+#
+# Performing tests
+#
+testFail
+testFailNotEquals
+testFailSame
+testFailNotSame
+
+#
+# Test report
+#
+tests passed:    17 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     17 100%
+
+
+#------------------------------------------------------------------------------
+# Running the test suite with /bin/bash
+#
+
+GNU bash, version 3.2.25(1)-release (i486-pc-linux-gnu)
+Copyright (C) 2005 Free Software Foundation, Inc.
+
+--- Executing the 'Asserts' test suite ---
+#
+# Performing tests
+#
+testAssertEquals
+testAssertSame
+testAssertNotSame
+testAssertNull
+testAssertNotNull
+testAssertTrue
+testAssertFalse
+
+#
+# Test report
+#
+tests passed:    78 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     78 100%
+
+--- Executing the 'Failures' test suite ---
+#
+# Performing tests
+#
+testFail
+testFailNotEquals
+testFailSame
+testFailNotSame
+
+#
+# Test report
+#
+tests passed:    17 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     17 100%
+
+
+#------------------------------------------------------------------------------
+# Running the test suite with /bin/dash
+#
+
+--- Executing the 'Asserts' test suite ---
+#
+# Performing tests
+#
+testAssertEquals
+testAssertSame
+testAssertNotSame
+testAssertNull
+testAssertNotNull
+testAssertTrue
+testAssertFalse
+
+#
+# Test report
+#
+tests passed:    78 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     78 100%
+
+--- Executing the 'Failures' test suite ---
+#
+# Performing tests
+#
+testFail
+testFailNotEquals
+testFailSame
+testFailNotSame
+
+#
+# Test report
+#
+tests passed:    17 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     17 100%
+
+
+#------------------------------------------------------------------------------
+# Running the test suite with /bin/ksh
+#
+
+  version         sh (AT&T Labs Research) 1993-12-28 r
+
+--- Executing the 'Asserts' test suite ---
+#
+# Performing tests
+#
+testAssertEquals
+testAssertSame
+ASSERT:null values; failure
+shunit2:ERROR assertEquals()/assertSame() require at least two arguments
+ASSERT:expected no output to STDERR
+testAssertNotSame
+testAssertNull
+testAssertNotNull
+testAssertTrue
+testAssertFalse
+
+#
+# Test report
+#
+tests passed:    76  97%
+tests failed:     2   3%
+tests skipped:    0   0%
+tests total:     78 100%
+
+--- Executing the 'Failures' test suite ---
+#
+# Performing tests
+#
+testFail
+testFailNotEquals
+testFailSame
+testFailNotSame
+
+#
+# Test report
+#
+tests passed:    17 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     17 100%
+
+
+#------------------------------------------------------------------------------
+# Running the test suite with /bin/pdksh
+#
+
+--- Executing the 'Asserts' test suite ---
+#
+# Performing tests
+#
+testAssertEquals
+testAssertSame
+ASSERT:null values; failure
+shunit2:ERROR assertEquals()/assertSame() require at least two arguments
+ASSERT:expected no output to STDERR
+testAssertNotSame
+testAssertNull
+testAssertNotNull
+testAssertTrue
+testAssertFalse
+
+#
+# Test report
+#
+tests passed:    76  97%
+tests failed:     2   3%
+tests skipped:    0   0%
+tests total:     78 100%
+
+--- Executing the 'Failures' test suite ---
+#
+# Performing tests
+#
+testFail
+testFailNotEquals
+testFailSame
+testFailNotSame
+
+#
+# Test report
+#
+tests passed:    17 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     17 100%
+
+
+#------------------------------------------------------------------------------
+# Running the test suite with /bin/zsh
+#
+
+zsh 4.3.4 (i686-pc-linux-gnu)
+
+--- Executing the 'Asserts' test suite ---
+#
+# Performing tests
+#
+testAssertEquals
+testAssertSame
+testAssertNotSame
+testAssertNull
+testAssertNotNull
+testAssertTrue
+testAssertFalse
+
+#
+# Test report
+#
+tests passed:    78 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     78 100%
+
+--- Executing the 'Failures' test suite ---
+#
+# Performing tests
+#
+testFail
+testFailNotEquals
+testFailSame
+testFailNotSame
+
+#
+# Test report
+#
+tests passed:    17 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     17 100%
