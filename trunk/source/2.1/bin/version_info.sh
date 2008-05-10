@@ -1,4 +1,5 @@
 #! /bin/sh
+# $Id$
 # vim:et:ft=sh:sts=2:sw=2
 #
 
@@ -61,18 +62,30 @@ reportVersion()
 #
 
 os=`uname -s`
+release=`uname -r`
+version=''
 case ${os} in
+  Darwin)
+    subRelease=`echo ${release} |sed 's/^[0-9]*\.\([0-9]*\)\.[0-9]*$/\1/'`
+    case ${release} in
+      8.*) minorRelease='4' ;;
+      9.*) minorRelease='5' ;;
+      *) minorRelease='X'; subRelease='X' ;;
+    esac
+    version="Mac OS X 10.${minorRelease}.${subRelease}"
+    ;;
   Linux)
     if [ -r '/etc/lsb-release' ]; then
       . /etc/lsb-release
       version="${DISTRIB_ID}-${DISTRIB_RELEASE}"
     fi
-
     ;;
 esac
 echo "os:${os} version:${version}"
 
-SHELLS='/bin/sh /bin/bash /bin/dash /bin/ksh /bin/pdksh /bin/zsh'
+# note: /bin/sh not included as it is nearly always a sym-link, and if it isn't
+# it is too much trouble to figure out what it is.
+SHELLS='/bin/bash /bin/dash /bin/ksh /bin/pdksh /bin/zsh'
 for shell in ${SHELLS}; do
   version=''
 
