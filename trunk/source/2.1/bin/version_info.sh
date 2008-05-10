@@ -34,7 +34,7 @@ shellKsh()
 {
   _shell=$1
 
-  _version=`strings ${_shell} \
+  _version=`strings ${_shell} 2>&1 \
       |grep Version \
       |sed 's/^.*Version \(.*\)$/\1/;s/ s+ \$$//;s/ /-/g'`
   [ -z "${_version}" ] && _version=`shellPdksh ${_shell}`
@@ -45,7 +45,9 @@ shellPdksh()
 {
   _shell=$1
 
-  strings ${_shell} |grep 'PD KSH' |sed -e 's/.*PD KSH \(.*\)/\1/;s/ /-/g'
+  strings ${_shell} 2>&1 \
+  |grep 'PD KSH' \
+  |sed -e 's/.*PD KSH \(.*\)/\1/;s/ /-/g'
 }
 
 shellZsh()
@@ -72,6 +74,9 @@ version=''
 os_system=`uname -s`
 os_release=`uname -r`
 case ${os_system} in
+  Cygwin)
+    version='unknown'
+    ;;
   Darwin)
     majorRelease='10'
     subRelease=`echo ${os_release} |sed 's/^[0-9]*\.\([0-9]*\)\.[0-9]*$/\1/'`
@@ -93,6 +98,10 @@ case ${os_system} in
   SunOS)
     os='Solaris'
     version=`echo ${os_release} |sed 's/[0-9]*\.\([0-9]*\)/\1/'`
+    ;;
+  *)
+    os='unknown'
+    version='unknown'
     ;;
 esac
 echo "os:${os} version:${version}"
