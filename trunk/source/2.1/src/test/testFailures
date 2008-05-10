@@ -1,6 +1,7 @@
 #! /bin/sh
 # $Id$
 # vim: expandtab
+#
 # author: Kate Ward <kate.ward@forestent.com>
 #
 # Self-testing unit tests for shUnit2 failures
