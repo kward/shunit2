@@ -18,8 +18,9 @@
 # </s:header>
 #*/
 
-__SHUNIT_VERSION='2.1.3pre'
+__SHUNIT_VERSION='2.1.3'
 
+_shunit_warn() { echo "shunit2:WARN $@" >&2; }
 _shunit_error() { echo "shunit2:ERROR $@" >&2; }
 _shunit_fatal() { echo "shunit2:FATAL $@" >&2; }
 
@@ -30,7 +31,7 @@ SHUNIT_ERROR=2
 # specific shell checks
 if [ -n "${ZSH_VERSION:-}" ]; then
   if [ "`set -o |grep "^shwordsplit" |awk '{print $2}'`" = 'off' ]; then
-    _shunit_fatal 'shwordsplit option required for proper zfs operation'
+    _shunit_fatal 'shwordsplit option required for proper zsh operation'
     exit ${SHUNIT_ERROR}
   fi
   if [ -z "${SHUNIT_PARENT:-}" ]; then
@@ -741,6 +742,10 @@ _shunit_cleanup()
     EXIT) signal=0 ;;
     INT) signal=2 ;;
     TERM) signal=15 ;;
+    *)
+      _shunit_warn "unrecognized trap value (${name})"
+      signal=0
+      ;;
   esac
 
   # do our work
@@ -748,7 +753,7 @@ _shunit_cleanup()
 
   # exit for all non-EXIT signals
   if [ ${name} != 'EXIT' ]; then
-    echo "trapped and now handling the ${name} signal" >&2
+    _shunit_warn "trapped and now handling the (${name}) signal"
     _shunit_generateReport
     # disable EXIT trap
     trap 0
@@ -944,6 +949,8 @@ for _shunit_shellFlag in ${__SHUNIT_SHELL_FLAGS}; do
     || set +${_shunit_shellFlag}
 done
 unset _shunit_shellFlag _shunit_shellFlags
+
+[ ${__shunit_testsFailed} -eq 0 ] || exit 1
 
 #/**
 # </s:shelldoc>
