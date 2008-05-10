@@ -1,6 +1,7 @@
 #! /bin/sh
 # $Id$
 # vim: expandtab
+#
 # author: Kate Ward <kate.ward@forestent.com>
 #
 # Self-testing unit tests for shUnit2 asserts
@@ -11,7 +12,7 @@ MSG='This is a test message'
 # load common unit-test functions
 . ./test-functions.inc
 
-#-----------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 # suite tests
 #
 
@@ -43,14 +44,14 @@ commonEqualsSame()
   assertTrue "${msg}; failure" ${rtrn}
   [ ${rtrn} -ne ${SHUNIT_TRUE} ] && cat "${stderrF}"
   assertNull 'expected no output to STDOUT' "${rslt}"
-  assertNull 'expected no output to STDERR' "`cat \"${stderrF}\"`"
+  assertTrue 'expected no output to STDERR' "[ -s \"${stderrF}\" ]"
 
   msg='too few arguments'
   rslt=`${fn} 2>"${stderrF}"`
   rtrn=$?
   assertFalse "${msg}; failure" ${rtrn}
   assertNull 'expected no output to STDOUT' "${rslt}"
-  assertNotNull 'expected output to STDERR' "`cat \"${stderrF}\"`"
+  assertTrue 'expected no output to STDERR' "[ -s \"${stderrF}\" ]"
 }
 
 testAssertEquals()
@@ -240,7 +241,7 @@ testAssertFalse()
   assertFalse "${msg}; failure" ${rtrn}
 }
 
-#-----------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 # suite functions
 #
 
