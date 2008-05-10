@@ -34,9 +34,9 @@ shellKsh()
 {
   _shell=$1
 
-  _version=`${_shell} --version 2>&1 \
-      |grep 'AT&T' \
-      |sed 's/.*(AT&T Research) \([^ ]*\).*/\1/'`
+  _version=`strings ${_shell} \
+      |grep Version \
+      |sed 's/^.*Version \(.*\)$/\1/;s/ s+ \$$//;s/ /-/g'`
   [ -z "${_version}" ] && _version=`shellPdksh ${_shell}`
   echo ${_version}
 }
@@ -67,24 +67,32 @@ reportVersion()
 # main
 #
 
-os=`uname -s`
-release=`uname -r`
 version=''
-case ${os} in
+
+os_system=`uname -s`
+os_release=`uname -r`
+case ${os_system} in
   Darwin)
-    subRelease=`echo ${release} |sed 's/^[0-9]*\.\([0-9]*\)\.[0-9]*$/\1/'`
-    case ${release} in
+    majorRelease='10'
+    subRelease=`echo ${os_release} |sed 's/^[0-9]*\.\([0-9]*\)\.[0-9]*$/\1/'`
+    case ${os_release} in
       8.*) minorRelease='4' ;;
       9.*) minorRelease='5' ;;
       *) minorRelease='X'; subRelease='X' ;;
     esac
-    version="Mac OS X 10.${minorRelease}.${subRelease}"
+    os='Mac OS X'
+    version="${majorRelease}.${minorRelease}.${subRelease}"
     ;;
   Linux)
+    os='Linux'
     if [ -r '/etc/lsb-release' ]; then
       . /etc/lsb-release
       version="${DISTRIB_ID}-${DISTRIB_RELEASE}"
     fi
+    ;;
+  SunOS)
+    os='Solaris'
+    version=`echo ${os_release} |sed 's/[0-9]*\.\([0-9]*\)/\1/'`
     ;;
 esac
 echo "os:${os} version:${version}"
