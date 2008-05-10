@@ -1,0 +1,164 @@
+#------------------------------------------------------------------------------
+# System data
+#
+
+# test run info
+shells="/bin/sh /bin/bash /bin/dash /bin/ksh /bin/pdksh /bin/zsh"
+tests="testAsserts testFailures"
+
+# system info
+$ date
+Sat May 10 23:03:34 IST 2008
+$ uname -mprsv
+Darwin 9.2.2 Darwin Kernel Version 9.2.2: Tue Mar  4 21:17:34 PST 2008; root:xnu-1228.4.31~1/RELEASE_I386 i386 i386
+
+
+#------------------------------------------------------------------------------
+# Running the test suite with /bin/sh
+#
+
+--- Executing the 'Asserts' test suite ---
+#
+# Performing tests
+#
+testAssertEquals
+testAssertSame
+testAssertNotSame
+testAssertNull
+testAssertNotNull
+testAssertTrue
+testAssertFalse
+
+#
+# Test report
+#
+tests passed:    78 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     78 100%
+
+--- Executing the 'Failures' test suite ---
+#
+# Performing tests
+#
+testFail
+testFailNotEquals
+testFailSame
+testFailNotSame
+
+#
+# Test report
+#
+tests passed:    17 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     17 100%
+
+
+#------------------------------------------------------------------------------
+# Running the test suite with /bin/bash
+#
+
+GNU bash, version 3.2.17(1)-release (i386-apple-darwin9.0)
+Copyright (C) 2005 Free Software Foundation, Inc.
+
+--- Executing the 'Asserts' test suite ---
+#
+# Performing tests
+#
+testAssertEquals
+testAssertSame
+testAssertNotSame
+testAssertNull
+testAssertNotNull
+testAssertTrue
+testAssertFalse
+
+#
+# Test report
+#
+tests passed:    78 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     78 100%
+
+--- Executing the 'Failures' test suite ---
+#
+# Performing tests
+#
+testFail
+testFailNotEquals
+testFailSame
+testFailNotSame
+
+#
+# Test report
+#
+tests passed:    17 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     17 100%
+
+run-test-suite:WARN unable to run tests with the /bin/dash shell
+
+
+#------------------------------------------------------------------------------
+# Running the test suite with /bin/ksh
+#
+
+  version         sh (AT&T Research) 1993-12-28 s+
+
+--- Executing the 'Asserts' test suite ---
+#
+# Performing tests
+#
+testAssertEquals
+testAssertSame
+ASSERT:null values; failure
+shunit2:ERROR assertEquals()/assertSame() require at least two arguments
+ASSERT:expected no output to STDERR
+testAssertNotSame
+testAssertNull
+testAssertNotNull
+testAssertTrue
+testAssertFalse
+
+#
+# Test report
+#
+tests passed:    76  97%
+tests failed:     2   3%
+tests skipped:    0   0%
+tests total:     78 100%
+
+--- Executing the 'Failures' test suite ---
+#
+# Performing tests
+#
+testFail
+testFailNotEquals
+testFailSame
+testFailNotSame
+
+#
+# Test report
+#
+tests passed:    17 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     17 100%
+
+run-test-suite:WARN unable to run tests with the /bin/pdksh shell
+
+
+#------------------------------------------------------------------------------
+# Running the test suite with /bin/zsh
+#
+
+zsh 4.3.4 (i386-apple-darwin9.0)
+
+--- Executing the 'Asserts' test suite ---
+shunit2:FATAL zsh does not pass $0 through properly. please declare' "SHUNIT_PARENT=$0" before calling shUnit2
+
+--- Executing the 'Failures' test suite ---
+shunit2:FATAL zsh does not pass $0 through properly. please declare' "SHUNIT_PARENT=$0" before calling shUnit2
