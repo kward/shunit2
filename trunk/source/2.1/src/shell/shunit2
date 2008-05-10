@@ -35,7 +35,7 @@ if [ -n "${ZSH_VERSION:-}" ]; then
     exit ${SHUNIT_ERROR}
   fi
   if [ -z "${SHUNIT_PARENT:-}" ]; then
-    _shunit_fatal "zsh does not pass \$0 through properly. please declare' \
+    _shunit_fatal "zsh does not pass \$0 through properly. please declare \
 \"SHUNIT_PARENT=\$0\" before calling shUnit2"
     exit ${SHUNIT_ERROR}
   fi
