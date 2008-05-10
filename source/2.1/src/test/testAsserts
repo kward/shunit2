@@ -44,14 +44,14 @@ commonEqualsSame()
   assertTrue "${msg}; failure" ${rtrn}
   [ ${rtrn} -ne ${SHUNIT_TRUE} ] && cat "${stderrF}"
   assertNull 'expected no output to STDOUT' "${rslt}"
-  assertTrue 'expected no output to STDERR' "[ -s \"${stderrF}\" ]"
+  assertFalse 'expected no output to STDERR' "[ -s \"${stderrF}\" ]"
 
   msg='too few arguments'
   rslt=`${fn} 2>"${stderrF}"`
   rtrn=$?
   assertFalse "${msg}; failure" ${rtrn}
   assertNull 'expected no output to STDOUT' "${rslt}"
-  assertTrue 'expected no output to STDERR' "[ -s \"${stderrF}\" ]"
+  assertTrue 'expected output to STDERR' "[ -s \"${stderrF}\" ]"
 }
 
 testAssertEquals()
