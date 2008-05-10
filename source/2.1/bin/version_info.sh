@@ -2,6 +2,12 @@
 # $Id$
 # vim:et:ft=sh:sts=2:sw=2
 #
+# Copyright (c) 2008 Forest Enterprises
+# All Rights Reserved
+#
+# Author: Kate Ward (kate.ward@forestent.com)
+#
+# Released under the LGPL (GNU Lesser General Public License)
 
 # treat unset variables as an error
 set -u
