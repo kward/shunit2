@@ -9,6 +9,12 @@ they sometimes behave strange when the script is canceled.
 
 Additional workarounds for zsh compatibility.
 
+shUnit2 now exits with a non-zero exit code if any of the tests failed. This was
+done for automated testing frameworks. Tests that were skipped are not
+considered failures, and do not affect the exit code.
+
+Changed detection of STDERR output in unit tests.
+
 
 Changes with 2.1.2
 ------------------
