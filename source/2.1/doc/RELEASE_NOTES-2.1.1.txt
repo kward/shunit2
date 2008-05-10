@@ -27,7 +27,7 @@ Linux
 - pdksh 5.2.14
 - zsh 4.3.2 (does not work)
 
-Mac OS X 1.4.9 (Darwin 8.9.1)
+Mac OS X 10.4.9 (Darwin 8.9.1)
 
 - bash 2.05b.0(1)
 - ksh 1993-12-28

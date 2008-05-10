@@ -29,11 +29,11 @@ Linux
 - pdksh 5.2.14
 - zsh 4.3.4
 
-Mac OS X 1.5.2 (Darwin 9.2.2)
+Mac OS X 10.5.2 (Darwin 9.2.2)
 
-- bash 2.05b.0(1)
+- bash 3.2.17(1)
 - ksh 1993-12-28
-- zsh 4.2.3
+- zsh 4.3.4
 
 Solaris 10 U3 (x86)
 
