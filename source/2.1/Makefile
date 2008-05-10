@@ -73,9 +73,9 @@ test-clean:
 
 test-prep: build test-clean
 	@mkdir -p $(TEST_DIR)
-	ln -s $(TEST_SRC_DIR)/test* $(TEST_DIR)
-	ln -s $(TEST_SRC_DIR)/run-test-suite $(TEST_DIR)
-	ln -s $(SHELL_SRC_DIR)/$(PROG) $(TEST_DIR)
+	cp -p $(TEST_SRC_DIR)/test* $(TEST_DIR)
+	cp -p $(TEST_SRC_DIR)/run-test-suite $(TEST_DIR)
+	cp -p $(SHELL_SRC_DIR)/$(PROG) $(TEST_DIR)
 
 dist: dist-clean build docs
 	@mkdir $(DIST_DIR)
