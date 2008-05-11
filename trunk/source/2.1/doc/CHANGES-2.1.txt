@@ -1,6 +1,12 @@
 Changes in shUnit2 2.1.X
 ========================
 
+Changes with 2.1.4
+------------------
+
+Removed the _shunit_functionExists() function as it was dead code.
+
+
 Changes with 2.1.3
 ------------------
 
