@@ -786,15 +786,6 @@ _shunit_execSuite()
   unset _su_func
 }
 
-_shunit_functionExists()
-{
-  _su__func=$1
-  type ${_su__func} 2>/dev/null |grep "is a function$" >/dev/null
-  _su__return=$?
-  unset _su__func
-  return ${_su__return}
-}
-
 _shunit_generateReport()
 {
   _su__awkPercent='{printf("%4d %3.0f%%", $1, $1*100/$2)}'
@@ -918,7 +909,6 @@ _shunit_mktempFunc
 PATH="${__shunit_tmpDir}:${PATH}"
 
 # execute the oneTimeSetUp function (if it exists)
-#_shunit_functionExists oneTimeSetUp && oneTimeSetUp
 oneTimeSetUp
 
 # execute the suite function defined in the parent test script
