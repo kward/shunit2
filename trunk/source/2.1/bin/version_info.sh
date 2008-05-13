@@ -54,7 +54,7 @@ shellZsh()
 {
   _shell=$1
 
-  ${_shell} --version 2>&1 |grep 'zsh' |sed 's/zsh \([^ ]*\).*/\1/'
+  echo 'echo ${ZSH_VERSION}' |${_shell}
 }
 
 reportVersion()
