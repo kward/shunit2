@@ -105,7 +105,7 @@ EOF
       fi
       ;;
     pdksh) ;;
-    zsh) echo; ${shell} --version; ;;
+    zsh) echo; echo 'echo ${ZSH_VERSION}' |${shell} ;;
   esac
 
   # execute the tests
