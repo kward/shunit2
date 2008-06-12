@@ -6,6 +6,8 @@ Changes with 2.1.4
 
 Removed the _shunit_functionExists() function as it was dead code.
 
+Fixed zsh version number check in version_info.
+
 Fixed bug in last resort temporary directory creation.
 
 
