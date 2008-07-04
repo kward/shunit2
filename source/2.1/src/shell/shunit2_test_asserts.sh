@@ -1,16 +1,16 @@
 #! /bin/sh
 # $Id$
-# vim: expandtab
+# vim:et:ft=sh:sts=2:sw=2
 #
-# author: Kate Ward <kate.ward@forestent.com>
+# Copyright 2008 Kate Ward. All Rights Reserved.
+# Released under the LGPL (GNU Lesser General Public License)
 #
-# Self-testing unit tests for shUnit2 asserts
+# Author: kate.ward@forestent.com (Kate Ward)
 #
+# shUnit2 unit test for assert functions
 
-MSG='This is a test message'
-
-# load common unit-test functions
-. ./test-functions.inc
+# load test helpers
+. ./shunit2_test_helpers
 
 #------------------------------------------------------------------------------
 # suite tests
@@ -251,8 +251,10 @@ oneTimeSetUp()
   mkdir "${tmpDir}"
   stdoutF="${tmpDir}/stdout"
   stderrF="${tmpDir}/stderr"
+
+  MSG='This is a test message'
 }
 
 # load and run shUnit2
 [ -n "${ZSH_VERSION:-}" ] && SHUNIT_PARENT=$0
-. ./shunit2
+. ${TH_SHUNIT}
