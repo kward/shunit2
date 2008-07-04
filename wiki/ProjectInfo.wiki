@@ -1,0 +1,73 @@
+#summary General information regarding the shUnit2 project.
+#labels Featured
+
+== Overview ==
+[http://sourceforge.net/projects/shunit2 shUnit2] is a [http://en.wikipedia.org/wiki/XUnit xUnit] unit test framework for Bourne based shell scripts, and it is designed to work in a similar manner to [http://www.junit.org/ JUnit], [http://pyunit.sourceforge.net/ PyUnit], etc. If you have ever had the desire to write a unit test for a shell script, shUnit2 can do the job.
+
+shUnit2 was originally developed to provide a consistent testing solution for [http://log4sh.sourceforge.net/ log4sh], a shell based logging framework similar to [http://logging.apache.org/log4j/ log4j]. During the development of that product, I repeatedly ran into the problem of having things work just fine under one shell (`/bin/bash` on Linux to be specific), and then not working under another shell (`/bin/sh` on Solaris). Although I had some simple tests that I ran, I finally decided to develop a more robust unit test framework after releasing multiple brown-bag releases.
+
+Rather than reinvent the wheel again, I chose to base the shUnit2 framework as much as possible on JUnit. I wanted something that was both incredibly easy to use, but that was as well incredibly powerful. I knew that the code would be built only for log4sh at the start, but hoped that someday I could release the code as a separate project. Now that the code is stable and mature enough, I have done just that. 
+
+You might ask why I didn't just use the already existing [http://shunit.sourceforge.net/ ShUnit] product. I took a look at it, but wasn't really happy with how it worked or how little it reflected the way JUnit and other unit test frameworks function. As such, I figured that it was probably better just to write my own.
+
+shUnit2 has been developed under the Bourne Again Shell (`/bin/bash`) on Linux, but _great care_ has been taken to make sure it works under the other Unix shells to insure maximum compatibility. If you like what you see, or have any suggestions on improvements, please feel free to drop me an email.
+
+_Supported Operating Systems_
+  * [http://www.cygwin.com/ Cygwin] (under Microsoft Windows XP)
+  * [http://www.freebsd.org/ FreeBSD] (user supported)
+  * Linux ([http://www.ubuntu.com/ Ubuntu])
+  * [http://www.apple.com/macosx/ Mac OS X]
+  * [http://www.sun.com/software/solaris/ Solaris] 8-10 and OpenSolaris
+
+_Tested Shells_
+  * Bourne Shell (*`sh`*)
+  * [http://www.gnu.org/software/bash/ BASH] – GNU Bourne Again SHell (*`bash`*)
+  * [http://gondor.apana.org.au/~herbert/dash/ DASH] (*`dash`*)
+  * [http://www.kornshell.com/ Korn Shell] (*`ksh`*)
+  * [http://web.cs.mun.ca/~michael/pdksh/ pdksh] – the Public Domain Korn Shell (*`pdksh`*)
+  * [http://www.zsh.org/ Zsh] - (*`zsh`*)
+
+== Downloading ==
+There are two current release series of shUnit2 available. The 2.0 series is the stable release, and it contains only bug fixes. The 2.1 series is meant for new features and is still under active development. The 2.1 series of shUnit2 has its own set of unit tests, and should be considered fine for daily use.
+
+If you would like to verify the GPG signatures of the releases, please take a look at my [http://forestent.com/wiki/Info:GnuPG GnuPG Info] page.
+
+=== 2.0.x - Stable Releases ===
+|| *Release* || *Date* ||
+|| [http://downloads.sourceforge.net/shunit2/shunit2-2.0.3.tgz 2.0.3] || Thu Jul 12 2007 ||
+|| [http://downloads.sourceforge.net/shunit2/shunit2-2.0.2.tgz 2.0.2] || Mon Apr 23 2007 ||
+|| [http://downloads.sourceforge.net/shunit2/shunit2-2.0.1.tgz 2.0.1] || Wed Feb 21 2007 ||
+|| [http://downloads.sourceforge.net/shunit2/shunit2-2.0.0.tgz 2.0.0] || Mon Feb 19 2007 ||
+
+=== 2.1.x - Development Releases ===
+|| *Release* || *Date* || *Known Issues* ||
+|| [http://downloads.sourceforge.net/shunit2/shunit2-2.1.3.tgz 2.1.3] || Sun May 10 2008 || Doesn't work with *`zsh`* versions prior to 4.0. ||
+|| [http://downloads.sourceforge.net/shunit2/shunit2-2.1.2.tgz 2.1.2] || Mon Dec 31 2007 || ||
+|| [http://downloads.sourceforge.net/shunit2/shunit2-2.1.1.tgz 2.1.1] || Fri Jul 13 2007 || ||
+|| [http://downloads.sourceforge.net/shunit2/shunit2-2.1.0.tgz 2.1.0] || Mon Apr 23 2007 || ||
+
+== Support ==
+
+=== Documentation ===
+HTML documentation is also included in the `doc` directory of each distribution. Links to the latest version in Subversion are provided below.
+
+[http://shunit2.googlecode.com/svn/trunk/source/2.0/doc/shunit2.html 2.0] ·
+[http://shunit2.googlecode.com/svn/trunk/source/2.1/doc/shunit2.html 2.1]
+
+Various testing techniques are provided in the [http://forestent.com/wiki/ShUnit2:BasicTesting Basic] and [http://forestent.com/wiki/ShUnit2:AdvancedTesting Advanced] pages.
+
+Examples
+  * Writing a function to convert a [http://forestent.com/wiki/ShUnit2:AbsolutePathExample relative path to an absolute path].
+
+=== Mailing Lists ===
+A [mailto:shunit2-users@lists.sourceforge.net shunit2-users@lists.sourceforge.net] mailing list now exists. Everyone is free to [https://lists.sourceforge.net/lists/listinfo/shunit2-users subscribe] to the list.
+
+== Miscellaneous ==
+
+=== Licensing ===
+shUnit2 is licensed under the GNU [http://www.gnu.org/licenses/lgpl.html Lesser General Public License] (LGPL). The contents and copyright of this site and all provided source code are owned by [http://www.linkedin.com/pub/0/9b9/111 Kate Ward].
+
+=== Thanks ===
+A list of contributors is provided with each release (found as `doc/contributors.txt`). Many thanks go out to each of these individuals for finding bugs and/or providing patches.
+
+Hosting resources are gracefully provided by both [http://google.com/ Google] and [http://sourceforge.net/ SourceForge].
