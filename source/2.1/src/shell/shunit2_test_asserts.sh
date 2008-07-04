@@ -46,12 +46,19 @@ commonEqualsSame()
   assertNull 'expected no output to STDOUT' "${rslt}"
   assertFalse 'expected no output to STDERR' "[ -s \"${stderrF}\" ]"
 
-  msg='too few arguments'
-  rslt=`${fn} 2>"${stderrF}"`
+  # too few arguments
+  ( ${fn} >"${stdoutF}" 2>"${stderrF}" )
   rtrn=$?
-  assertFalse "${msg}; failure" ${rtrn}
-  assertNull 'expected no output to STDOUT' "${rslt}"
-  assertTrue 'expected output to STDERR' "[ -s \"${stderrF}\" ]"
+  assertFalse 'unexpected return value' ${rtrn}
+  assertFalse 'expected no output to STDOUT' "[ -s '${stdoutF}' ]"
+  assertTrue 'expected output to STDERR' "[ -s '${stderrF}' ]"
+
+  # too many arguments
+  ( ${fn} arg1 arg2 arg3 arg4 >"${stdoutF}" 2>"${stderrF}" )
+  rtrn=$?
+  assertFalse 'unexpected return value' ${rtrn}
+  assertFalse 'expected no output to STDOUT' "[ -s '${stdoutF}' ]"
+  assertTrue 'expected output to STDERR' "[ -s '${stderrF}' ]"
 }
 
 testAssertEquals()
@@ -117,11 +124,19 @@ testAssertNull()
   assertNotSame "${msg}" '' "${rslt}"
   assertFalse "${msg}; failure" ${rtrn}
 
-  msg='too few arguments'
-  rslt=`assertNull 2>&1`
+  # too few arguments
+  ( assertNull >"${stdoutF}" 2>"${stderrF}" )
   rtrn=$?
-  assertNotSame "${msg}" '' "${rslt}"
-  assertFalse "${msg}; failure" ${rtrn}
+  assertFalse 'unexpected return value' ${rtrn}
+  assertFalse 'expected no output to STDOUT' "[ -s '${stdoutF}' ]"
+  assertTrue 'expected output to STDERR' "[ -s '${stderrF}' ]"
+
+  # too many arguments
+  ( assertNull arg1 arg2 arg3 >"${stdoutF}" 2>"${stderrF}" )
+  rtrn=$?
+  assertFalse 'unexpected return value' ${rtrn}
+  assertFalse 'expected no output to STDOUT' "[ -s '${stdoutF}' ]"
+  assertTrue 'expected output to STDERR' "[ -s '${stderrF}' ]"
 }
 
 testAssertNotNull()

@@ -113,8 +113,8 @@ assertEquals()
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
   _su_message=''
-  if [ $# -lt 2 ]; then
-    _shunit_error 'assertEquals()/assertSame() require at least two arguments'
+  if [ $# -lt 2 -o $# -gt 3 ]; then
+    _shunit_error 'assertEquals()/assertSame() requires one or two arguments'
     return ${SHUNIT_ERROR}
   elif [ $# -eq 3 ]; then
     _su_message=$1
@@ -157,8 +157,8 @@ assertNull()
 {
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
-  if [ $# -lt 1 ]; then
-    _shunit_error 'assertNull() requires at least one arguments'
+  if [ $# -lt 1 -o $# -gt 2 ]; then
+    _shunit_error 'assertNull() requires one or two arguments'
     return ${SHUNIT_ERROR}
   elif [ $# -eq 2 ]; then
     assertTrue "$1" "[ -z '$2' ]"
