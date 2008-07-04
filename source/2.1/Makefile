@@ -1,4 +1,11 @@
 # $Id$
+#
+# Copyright 2008 Kate Ward. All Rights Reserved.
+# Released under the LGPL (GNU Lesser General Public License)
+#
+# Author: kate.ward@forestent.com (Kate Ward)
+#
+# Build file to wrap common steps (e.g. building documentation).
 
 PROG=shunit2
 
@@ -8,7 +15,6 @@ DIST_DIR=$(PWD)/dist
 LIB_DIR=$(PWD)/lib
 SHARE_DIR=$(PWD)/share
 SRC_DIR=$(PWD)/src
-TEST_DIR=$(PWD)/test
 TMP_DIR=$(PWD)/tmp
 
 DOCBOOK_BUILD_DIR=$(BUILD_DIR)/docbook
@@ -17,7 +23,7 @@ DOCBOOK_SHARE_DIR=$(SHARE_DIR)/docbook
 DOCBOOK_SRC_DIR=$(SRC_DIR)/docbook
 EXAMPLES_SRC_DIR=$(SRC_DIR)/examples
 SHELL_SRC_DIR=$(SRC_DIR)/shell
-TEST_SRC_DIR=$(SRC_DIR)/test
+TEST_SRC_DIR=$(SHELL_SRC_DIR)
 
 HTML_XSL=$(SHARE_DIR)/docbook/tldp-xsl/21MAR2004/html/tldp-one-page.xsl
 
@@ -64,18 +70,8 @@ docs-docbook-prep:
 	  $(BIN_DIR)/docbookPrep.sh "$(DOCBOOK_SHARE_DIR)"; \
 	fi
 
-test: test-prep
-	@echo "executing $(PROG) unit tests"
-	( cd $(TEST_DIR); $(TEST_SRC_DIR)/run-test-suite )
-
-test-clean:
-	rm -fr $(TEST_DIR)
-
-test-prep: build test-clean
-	@mkdir -p $(TEST_DIR)
-	cp -p $(TEST_SRC_DIR)/test* $(TEST_DIR)
-	cp -p $(TEST_SRC_DIR)/run-test-suite $(TEST_DIR)
-	cp -p $(SHELL_SRC_DIR)/$(PROG) $(TEST_DIR)
+test: @echo "executing $(PROG) unit tests"
+	( cd $(TEST_SRC_DIR); ./shunit2_test.sh )
 
 dist: dist-clean build docs
 	@mkdir $(DIST_DIR)
