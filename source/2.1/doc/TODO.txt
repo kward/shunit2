@@ -7,5 +7,8 @@ check for dependencies (which shouldn't be there) between tests.
 --debug option to display point in source code (line number and such) where the
 problem showed up.
 
+Add tests for assertTrue() and others that take at most 2 arguments, and check
+that errors are thrown when too many are given.
+
 
 $Revision$

@@ -297,7 +297,10 @@ assertTrue()
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
   _su_message=''
-  if [ $# -eq 2 ]; then
+  if [ $# -gt 2 ]; then
+    _shunit_error 'assertTrue() takes at most two arguments'
+    return ${SHUNIT_ERROR}
+  elif [ $# -eq 2 ]; then
     _su_message=$1
     shift
   fi
