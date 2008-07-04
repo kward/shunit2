@@ -1,16 +1,25 @@
 #! /bin/sh
 # $Id$
+#
+# Copyright 2008 Kate Ward. All Rights Reserved.
+# Released under the LGPL (GNU Lesser General Public License)
+#
+# Author: kate.ward@forestent.com (Kate Ward)
+#
+# shUnit2 unit test wrapper
 
 MY_NAME=`basename $0`
 MY_PATH=`dirname $0`
 
+PREFIX='shunit2_test_'
 SHELLS='/bin/sh /bin/bash /bin/dash /bin/ksh /bin/pdksh /bin/zsh'
-for f in test[A-Z]*; do
-  [ -x "${f}" ] && TESTS="${TESTS:+${TESTS} }${f}"
+TESTS=''
+for test in ${PREFIX}[a-z]*.sh; do
+  TESTS="${TESTS} ${test}"
 done
 
 # load common unit test functions
-. "${MY_PATH}/test-functions.inc"
+. ./shunit2_test_helpers
 
 usage()
 {
@@ -105,14 +114,20 @@ EOF
       fi
       ;;
     pdksh) ;;
-    zsh) echo; echo 'echo ${ZSH_VERSION}' |${shell} ;;
+    zsh)
+      shell_opts='-o shwordsplit --'
+      echo
+      ${shell} --version
+      ;;
   esac
 
   # execute the tests
   for suite in ${tests}; do
-    suiteName=`expr "${suite}" : 'test\(.*\)'`
+    suiteName=`expr "${suite}" : "${PREFIX}\(.*\).sh"`
     echo
     echo "--- Executing the '${suiteName}' test suite ---" >&2
     ( exec ${shell} ${shell_opts} ./${suite}; )
   done
 done
+
+# vim:et:ft=sh:sts=2:sw=2

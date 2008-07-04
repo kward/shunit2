@@ -1,9 +1,12 @@
 # $Id$
-# vim:syntax=sh:sts=2
-
+# vim:et:ft=sh:sts=2:sw=2
 #
-# shell workarounds
+# Copyright 2008 Kate Ward. All Rights Reserved.
+# Released under the LGPL (GNU Lesser General Public License)
 #
+# Author: kate.ward@forestent.com (Kate Ward)
+#
+# shUnit2 unit test common functions
 
 if [ -n "${ZSH_VERSION}" ]; then
   emulate -LR sh
@@ -13,6 +16,9 @@ fi
 #
 # constants
 #
+
+# path to shUnit2 library. can be overridden by setting SHUNIT_INC
+TH_SHUNIT=${SHUNIT_INC:-./shunit2}
 
 # configure debugging. set the DEBUG environment variable to any
 # non-empty value to enable debug output, or TRACE to enable trace
