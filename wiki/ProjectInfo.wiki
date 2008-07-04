@@ -59,7 +59,7 @@ Various testing techniques are provided in the [http://forestent.com/wiki/ShUnit
 === Examples ===
 One case study for writing a function to convert a [http://forestent.com/wiki/ShUnit2:AbsolutePathExample relative path to an absolute path].
 
-Starting with the 2.1.x series, additional examples are included with the source code.
+Starting with the 2.1.x series, additional examples are included with the source code in the `examples` directory.
   * `mkdir_test.sh` – demonstration of testing an existing Unix command (e.g. an already written shell script)
 
 === Mailing Lists ===
