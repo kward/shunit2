@@ -16,6 +16,8 @@ Added error checking for assertTrue().
 
 Added mkdir_test.sh example.
 
+Moved src/test into src/shell to better match structure used with shFlags.
+
 
 Changes with 2.1.3
 ------------------
