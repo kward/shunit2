@@ -626,9 +626,8 @@ _shunit_cleanup()
     _shunit_generateReport
     # disable EXIT trap
     trap 0
-    # add 127 to signal and exit
-    signal=`expr ${signal} + 127`
-    exit ${signal}
+    # add 128 to signal and exit
+    exit `expr ${signal} + 128`
   fi
 }
 
