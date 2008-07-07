@@ -20,45 +20,26 @@ commonEqualsSame()
 {
   fn=$1
 
-  msg='same, with message'
-  rslt=`${fn} "${MSG}" 'x' 'x' 2>&1`
-  rtrn=$?
-  assertSame "${msg}" '' "${rslt}"
-  assertTrue "${msg}; failure" ${rtrn}
+  ( ${fn} 'x' 'x' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'equal' $? "${stdoutF}" "${stderrF}"
 
-  msg='same'
-  rslt=`${fn} 'x' 'x' 2>&1`
-  rtrn=$?
-  assertSame "${msg}" '' "${rslt}"
-  assertTrue "${msg}; failure" ${rtrn}
+  ( ${fn} "${MSG}" 'x' 'x' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'equal; with msg' $? "${stdoutF}" "${stderrF}"
 
-  msg='not same'
-  rslt=`${fn} 'x' 'y' 2>&1`
-  rtrn=$?
-  assertNotSame "${msg}" '' "${rslt}"
-  assertFalse "${msg}; failure" ${rtrn}
+  ( ${fn} 'abc def' 'abc def' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'equal with spaces' $? "${stdoutF}" "${stderrF}"
 
-  msg='null values'
-  rslt=`${fn} '' '' 2>"${stderrF}"`
-  rtrn=$?
-  assertTrue "${msg}; failure" ${rtrn}
-  [ ${rtrn} -ne ${SHUNIT_TRUE} ] && cat "${stderrF}"
-  assertNull 'expected no output to STDOUT' "${rslt}"
-  assertFalse 'expected no output to STDERR' "[ -s \"${stderrF}\" ]"
+  ( ${fn} 'x' 'y' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'not equal' $? "${stdoutF}" "${stderrF}"
 
-  # too few arguments
-  ( ${fn} >"${stdoutF}" 2>"${stderrF}" )
-  rtrn=$?
-  assertFalse 'unexpected return value' ${rtrn}
-  assertFalse 'expected no output to STDOUT' "[ -s '${stdoutF}' ]"
-  assertTrue 'expected output to STDERR' "[ -s '${stderrF}' ]"
+  ( ${fn} '' '' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'null values' $? "${stdoutF}" "${stderrF}"
 
-  # too many arguments
+  ( ${fn} arg1 >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'too few arguments' $? "${stdoutF}" "${stderrF}"
+
   ( ${fn} arg1 arg2 arg3 arg4 >"${stdoutF}" 2>"${stderrF}" )
-  rtrn=$?
-  assertFalse 'unexpected return value' ${rtrn}
-  assertFalse 'expected no output to STDOUT' "[ -s '${stdoutF}' ]"
-  assertTrue 'expected output to STDERR' "[ -s '${stderrF}' ]"
+  th_assertFalseWithSE 'too many arguments' $? "${stdoutF}" "${stderrF}"
 }
 
 testAssertEquals()
@@ -73,187 +54,113 @@ testAssertSame()
 
 testAssertNotSame()
 {
-  msg='not same, with message'
-  rslt=`assertNotSame "${MSG}" 'x' 'y' 2>&1`
-  rtrn=$?
-  assertSame "${msg}" '' "${rslt}"
-  assertTrue "${msg}; failure" ${rtrn}
+  ( assertNotSame 'x' 'y' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'not same' $? "${stdoutF}" "${stderrF}"
 
-  msg='not same'
-  rslt=`assertNotSame 'x' 'y' 2>&1`
-  rtrn=$?
-  assertSame "${msg}" '' "${rslt}"
-  assertTrue "${msg}; failure" ${rtrn}
+  ( assertNotSame "${MSG}" 'x' 'y' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'not same, with msg' $? "${stdoutF}" "${stderrF}"
 
-  msg='same'
-  rslt=`assertNotSame 'x' 'x' 2>&1`
-  rtrn=$?
-  assertNotSame "${msg}" '' "${rslt}"
-  assertFalse "${msg}; failure" ${rtrn}
+  ( assertNotSame 'x' 'x' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'same' $? "${stdoutF}" "${stderrF}"
 
-  msg='null values'
-  rslt=`assertNotSame '' '' 2>&1`
-  rtrn=$?
-  assertNotSame "${msg}" '' "${rslt}"
-  assertFalse "${msg}; failure" ${rtrn}
+  ( assertNotSame '' '' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'null values' $? "${stdoutF}" "${stderrF}"
 
-  msg='too few arguments'
-  rslt=`assertNotSame 2>&1`
-  rtrn=$?
-  assertNotSame "${msg}" '' "${rslt}"
-  assertFalse "${msg}; failure" ${rtrn}
+  ( assertNotSame arg1 >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'too few arguments' $? "${stdoutF}" "${stderrF}"
+
+  ( assertNotSame arg1 arg2 arg3 arg4 >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'too many arguments' $? "${stdoutF}" "${stderrF}"
 }
 
 testAssertNull()
 {
-  msg='null, with message'
-  rslt=`assertNull "${MSG}" '' 2>&1`
-  rtrn=$?
-  assertSame "${msg}" '' "${rslt}"
-  assertTrue "${msg}; failure" ${rtrn}
+  ( assertNull '' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'null' $? "${stdoutF}" "${stderrF}"
 
-  msg='null'
-  rslt=`assertNull '' 2>&1`
-  rtrn=$?
-  assertSame "${msg}" '' "${rslt}"
-  assertTrue "${msg}; failure" ${rtrn}
+  ( assertNull "${MSG}" '' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'null, with msg' $? "${stdoutF}" "${stderrF}"
 
-  msg='not null'
-  rslt=`assertNull 'x' 2>&1`
-  rtrn=$?
-  assertNotSame "${msg}" '' "${rslt}"
-  assertFalse "${msg}; failure" ${rtrn}
+  ( assertNull 'x' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'not null' $? "${stdoutF}" "${stderrF}"
 
-  # too few arguments
   ( assertNull >"${stdoutF}" 2>"${stderrF}" )
-  rtrn=$?
-  assertFalse 'unexpected return value' ${rtrn}
-  assertFalse 'expected no output to STDOUT' "[ -s '${stdoutF}' ]"
-  assertTrue 'expected output to STDERR' "[ -s '${stderrF}' ]"
+  th_assertFalseWithSE 'too few arguments' $? "${stdoutF}" "${stderrF}"
 
-  # too many arguments
   ( assertNull arg1 arg2 arg3 >"${stdoutF}" 2>"${stderrF}" )
-  rtrn=$?
-  assertFalse 'unexpected return value' ${rtrn}
-  assertFalse 'expected no output to STDOUT' "[ -s '${stdoutF}' ]"
-  assertTrue 'expected output to STDERR' "[ -s '${stderrF}' ]"
+  th_assertFalseWithSE 'too many arguments' $? "${stdoutF}" "${stderrF}"
 }
 
 testAssertNotNull()
 {
-  msg='not null, with message'
-  rslt=`assertNotNull "${MSG}" 'x' 2>&1`
-  rtrn=$?
-  assertSame "${msg}" '' "${rslt}"
-  assertTrue "${msg}; failure" ${rtrn}
+  ( assertNotNull 'x' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'not null' $? "${stdoutF}" "${stderrF}"
 
-  msg='not null'
-  rslt=`assertNotNull 'x' 2>&1`
-  rtrn=$?
-  assertSame "${msg}" '' "${rslt}"
-  assertTrue "${msg}; failure" ${rtrn}
+  ( assertNotNull "${MSG}" 'x' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'not null, with msg' $? "${stdoutF}" "${stderrF}"
 
-  msg='null'
-  rslt=`assertNotNull '' 2>&1`
-  rtrn=$?
-  assertNotSame "${msg}" '' "${rslt}"
-  assertFalse "${msg}; failure" ${rtrn}
+  ( assertNotNull '' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'null' $? "${stdoutF}" "${stderrF}"
 
-  msg='too few arguments'
-  rslt=`assertNotNull 2>&1`
-  rtrn=$?
-  assertNotSame "${msg}" '' "${rslt}"
-  assertFalse "${msg}; failure" ${rtrn}
+  ( assertNotNull >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'too few arguments' $? "${stdoutF}" "${stderrF}"
+
+  ( assertNotNull arg1 arg2 arg3 >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'too many arguments' $? "${stdoutF}" "${stderrF}"
 }
 
 testAssertTrue()
 {
-  msg='true, with message'
-  rslt=`assertTrue "${MSG}" 0 2>&1`
-  rtrn=$?
-  assertSame "${msg}" '' "${rslt}"
-  assertTrue "${msg}; failure" ${rtrn}
+  ( assertTrue 0 >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'true' $? "${stdoutF}" "${stderrF}"
 
-  msg='true'
-  rslt=`assertTrue 0 2>&1`
-  rtrn=$?
-  assertSame "${msg}" '' "${rslt}"
-  assertTrue "${msg}; failure" ${rtrn}
+  ( assertTrue "${MSG}" 0 >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'true, with msg' $? "${stdoutF}" "${stderrF}"
 
-  msg='true condition'
-  rslt=`assertTrue "[ 0 -eq 0 ]" 2>&1`
-  rtrn=$?
-  assertSame "${msg}" '' "${rslt}"
-  assertTrue "${msg}; failure" ${rtrn}
+  ( assertTrue '[ 0 -eq 0 ]' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'true condition' $? "${stdoutF}" "${stderrF}"
 
-  msg='false'
-  rslt=`assertTrue 1 2>&1`
-  rtrn=$?
-  assertNotSame "${msg}" '' "${rslt}"
-  assertFalse "${msg}; failure" ${rtrn}
+  ( assertTrue 1 >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'false' $? "${stdoutF}" "${stderrF}"
 
-  msg='false condition'
-  rslt=`assertTrue "[ 0 -eq 1 ]" 2>&1`
-  rtrn=$?
-  assertNotSame "${msg}" '' "${rslt}"
-  assertFalse "${msg}; failure" ${rtrn}
+  ( assertTrue '[ 0 -eq 1 ]' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'false condition' $? "${stdoutF}" "${stderrF}"
 
-  msg='null value'
-  rslt=`assertTrue '' 2>&1`
-  rtrn=$?
-  assertNotSame "${msg}" '' "${rslt}"
-  assertFalse "${msg}; failure" ${rtrn}
+  ( assertTrue '' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'null' $? "${stdoutF}" "${stderrF}"
 
-  msg='too few arguments'
-  rslt=`assertTrue 2>&1`
-  rtrn=$?
-  assertNotSame "${msg}" '' "${rslt}"
-  assertFalse "${msg}; failure" ${rtrn}
+  ( assertTrue >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'too few arguments' $? "${stdoutF}" "${stderrF}"
+
+  ( assertTrue arg1 arg2 arg3 >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'too many arguments' $? "${stdoutF}" "${stderrF}"
 }
 
 testAssertFalse()
 {
-  msg='false, with message'
-  rslt=`assertFalse "${MSG}" 1 2>&1`
-  rtrn=$?
-  assertSame "${msg}" '' "${rslt}"
-  assertTrue "${msg}; failure" ${rtrn}
+  ( assertFalse 1 >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'false' $? "${stdoutF}" "${stderrF}"
 
-  msg='false'
-  rslt=`assertFalse 1 2>&1`
-  rtrn=$?
-  assertSame "${msg}" '' "${rslt}"
-  assertTrue "${msg}; failure" ${rtrn}
+  ( assertFalse "${MSG}" 1 >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'false, with msg' $? "${stdoutF}" "${stderrF}"
 
-  msg='false condition'
-  rslt=`assertFalse "[ 0 -eq 1 ]" 2>&1`
-  rtrn=$?
-  assertSame "${msg}" '' "${rslt}"
-  assertTrue "${msg}; failure" ${rtrn}
+  ( assertFalse '[ 0 -eq 1 ]' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'false condition' $? "${stdoutF}" "${stderrF}"
 
-  msg='true'
-  rslt=`assertFalse 0 2>&1`
-  rtrn=$?
-  assertNotSame "${msg}" '' "${rslt}"
-  assertFalse "${msg}; failure" ${rtrn}
+  ( assertFalse 0 >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'true' $? "${stdoutF}" "${stderrF}"
 
-  msg='true condition'
-  rslt=`assertFalse "[ 0 -eq 0 ]" 2>&1`
-  rtrn=$?
-  assertNotSame "${msg}" '' "${rslt}"
-  assertFalse "${msg}; failure" ${rtrn}
+  ( assertFalse '[ 0 -eq 0 ]' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'true condition' $? "${stdoutF}" "${stderrF}"
 
-  msg='null value'
-  rslt=`assertFalse '' 2>&1`
-  rtrn=$?
-  assertNotSame "${msg}" '' "${rslt}"
-  assertFalse "${msg}; failure" ${rtrn}
+  ( assertFalse '' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'true condition' $? "${stdoutF}" "${stderrF}"
 
-  msg='too few arguments'
-  rslt=`assertFalse 2>&1`
-  rtrn=$?
-  assertNotSame "${msg}" '' "${rslt}"
-  assertFalse "${msg}; failure" ${rtrn}
+  ( assertFalse >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'too few arguments' $? "${stdoutF}" "${stderrF}"
+
+  ( assertFalse arg1 arg2 arg3 >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'too many arguments' $? "${stdoutF}" "${stderrF}"
 }
 
 #------------------------------------------------------------------------------

@@ -16,73 +16,58 @@
 # suite tests
 #
 
-commonNotEqualsSame()
-{
-  fn=$1
-
-  msg='same, with message'
-  rslt=`${fn} "${MSG}" 'x' 'x' 2>&1`
-  assertNotSame "${msg}" '' "${rslt}"
-
-  msg='same'
-  rslt=`${fn} 'x' 'x' 2>&1`
-  assertNotSame "${msg}" '' "${rslt}"
-
-  msg='not same'
-  rslt=`${fn} 'x' 'y' 2>&1`
-  assertNotSame "${msg}" '' "${rslt}"
-
-  msg='null values'
-  rslt=`${fn} '' '' 2>&1`
-  assertNotSame "${msg}" '' "${rslt}"
-
-  msg='too few arguments'
-  rslt=`${fn} 2>&1`
-  assertNotSame "${msg}" '' "${rslt}"
-}
-
 testFail()
 {
-  msg='with message'
-  rslt=`fail "${MSG}" 2>&1`
-  assertNotSame "${msg}" '' "${rslt}"
+  ( fail >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'fail' $? "${stdoutF}" "${stderrF}"
 
-  msg='without message'
-  rslt=`fail 2>&1`
-  assertNotSame "${msg}" '' "${rslt}"
+  ( fail "${MSG}" >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'fail with msg' $? "${stdoutF}" "${stderrF}"
+
+  ( fail arg1 >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'too many arguments' $? "${stdoutF}" "${stderrF}"
 }
 
 testFailNotEquals()
 {
-  commonNotEqualsSame 'failNotEquals'
+  ( failNotEquals 'x' 'x' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'same' $? "${stdoutF}" "${stderrF}"
+
+  ( failNotEquals "${MSG}" 'x' 'x' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'same with msg' $? "${stdoutF}" "${stderrF}"
+
+  ( failNotEquals 'x' 'y' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'not same' $? "${stdoutF}" "${stderrF}"
+
+  ( failNotEquals '' '' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'null values' $? "${stdoutF}" "${stderrF}"
+
+  ( failNotEquals >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'too few arguments' $? "${stdoutF}" "${stderrF}"
+
+  ( failNotEquals arg1 arg2 arg3 arg4 >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'too many arguments' $? "${stdoutF}" "${stderrF}"
 }
 
 testFailSame()
 {
-  msg='same, with message'
-  rslt=`failSame "${MSG}" 'x' 'x' 2>&1`
-  assertNotSame "${msg}" '' "${rslt}"
+  ( failSame 'x' 'x' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'same' $? "${stdoutF}" "${stderrF}"
 
-  msg='same'
-  rslt=`failSame 'x' 'x' 2>&1`
-  assertNotSame "${msg}" '' "${rslt}"
+  ( failSame "${MSG}" 'x' 'x' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'same with msg' $? "${stdoutF}" "${stderrF}"
 
-  msg='not same'
-  rslt=`failSame 'x' 'y' 2>&1`
-  assertNotSame "${msg}" '' "${rslt}"
+  ( failSame 'x' 'y' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'not same' $? "${stdoutF}" "${stderrF}"
 
-  msg='null values'
-  rslt=`failSame '' '' 2>&1`
-  assertNotSame "${msg}" '' "${rslt}"
+  ( failSame '' '' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'null values' $? "${stdoutF}" "${stderrF}"
 
-  msg='too few arguments'
-  rslt=`failSame 2>&1`
-  assertNotSame "${msg}" '' "${rslt}"
-}
+  ( failSame >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'too few arguments' $? "${stdoutF}" "${stderrF}"
 
-testFailNotSame()
-{
-  commonNotEqualsSame 'failNotSame'
+  ( failSame arg1 arg2 arg3 arg4 >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'too many arguments' $? "${stdoutF}" "${stderrF}"
 }
 
 #-----------------------------------------------------------------------------
@@ -91,6 +76,11 @@ testFailNotSame()
 
 oneTimeSetUp()
 {
+  tmpDir="${__shunit_tmpDir}/output"
+  mkdir "${tmpDir}"
+  stdoutF="${tmpDir}/stdout"
+  stderrF="${tmpDir}/stderr"
+
   MSG='This is a test message'
 }
 

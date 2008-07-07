@@ -110,18 +110,19 @@ __shunit_testsTotal=0
 #*/
 assertEquals()
 {
+  if [ $# -lt 2 -o $# -gt 3 ]; then
+    _shunit_error 'assertEquals() requires one or two arguments'
+    return ${SHUNIT_ERROR}
+  fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
   _su_message=''
-  if [ $# -lt 2 -o $# -gt 3 ]; then
-    _shunit_error 'assertEquals()/assertSame() requires one or two arguments'
-    return ${SHUNIT_ERROR}
-  elif [ $# -eq 3 ]; then
+  if [ $# -eq 3 ]; then
     _su_message=$1
     shift
   fi
-  _su_expected=${1:-}
-  _su_actual=${2:-}
+  _su_expected=$1
+  _su_actual=$2
 
   shunit_return=${SHUNIT_TRUE}
   if [ "${_su_expected}" = "${_su_actual}" ]; then
@@ -131,7 +132,7 @@ assertEquals()
     shunit_return=${SHUNIT_FALSE}
   fi
 
-  unset _su_message _su_expected _su_actual
+  unset _su_message _su_expected _su_actual __shunit_lineno
   return ${shunit_return}
 }
 
@@ -155,15 +156,16 @@ assertEquals()
 #*/
 assertNull()
 {
-  _shunit_shouldSkip && return ${SHUNIT_TRUE}
-
   if [ $# -lt 1 -o $# -gt 2 ]; then
     _shunit_error 'assertNull() requires one or two arguments'
     return ${SHUNIT_ERROR}
-  elif [ $# -eq 2 ]; then
+  fi
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
+  if [ $# -eq 2 ]; then
     assertTrue "$1" "[ -z '$2' ]"
   else
-    assertTrue "[ -z '${1:-}' ]"
+    assertTrue "[ -z '$1' ]"
   fi
 }
 
@@ -188,12 +190,16 @@ assertNull()
 #*/
 assertNotNull()
 {
+  if [ $# -lt 1 -o $# -gt 2 ]; then
+    _shunit_error 'assertNotNull() requires one or two arguments'
+    return ${SHUNIT_ERROR}
+  fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
   if [ $# -eq 2 ]; then
     assertTrue "$1" "[ -n '$2' ]"
   else
-    assertTrue "[ -n '${1:-}' ]"
+    assertTrue "[ -n '$1' ]"
   fi
 }
 
@@ -218,7 +224,17 @@ assertNotNull()
 #*/
 assertSame()
 {
-  assertEquals "${@:-}"
+  if [ $# -lt 2 -o $# -gt 3 ]; then
+    _shunit_error 'assertSame() requires one or two arguments'
+    return ${SHUNIT_ERROR}
+  fi
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
+  if [ $# -eq 2 ]; then
+    assertEquals "$1" "$2"
+  else
+    assertEquals "$1" "$2" "$3"
+  fi
 }
 
 #/**
@@ -243,6 +259,10 @@ assertSame()
 #*/
 assertNotSame()
 {
+  if [ $# -lt 2 -o $# -gt 3 ]; then
+    _shunit_error 'assertNotSame() requires two or three arguments'
+    return ${SHUNIT_ERROR}
+  fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
   _su_message=''
@@ -250,8 +270,8 @@ assertNotSame()
     _su_message=$1
     shift
   fi
-  _su_unexpected=${1:-}
-  _su_actual=${2:-}
+  _su_unexpected=$1
+  _su_actual=$2
 
   shunit_return=${SHUNIT_TRUE}
   if [ "${_su_unexpected}" != "${_su_actual}" ]; then
@@ -294,17 +314,18 @@ assertNotSame()
 #*/
 assertTrue()
 {
-  _shunit_shouldSkip && return ${SHUNIT_TRUE}
-
-  _su_message=''
   if [ $# -gt 2 ]; then
     _shunit_error 'assertTrue() takes at most two arguments'
     return ${SHUNIT_ERROR}
-  elif [ $# -eq 2 ]; then
+  fi
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
+  _su_message=''
+  if [ $# -eq 2 ]; then
     _su_message=$1
     shift
   fi
-  _su_condition=${1:-}
+  _su_condition=$1
 
   shunit_return=${SHUNIT_TRUE}
 
@@ -362,6 +383,10 @@ assertTrue()
 #*/
 assertFalse()
 {
+  if [ $# -lt 1 -o $# -gt 2 ]; then
+    _shunit_error 'assertFalse() quires one or two arguments'
+    return ${SHUNIT_ERROR}
+  fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
   _su_message=''
@@ -369,7 +394,7 @@ assertFalse()
     _su_message=$1
     shift
   fi
-  _su_condition=${1:-}
+  _su_condition=$1
 
   shunit_return=${SHUNIT_TRUE}
 
@@ -420,13 +445,22 @@ assertFalse()
 #*/
 fail()
 {
+  if [ $# -gt 1 ]; then
+    _shunit_error 'fail() requires one or two arguments'
+    return ${SHUNIT_ERROR}
+  fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
-  _su_message=${1:-}
+  _su_message=''
+  if [ $# -eq 1 ]; then
+    _su_message=$1
+    shift
+  fi
 
   _shunit_testFailed "${_su_message}"
 
   unset _su_message
+  return ${SHUNIT_FALSE}
 }
 
 #/**
@@ -451,6 +485,10 @@ fail()
 #*/
 failNotEquals()
 {
+  if [ $# -lt 2 -o $# -gt 3 ]; then
+    _shunit_error 'failNotEquals() requires one or two arguments'
+    return ${SHUNIT_ERROR}
+  fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
   _su_message=''
@@ -458,12 +496,13 @@ failNotEquals()
     _su_message=$1
     shift
   fi
-  _su_unexpected=${1:-}
-  _su_actual=${2:-}
+  _su_unexpected=$1
+  _su_actual=$2
 
   _shunit_testFailed "${_su_message:+${_su_message} }expected:<${_su_unexpected}> but was:<${_su_actual}>"
 
   unset _su_message _su_unexpected _su_actual
+  return ${SHUNIT_FALSE}
 }
 
 #/**
@@ -485,13 +524,22 @@ failNotEquals()
 #*/
 failSame()
 {
+  if [ $# -lt 2 -o $# -gt 3 ]; then
+    _shunit_error 'failSame() requires two or three arguments'
+    return ${SHUNIT_ERROR}
+  fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
-  _su_message=${1:-}
+  _su_message=''
+  if [ $# -eq 3 ]; then
+    _su_message=$1
+    shift
+  fi
 
   _shunit_testFailed "${_su_message:+${_su_message} }expected not same"
 
   unset _su_message
+  return ${SHUNIT_FALSE}
 }
 
 #/**
@@ -516,7 +564,17 @@ failSame()
 #*/
 failNotSame()
 {
-  failNotEquals "${@:-}"
+  if [ $# -lt 2 -o $# -gt 3 ]; then
+    _shunit_error 'failNotEquals() requires one or two arguments'
+    return ${SHUNIT_ERROR}
+  fi
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
+  if [ $# -eq 2 ]; then
+    failNotEquals "$1" "$2"
+  else
+    failNotEquals "$1" "$2" "$3"
+  fi
 }
 
 #-----------------------------------------------------------------------------

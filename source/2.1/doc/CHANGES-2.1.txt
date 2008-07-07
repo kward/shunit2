@@ -12,11 +12,13 @@ Fixed bug in last resort temporary directory creation.
 
 Fixed off-by-one in exit value for scripts caught by the trap handler.
 
-Added error checking for assertTrue().
+Added argument count error checking to all functions.
 
 Added mkdir_test.sh example.
 
 Moved src/test into src/shell to better match structure used with shFlags.
+
+Fixed problem where null values were not handled properly under ksh.
 
 
 Changes with 2.1.3
