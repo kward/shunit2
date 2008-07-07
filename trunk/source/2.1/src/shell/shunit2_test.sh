@@ -54,7 +54,7 @@ tests=${tests:-${TESTS}}
 
 # error checking
 if [ -z "${tests}" ]; then
-  tf_error 'no tests found to run; exiting'
+  th_error 'no tests found to run; exiting'
   exit 1
 fi
 
@@ -89,7 +89,7 @@ for shell in ${shells}; do
 
   # check for existance of shell
   if [ ! -x ${shell} ]; then
-    tf_warn "unable to run tests with the ${shell} shell"
+    th_warn "unable to run tests with the ${shell} shell"
     continue
   fi
 
