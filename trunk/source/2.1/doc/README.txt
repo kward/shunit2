@@ -2,6 +2,27 @@
 shUnit2 2.1.x README
 ====================
 
+Coding Standards
+================
+
++------------------+-----------------------+
+| type             | sample                |
++==================+=======================+
+| local variable   | shunit_someVariable_  |
++------------------+-----------------------+
+| global variable  | __shunit_someVariable |
++------------------+-----------------------+
+| public constant  | SHUNIT_TRUE           |
++------------------+-----------------------+
+| private constant | __SHUNIT_SHELL_FLAGS  |
++------------------+-----------------------+
+| public function  | assertEquals          |
++------------------+-----------------------+
+| private function | _shunit_someFunction  |
++------------------+-----------------------+
+| macro            | _SHUNIT_SOME_MACRO_   |
++------------------+-----------------------+
+
 SourceForge
 ===========
 
