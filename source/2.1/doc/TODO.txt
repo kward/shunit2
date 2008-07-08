@@ -7,5 +7,6 @@ check for dependencies (which shouldn't be there) between tests.
 --debug option to display point in source code (line number and such) where the
 problem showed up.
 
+assertTrue() just gives 'ASSERT:', nothing else :-(. others too?
 
 $Revision$

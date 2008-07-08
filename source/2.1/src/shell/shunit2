@@ -18,7 +18,7 @@
 # </s:header>
 #*/
 
-__SHUNIT_VERSION='2.1.4pre'
+SHUNIT_VERSION='2.1.4pre'
 
 _shunit_warn() { echo "shunit2:WARN $@" >&2; }
 _shunit_error() { echo "shunit2:ERROR $@" >&2; }
@@ -46,10 +46,10 @@ fi
 __SHUNIT_SHELL_FLAGS='u'
 
 # save the current set of shell flags, and then set some for ourself
-_shunit_shellFlags="$-"
-for _shunit_shellFlag in `echo "${__SHUNIT_SHELL_FLAGS}" |sed 's/\(.\)/\1 /g'`
+shunit_shellFlags_="$-"
+for shunit_shellFlag_ in `echo "${__SHUNIT_SHELL_FLAGS}" |sed 's/\(.\)/\1 /g'`
 do
-  set -${_shunit_shellFlag}
+  set -${shunit_shellFlag_}
 done
 
 #
@@ -88,6 +88,8 @@ __shunit_testsTotal=0
 # assert functions
 #
 
+_SHUNIT_LINENO_='eval if [ "${1:-}" = "--lineno" ]; then [ -n "$2}" ] && shunit_message_="[$2]"; shift 2; fi'
+
 #/**
 # <s:function group="asserts">
 # <entry align="right">
@@ -110,31 +112,33 @@ __shunit_testsTotal=0
 #*/
 assertEquals()
 {
+  ${_SHUNIT_LINENO_}
   if [ $# -lt 2 -o $# -gt 3 ]; then
     _shunit_error 'assertEquals() requires one or two arguments'
     return ${SHUNIT_ERROR}
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
-  _su_message=''
+  [ -z "${shunit_message_:-}" ] && shunit_message_=''
   if [ $# -eq 3 ]; then
-    _su_message=$1
+    shunit_message_="${shunit_message_}$1"
     shift
   fi
-  _su_expected=$1
-  _su_actual=$2
+  shunit_expected_=$1
+  shunit_actual_=$2
 
   shunit_return=${SHUNIT_TRUE}
-  if [ "${_su_expected}" = "${_su_actual}" ]; then
+  if [ "${shunit_expected_}" = "${shunit_actual_}" ]; then
     _shunit_testPassed
   else
-    failNotEquals "${_su_message}" "${_su_expected}" "${_su_actual}"
+    failNotEquals "${shunit_message_}" "${shunit_expected_}" "${shunit_actual_}"
     shunit_return=${SHUNIT_FALSE}
   fi
 
-  unset _su_message _su_expected _su_actual __shunit_lineno
+  unset shunit_message_ shunit_expected_ shunit_actual_ __shunit_lineno
   return ${shunit_return}
 }
+_ASSERT_EQUALS_='eval assertEquals --lineno "${LINENO:-}"'
 
 #/**
 # <s:function group="asserts">
@@ -156,18 +160,25 @@ assertEquals()
 #*/
 assertNull()
 {
+  ${_SHUNIT_LINENO_}
   if [ $# -lt 1 -o $# -gt 2 ]; then
     _shunit_error 'assertNull() requires one or two arguments'
     return ${SHUNIT_ERROR}
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
+  [ -z "${shunit_message_:-}" ] && shunit_message_=''
   if [ $# -eq 2 ]; then
-    assertTrue "$1" "[ -z '$2' ]"
+    shunit_message_="${shunit_message_}$1"
+    shift
+  fi
+  if [ $# -eq 2 ]; then
+    assertTrue "${shunit_message_}$1" "[ -z '$2' ]"
   else
     assertTrue "[ -z '$1' ]"
   fi
 }
+_ASSERT_NULL_='eval assertNull --lineno "${LINENO:-}"'
 
 #/**
 # <s:function group="asserts">
@@ -265,23 +276,23 @@ assertNotSame()
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
-  _su_message=''
+  shunit_message_=''
   if [ $# -eq 3 ]; then
-    _su_message=$1
+    shunit_message_=$1
     shift
   fi
-  _su_unexpected=$1
-  _su_actual=$2
+  su_unexpected_=$1
+  shunit_actual_=$2
 
   shunit_return=${SHUNIT_TRUE}
-  if [ "${_su_unexpected}" != "${_su_actual}" ]; then
+  if [ "${su_unexpected_}" != "${shunit_actual_}" ]; then
     _shunit_testPassed
   else
-    failSame "${_su_message}"
+    failSame "${shunit_message_}"
     shunit_return=${SHUNIT_FALSE}
   fi
 
-  unset _su_message _su_unexpected _su_actual
+  unset shunit_message_ su_unexpected_ shunit_actual_
   return ${shunit_return}
 }
 
@@ -314,32 +325,33 @@ assertNotSame()
 #*/
 assertTrue()
 {
+  ${_SHUNIT_LINENO_}
   if [ $# -gt 2 ]; then
-    _shunit_error 'assertTrue() takes at most two arguments'
+    _shunit_error 'assertTrue() takes one two arguments'
     return ${SHUNIT_ERROR}
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
-  _su_message=''
+  shunit_message_=''
   if [ $# -eq 2 ]; then
-    _su_message=$1
+    shunit_message_=$1
     shift
   fi
-  _su_condition=$1
+  shunit_condition_=$1
 
   shunit_return=${SHUNIT_TRUE}
 
   # see if condition is an integer, i.e. a return value
-  _su_match=`expr "${_su_condition}" : '\([0-9]*\)'`
-  if [ -z "${_su_condition}" ]; then
+  shunit_match_=`expr "${shunit_condition_}" : '\([0-9]*\)'`
+  if [ -z "${shunit_condition_}" ]; then
     # null condition
     shunit_return=${SHUNIT_FALSE}
-  elif [ "${_su_condition}" = "${_su_match}" ]; then
+  elif [ "${shunit_condition_}" = "${shunit_match_}" ]; then
     # possible return value. treating 0 as true, and non-zero as false.
-    [ ${_su_condition} -ne 0 ] && shunit_return=${SHUNIT_FALSE}
+    [ ${shunit_condition_} -ne 0 ] && shunit_return=${SHUNIT_FALSE}
   else
     # (hopefully) a condition
-    ( eval ${_su_condition} ) >/dev/null 2>&1
+    ( eval ${shunit_condition_} ) >/dev/null 2>&1
     [ $? -ne 0 ] && shunit_return=${SHUNIT_FALSE}
   fi
 
@@ -347,12 +359,13 @@ assertTrue()
   if [ ${shunit_return} -eq ${SHUNIT_TRUE} ]; then
     _shunit_testPassed
   else
-    _shunit_testFailed "${_su_message}"
+    _shunit_testFailed "${shunit_message_}"
   fi
 
-  unset _su_message _su_condition _su_match
+  unset shunit_message_ shunit_condition_ shunit_match_
   return ${shunit_return}
 }
+_ASSERT_TRUE_='eval assertTrue --lineno "${LINENO:-}"'
 
 #/**
 # <s:function group="asserts">
@@ -389,26 +402,26 @@ assertFalse()
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
-  _su_message=''
+  shunit_message_=''
   if [ $# -eq 2 ]; then
-    _su_message=$1
+    shunit_message_=$1
     shift
   fi
-  _su_condition=$1
+  shunit_condition_=$1
 
   shunit_return=${SHUNIT_TRUE}
 
   # see if condition is an integer, i.e. a return value
-  _su_match=`expr "${_su_condition}" : '\([0-9]*\)'`
-  if [ -z "${_su_condition}" ]; then
+  shunit_match_=`expr "${shunit_condition_}" : '\([0-9]*\)'`
+  if [ -z "${shunit_condition_}" ]; then
     # null condition
     shunit_return=${SHUNIT_FALSE}
-  elif [ "${_su_condition}" = "${_su_match}" ]; then
+  elif [ "${shunit_condition_}" = "${shunit_match_}" ]; then
     # possible return value. treating 0 as true, and non-zero as false.
-    [ ${_su_condition} -eq 0 ] && shunit_return=${SHUNIT_FALSE}
+    [ ${shunit_condition_} -eq 0 ] && shunit_return=${SHUNIT_FALSE}
   else
     # (hopefully) a condition
-    ( eval ${_su_condition} ) >/dev/null 2>&1
+    ( eval ${shunit_condition_} ) >/dev/null 2>&1
     [ $? -eq 0 ] && shunit_return=${SHUNIT_FALSE}
   fi
 
@@ -416,10 +429,10 @@ assertFalse()
   if [ ${shunit_return} -eq ${SHUNIT_TRUE} ]; then
     _shunit_testPassed
   else
-    _shunit_testFailed "${_su_message}"
+    _shunit_testFailed "${shunit_message_}"
   fi
 
-  unset _su_message _su_condition _su_match
+  unset shunit_message_ shunit_condition_ shunit_match_
   return ${shunit_return}
 }
 
@@ -451,15 +464,15 @@ fail()
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
-  _su_message=''
+  shunit_message_=''
   if [ $# -eq 1 ]; then
-    _su_message=$1
+    shunit_message_=$1
     shift
   fi
 
-  _shunit_testFailed "${_su_message}"
+  _shunit_testFailed "${shunit_message_}"
 
-  unset _su_message
+  unset shunit_message_
   return ${SHUNIT_FALSE}
 }
 
@@ -491,17 +504,17 @@ failNotEquals()
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
-  _su_message=''
+  shunit_message_=''
   if [ $# -eq 3 ]; then
-    _su_message=$1
+    shunit_message_=$1
     shift
   fi
-  _su_unexpected=$1
-  _su_actual=$2
+  su_unexpected_=$1
+  shunit_actual_=$2
 
-  _shunit_testFailed "${_su_message:+${_su_message} }expected:<${_su_unexpected}> but was:<${_su_actual}>"
+  _shunit_testFailed "${shunit_message_:+${shunit_message_} }expected:<${su_unexpected_}> but was:<${shunit_actual_}>"
 
-  unset _su_message _su_unexpected _su_actual
+  unset shunit_message_ su_unexpected_ shunit_actual_
   return ${SHUNIT_FALSE}
 }
 
@@ -530,15 +543,15 @@ failSame()
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
-  _su_message=''
+  shunit_message_=''
   if [ $# -eq 3 ]; then
-    _su_message=$1
+    shunit_message_=$1
     shift
   fi
 
-  _shunit_testFailed "${_su_message:+${_su_message} }expected not same"
+  _shunit_testFailed "${shunit_message_:+${shunit_message_} }expected not same"
 
-  unset _su_message
+  unset shunit_message_
   return ${SHUNIT_FALSE}
 }
 
@@ -977,12 +990,13 @@ suite
 
 # if no suite function was defined, dynamically build a list of functions
 if [ -z "${__shunit_suite}" ]; then
-  funcs=`grep "^[ \t]*test[A-Za-z0-9_]* *()" ${__SHUNIT_PARENT} \
+  shunit_funcs_=`grep "^[ \t]*test[A-Za-z0-9_]* *()" ${__SHUNIT_PARENT} \
       |sed 's/[^A-Za-z0-9_]//g'`
-  for func in ${funcs}; do
-    suite_addTest ${func}
+  for shunit_func_ in ${shunit_funcs_}; do
+    suite_addTest ${shunit_func_}
   done
 fi
+unset shunit_func_ shunit_funcs_
 
 # execute the tests
 _shunit_execSuite
@@ -994,11 +1008,11 @@ oneTimeTearDown
 _shunit_generateReport
 
 # restore the previous set of shell flags
-for _shunit_shellFlag in ${__SHUNIT_SHELL_FLAGS}; do
-  echo ${_shunit_shellFlags} |grep ${_shunit_shellFlag} >/dev/null \
-    || set +${_shunit_shellFlag}
+for shunit_shellFlag_ in ${__SHUNIT_SHELL_FLAGS}; do
+  echo ${shunit_shellFlags_} |grep ${shunit_shellFlag_} >/dev/null \
+    || set +${shunit_shellFlag_}
 done
-unset _shunit_shellFlag _shunit_shellFlags
+unset shunit_shellFlag_ shunit_shellFlags_
 
 [ ${__shunit_testsFailed} -eq 0 ] || exit 1
 

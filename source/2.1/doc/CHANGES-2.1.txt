@@ -20,6 +20,8 @@ Moved src/test into src/shell to better match structure used with shFlags.
 
 Fixed problem where null values were not handled properly under ksh.
 
+Adding support for outputting line numbers as part of assert messages.
+
 
 Changes with 2.1.3
 ------------------
