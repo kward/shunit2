@@ -22,6 +22,9 @@ Fixed problem where null values were not handled properly under ksh.
 
 Adding support for outputting line numbers as part of assert messages.
 
+Started documenting the coding standards, and changed some variable names as a
+result.
+
 
 Changes with 2.1.3
 ------------------
