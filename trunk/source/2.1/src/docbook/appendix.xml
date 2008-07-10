@@ -20,7 +20,7 @@ Appendix
           <orderedlist numeration="lowerroman">
             <listitem>
               <para>In the unit-test script, add the following shell code before sourcing the &shunit2; library.</para>
-              <programlisting><![CDATA[emulate -LR sh]]></programlisting>
+              <programlisting><![CDATA[setopt shwordsplit]]></programlisting>
             </listitem>
             <listitem>
               <para>When invoking <command>zsh</command> from either the command-line or as a script with <code>#!</code>, add the <parameter>-y</parameter> parameter.</para>
@@ -31,11 +31,6 @@ Appendix
               <programlisting><![CDATA[$ zsh -o shwordsplit -- some_script]]></programlisting>
             </listitem>
           </orderedlist>
-        </listitem>
-
-        <listitem>
-          <para>The <option>function_argzero</option> option must be unset. In the unit-test script, add the following shell code before sourcing the &shunit2; library.</para>
-          <programlisting><![CDATA[unsetopt function_argzero]]></programlisting>
         </listitem>
       </orderedlist>
 
