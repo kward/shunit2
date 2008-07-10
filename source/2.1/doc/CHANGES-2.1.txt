@@ -25,6 +25,8 @@ Adding support for outputting line numbers as part of assert messages.
 Started documenting the coding standards, and changed some variable names as a
 result.
 
+Improved zsh version and option checks.
+
 
 Changes with 2.1.3
 ------------------

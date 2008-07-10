@@ -8,10 +8,8 @@
 #
 # shUnit2 unit test common functions
 
-if [ -n "${ZSH_VERSION}" ]; then
-  emulate -LR sh
-  unsetopt function_argzero
-fi
+# set shwordsplit for zsh
+[ -n "${ZSH_VERSION:-}" ] && setopt shwordsplit
 
 #
 # constants
