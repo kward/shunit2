@@ -4,11 +4,11 @@
 
 # test run info
 shells="/bin/sh /bin/bash /bin/dash /bin/ksh /bin/pdksh /bin/zsh"
-tests=" shunit2_test_asserts.sh shunit2_test_failures.sh shunit2_test_lineno.sh"
+tests=" shunit2_test_asserts.sh shunit2_test_failures.sh shunit2_test_macros.sh"
 
 # system info
 $ date
-Thu Jul 10 22:56:45 IST 2008
+Fri Jul 11 12:47:23 IST 2008
 $ uname -mprsv
 Darwin 9.4.0 Darwin Kernel Version 9.4.0: Mon Jun  9 19:30:53 PDT 2008; root:xnu-1228.5.20~1/RELEASE_I386 i386 i386
 
@@ -53,21 +53,19 @@ tests failed:     0   0%
 tests skipped:    0   0%
 tests total:     45 100%
 
---- Executing the 'lineno' test suite ---
+--- Executing the 'macros' test suite ---
 #
 # Performing tests
 #
 testLineNo
-ASSERT:
-ASSERT:
 
 #
 # Test report
 #
-tests passed:     1  33%
-tests failed:     2  67%
+tests passed:    12 100%
+tests failed:     0   0%
 tests skipped:    0   0%
-tests total:      3 100%
+tests total:     12 100%
 
 
 #------------------------------------------------------------------------------
@@ -113,21 +111,19 @@ tests failed:     0   0%
 tests skipped:    0   0%
 tests total:     45 100%
 
---- Executing the 'lineno' test suite ---
+--- Executing the 'macros' test suite ---
 #
 # Performing tests
 #
 testLineNo
-ASSERT:
-ASSERT:
 
 #
 # Test report
 #
-tests passed:     1  33%
-tests failed:     2  67%
+tests passed:    12 100%
+tests failed:     0   0%
 tests skipped:    0   0%
-tests total:      3 100%
+tests total:     12 100%
 
 shunit2_test.sh:WARN unable to run tests with the /bin/dash shell
 
@@ -174,21 +170,19 @@ tests failed:     0   0%
 tests skipped:    0   0%
 tests total:     45 100%
 
---- Executing the 'lineno' test suite ---
+--- Executing the 'macros' test suite ---
 #
 # Performing tests
 #
 testLineNo
-ASSERT:
-ASSERT:
 
 #
 # Test report
 #
-tests passed:     1  33%
-tests failed:     2  67%
+tests passed:    12 100%
+tests failed:     0   0%
 tests skipped:    0   0%
-tests total:      3 100%
+tests total:     12 100%
 
 shunit2_test.sh:WARN unable to run tests with the /bin/pdksh shell
 
@@ -235,18 +229,16 @@ tests failed:     0   0%
 tests skipped:    0   0%
 tests total:     45 100%
 
---- Executing the 'lineno' test suite ---
+--- Executing the 'macros' test suite ---
 #
 # Performing tests
 #
 testLineNo
-ASSERT:
-ASSERT:
 
 #
 # Test report
 #
-tests passed:     1  33%
-tests failed:     2  67%
+tests passed:    12 100%
+tests failed:     0   0%
 tests skipped:    0   0%
-tests total:      3 100%
+tests total:     12 100%
