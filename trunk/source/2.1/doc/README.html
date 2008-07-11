@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.4.1: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
 <title>shUnit2 2.1.x README</title>
 <style type="text/css">
 
@@ -305,8 +305,9 @@ h1.title { font-size: 150%; border-top:0px; padding-top: 1em; }
 <body>
 <div class="document" id="shunit2-2-1-x-readme">
 <h1 class="title">shUnit2 2.1.x README</h1>
-<div class="section">
-<h1><a id="coding-standards" name="coding-standards">Coding Standards</a></h1>
+
+<div class="section" id="coding-standards">
+<h1>Coding Standards</h1>
 <p><em>Note: these are incomplete</em></p>
 <table border="1" class="docutils">
 <colgroup>
@@ -343,15 +344,15 @@ h1.title { font-size: 150%; border-top:0px; padding-top: 1em; }
 </tbody>
 </table>
 </div>
-<div class="section">
-<h1><a id="code-google-com" name="code-google-com">code.google.com</a></h1>
-<p>This project is stored on code.google.com as <a class="reference" href="http://code.google.com/p/shunit2/">http://code.google.com/p/shunit2/</a>.
+<div class="section" id="code-google-com">
+<h1>code.google.com</h1>
+<p>This project is stored on code.google.com as <a class="reference external" href="http://code.google.com/p/shunit2/">http://code.google.com/p/shunit2/</a>.
 All releases as of 2.1.4 and full source are available there. Documentation is
 included as part of the source and each release. Source code is stored in
 Subversion and can be accessed using the following information.</p>
 <p>Browse the code in a web browser:</p>
 <ul class="simple">
-<li><a class="reference" href="http://code.google.com/p/shunit2/source/browse">http://code.google.com/p/shunit2/source/browse</a></li>
+<li><a class="reference external" href="http://code.google.com/p/shunit2/source/browse">http://code.google.com/p/shunit2/source/browse</a></li>
 <li>svn &gt; trunk &gt; source &gt; 2.1</li>
 </ul>
 <p>Check out the code locally</p>
@@ -359,10 +360,10 @@ Subversion and can be accessed using the following information.</p>
 $ svn checkout http://shunit2.googlecode.com/svn/trunk/ shflags-read-only
 </pre>
 </div>
-<div class="section">
-<h1><a id="sourceforge" name="sourceforge">SourceForge</a></h1>
+<div class="section" id="sourceforge">
+<h1>SourceForge</h1>
 <p>DEPRECATED</p>
-<p>This project is stored on SourceForge as <a class="reference" href="http://sf.net/projects/shunit2">http://sf.net/projects/shunit2</a>. The
+<p>This project is stored on SourceForge as <a class="reference external" href="http://sf.net/projects/shunit2">http://sf.net/projects/shunit2</a>. The
 source code is stored in Subversion and can be accessed using the following
 information.</p>
 <p>Check out the code locally</p>
@@ -371,12 +372,12 @@ $ svn co https://shunit2.svn.sourceforge.net/svnroot/shunit2/trunk/source/2.1 sh
 </pre>
 <p>Browse the code in a web browser:</p>
 <ul class="simple">
-<li><a class="reference" href="http://shunit2.svn.sourceforge.net/viewvc/shunit2/trunk/source/2.1/">http://shunit2.svn.sourceforge.net/viewvc/shunit2/trunk/source/2.1/</a></li>
-<li><a class="reference" href="http://shunit2.svn.sourceforge.net/svnroot/shunit2/trunk/source/2.1/">http://shunit2.svn.sourceforge.net/svnroot/shunit2/trunk/source/2.1/</a></li>
+<li><a class="reference external" href="http://shunit2.svn.sourceforge.net/viewvc/shunit2/trunk/source/2.1/">http://shunit2.svn.sourceforge.net/viewvc/shunit2/trunk/source/2.1/</a></li>
+<li><a class="reference external" href="http://shunit2.svn.sourceforge.net/svnroot/shunit2/trunk/source/2.1/">http://shunit2.svn.sourceforge.net/svnroot/shunit2/trunk/source/2.1/</a></li>
 </ul>
 </div>
-<div class="section">
-<h1><a id="making-a-release" name="making-a-release">Making a release</a></h1>
+<div class="section" id="making-a-release">
+<h1>Making a release</h1>
 <p>For these steps, it is assumed we are working with release 2.0.0.</p>
 <p>Steps:</p>
 <ul class="simple">
@@ -391,8 +392,8 @@ $ svn co https://shunit2.svn.sourceforge.net/svnroot/shunit2/trunk/source/2.1 sh
 <li>update website</li>
 <li>post to SourceForge and Freshmeat</li>
 </ul>
-<div class="section">
-<h2><a id="write-release-notes" name="write-release-notes">Write Release Notes</a></h2>
+<div class="section" id="write-release-notes">
+<h2>Write Release Notes</h2>
 <p>This should be pretty self explainatory. Use one of the release notes from a
 previous release as an example.</p>
 <p>To get the versions of the various shells, do the following:</p>
@@ -449,15 +450,15 @@ previous release as an example.</p>
 <p>Alternativly, a <tt class="docutils literal"><span class="pre">version_info.sh</span></tt> script is included in the <tt class="docutils literal"><span class="pre">bin</span></tt> directory
 that provides similar information.</p>
 </div>
-<div class="section">
-<h2><a id="update-version" name="update-version">Update Version</a></h2>
+<div class="section" id="update-version">
+<h2>Update Version</h2>
 <p>Edit <tt class="docutils literal"><span class="pre">src/shell/shunit2</span></tt> and change the version number in the comment, as well
 as in the <tt class="docutils literal"><span class="pre">SHUNIT_VERSION</span></tt> variable. Next, edit the
 <tt class="docutils literal"><span class="pre">src/docbook/shunit2.xml</span></tt> file, edit the version in the <tt class="docutils literal"><span class="pre">&lt;title&gt;</span></tt> element,
 and make sure there is a revision section for this release.</p>
 </div>
-<div class="section">
-<h2><a id="finish-documentation" name="finish-documentation">Finish Documentation</a></h2>
+<div class="section" id="finish-documentation">
+<h2>Finish Documentation</h2>
 <p>Make sure that any remaning changes get put into the <tt class="docutils literal"><span class="pre">CHANGES-X.X.txt</span></tt> file.</p>
 <p>Finish writing the <tt class="docutils literal"><span class="pre">RELEASE_NOTES-X.X.X.txt</span></tt>. Once it is finished, run it
 through the <strong>fmt</strong> command to make it pretty.</p>
@@ -476,8 +477,8 @@ $ cp -p build/shunit2.html doc
 $ rst2html --stylesheet-path=share/css/rst2html.css doc/README.txt &gt;doc/README.html
 </pre>
 </div>
-<div class="section">
-<h2><a id="check-in-all-the-code" name="check-in-all-the-code">Check In All the Code</a></h2>
+<div class="section" id="check-in-all-the-code">
+<h2>Check In All the Code</h2>
 <p>This step is pretty self-explainatory</p>
 <pre class="literal-block">
 $ pwd
@@ -485,40 +486,40 @@ $ pwd
 $ svn ci -m &quot;finalizing release&quot;
 </pre>
 </div>
-<div class="section">
-<h2><a id="tag-the-release" name="tag-the-release">Tag the Release</a></h2>
+<div class="section" id="tag-the-release">
+<h2>Tag the Release</h2>
 <pre class="literal-block">
 $ pwd
 .../shunit2/source
 $ ls
 2.0  2.1
-$ svn cp -m &quot;Release 2.0.0&quot; 2.0 https://shunit2.svn.sourceforge.net/svnroot/shunit2/tags/source/2.0.0
+$ svn cp -m &quot;Release 2.0.0&quot; 2.0 https://shunit2.googlecode.com/svn/tags/source/2.0.0
 </pre>
 </div>
-<div class="section">
-<h2><a id="export-the-release" name="export-the-release">Export the Release</a></h2>
+<div class="section" id="export-the-release">
+<h2>Export the Release</h2>
 <pre class="literal-block">
 $ pwd
 .../shunit2/builds
-$ svn export https://shunit2.svn.sourceforge.net/svnroot/shunit2/tags/source/2.0.0 shunit2-2.0.0
+$ svn export https://shunit2.googlecode.com/svn/tags/source/2.0.0 shunit2-2.0.0
 </pre>
 </div>
-<div class="section">
-<h2><a id="create-tarball" name="create-tarball">Create Tarball</a></h2>
+<div class="section" id="create-tarball">
+<h2>Create Tarball</h2>
 <pre class="literal-block">
 $ tar cfz ../releases/shunit2-2.0.0.tgz shunit2-2.0.0
 </pre>
 </div>
-<div class="section">
-<h2><a id="md5sum-the-tarball-and-sign-with-gpg" name="md5sum-the-tarball-and-sign-with-gpg">md5sum the Tarball and Sign With gpg</a></h2>
+<div class="section" id="md5sum-the-tarball-and-sign-with-gpg">
+<h2>md5sum the Tarball and Sign With gpg</h2>
 <pre class="literal-block">
 $ cd ../releases
 $ md5sum shunit2-2.0.0.tgz &gt;shunit2-2.0.0.tgz.md5
 $ gpg --default-key kate.ward&#64;forestent.com --detach-sign shunit2-2.0.0.tgz
 </pre>
 </div>
-<div class="section">
-<h2><a id="update-website" name="update-website">Update Website</a></h2>
+<div class="section" id="update-website">
+<h2>Update Website</h2>
 <p>Again, pretty self-explainatory. Make sure to copy the MD5 and GPG signature
 files. Once that is done, make sure to tag the website so we can go back in
 time if needed.</p>
@@ -528,26 +529,26 @@ $ pwd
 $ ls
 source  website
 $ svn cp -m &quot;Release 2.0.0&quot; \
-website https://shunit2.svn.sourceforge.net/svnroot/shunit2/tags/website/20060916
+website https://shunit2.googlecode.com/svn/tags/website/20060916
 </pre>
-<p>Now, update the website. It too is held in Subversion, so <strong>ssh</strong> into
-SourceForge and use <tt class="docutils literal"><span class="pre">svn</span> <span class="pre">up</span></tt> to grab the latest version.</p>
+<p>Now, update the website. It too is held in Subversion, so <strong>ssh</strong> into the web
+server and use <tt class="docutils literal"><span class="pre">svn</span> <span class="pre">up</span></tt> to grab the latest version.</p>
 </div>
-<div class="section">
-<h2><a id="post-to-sourceforge-and-freshmeat" name="post-to-sourceforge-and-freshmeat">Post to SourceForge and Freshmeat</a></h2>
+<div class="section" id="post-to-code-google-com-and-freshmeat">
+<h2>Post to code.google.com and Freshmeat</h2>
 <ul class="simple">
-<li><a class="reference" href="http://sourceforge.net/projects/shunit2/">http://sourceforge.net/projects/shunit2/</a></li>
-<li><a class="reference" href="http://freshmeat.net/">http://freshmeat.net/</a></li>
+<li><a class="reference external" href="http://code.google.com/p/shunit2/">http://code.google.com/p/shunit2/</a></li>
+<li><a class="reference external" href="http://freshmeat.net/">http://freshmeat.net/</a></li>
 </ul>
 </div>
 </div>
-<div class="section">
-<h1><a id="related-documentation" name="related-documentation">Related Documentation</a></h1>
+<div class="section" id="related-documentation">
+<h1>Related Documentation</h1>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Docbook:</th><td class="field-body"><p class="first"><a class="reference" href="http://www.docbook.org/">http://www.docbook.org/</a></p>
+<tr class="field"><th class="field-name">Docbook:</th><td class="field-body"><p class="first"><a class="reference external" href="http://www.docbook.org/">http://www.docbook.org/</a></p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Docbook XML:</th><td class="field-body"><table class="first docutils field-list" frame="void" rules="none">
@@ -555,11 +556,11 @@ SourceForge and use <tt class="docutils literal"><span class="pre">svn</span> <s
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name" colspan="2">docbook-xml-4.4.zip:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"><a class="reference" href="http://www.docbook.org/xml/4.4/docbook-xml-4.4.zip">http://www.docbook.org/xml/4.4/docbook-xml-4.4.zip</a>
-<a class="reference" href="http://www.oasis-open.org/docbook/xml/4.4/docbook-xml-4.4.zip">http://www.oasis-open.org/docbook/xml/4.4/docbook-xml-4.4.zip</a></td>
+<tr><td>&nbsp;</td><td class="field-body"><a class="reference external" href="http://www.docbook.org/xml/4.4/docbook-xml-4.4.zip">http://www.docbook.org/xml/4.4/docbook-xml-4.4.zip</a>
+<a class="reference external" href="http://www.oasis-open.org/docbook/xml/4.4/docbook-xml-4.4.zip">http://www.oasis-open.org/docbook/xml/4.4/docbook-xml-4.4.zip</a></td>
 </tr>
 <tr class="field"><th class="field-name" colspan="2">docbook-xml-4.5.zip:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"><a class="reference" href="http://www.docbook.org/xml/4.5/docbook-xml-4.5.zip">http://www.docbook.org/xml/4.5/docbook-xml-4.5.zip</a></td>
+<tr><td>&nbsp;</td><td class="field-body"><a class="reference external" href="http://www.docbook.org/xml/4.5/docbook-xml-4.5.zip">http://www.docbook.org/xml/4.5/docbook-xml-4.5.zip</a></td>
 </tr>
 </tbody>
 </table>
@@ -570,16 +571,16 @@ SourceForge and use <tt class="docutils literal"><span class="pre">svn</span> <s
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name" colspan="2">docbook-xsl-1.71.0.tar.bz2:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"><a class="reference" href="http://prdownloads.sourceforge.net/docbook/docbook-xsl-1.71.0.tar.bz2?download">http://prdownloads.sourceforge.net/docbook/docbook-xsl-1.71.0.tar.bz2?download</a></td>
+<tr><td>&nbsp;</td><td class="field-body"><a class="reference external" href="http://prdownloads.sourceforge.net/docbook/docbook-xsl-1.71.0.tar.bz2?download">http://prdownloads.sourceforge.net/docbook/docbook-xsl-1.71.0.tar.bz2?download</a></td>
 </tr>
 <tr class="field"><th class="field-name" colspan="2">docbook-xsl-1.71.1.tar.bz2:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"><a class="reference" href="http://downloads.sourceforge.net/docbook/docbook-xsl-1.71.1.tar.bz2?use_mirror=puzzle">http://downloads.sourceforge.net/docbook/docbook-xsl-1.71.1.tar.bz2?use_mirror=puzzle</a></td>
+<tr><td>&nbsp;</td><td class="field-body"><a class="reference external" href="http://downloads.sourceforge.net/docbook/docbook-xsl-1.71.1.tar.bz2?use_mirror=puzzle">http://downloads.sourceforge.net/docbook/docbook-xsl-1.71.1.tar.bz2?use_mirror=puzzle</a></td>
 </tr>
 </tbody>
 </table>
 </td>
 </tr>
-<tr class="field"><th class="field-name">JUnit:</th><td class="field-body"><p class="first last"><a class="reference" href="http://www.junit.org/">http://www.junit.org/</a></p>
+<tr class="field"><th class="field-name">JUnit:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://www.junit.org/">http://www.junit.org/</a></p>
 </td>
 </tr>
 </tbody>
