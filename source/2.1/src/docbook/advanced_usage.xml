@@ -136,6 +136,6 @@ tests total:      2 100%]]>
       </programlisting>
     </example>
 
-    <para>Note: line numbers are not supported in all shells. If a shell does not support them, no errors will be thrown.</para>
+    <para>Note: line numbers are not supported in all shells. If a shell does not support them, no errors will be thrown. Supported shells include: <command>bash</command> (>=3.0), <command>ksh</command>, <command>pdksh</command>, and <command>zsh</command>.</para>
   </section>
 </chapter>
