@@ -13,6 +13,7 @@
 :Date: $Date: 2007-04-11 11:48:16 +0100 (Wed, 11 Apr 2007) $
 :Revision: $Revision: 2791 $
 :Copyright: This stylesheet has been placed in the public domain.
+:Modified by: Kate Ward <kate.ward@forestent.com>
 
 Default cascading style sheet for the HTML output of Docutils.
 
@@ -305,7 +306,62 @@ h1.title { font-size: 150%; border-top:0px; padding-top: 1em; }
 <div class="document" id="shunit2-2-1-x-readme">
 <h1 class="title">shUnit2 2.1.x README</h1>
 <div class="section">
+<h1><a id="coding-standards" name="coding-standards">Coding Standards</a></h1>
+<p><em>Note: these are incomplete</em></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="40%" />
+<col width="60%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">type</th>
+<th class="head">sample</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>local variable</td>
+<td><tt class="docutils literal"><span class="pre">shunit_someVariable_</span></tt></td>
+</tr>
+<tr><td>global variable</td>
+<td><tt class="docutils literal"><span class="pre">__shunit_someVariable</span></tt></td>
+</tr>
+<tr><td>public constant</td>
+<td><tt class="docutils literal"><span class="pre">SHUNIT_TRUE</span></tt></td>
+</tr>
+<tr><td>private constant</td>
+<td><tt class="docutils literal"><span class="pre">__SHUNIT_SHELL_FLAGS</span></tt></td>
+</tr>
+<tr><td>public function</td>
+<td><tt class="docutils literal"><span class="pre">assertEquals</span></tt></td>
+</tr>
+<tr><td>private function</td>
+<td><tt class="docutils literal"><span class="pre">_shunit_someFunction</span></tt></td>
+</tr>
+<tr><td>macro</td>
+<td><tt class="docutils literal"><span class="pre">_SHUNIT_SOME_MACRO_</span></tt></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section">
+<h1><a id="code-google-com" name="code-google-com">code.google.com</a></h1>
+<p>This project is stored on code.google.com as <a class="reference" href="http://code.google.com/p/shunit2/">http://code.google.com/p/shunit2/</a>.
+All releases as of 2.1.4 and full source are available there. Documentation is
+included as part of the source and each release. Source code is stored in
+Subversion and can be accessed using the following information.</p>
+<p>Browse the code in a web browser:</p>
+<ul class="simple">
+<li><a class="reference" href="http://code.google.com/p/shunit2/source/browse">http://code.google.com/p/shunit2/source/browse</a></li>
+<li>svn &gt; trunk &gt; source &gt; 2.1</li>
+</ul>
+<p>Check out the code locally</p>
+<pre class="literal-block">
+$ svn checkout http://shunit2.googlecode.com/svn/trunk/ shflags-read-only
+</pre>
+</div>
+<div class="section">
 <h1><a id="sourceforge" name="sourceforge">SourceForge</a></h1>
+<p>DEPRECATED</p>
 <p>This project is stored on SourceForge as <a class="reference" href="http://sf.net/projects/shunit2">http://sf.net/projects/shunit2</a>. The
 source code is stored in Subversion and can be accessed using the following
 information.</p>
@@ -390,11 +446,13 @@ previous release as an example.</p>
 </tr>
 </tbody>
 </table>
+<p>Alternativly, a <tt class="docutils literal"><span class="pre">version_info.sh</span></tt> script is included in the <tt class="docutils literal"><span class="pre">bin</span></tt> directory
+that provides similar information.</p>
 </div>
 <div class="section">
 <h2><a id="update-version" name="update-version">Update Version</a></h2>
 <p>Edit <tt class="docutils literal"><span class="pre">src/shell/shunit2</span></tt> and change the version number in the comment, as well
-as in the <tt class="docutils literal"><span class="pre">__SHUNIT_VERSION</span></tt> variable. Next, edit the
+as in the <tt class="docutils literal"><span class="pre">SHUNIT_VERSION</span></tt> variable. Next, edit the
 <tt class="docutils literal"><span class="pre">src/docbook/shunit2.xml</span></tt> file, edit the version in the <tt class="docutils literal"><span class="pre">&lt;title&gt;</span></tt> element,
 and make sure there is a revision section for this release.</p>
 </div>
@@ -531,7 +589,7 @@ SourceForge and use <tt class="docutils literal"><span class="pre">svn</span> <s
 <!-- http://docutils.sourceforge.net/ -->
 <!--  -->
 <!-- vim:syntax=rst:textwidth=80 -->
-<!-- $Revision: 132 $ -->
+<!-- $Revision: 196 $ -->
 </div>
 </div>
 </body>
