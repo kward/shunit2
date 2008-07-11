@@ -23,6 +23,12 @@ Cygwin
 - pdksh 5.2.14
 - zsh 4.3.4
 
+Linux (Ubuntu Dapper 6.06)
+
+- bash 3.1.17(1)
+- pdksh 5.2.14
+- zsh 4.2.5
+
 Linux (Ubuntu Hardy 8.04)
 
 - bash 3.2.39(1)

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 $Id$
-vim:softtabstop=2 shiftwidth=2
+vim:spell:sts=2:sw=2:
  -->
 
 <!-- =========================================================================
@@ -115,4 +115,27 @@ tests total:      2 100%]]>
     <para>Skipping can be controlled with the following functions: <function>startSkipping()</function>, <function>stopSkipping()</function>, and <function>isSkipping</function>. Once skipping is enabled, it will remain enabled until the end of the current test function call, after which skipping is disabled.</para>
   </section>
 
+  <section id="line_numbers">
+    <title>Including Line Numbers in Asserts</title>
+
+    <para>If you include lots of assert statements in an individual test function, it can become difficult to determine exactly which assert was thrown unless your messages are unique. To help somewhat, line numbers can be included in the assert messages. To enable this, a special shell "macro" must be used rather than the standard assert calls.</para>
+
+    <para>For example, to include line numbers for a <function>assertEquals()</function> function call, replace the '<function>assertEquals()</function>' with '<function>${_ASSERT_EQUALS_}</function>'.</para>
+
+    <example id="ex:line_numbers">
+      <title>Asserts without and with line numbers</title>
+      <programlisting>
+<![CDATA[testEquals()
+{
+  # this assert will not have line numbers included (e.g. "ASSERT: ...")
+  assertEquals 'not equal' 1 2
+
+  # this assert will have line numbers included (e.g. "ASSERT:[123] ...")
+  ${_ASSERT_EQUALS_} 'not equal' 1 2
+}]]>
+      </programlisting>
+    </example>
+
+    <para>Note: line numbers are not supported in all shells. If a shell does not support them, no errors will be thrown.</para>
+  </section>
 </chapter>
