@@ -161,7 +161,7 @@ Tag the Release
   .../shunit2/source
   $ ls
   2.0  2.1
-  $ svn cp -m "Release 2.0.0" 2.0 https://shunit2.svn.sourceforge.net/svnroot/shunit2/tags/source/2.0.0
+  $ svn cp -m "Release 2.0.0" 2.0 https://shunit2.googlecode.com/svn/tags/source/2.0.0
 
 Export the Release
 ------------------
@@ -169,7 +169,7 @@ Export the Release
 
   $ pwd
   .../shunit2/builds
-  $ svn export https://shunit2.svn.sourceforge.net/svnroot/shunit2/tags/source/2.0.0 shunit2-2.0.0
+  $ svn export https://shunit2.googlecode.com/svn/tags/source/2.0.0 shunit2-2.0.0
 
 Create Tarball
 --------------
@@ -197,15 +197,15 @@ time if needed. ::
   $ ls
   source  website
   $ svn cp -m "Release 2.0.0" \
-  website https://shunit2.svn.sourceforge.net/svnroot/shunit2/tags/website/20060916
+  website https://shunit2.googlecode.com/svn/tags/website/20060916
 
-Now, update the website. It too is held in Subversion, so **ssh** into
-SourceForge and use ``svn up`` to grab the latest version.
+Now, update the website. It too is held in Subversion, so **ssh** into the web
+server and use ``svn up`` to grab the latest version.
 
-Post to SourceForge and Freshmeat
----------------------------------
+Post to code.google.com and Freshmeat
+-------------------------------------
 
-- http://sourceforge.net/projects/shunit2/
+- http://code.google.com/p/shunit2/
 - http://freshmeat.net/
 
 
