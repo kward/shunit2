@@ -89,7 +89,7 @@ __shunit_testsSkipped=0
 __shunit_testsTotal=0
 
 # macros
-_SHUNIT_LINENO_='eval if [ "${1:-}" = "--lineno" ]; then [ -n "$2}" ] && shunit_message_="[$2]"; shift 2; fi'
+_SHUNIT_LINENO_='eval if [ "${1:-}" = "--lineno" ]; then [ -n "$2" ] && shunit_message_="[$2]"; shift 2; fi'
 
 #-----------------------------------------------------------------------------
 # assert functions
@@ -206,7 +206,8 @@ _ASSERT_NULL_='eval assertNull --lineno "${LINENO:-}"'
 #*/
 assertNotNull()
 {
-  if [ $# -lt 1 -o $# -gt 2 ]; then
+  ${_SHUNIT_LINENO_}
+  if [ $# -gt 2 ]; then  # allowing 0 arguments as $1 might actually be null
     _shunit_error 'assertNotNull() requires one or two arguments'
     return ${SHUNIT_ERROR}
   fi
@@ -215,9 +216,10 @@ assertNotNull()
   if [ $# -eq 2 ]; then
     assertTrue "$1" "[ -n '$2' ]"
   else
-    assertTrue "[ -n '$1' ]"
+    assertTrue "[ -n '${1:-}' ]"
   fi
 }
+_ASSERT_NOT_NULL_='eval assertNotNull --lineno "${LINENO:-}"'
 
 #/**
 # <s:function group="asserts">
@@ -240,6 +242,7 @@ assertNotNull()
 #*/
 assertSame()
 {
+  ${_SHUNIT_LINENO_}
   if [ $# -lt 2 -o $# -gt 3 ]; then
     _shunit_error 'assertSame() requires one or two arguments'
     return ${SHUNIT_ERROR}
@@ -252,6 +255,7 @@ assertSame()
     assertEquals "$1" "$2" "$3"
   fi
 }
+_ASSERT_SAME_='eval assertSame --lineno "${LINENO:-}"'
 
 #/**
 # <s:function group="asserts">
@@ -275,31 +279,33 @@ assertSame()
 #*/
 assertNotSame()
 {
+  ${_SHUNIT_LINENO_}
   if [ $# -lt 2 -o $# -gt 3 ]; then
     _shunit_error 'assertNotSame() requires two or three arguments'
     return ${SHUNIT_ERROR}
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
-  shunit_message_=''
+  [ -z "${shunit_message_:-}" ] && shunit_message_=''
   if [ $# -eq 3 ]; then
-    shunit_message_=$1
+    shunit_message_="${shunit_message_}$1"
     shift
   fi
-  su_unexpected_=$1
+  shunit_unexpected_=$1
   shunit_actual_=$2
 
   shunit_return=${SHUNIT_TRUE}
-  if [ "${su_unexpected_}" != "${shunit_actual_}" ]; then
+  if [ "${shunit_unexpected_}" != "${shunit_actual_}" ]; then
     _shunit_testPassed
   else
-    failSame "${shunit_message_}"
+    failSame "${shunit_message_}" "$@"
     shunit_return=${SHUNIT_FALSE}
   fi
 
-  unset shunit_message_ su_unexpected_ shunit_actual_
+  unset shunit_message_ shunit_unexpected_ shunit_actual_
   return ${shunit_return}
 }
+_ASSERT_NOT_SAME_='eval assertNotSame --lineno "${LINENO:-}"'
 
 #/**
 # <s:function group="asserts">
@@ -337,17 +343,16 @@ assertTrue()
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
-  shunit_message_=''
+  [ -z "${shunit_message_:-}" ] && shunit_message_=''
   if [ $# -eq 2 ]; then
-    shunit_message_=$1
+    shunit_message_="${shunit_message_}$1"
     shift
   fi
   shunit_condition_=$1
 
-  shunit_return=${SHUNIT_TRUE}
-
   # see if condition is an integer, i.e. a return value
   shunit_match_=`expr "${shunit_condition_}" : '\([0-9]*\)'`
+  shunit_return=${SHUNIT_TRUE}
   if [ -z "${shunit_condition_}" ]; then
     # null condition
     shunit_return=${SHUNIT_FALSE}
@@ -401,23 +406,23 @@ _ASSERT_TRUE_='eval assertTrue --lineno "${LINENO:-}"'
 #*/
 assertFalse()
 {
+  ${_SHUNIT_LINENO_}
   if [ $# -lt 1 -o $# -gt 2 ]; then
     _shunit_error 'assertFalse() quires one or two arguments'
     return ${SHUNIT_ERROR}
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
-  shunit_message_=''
+  [ -z "${shunit_message_:-}" ] && shunit_message_=''
   if [ $# -eq 2 ]; then
-    shunit_message_=$1
+    shunit_message_="${shunit_message_}$1"
     shift
   fi
   shunit_condition_=$1
 
-  shunit_return=${SHUNIT_TRUE}
-
   # see if condition is an integer, i.e. a return value
   shunit_match_=`expr "${shunit_condition_}" : '\([0-9]*\)'`
+  shunit_return=${SHUNIT_TRUE}
   if [ -z "${shunit_condition_}" ]; then
     # null condition
     shunit_return=${SHUNIT_FALSE}
@@ -440,6 +445,7 @@ assertFalse()
   unset shunit_message_ shunit_condition_ shunit_match_
   return ${shunit_return}
 }
+_ASSERT_FALSE_='eval assertFalse --lineno "${LINENO:-}"'
 
 #-----------------------------------------------------------------------------
 # failure functions
@@ -463,15 +469,16 @@ assertFalse()
 #*/
 fail()
 {
+  ${_SHUNIT_LINENO_}
   if [ $# -gt 1 ]; then
     _shunit_error 'fail() requires one or two arguments'
     return ${SHUNIT_ERROR}
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
-  shunit_message_=''
+  [ -z "${shunit_message_:-}" ] && shunit_message_=''
   if [ $# -eq 1 ]; then
-    shunit_message_=$1
+    shunit_message_="${shunit_message_}$1"
     shift
   fi
 
@@ -480,6 +487,7 @@ fail()
   unset shunit_message_
   return ${SHUNIT_FALSE}
 }
+_FAIL_='eval fail --lineno "${LINENO:-}"'
 
 #/**
 # <s:function group="failures">
@@ -503,25 +511,27 @@ fail()
 #*/
 failNotEquals()
 {
+  ${_SHUNIT_LINENO_}
   if [ $# -lt 2 -o $# -gt 3 ]; then
     _shunit_error 'failNotEquals() requires one or two arguments'
     return ${SHUNIT_ERROR}
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
-  shunit_message_=''
+  [ -z "${shunit_message_:-}" ] && shunit_message_=''
   if [ $# -eq 3 ]; then
-    shunit_message_=$1
+    shunit_message_="${shunit_message_}$1"
     shift
   fi
-  su_unexpected_=$1
+  shunit_unexpected_=$1
   shunit_actual_=$2
 
-  _shunit_testFailed "${shunit_message_:+${shunit_message_} }expected:<${su_unexpected_}> but was:<${shunit_actual_}>"
+  _shunit_testFailed "${shunit_message_:+${shunit_message_} }expected:<${shunit_unexpected_}> but was:<${shunit_actual_}>"
 
-  unset shunit_message_ su_unexpected_ shunit_actual_
+  unset shunit_message_ shunit_unexpected_ shunit_actual_
   return ${SHUNIT_FALSE}
 }
+_FAIL_NOT_EQUALS_='eval failNotEquals --lineno "${LINENO:-}"'
 
 #/**
 # <s:function group="failures">
@@ -542,15 +552,16 @@ failNotEquals()
 #*/
 failSame()
 {
+  ${_SHUNIT_LINENO_}
   if [ $# -lt 2 -o $# -gt 3 ]; then
     _shunit_error 'failSame() requires two or three arguments'
     return ${SHUNIT_ERROR}
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
-  shunit_message_=''
+  [ -z "${shunit_message_:-}" ] && shunit_message_=''
   if [ $# -eq 3 ]; then
-    shunit_message_=$1
+    shunit_message_="${shunit_message_}$1"
     shift
   fi
 
@@ -559,6 +570,7 @@ failSame()
   unset shunit_message_
   return ${SHUNIT_FALSE}
 }
+_FAIL_SAME_='eval failSame --lineno "${LINENO:-}"'
 
 #/**
 # <s:function group="failures">
@@ -582,6 +594,7 @@ failSame()
 #*/
 failNotSame()
 {
+  ${_SHUNIT_LINENO_}
   if [ $# -lt 2 -o $# -gt 3 ]; then
     _shunit_error 'failNotEquals() requires one or two arguments'
     return ${SHUNIT_ERROR}
@@ -594,6 +607,7 @@ failNotSame()
     failNotEquals "$1" "$2" "$3"
   fi
 }
+_FAIL_NOT_SAME_='eval failNotSame --lineno "${LINENO:-}"'
 
 #-----------------------------------------------------------------------------
 # skipping functions
