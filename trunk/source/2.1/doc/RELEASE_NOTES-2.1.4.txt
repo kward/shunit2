@@ -61,7 +61,8 @@ Solaris 11 x86 (Nevada 77)
 New Features
 ------------
 
-None.
+Support added for outputing assert source line number as part of assert
+messages.
 
 
 Changes and Enhancements
@@ -69,11 +70,19 @@ Changes and Enhancements
 
 Support for automated testing frameworks.
 
+Added argument count error checking to all functions.
+
 
 Bug Fixes
 ---------
 
 Fixed some issues with ksh and zsh support.
+
+Fixed off-by-one of exit value in trap handler.
+
+Fixed handling of null values under ksh.
+
+Fixed bug in last resort temporary directory creation.
 
 
 Deprecated Features
@@ -85,13 +94,8 @@ None.
 Known Bugs and Issues
 ---------------------
 
-Functions do not properly test for an invalid number of arguments.
+zsh requires the ``shwordsplit`` option to be set.
 
-ksh and pdksh do not pass null arguments (i.e. empty strings as '') properly,
-and as such checks do not work properly.
+Line numbers in assert messages do not work properly with Bash 2.x.
 
-zsh requires the ``shwordsplit`` option to be set, and the ``function_argzero``
-option to be unset for proper operation.
-
-
-.. vim:ft=rst:spell:textwidth=80
+.. vim:ft=rst:spell:tw=80

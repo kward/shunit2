@@ -27,6 +27,8 @@ result.
 
 Improved zsh version and option checks.
 
+Renamed the __SHUNIT_VERSION variable to SHUNIT_VERSION.
+
 
 Changes with 2.1.3
 ------------------
