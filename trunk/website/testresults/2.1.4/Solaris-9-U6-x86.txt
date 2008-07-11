@@ -4,11 +4,11 @@
 
 # test run info
 shells="/bin/sh /bin/bash /bin/dash /bin/ksh /bin/pdksh /bin/zsh"
-tests=" shunit2_test_asserts.sh shunit2_test_failures.sh shunit2_test_lineno.sh"
+tests=" shunit2_test_asserts.sh shunit2_test_failures.sh shunit2_test_macros.sh"
 
 # system info
 $ date
-Thu Jul 10 22:06:19 GMT 2008
+Fri Jul 11 12:06:35 GMT 2008
 $ uname -mprsv
 SunOS 5.9 Generic_117172-08 i86pc i386
 
@@ -53,7 +53,7 @@ tests failed:     0   0%
 tests skipped:    0   0%
 tests total:     45 100%
 
---- Executing the 'lineno' test suite ---
+--- Executing the 'macros' test suite ---
 #
 # Performing tests
 #
@@ -64,8 +64,8 @@ testLineNo
 #
 tests passed:     0   0%
 tests failed:     0   0%
-tests skipped:    3 100%
-tests total:      3 100%
+tests skipped:   12 100%
+tests total:     12 100%
 
 
 #------------------------------------------------------------------------------
@@ -111,22 +111,43 @@ tests failed:     0   0%
 tests skipped:    0   0%
 tests total:     45 100%
 
---- Executing the 'lineno' test suite ---
+--- Executing the 'macros' test suite ---
 #
 # Performing tests
 #
 testLineNo
-ASSERT:
-ASSERT:
-ASSERT:
+ASSERT:_ASSERT_EQUALS_ failure
+ASSERT:[-19][-19] expected:<x> but was:<y>
+ASSERT:_ASSERT_NULL_ failure
+ASSERT:[-970]
+ASSERT:_ASSERT_NOT_NULL_ failure
+ASSERT:[-970]
+ASSERT:_ASSERT_SAME_ failure
+ASSERT:[-970][-970] expected:<x> but was:<y>
+ASSERT:_ASSERT_NOT_SAME_ failure
+ASSERT:[-970][-970] expected not same
+ASSERT:_ASSERT_TRUE_ failure
+ASSERT:[-970]
+ASSERT:_ASSERT_FALSE_ failure
+ASSERT:[-970]
+ASSERT:_ASSERT_FALSE_ failure
+ASSERT:[-970]
+ASSERT:_FAIL_ failure
+ASSERT:[-970]
+ASSERT:_FAIL_NOT_EQUALS_ failure
+ASSERT:[-970] expected:<x> but was:<y>
+ASSERT:_FAIL_SAME_ failure
+ASSERT:[-970] expected not same
+ASSERT:_FAIL_NOT_SAME_ failure
+ASSERT:[-970] expected:<x> but was:<y>
 
 #
 # Test report
 #
 tests passed:     0   0%
-tests failed:     3 100%
+tests failed:    12 100%
 tests skipped:    0   0%
-tests total:      3 100%
+tests total:     12 100%
 
 shunit2_test.sh:WARN unable to run tests with the /bin/dash shell
 
@@ -171,21 +192,19 @@ tests failed:     0   0%
 tests skipped:    0   0%
 tests total:     45 100%
 
---- Executing the 'lineno' test suite ---
+--- Executing the 'macros' test suite ---
 #
 # Performing tests
 #
 testLineNo
-ASSERT:
-ASSERT:
 
 #
 # Test report
 #
-tests passed:     1  33%
-tests failed:     2  67%
+tests passed:    12 100%
+tests failed:     0   0%
 tests skipped:    0   0%
-tests total:      3 100%
+tests total:     12 100%
 
 shunit2_test.sh:WARN unable to run tests with the /bin/pdksh shell
 
@@ -232,18 +251,16 @@ tests failed:     0   0%
 tests skipped:    0   0%
 tests total:     45 100%
 
---- Executing the 'lineno' test suite ---
+--- Executing the 'macros' test suite ---
 #
 # Performing tests
 #
 testLineNo
-ASSERT:
-ASSERT:
 
 #
 # Test report
 #
-tests passed:     1  33%
-tests failed:     2  67%
+tests passed:    12 100%
+tests failed:     0   0%
 tests skipped:    0   0%
-tests total:      3 100%
+tests total:     12 100%
