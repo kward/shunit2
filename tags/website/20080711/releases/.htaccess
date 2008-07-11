@@ -1,0 +1,14 @@
+# $Id$
+
+Options +Indexes
+IndexOptions NameWidth=*
+
+AddType multipart/digest .md5
+<Files *.tgz.md5>
+  RemoveEncoding .tgz
+</Files>
+
+AddType application/gpg-signature .sig
+<Files *.tgz.sig>
+  RemoveEncoding .tgz
+</Files>
