@@ -7,7 +7,7 @@
 #
 # Author: kate.ward@forestent.com (Kate Ward)
 #
-# shUnit2 unit test for assert functions
+# shUnit2 unit test for macros
 
 # load test helpers
 . ./shunit2_test_helpers
@@ -108,8 +108,6 @@ oneTimeSetUp()
   mkdir "${tmpDir}"
   stdoutF="${tmpDir}/stdout"
   stderrF="${tmpDir}/stderr"
-
-  MSG='This is a test message'
 }
 
 # load and run shUnit2
