@@ -87,6 +87,7 @@ __shunit_testsPassed=0
 __shunit_testsFailed=0
 __shunit_testsSkipped=0
 __shunit_testsTotal=0
+__shunit_reportGenerated=${SHUNIT_FALSE}
 
 # macros
 _SHUNIT_LINENO_='eval if [ "${1:-}" = "--lineno" ]; then [ -n "$2" ] && shunit_message_="[$2]"; shift 2; fi'
@@ -852,6 +853,9 @@ _shunit_cleanup()
     trap 0
     # add 128 to signal and exit
     exit `expr ${signal} + 128`
+  elif [ ${__shunit_reportGenerated} -eq ${SHUNIT_FALSE} ] ; then
+    _shunit_testFailed 'Unknown failure encountered running a test'
+    _shunit_generateReport
   fi
 }
 
@@ -907,6 +911,7 @@ tests failed:  ${_su__failed}
 tests skipped: ${_su__skipped}
 tests total:   ${_su__total}
 EOF
+  __shunit_reportGenerated=${SHUNIT_TRUE}
 
   unset _su__awkPercent _su__passed _su__failed _su__skipped _su__total
 }
