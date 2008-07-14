@@ -4,6 +4,7 @@ contributed in some way or another to shunit2.
 Bryan Larsen
 Kevin Van Horn
 Mathias Goldau
+R Bernstein
 Richard Jensen
 Rob Holland
 
