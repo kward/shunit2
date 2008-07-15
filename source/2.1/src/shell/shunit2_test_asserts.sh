@@ -42,9 +42,37 @@ commonEqualsSame()
   th_assertFalseWithSE 'too many arguments' $? "${stdoutF}" "${stderrF}"
 }
 
+commonNotEqualSame()
+{
+  fn=$1
+
+  ( ${fn} 'x' 'y' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'not same' $? "${stdoutF}" "${stderrF}"
+
+  ( ${fn} "${MSG}" 'x' 'y' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'not same, with msg' $? "${stdoutF}" "${stderrF}"
+
+  ( ${fn} 'x' 'x' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'same' $? "${stdoutF}" "${stderrF}"
+
+  ( ${fn} '' '' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'null values' $? "${stdoutF}" "${stderrF}"
+
+  ( ${fn} arg1 >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'too few arguments' $? "${stdoutF}" "${stderrF}"
+
+  ( ${fn} arg1 arg2 arg3 arg4 >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithSE 'too many arguments' $? "${stdoutF}" "${stderrF}"
+}
+
 testAssertEquals()
 {
   commonEqualsSame 'assertEquals'
+}
+
+testAssertNotEqual()
+{
+  commonNotEqualSame 'assertNotEqual'
 }
 
 testAssertSame()
@@ -54,23 +82,7 @@ testAssertSame()
 
 testAssertNotSame()
 {
-  ( assertNotSame 'x' 'y' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertTrueWithNoOutput 'not same' $? "${stdoutF}" "${stderrF}"
-
-  ( assertNotSame "${MSG}" 'x' 'y' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertTrueWithNoOutput 'not same, with msg' $? "${stdoutF}" "${stderrF}"
-
-  ( assertNotSame 'x' 'x' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'same' $? "${stdoutF}" "${stderrF}"
-
-  ( assertNotSame '' '' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'null values' $? "${stdoutF}" "${stderrF}"
-
-  ( assertNotSame arg1 >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'too few arguments' $? "${stdoutF}" "${stderrF}"
-
-  ( assertNotSame arg1 arg2 arg3 arg4 >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'too many arguments' $? "${stdoutF}" "${stderrF}"
+  commonNotEqualSame 'assertNotSame'
 }
 
 testAssertNull()
