@@ -1,5 +1,5 @@
 #! /bin/sh
-# $Id: shunit2_test_asserts.sh 177 2008-07-07 17:16:36Z kate.ward@forestent.com $
+# $Id$
 # vim:et:ft=sh:sts=2:sw=2
 #
 # Copyright 2008 Kate Ward. All Rights Reserved.
