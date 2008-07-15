@@ -6,7 +6,7 @@
 # <?xml version="1.0" encoding="UTF-8"?>
 # <s:shelldoc xmlns:s="http://www.forestent.com/projects/shelldoc/xsl/2005.0">
 # <s:header>
-# shUnit 2.1.4
+# shUnit 2.1.5
 # Shell Unit Test Framework
 #
 # http://shunit2.sourceforge.net/
@@ -18,7 +18,7 @@
 # </s:header>
 #*/
 
-SHUNIT_VERSION='2.1.4'
+SHUNIT_VERSION='2.1.5pre'
 
 _shunit_warn() { echo "shunit2:WARN $@" >&2; }
 _shunit_error() { echo "shunit2:ERROR $@" >&2; }
