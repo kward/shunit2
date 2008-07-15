@@ -42,7 +42,7 @@ commonEqualsSame()
   th_assertFalseWithSE 'too many arguments' $? "${stdoutF}" "${stderrF}"
 }
 
-commonNotEqualSame()
+commonNotEqualsSame()
 {
   fn=$1
 
@@ -70,9 +70,9 @@ testAssertEquals()
   commonEqualsSame 'assertEquals'
 }
 
-testAssertNotEqual()
+testAssertNotEquals()
 {
-  commonNotEqualSame 'assertNotEqual'
+  commonNotEqualsSame 'assertNotEquals'
 }
 
 testAssertSame()
@@ -82,7 +82,7 @@ testAssertSame()
 
 testAssertNotSame()
 {
-  commonNotEqualSame 'assertNotSame'
+  commonNotEqualsSame 'assertNotSame'
 }
 
 testAssertNull()
