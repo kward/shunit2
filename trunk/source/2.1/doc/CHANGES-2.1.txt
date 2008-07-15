@@ -3,8 +3,10 @@ Changes in shUnit2 2.1.X
 
 Changes with 2.1.5
 ------------------
-Fixed bug pointed out by R Bernstein in the trap code where certain types of
-exit conditions did not generate the ending report.
+Issue# 1: Fixed bug pointed out by R Bernstein in the trap code where certain
+types of exit conditions did not generate the ending report.
+
+Issue# 2: Added assertNotEqual() assert.
 
 
 Changes with 2.1.4

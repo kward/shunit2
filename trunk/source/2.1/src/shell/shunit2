@@ -154,6 +154,56 @@ _ASSERT_EQUALS_='eval assertEquals --lineno "${LINENO:-}"'
 # <entry>
 #   <funcsynopsis>
 #     <funcprototype>
+#       <funcdef><function>assertNotEqual</function></funcdef>
+#       <paramdef>string <parameter>[message]</parameter></paramdef>
+#       <paramdef>string <parameter>unexpected</parameter></paramdef>
+#       <paramdef>string <parameter>actual</parameter></paramdef>
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>Asserts that <emphasis>unexpected</emphasis> and
+#   <emphasis>actual</emphasis> are <emphasis role="strong">not</emphasis>
+#   equal to one another. The message is optional.</para>
+# </entry>
+# </s:function>
+#*/
+assertNotEqual()
+{
+  ${_SHUNIT_LINENO_}
+  if [ $# -lt 2 -o $# -gt 3 ]; then
+    _shunit_error 'assertNotEqual() requires two or three arguments'
+    return ${SHUNIT_ERROR}
+  fi
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
+  [ -z "${shunit_message_:-}" ] && shunit_message_=''
+  if [ $# -eq 3 ]; then
+    shunit_message_="${shunit_message_}$1"
+    shift
+  fi
+  shunit_unexpected_=$1
+  shunit_actual_=$2
+
+  shunit_return=${SHUNIT_TRUE}
+  if [ "${shunit_unexpected_}" != "${shunit_actual_}" ]; then
+    _shunit_testPassed
+  else
+    failSame "${shunit_message_}" "$@"
+    shunit_return=${SHUNIT_FALSE}
+  fi
+
+  unset shunit_message_ shunit_unexpected_ shunit_actual_
+  return ${shunit_return}
+}
+_ASSERT_NOT_EQUAL_='eval assertNotEqual --lineno "${LINENO:-}"'
+
+#/**
+# <s:function group="asserts">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
 #       <funcdef><function>assertNull</function></funcdef>
 #       <paramdef>string <parameter>[message]</parameter></paramdef>
 #       <paramdef>string <parameter>value</parameter></paramdef>
@@ -287,24 +337,11 @@ assertNotSame()
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
-  [ -z "${shunit_message_:-}" ] && shunit_message_=''
-  if [ $# -eq 3 ]; then
-    shunit_message_="${shunit_message_}$1"
-    shift
-  fi
-  shunit_unexpected_=$1
-  shunit_actual_=$2
-
-  shunit_return=${SHUNIT_TRUE}
-  if [ "${shunit_unexpected_}" != "${shunit_actual_}" ]; then
-    _shunit_testPassed
+  if [ $# -eq 2 ]; then
+    assertNotEqual "$1" "$2"
   else
-    failSame "${shunit_message_}" "$@"
-    shunit_return=${SHUNIT_FALSE}
+    assertNotEqual "$1" "$2" "$3"
   fi
-
-  unset shunit_message_ shunit_unexpected_ shunit_actual_
-  return ${shunit_return}
 }
 _ASSERT_NOT_SAME_='eval assertNotSame --lineno "${LINENO:-}"'
 

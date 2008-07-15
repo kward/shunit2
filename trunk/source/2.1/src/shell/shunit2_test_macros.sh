@@ -29,6 +29,12 @@ testLineNo()
   assertTrue '_ASSERT_EQUALS_ failure' ${rtrn}
   [ ${rtrn} -ne ${SHUNIT_TRUE} ] && cat ${stderrF} >&2
 
+  ( ${_ASSERT_NOT_EQUAL_} 'x' 'x' >"${stdoutF}" 2>"${stderrF}" )
+  grep '^ASSERT:\[[0-9]*\] *' "${stderrF}" >/dev/null
+  rtrn=$?
+  assertTrue '_ASSERT_NOT_EQUAL_ failure' ${rtrn}
+  [ ${rtrn} -ne ${SHUNIT_TRUE} ] && cat ${stderrF} >&2
+
   ( ${_ASSERT_NULL_} 'x' >"${stdoutF}" 2>"${stderrF}" )
   grep '^ASSERT:\[[0-9]*\] *' "${stderrF}" >/dev/null
   rtrn=$?
