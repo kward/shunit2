@@ -154,7 +154,7 @@ _ASSERT_EQUALS_='eval assertEquals --lineno "${LINENO:-}"'
 # <entry>
 #   <funcsynopsis>
 #     <funcprototype>
-#       <funcdef><function>assertNotEqual</function></funcdef>
+#       <funcdef><function>assertNotEquals</function></funcdef>
 #       <paramdef>string <parameter>[message]</parameter></paramdef>
 #       <paramdef>string <parameter>unexpected</parameter></paramdef>
 #       <paramdef>string <parameter>actual</parameter></paramdef>
@@ -166,11 +166,11 @@ _ASSERT_EQUALS_='eval assertEquals --lineno "${LINENO:-}"'
 # </entry>
 # </s:function>
 #*/
-assertNotEqual()
+assertNotEquals()
 {
   ${_SHUNIT_LINENO_}
   if [ $# -lt 2 -o $# -gt 3 ]; then
-    _shunit_error 'assertNotEqual() requires two or three arguments'
+    _shunit_error 'assertNotEquals() requires two or three arguments'
     return ${SHUNIT_ERROR}
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
@@ -194,7 +194,7 @@ assertNotEqual()
   unset shunit_message_ shunit_unexpected_ shunit_actual_
   return ${shunit_return}
 }
-_ASSERT_NOT_EQUAL_='eval assertNotEqual --lineno "${LINENO:-}"'
+_ASSERT_NOT_EQUALS_='eval assertNotEquals --lineno "${LINENO:-}"'
 
 #/**
 # <s:function group="asserts">
@@ -338,9 +338,9 @@ assertNotSame()
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
   if [ $# -eq 2 ]; then
-    assertNotEqual "$1" "$2"
+    assertNotEquals "$1" "$2"
   else
-    assertNotEqual "$1" "$2" "$3"
+    assertNotEquals "$1" "$2" "$3"
   fi
 }
 _ASSERT_NOT_SAME_='eval assertNotSame --lineno "${LINENO:-}"'
