@@ -42,17 +42,6 @@ if [ -n "${ZSH_VERSION:-}" ]; then
   fi
 fi
 
-# shell flags for shunit2:
-# u - treat unset variables as an error when performing parameter expansion
-__SHUNIT_SHELL_FLAGS='u'
-
-# save the current set of shell flags, and then set some for ourself
-shunit_shellFlags_="$-"
-for shunit_shellFlag_ in `echo "${__SHUNIT_SHELL_FLAGS}" |sed 's/\(.\)/\1 /g'`
-do
-  set -${shunit_shellFlag_}
-done
-
 #
 # constants
 #
@@ -1067,13 +1056,6 @@ oneTimeTearDown
 
 # generate report
 _shunit_generateReport
-
-# restore the previous set of shell flags
-for shunit_shellFlag_ in ${__SHUNIT_SHELL_FLAGS}; do
-  echo ${shunit_shellFlags_} |grep ${shunit_shellFlag_} >/dev/null \
-    || set +${shunit_shellFlag_}
-done
-unset shunit_shellFlag_ shunit_shellFlags_
 
 [ ${__shunit_testsFailed} -eq 0 ] || exit 1
 
