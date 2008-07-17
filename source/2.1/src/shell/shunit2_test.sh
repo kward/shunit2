@@ -67,9 +67,11 @@ cat <<EOF
 shells="${shells}"
 tests="${tests}"
 EOF
-for key in ${env}; do
-  eval "echo \"${key}=\$${key}\""
-done
+if [ -n "${env:-}" ]; then
+  for key in ${env}; do
+    eval "echo \"${key}=\$${key}\""
+  done
+fi
 echo
 
 # output system data
