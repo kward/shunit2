@@ -8,6 +8,10 @@ types of exit conditions did not generate the ending report.
 
 Issue# 2: Added assertNotEquals() assert.
 
+Issue# 3: Moved check for unset variables out of shUnit2 into the unit tests.
+Testing poorly written software blows up if this check is in, but it is only
+interesting for shUnit2 itself.
+
 
 Changes with 2.1.4
 ------------------
