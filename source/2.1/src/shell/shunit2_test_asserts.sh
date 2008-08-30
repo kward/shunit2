@@ -30,16 +30,16 @@ commonEqualsSame()
   th_assertTrueWithNoOutput 'equal with spaces' $? "${stdoutF}" "${stderrF}"
 
   ( ${fn} 'x' 'y' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'not equal' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithOutput 'not equal' $? "${stdoutF}" "${stderrF}"
 
   ( ${fn} '' '' >"${stdoutF}" 2>"${stderrF}" )
   th_assertTrueWithNoOutput 'null values' $? "${stdoutF}" "${stderrF}"
 
   ( ${fn} arg1 >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'too few arguments' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithError 'too few arguments' $? "${stdoutF}" "${stderrF}"
 
   ( ${fn} arg1 arg2 arg3 arg4 >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'too many arguments' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithError 'too many arguments' $? "${stdoutF}" "${stderrF}"
 }
 
 commonNotEqualsSame()
@@ -53,16 +53,16 @@ commonNotEqualsSame()
   th_assertTrueWithNoOutput 'not same, with msg' $? "${stdoutF}" "${stderrF}"
 
   ( ${fn} 'x' 'x' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'same' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithOutput 'same' $? "${stdoutF}" "${stderrF}"
 
   ( ${fn} '' '' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'null values' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithOutput 'null values' $? "${stdoutF}" "${stderrF}"
 
   ( ${fn} arg1 >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'too few arguments' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithError 'too few arguments' $? "${stdoutF}" "${stderrF}"
 
   ( ${fn} arg1 arg2 arg3 arg4 >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'too many arguments' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithError 'too many arguments' $? "${stdoutF}" "${stderrF}"
 }
 
 testAssertEquals()
@@ -94,13 +94,13 @@ testAssertNull()
   th_assertTrueWithNoOutput 'null, with msg' $? "${stdoutF}" "${stderrF}"
 
   ( assertNull 'x' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'not null' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithOutput 'not null' $? "${stdoutF}" "${stderrF}"
 
   ( assertNull >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'too few arguments' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithError 'too few arguments' $? "${stdoutF}" "${stderrF}"
 
   ( assertNull arg1 arg2 arg3 >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'too many arguments' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithError 'too many arguments' $? "${stdoutF}" "${stderrF}"
 }
 
 testAssertNotNull()
@@ -112,13 +112,12 @@ testAssertNotNull()
   th_assertTrueWithNoOutput 'not null, with msg' $? "${stdoutF}" "${stderrF}"
 
   ( assertNotNull '' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'null' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithOutput 'null' $? "${stdoutF}" "${stderrF}"
 
-  ( assertNotNull >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'too few arguments' $? "${stdoutF}" "${stderrF}"
+  # there is no test for too few arguments as $1 might actually be null
 
   ( assertNotNull arg1 arg2 arg3 >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'too many arguments' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithError 'too many arguments' $? "${stdoutF}" "${stderrF}"
 }
 
 testAssertTrue()
@@ -133,19 +132,19 @@ testAssertTrue()
   th_assertTrueWithNoOutput 'true condition' $? "${stdoutF}" "${stderrF}"
 
   ( assertTrue 1 >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'false' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithOutput 'false' $? "${stdoutF}" "${stderrF}"
 
   ( assertTrue '[ 0 -eq 1 ]' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'false condition' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithOutput 'false condition' $? "${stdoutF}" "${stderrF}"
 
   ( assertTrue '' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'null' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithOutput 'null' $? "${stdoutF}" "${stderrF}"
 
   ( assertTrue >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'too few arguments' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithError 'too few arguments' $? "${stdoutF}" "${stderrF}"
 
   ( assertTrue arg1 arg2 arg3 >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'too many arguments' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithError 'too many arguments' $? "${stdoutF}" "${stderrF}"
 }
 
 testAssertFalse()
@@ -160,19 +159,19 @@ testAssertFalse()
   th_assertTrueWithNoOutput 'false condition' $? "${stdoutF}" "${stderrF}"
 
   ( assertFalse 0 >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'true' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithOutput 'true' $? "${stdoutF}" "${stderrF}"
 
   ( assertFalse '[ 0 -eq 0 ]' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'true condition' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithOutput 'true condition' $? "${stdoutF}" "${stderrF}"
 
   ( assertFalse '' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'true condition' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithOutput 'true condition' $? "${stdoutF}" "${stderrF}"
 
   ( assertFalse >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'too few arguments' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithError 'too few arguments' $? "${stdoutF}" "${stderrF}"
 
   ( assertFalse arg1 arg2 arg3 >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'too many arguments' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithError 'too many arguments' $? "${stdoutF}" "${stderrF}"
 }
 
 #------------------------------------------------------------------------------
