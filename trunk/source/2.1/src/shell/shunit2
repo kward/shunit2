@@ -49,6 +49,8 @@ fi
 __SHUNIT_ASSERT_MSG_PREFIX='ASSERT:'
 __SHUNIT_PARENT=${SHUNIT_PARENT:-$0}
 
+__SHUNIT_AWK_PERCENT='{printf("%4d %3.0f%%", $1, $1*100/$2)}'
+
 # set the constants readonly
 shunit_constants_=`set |grep "^__SHUNIT_" |cut -d= -f1`
 echo "${shunit_constants_}" |grep "^Binary file" >/dev/null
@@ -755,11 +757,12 @@ isSkipping()
 #*/
 suite_addTest()
 {
-  _su_func=${1:-}
+  shunit_func_=${1:-}
 
-  __shunit_suite="${__shunit_suite:+${__shunit_suite} }${_su_func}"
+  __shunit_suite="${__shunit_suite:+${__shunit_suite} }${shunit_func_}"
+  __shunit_testsTotal=`expr ${__shunit_testsTotal} + 1`
 
-  unset _su_func
+  unset shunit_func_
 }
 
 #/**
@@ -856,15 +859,15 @@ suite_addTest()
 
 _shunit_cleanup()
 {
-  name=$1
+  _shunit_name_=$1
 
-  case ${name} in
-    EXIT) signal=0 ;;
-    INT) signal=2 ;;
-    TERM) signal=15 ;;
+  case ${_shunit_name_} in
+    EXIT) _shunit_signal_=0 ;;
+    INT) _shunit_signal_=2 ;;
+    TERM) _shunit_signal_=15 ;;
     *)
-      _shunit_warn "unrecognized trap value (${name})"
-      signal=0
+      _shunit_warn "unrecognized trap value (${_shunit_name_})"
+      _shunit_signal_=0
       ;;
   esac
 
@@ -872,18 +875,20 @@ _shunit_cleanup()
   rm -fr "${__shunit_tmpDir}"
 
   # exit for all non-EXIT signals
-  if [ ${name} != 'EXIT' ]; then
-    _shunit_warn "trapped and now handling the (${name}) signal"
+  if [ ${_shunit_name_} != 'EXIT' ]; then
+    _shunit_warn "trapped and now handling the (${_shunit_name_}) signal"
     _shunit_generateReport
     # disable EXIT trap
     trap 0
     # add 128 to signal and exit
-    exit `expr ${signal} + 128`
+    exit `expr ${_shunit_signal_} + 128`
   elif [ ${__shunit_reportGenerated} -eq ${SHUNIT_FALSE} ] ; then
     _shunit_testFailed 'Unknown failure encountered running a test'
     _shunit_generateReport
     exit ${SHUNIT_ERROR}
   fi
+
+  unset _shunit_name_ _shunit_signal_
 }
 
 _shunit_execSuite()
@@ -891,7 +896,7 @@ _shunit_execSuite()
   echo '#'
   echo '# Performing tests'
   echo '#'
-  for _su_func in ${__shunit_suite}; do
+  for _shunit_func_ in ${__shunit_suite}; do
     # disable skipping
     endSkipping
 
@@ -899,33 +904,32 @@ _shunit_execSuite()
     setUp
 
     # execute the test
-    echo "${_su_func}"
-    eval ${_su_func}
+    echo "${_shunit_func_}"
+    eval ${_shunit_func_}
 
     # execute the per-test tear-down function
     tearDown
   done
 
-  unset _su_func
+  unset _shunit_func_
 }
 
 _shunit_generateReport()
 {
-  _su__awkPercent='{printf("%4d %3.0f%%", $1, $1*100/$2)}'
   if [ ${__shunit_testsTotal:-0} -gt 0 ]; then
-    _su__passed=`echo ${__shunit_testsPassed} ${__shunit_testsTotal} |\
-        awk "${_su__awkPercent}"`
-    _su__failed=`echo ${__shunit_testsFailed} ${__shunit_testsTotal} |\
-        awk "${_su__awkPercent}"`
-    _su__skipped=`echo ${__shunit_testsSkipped} ${__shunit_testsTotal} |\
-        awk "${_su__awkPercent}"`
-    _su__total=`echo ${__shunit_testsTotal} 100 |\
+    _shunit_passed_=`echo ${__shunit_testsPassed} ${__shunit_testsTotal} |\
+        awk "${__SHUNIT_AWK_PERCENT}"`
+    _shunit_failed_=`echo ${__shunit_testsFailed} ${__shunit_testsTotal} |\
+        awk "${__SHUNIT_AWK_PERCENT}"`
+    _shunit_skipped_=`echo ${__shunit_testsSkipped} ${__shunit_testsTotal} |\
+        awk "${__SHUNIT_AWK_PERCENT}"`
+    _shunit_total_=`echo ${__shunit_testsTotal} 100 |\
         awk '{printf("%4d %3d%%", $1, $2)}'`
   else
-    _su__passed=`echo 0 0 |awk '{printf("%4d %3d%%", $1, $2)}'`
-    _su__failed=${_su__passed}
-    _su__skipped=${_su__passed}
-    _su__total=${_su__passed}
+    _shunit_passed_=`echo 0 0 |awk '{printf("%4d %3d%%", $1, $2)}'`
+    _shunit_failed_=${_shunit_passed_}
+    _shunit_skipped_=${_shunit_passed_}
+    _shunit_total_=${_shunit_passed_}
   fi
 
   cat <<EOF
@@ -933,14 +937,14 @@ _shunit_generateReport()
 #
 # Test report
 #
-tests passed:  ${_su__passed}
-tests failed:  ${_su__failed}
-tests skipped: ${_su__skipped}
-tests total:   ${_su__total}
+tests passed:  ${_shunit_passed_}
+tests failed:  ${_shunit_failed_}
+tests skipped: ${_shunit_skipped_}
+tests total:   ${_shunit_total_}
 EOF
   __shunit_reportGenerated=${SHUNIT_TRUE}
 
-  unset _su__awkPercent _su__passed _su__failed _su__skipped _su__total
+  unset _shunit_passed_ _shunit_failed_ _shunit_skipped_ _shunit_total_
 }
 
 # this function is a cross-platform temporary directory creation tool. not all
@@ -952,39 +956,39 @@ _shunit_mktempDir()
 
   # the standard mktemp didn't work.  doing our own.
   if [ -r '/dev/urandom' ]; then
-    _su__random=`od -vAn -N4 -tx4 </dev/urandom |sed 's/^[^0-9a-f]*//'`
+    _shunit_random_=`od -vAn -N4 -tx4 </dev/urandom |sed 's/^[^0-9a-f]*//'`
   elif [ -n "${RANDOM:-}" ]; then
     # $RANDOM works
-    _su__random=${RANDOM}${RANDOM}${RANDOM}$$
+    _shunit_random_=${RANDOM}${RANDOM}${RANDOM}$$
   else
     # $RANDOM doesn't work
-    _su__date=`date '+%Y%m%d%H%M%S'`
-    _su__random=`expr ${_su__date} / $$`
+    _shunit_date_=`date '+%Y%m%d%H%M%S'`
+    _shunit_random_=`expr ${_shunit_date_} / $$`
   fi
 
-  _su__tmpDir="${TMPDIR:-/tmp}/shunit.${_su__random}"
-  ( umask 077 && mkdir "${_su__tmpDir}" ) || {
+  _shunit_tmpDir_="${TMPDIR:-/tmp}/shunit.${_shunit_random_}"
+  ( umask 077 && mkdir "${_shunit_tmpDir_}" ) || {
     _shunit_fatal 'could not create temporary directory! exiting'
     exit 1
   }
 
-  echo ${_su__tmpDir}
-  unset _su__date _su__random _su__tmpDir
+  echo ${_shunit_tmpDir_}
+  unset _shunit_date_ _shunit_random_ _shunit_tmpDir_
 }
 
 # this function is here to work around issues in Cygwin
 _shunit_mktempFunc()
 {
-  for _su__func in oneTimeSetUp oneTimeTearDown setUp tearDown suite; do
-    _su__file="${__shunit_tmpDir}/${_su__func}"
-    cat <<EOF >"${_su__file}"
+  for _shunit_func_ in oneTimeSetUp oneTimeTearDown setUp tearDown suite; do
+    _shunit_file_="${__shunit_tmpDir}/${_shunit_func_}"
+    cat <<EOF >"${_shunit_file_}"
 #! /bin/sh
 exit 0
 EOF
-    chmod +x "${_su__file}"
+    chmod +x "${_shunit_file_}"
   done
 
-  unset _su__file
+  unset _shunit_file_
 }
 
 _shunit_shouldSkip()
@@ -996,18 +1000,16 @@ _shunit_shouldSkip()
 _shunit_testPassed()
 {
   __shunit_testsPassed=`expr ${__shunit_testsPassed} + 1`
-  __shunit_testsTotal=`expr ${__shunit_testsTotal} + 1`
 }
 
 _shunit_testFailed()
 {
-  _su__msg=$1
+  _shunit_msg_=$1
 
   __shunit_testsFailed=`expr ${__shunit_testsFailed} + 1`
-  __shunit_testsTotal=`expr ${__shunit_testsTotal} + 1`
-  echo "${__SHUNIT_ASSERT_MSG_PREFIX}${_su__msg}"
+  echo "${__SHUNIT_ASSERT_MSG_PREFIX}${_shunit_msg_}"
 
-  unset _su__msg
+  unset _shunit_msg_
 }
 
 _shunit_testSkipped()

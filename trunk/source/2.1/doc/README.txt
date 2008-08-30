@@ -5,25 +5,52 @@ shUnit2 2.1.x README
 Coding Standards
 ================
 
-*Note: these are incomplete*
+Variable and Function Names
+---------------------------
 
-+------------------+---------------------------+
-| type             | sample                    |
-+==================+===========================+
-| local variable   | ``shunit_someVariable_``  |
-+------------------+---------------------------+
-| global variable  | ``__shunit_someVariable`` |
-+------------------+---------------------------+
-| public constant  | ``SHUNIT_TRUE``           |
-+------------------+---------------------------+
-| private constant | ``__SHUNIT_SHELL_FLAGS``  |
-+------------------+---------------------------+
-| public function  | ``assertEquals``          |
-+------------------+---------------------------+
-| private function | ``_shunit_someFunction``  |
-+------------------+---------------------------+
-| macro            | ``_SHUNIT_SOME_MACRO_``   |
-+------------------+---------------------------+
+All shUnit2 specific constants, variables, and functions will be prefixed
+appropriately with 'shunit'. This is to distinguish usage in the shUnit2 code
+from users own scripts so that the shell name space remains predictable to
+users. The exceptions here are the standard ``assertEquals``, etc. functions.
+
+Due to some shells not supporting local variables in functions, care in the
+naming and use of variables, both public and private, is very important.
+Accidental overriding of the variables can occur easily if care is not taken as
+all variables are technically global variables in some shells.
+
++----------------------------------+---------------------------+
+| *type*                           | *sample*                  |
++==================================+===========================+
+| global public constant           | ``SHUNIT_TRUE``           |
++----------------------------------+---------------------------+
+| global private constant          | ``__SHUNIT_SHELL_FLAGS``  |
++----------------------------------+---------------------------+
+| global public variable           | not used                  |
++----------------------------------+---------------------------+
+| global private variable          | ``__shunit_someVariable`` |
++----------------------------------+---------------------------+
+| global macro                     | ``_SHUNIT_SOME_MACRO_``   |
++----------------------------------+---------------------------+
+| public function                  | ``assertEquals``          |
++----------------------------------+---------------------------+
+| public function, local variable  | ``shunit_someVariable_``  |
++----------------------------------+---------------------------+
+| private function                 | ``_shunit_someFunction``  |
++----------------------------------+---------------------------+
+| private function, local variable | ``_shunit_someVariable_`` |
++----------------------------------+---------------------------+
+
+Where it makes sense, variables can have the first letter of the second and
+later words capitalized. For example, the local variable name for the total
+number of test cases seen might be ``shunit_totalTestsSeen_``.
+
+Local Variable Cleanup
+----------------------
+
+As many shells do not support local variables, no support for cleanup of
+variables is present either. As such, all variables local to a function must be
+cleared up with the ``unset`` command at the end of each function.
+
 
 code.google.com
 ===============
@@ -230,5 +257,5 @@ Related Documentation
 .. generate HTML using rst2html from Docutils of
 .. http://docutils.sourceforge.net/
 ..
-.. vim:syntax=rst:textwidth=80
+.. vim:spell:syntax=rst:textwidth=80
 .. $Revision$
