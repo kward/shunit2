@@ -3,6 +3,7 @@ Changes in shUnit2 2.1.X
 
 Changes with 2.1.5
 ------------------
+
 Issue# 1: Fixed bug pointed out by R Bernstein in the trap code where certain
 types of exit conditions did not generate the ending report.
 
@@ -11,6 +12,12 @@ Issue# 2: Added assertNotEquals() assert.
 Issue# 3: Moved check for unset variables out of shUnit2 into the unit tests.
 Testing poorly written software blows up if this check is in, but it is only
 interesting for shUnit2 itself.
+
+Added new custom assert in test_helpers to check for output to STDOUT, and none
+to STDERR.
+
+Replaced fatal message in the temp directory creation with a _shunit_fatal()
+function call.
 
 
 Changes with 2.1.4

@@ -121,6 +121,30 @@ th_assertTrueWithNoOutput()
   unset th_test_ th_rtrn_ th_stdout_ th_stderr_
 }
 
+# Custom assert that checks for non-zero return value, output to STDOUT, but no
+# output to STDERR.
+#
+# Args:
+#  th_test_: string: name of the subtest
+#  th_rtrn_: integer: the return value of the subtest performed
+#  th_stdout_: string: filename where stdout was redirected to
+#  th_stderr_: string: filename where stderr was redirected to
+th_assertFalseWithOutput()
+{
+  th_test_=$1
+  th_rtrn_=$2
+  th_stdout_=$3
+  th_stderr_=$4
+
+  assertFalse "${th_test_}; expected non-zero return value" ${th_rtrn_}
+  assertTrue "${th_test_}; expected output to STDOUT" \
+      "[ -s '${th_stdout_}' ]"
+  assertFalse "${th_test_}; expected no output to STDERR" \
+      "[ -s '${th_stderr_}' ]"
+
+  unset th_test_ th_rtrn_ th_stdout_ th_stderr_
+}
+
 # Custom assert that checks for non-zero return value, no output to STDOUT, but
 # output to STDERR.
 #
@@ -129,7 +153,7 @@ th_assertTrueWithNoOutput()
 #  th_rtrn_: integer: the return value of the subtest performed
 #  th_stdout_: string: filename where stdout was redirected to
 #  th_stderr_: string: filename where stderr was redirected to
-th_assertFalseWithSE()
+th_assertFalseWithError()
 {
   th_test_=$1
   th_rtrn_=$2
