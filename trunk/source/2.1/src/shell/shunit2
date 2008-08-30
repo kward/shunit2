@@ -882,6 +882,7 @@ _shunit_cleanup()
   elif [ ${__shunit_reportGenerated} -eq ${SHUNIT_FALSE} ] ; then
     _shunit_testFailed 'Unknown failure encountered running a test'
     _shunit_generateReport
+    exit ${SHUNIT_ERROR}
   fi
 }
 

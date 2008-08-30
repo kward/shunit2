@@ -19,6 +19,9 @@ to STDERR.
 Replaced fatal message in the temp directory creation with a _shunit_fatal()
 function call.
 
+Fixed test_output unit test so it works now that the 'set -u' stuff was removed
+for Issue# 3.
+
 
 Changes with 2.1.4
 ------------------

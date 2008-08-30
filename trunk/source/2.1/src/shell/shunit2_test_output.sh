@@ -8,9 +8,6 @@
 # Author: kate.ward@forestent.com (Kate Ward)
 #
 # shUnit2 unit test for actual output
-#
-# Note: test scripts are prefixed with '#' chars so that shUnit2 does not
-# incorrectly intrepret imbeded functions as real functions.
 
 # load test helpers
 . ./shunit2_test_helpers
@@ -19,10 +16,15 @@
 # suite tests
 #
 
+# Note: the test script is prefixed with '#' chars so that shUnit2 does not
+# incorrectly interpret the embedded functions as real functions.
 testUnboundVariable()
 {
   sed 's/^#//' >"${testF}" <<EOF
-#boom() { x=\$1; }
+## treat unset variables as an error when performing parameter expansion
+#set -u
+#
+#boom() { x=\$1; }  # this function goes boom if no parameters are passed!
 #test_boom()
 #{
 #   assertEquals 1 1
@@ -32,11 +34,10 @@ testUnboundVariable()
 #. ${TH_SHUNIT}
 EOF
   ( exec sh "${testF}" >"${stdoutF}" 2>"${stderrF}" )
-  rtrn=$?
-  assertFalse 'expected a non-zero exit value' ${rtrn}
+  assertFalse 'expected a non-zero exit value' $?
   grep '^# Test report' "${stdoutF}" >/dev/null
   assertTrue 'report was not generated' $?
-  grep '^ASSERT:Unknown failure' "${stderrF}" >/dev/null
+  grep '^ASSERT:Unknown failure' "${stdoutF}" >/dev/null
   assertTrue 'failure message was not generated' $?
 }
 
