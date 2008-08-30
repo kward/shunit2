@@ -25,11 +25,6 @@ for Issue# 3.
 Flushed out the coding standards in the README.txt a bit more, and brought the
 shunit2 code up to par with the documented standards.
 
-Issue #4: Changed how the total number of tests were determined so that the
-report would always indicate the correct number of total tests in the test
-report, even when an unexpected error was trapped by the shUnit2 code and
-shUnit2 doesn't get to all the tests.
-
 
 Changes with 2.1.4
 ------------------
