@@ -19,55 +19,55 @@
 testFail()
 {
   ( fail >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'fail' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithOutput 'fail' $? "${stdoutF}" "${stderrF}"
 
   ( fail "${MSG}" >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'fail with msg' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithOutput 'fail with msg' $? "${stdoutF}" "${stderrF}"
 
   ( fail arg1 >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'too many arguments' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithOutput 'too many arguments' $? "${stdoutF}" "${stderrF}"
 }
 
 testFailNotEquals()
 {
   ( failNotEquals 'x' 'x' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'same' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithOutput 'same' $? "${stdoutF}" "${stderrF}"
 
   ( failNotEquals "${MSG}" 'x' 'x' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'same with msg' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithOutput 'same with msg' $? "${stdoutF}" "${stderrF}"
 
   ( failNotEquals 'x' 'y' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'not same' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithOutput 'not same' $? "${stdoutF}" "${stderrF}"
 
   ( failNotEquals '' '' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'null values' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithOutput 'null values' $? "${stdoutF}" "${stderrF}"
 
   ( failNotEquals >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'too few arguments' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithError 'too few arguments' $? "${stdoutF}" "${stderrF}"
 
   ( failNotEquals arg1 arg2 arg3 arg4 >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'too many arguments' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithError 'too many arguments' $? "${stdoutF}" "${stderrF}"
 }
 
 testFailSame()
 {
   ( failSame 'x' 'x' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'same' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithOutput 'same' $? "${stdoutF}" "${stderrF}"
 
   ( failSame "${MSG}" 'x' 'x' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'same with msg' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithOutput 'same with msg' $? "${stdoutF}" "${stderrF}"
 
   ( failSame 'x' 'y' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'not same' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithOutput 'not same' $? "${stdoutF}" "${stderrF}"
 
   ( failSame '' '' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'null values' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithOutput 'null values' $? "${stdoutF}" "${stderrF}"
 
   ( failSame >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'too few arguments' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithError 'too few arguments' $? "${stdoutF}" "${stderrF}"
 
   ( failSame arg1 arg2 arg3 arg4 >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithSE 'too many arguments' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithError 'too many arguments' $? "${stdoutF}" "${stderrF}"
 }
 
 #-----------------------------------------------------------------------------

@@ -963,7 +963,7 @@ _shunit_mktempDir()
 
   _su__tmpDir="${TMPDIR:-/tmp}/shunit.${_su__random}"
   ( umask 077 && mkdir "${_su__tmpDir}" ) || {
-    echo 'shUnit:FATAL could not create temporary directory! exiting' >&2
+    _shunit_fatal 'could not create temporary directory! exiting'
     exit 1
   }
 
@@ -1004,7 +1004,7 @@ _shunit_testFailed()
 
   __shunit_testsFailed=`expr ${__shunit_testsFailed} + 1`
   __shunit_testsTotal=`expr ${__shunit_testsTotal} + 1`
-  echo "${__SHUNIT_ASSERT_MSG_PREFIX}${_su__msg}" >&2
+  echo "${__SHUNIT_ASSERT_MSG_PREFIX}${_su__msg}"
 
   unset _su__msg
 }
