@@ -760,7 +760,6 @@ suite_addTest()
   shunit_func_=${1:-}
 
   __shunit_suite="${__shunit_suite:+${__shunit_suite} }${shunit_func_}"
-  __shunit_testsTotal=`expr ${__shunit_testsTotal} + 1`
 
   unset shunit_func_
 }
@@ -1000,6 +999,7 @@ _shunit_shouldSkip()
 _shunit_testPassed()
 {
   __shunit_testsPassed=`expr ${__shunit_testsPassed} + 1`
+  __shunit_testsTotal=`expr ${__shunit_testsTotal} + 1`
 }
 
 _shunit_testFailed()
@@ -1007,6 +1007,7 @@ _shunit_testFailed()
   _shunit_msg_=$1
 
   __shunit_testsFailed=`expr ${__shunit_testsFailed} + 1`
+  __shunit_testsTotal=`expr ${__shunit_testsTotal} + 1`
   echo "${__SHUNIT_ASSERT_MSG_PREFIX}${_shunit_msg_}"
 
   unset _shunit_msg_
