@@ -898,10 +898,7 @@ _shunit_cleanup()
 # The actual running of the tests happens here.
 _shunit_execSuite()
 {
-#  echo '#'
-#  echo '# Performing tests'
-#  echo '#'
-  for _shunit_func_ in ${__shunit_suite}; do
+  for _shunit_test_ in ${__shunit_suite}; do
     __shunit_testSuccess=${SHUNIT_TRUE}
 
     # disable skipping
@@ -911,8 +908,8 @@ _shunit_execSuite()
     setUp
 
     # execute the test
-    echo "${_shunit_func_}"
-    eval ${_shunit_func_}
+    echo "${_shunit_test_}"
+    eval ${_shunit_test_}
 
     # execute the per-test tear-down function
     tearDown
@@ -925,7 +922,7 @@ _shunit_execSuite()
     fi
   done
 
-  unset _shunit_func_
+  unset _shunit_test_
 }
 
 # This function exits shUnit2 with the appropriate error code and OK/FAILED
