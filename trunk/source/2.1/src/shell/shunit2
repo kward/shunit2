@@ -49,8 +49,6 @@ fi
 __SHUNIT_ASSERT_MSG_PREFIX='ASSERT:'
 __SHUNIT_PARENT=${SHUNIT_PARENT:-$0}
 
-__SHUNIT_AWK_PERCENT='{printf("%4d %3.0f%%", $1, $1*100/$2)}'
-
 # set the constants readonly
 shunit_constants_=`set |grep "^__SHUNIT_" |cut -d= -f1`
 echo "${shunit_constants_}" |grep "^Binary file" >/dev/null
@@ -74,10 +72,18 @@ unset shunit_const_ shunit_constants_ shunit_ro_opts_
 __shunit_skip=${SHUNIT_FALSE}
 __shunit_suite=''
 
+# counts of tests
+__shunit_testPassed=${SHUNIT_TRUE}
+__shunit_testsTotal=0
 __shunit_testsPassed=0
 __shunit_testsFailed=0
-__shunit_testsSkipped=0
-__shunit_testsTotal=0
+
+# counts of asserts
+__shunit_assertsTotal=0
+__shunit_assertsPassed=0
+__shunit_assertsFailed=0
+__shunit_assertsSkipped=0
+
 __shunit_reportGenerated=${SHUNIT_FALSE}
 
 # macros
@@ -760,6 +766,7 @@ suite_addTest()
   shunit_func_=${1:-}
 
   __shunit_suite="${__shunit_suite:+${__shunit_suite} }${shunit_func_}"
+  __shunit_testsTotal=`expr ${__shunit_testsTotal} + 1`
 
   unset shunit_func_
 }
@@ -876,26 +883,27 @@ _shunit_cleanup()
   # exit for all non-EXIT signals
   if [ ${_shunit_name_} != 'EXIT' ]; then
     _shunit_warn "trapped and now handling the (${_shunit_name_}) signal"
-    _shunit_generateReport
     # disable EXIT trap
     trap 0
     # add 128 to signal and exit
-    exit `expr ${_shunit_signal_} + 128`
+    _shunit_exit `expr ${_shunit_signal_} + 128`
   elif [ ${__shunit_reportGenerated} -eq ${SHUNIT_FALSE} ] ; then
     _shunit_testFailed 'Unknown failure encountered running a test'
-    _shunit_generateReport
-    exit ${SHUNIT_ERROR}
+    _shunit_exit ${SHUNIT_ERROR}
   fi
 
   unset _shunit_name_ _shunit_signal_
 }
 
+# The actual running of the tests happens here.
 _shunit_execSuite()
 {
-  echo '#'
-  echo '# Performing tests'
-  echo '#'
+#  echo '#'
+#  echo '# Performing tests'
+#  echo '#'
   for _shunit_func_ in ${__shunit_suite}; do
+    __shunit_testPassed=${SHUNIT_TRUE}
+
     # disable skipping
     endSkipping
 
@@ -908,42 +916,67 @@ _shunit_execSuite()
 
     # execute the per-test tear-down function
     tearDown
+
+    # update stats
+    if [ ${__shunit_testPassed} -eq ${SHUNIT_TRUE} ]; then
+      __shunit_testsPassed=`expr ${__shunit_testsPassed} + 1`
+    else
+      __shunit_testsFailed=`expr ${__shunit_testsFailed} + 1`
+    fi
   done
 
   unset _shunit_func_
 }
 
+# This function exits shUnit2 with the appropriate error code and OK/FAILED
+# message.
+_shunit_exit()
+{
+  _shunit_exit_=${1:-${SHUNIT_TRUE}}
+
+  _shunit_generateReport
+
+  # if no exit code was provided one, determine an appropriate one
+  [ ${_shunit_exit_} -eq ${SHUNIT_TRUE} -a ${__shunit_testsFailed} -ne 0 ] \
+      && _shunit_exit_=${SHUNIT_FALSE}
+
+  if [ ${_shunit_exit_} -eq ${SHUNIT_TRUE} ]; then
+    echo
+    echo 'OK'
+  else
+    echo
+    echo 'FAILED'
+  fi
+  exit ${_shunit_exit_}
+}
+
 _shunit_generateReport()
 {
-  if [ ${__shunit_testsTotal:-0} -gt 0 ]; then
-    _shunit_passed_=`echo ${__shunit_testsPassed} ${__shunit_testsTotal} |\
-        awk "${__SHUNIT_AWK_PERCENT}"`
-    _shunit_failed_=`echo ${__shunit_testsFailed} ${__shunit_testsTotal} |\
-        awk "${__SHUNIT_AWK_PERCENT}"`
-    _shunit_skipped_=`echo ${__shunit_testsSkipped} ${__shunit_testsTotal} |\
-        awk "${__SHUNIT_AWK_PERCENT}"`
-    _shunit_total_=`echo ${__shunit_testsTotal} 100 |\
-        awk '{printf("%4d %3d%%", $1, $2)}'`
+  echo
+
+  if [ ${__shunit_testsTotal} -eq 1 ]; then
+    echo "Ran ${__shunit_testsTotal} test."
   else
-    _shunit_passed_=`echo 0 0 |awk '{printf("%4d %3d%%", $1, $2)}'`
-    _shunit_failed_=${_shunit_passed_}
-    _shunit_skipped_=${_shunit_passed_}
-    _shunit_total_=${_shunit_passed_}
+    echo "Ran ${__shunit_testsTotal} tests."
   fi
 
-  cat <<EOF
+  if [ ${__shunit_assertsFailed} -gt 0 ]; then
+    if [ ${__shunit_assertsFailed} -eq 1 ]; then
+      echo "There was ${__shunit_assertsFailed} failure."
+    else
+      echo "There were ${__shunit_assertsFailed} failures."
+    fi
+  fi
 
-#
-# Test report
-#
-tests passed:  ${_shunit_passed_}
-tests failed:  ${_shunit_failed_}
-tests skipped: ${_shunit_skipped_}
-tests total:   ${_shunit_total_}
-EOF
+  if [ ${__shunit_assertsSkipped} -gt 0 ]; then
+    if [ ${__shunit_assertsSkipped} -eq 1 ]; then
+      echo "There was ${__shunit_assertsSkipped} assertion skipped."
+    else
+      echo "There were ${__shunit_assertsSkipped} assertions skipped."
+    fi
+  fi
+
   __shunit_reportGenerated=${SHUNIT_TRUE}
-
-  unset _shunit_passed_ _shunit_failed_ _shunit_skipped_ _shunit_total_
 }
 
 # this function is a cross-platform temporary directory creation tool. not all
@@ -998,16 +1031,17 @@ _shunit_shouldSkip()
 
 _shunit_testPassed()
 {
-  __shunit_testsPassed=`expr ${__shunit_testsPassed} + 1`
-  __shunit_testsTotal=`expr ${__shunit_testsTotal} + 1`
+  __shunit_assertsPassed=`expr ${__shunit_assertsPassed} + 1`
+  __shunit_assertsTotal=`expr ${__shunit_assertsTotal} + 1`
 }
 
 _shunit_testFailed()
 {
   _shunit_msg_=$1
 
-  __shunit_testsFailed=`expr ${__shunit_testsFailed} + 1`
-  __shunit_testsTotal=`expr ${__shunit_testsTotal} + 1`
+  __shunit_testPassed=${SHUNIT_FALSE}
+  __shunit_assertsFailed=`expr ${__shunit_assertsFailed} + 1`
+  __shunit_assertsTotal=`expr ${__shunit_assertsTotal} + 1`
   echo "${__SHUNIT_ASSERT_MSG_PREFIX}${_shunit_msg_}"
 
   unset _shunit_msg_
@@ -1015,8 +1049,8 @@ _shunit_testFailed()
 
 _shunit_testSkipped()
 {
-  __shunit_testsSkipped=`expr ${__shunit_testsSkipped} + 1`
-  __shunit_testsTotal=`expr ${__shunit_testsTotal} + 1`
+  __shunit_assertsSkipped=`expr ${__shunit_assertsSkipped} + 1`
+  __shunit_assertsTotal=`expr ${__shunit_assertsTotal} + 1`
 }
 
 #------------------------------------------------------------------------------
@@ -1058,10 +1092,8 @@ _shunit_execSuite
 # execute the oneTimeTearDown function (if it exists)
 oneTimeTearDown
 
-# generate report
-_shunit_generateReport
-
-[ ${__shunit_testsFailed} -eq 0 ] || exit 1
+# that's it folks
+_shunit_exit
 
 #/**
 # </s:shelldoc>
