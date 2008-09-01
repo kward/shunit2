@@ -11,7 +11,9 @@ Issue# 2: Added assertNotEquals() assert.
 
 Issue# 3: Moved check for unset variables out of shUnit2 into the unit tests.
 Testing poorly written software blows up if this check is in, but it is only
-interesting for shUnit2 itself.
+interesting for shUnit2 itself. Added shunit_test_output.sh unit test for this.
+Some shells still do not catch such errors properly (e.g. Bourne shell and BASH
+2.x).
 
 Added new custom assert in test_helpers to check for output to STDOUT, and none
 to STDERR.
