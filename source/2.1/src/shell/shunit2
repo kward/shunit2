@@ -73,7 +73,7 @@ __shunit_skip=${SHUNIT_FALSE}
 __shunit_suite=''
 
 # counts of tests
-__shunit_testPassed=${SHUNIT_TRUE}
+__shunit_testSuccess=${SHUNIT_TRUE}
 __shunit_testsTotal=0
 __shunit_testsPassed=0
 __shunit_testsFailed=0
@@ -132,7 +132,7 @@ assertEquals()
 
   shunit_return=${SHUNIT_TRUE}
   if [ "${shunit_expected_}" = "${shunit_actual_}" ]; then
-    _shunit_testPassed
+    _shunit_assertPass
   else
     failNotEquals "${shunit_message_}" "${shunit_expected_}" "${shunit_actual_}"
     shunit_return=${SHUNIT_FALSE}
@@ -182,7 +182,7 @@ assertNotEquals()
 
   shunit_return=${SHUNIT_TRUE}
   if [ "${shunit_unexpected_}" != "${shunit_actual_}" ]; then
-    _shunit_testPassed
+    _shunit_assertPass
   else
     failSame "${shunit_message_}" "$@"
     shunit_return=${SHUNIT_FALSE}
@@ -402,9 +402,9 @@ assertTrue()
 
   # record the test
   if [ ${shunit_return} -eq ${SHUNIT_TRUE} ]; then
-    _shunit_testPassed
+    _shunit_assertPass
   else
-    _shunit_testFailed "${shunit_message_}"
+    _shunit_assertFail "${shunit_message_}"
   fi
 
   unset shunit_message_ shunit_condition_ shunit_match_
@@ -472,9 +472,9 @@ assertFalse()
 
   # record the test
   if [ ${shunit_return} -eq ${SHUNIT_TRUE} ]; then
-    _shunit_testPassed
+    _shunit_assertPass
   else
-    _shunit_testFailed "${shunit_message_}"
+    _shunit_assertFail "${shunit_message_}"
   fi
 
   unset shunit_message_ shunit_condition_ shunit_match_
@@ -517,7 +517,7 @@ fail()
     shift
   fi
 
-  _shunit_testFailed "${shunit_message_}"
+  _shunit_assertFail "${shunit_message_}"
 
   unset shunit_message_
   return ${SHUNIT_FALSE}
@@ -561,7 +561,7 @@ failNotEquals()
   shunit_unexpected_=$1
   shunit_actual_=$2
 
-  _shunit_testFailed "${shunit_message_:+${shunit_message_} }expected:<${shunit_unexpected_}> but was:<${shunit_actual_}>"
+  _shunit_assertFail "${shunit_message_:+${shunit_message_} }expected:<${shunit_unexpected_}> but was:<${shunit_actual_}>"
 
   unset shunit_message_ shunit_unexpected_ shunit_actual_
   return ${SHUNIT_FALSE}
@@ -600,7 +600,7 @@ failSame()
     shift
   fi
 
-  _shunit_testFailed "${shunit_message_:+${shunit_message_} }expected not same"
+  _shunit_assertFail "${shunit_message_:+${shunit_message_} }expected not same"
 
   unset shunit_message_
   return ${SHUNIT_FALSE}
@@ -888,7 +888,7 @@ _shunit_cleanup()
     # add 128 to signal and exit
     _shunit_exit `expr ${_shunit_signal_} + 128`
   elif [ ${__shunit_reportGenerated} -eq ${SHUNIT_FALSE} ] ; then
-    _shunit_testFailed 'Unknown failure encountered running a test'
+    _shunit_assertFail 'Unknown failure encountered running a test'
     _shunit_exit ${SHUNIT_ERROR}
   fi
 
@@ -902,7 +902,7 @@ _shunit_execSuite()
 #  echo '# Performing tests'
 #  echo '#'
   for _shunit_func_ in ${__shunit_suite}; do
-    __shunit_testPassed=${SHUNIT_TRUE}
+    __shunit_testSuccess=${SHUNIT_TRUE}
 
     # disable skipping
     endSkipping
@@ -918,7 +918,7 @@ _shunit_execSuite()
     tearDown
 
     # update stats
-    if [ ${__shunit_testPassed} -eq ${SHUNIT_TRUE} ]; then
+    if [ ${__shunit_testSuccess} -eq ${SHUNIT_TRUE} ]; then
       __shunit_testsPassed=`expr ${__shunit_testsPassed} + 1`
     else
       __shunit_testsFailed=`expr ${__shunit_testsFailed} + 1`
@@ -1026,20 +1026,20 @@ EOF
 _shunit_shouldSkip()
 {
   [ ${__shunit_skip} -eq ${SHUNIT_FALSE} ] && return ${SHUNIT_FALSE}
-  _shunit_testSkipped
+  _shunit_assertSkip
 }
 
-_shunit_testPassed()
+_shunit_assertPass()
 {
   __shunit_assertsPassed=`expr ${__shunit_assertsPassed} + 1`
   __shunit_assertsTotal=`expr ${__shunit_assertsTotal} + 1`
 }
 
-_shunit_testFailed()
+_shunit_assertFail()
 {
   _shunit_msg_=$1
 
-  __shunit_testPassed=${SHUNIT_FALSE}
+  __shunit_testSuccess=${SHUNIT_FALSE}
   __shunit_assertsFailed=`expr ${__shunit_assertsFailed} + 1`
   __shunit_assertsTotal=`expr ${__shunit_assertsTotal} + 1`
   echo "${__SHUNIT_ASSERT_MSG_PREFIX}${_shunit_msg_}"
@@ -1047,7 +1047,7 @@ _shunit_testFailed()
   unset _shunit_msg_
 }
 
-_shunit_testSkipped()
+_shunit_assertSkip()
 {
   __shunit_assertsSkipped=`expr ${__shunit_assertsSkipped} + 1`
   __shunit_assertsTotal=`expr ${__shunit_assertsTotal} + 1`
