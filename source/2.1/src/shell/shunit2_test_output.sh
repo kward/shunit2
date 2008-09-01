@@ -38,7 +38,7 @@ EOF
   grep '^ASSERT:Unknown failure' "${stdoutF}" >/dev/null
   assertTrue 'failure message was not generated' $?
   grep '^Ran [0-9]* test' "${stdoutF}" >/dev/null
-  assertTrue 'the failure message was not generated' $?
+  assertTrue 'the test count message was not generated' $?
   grep '^FAILED' "${stdoutF}" >/dev/null
   assertTrue 'the failure message was not generated' $?
 }
