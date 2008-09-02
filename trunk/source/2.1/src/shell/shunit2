@@ -931,49 +931,41 @@ _shunit_exit()
 {
   _shunit_exit_=${1:-${SHUNIT_TRUE}}
 
-  _shunit_generateReport
-
   # if no exit code was provided one, determine an appropriate one
   [ ${_shunit_exit_} -eq ${SHUNIT_TRUE} -a ${__shunit_testsFailed} -ne 0 ] \
       && _shunit_exit_=${SHUNIT_FALSE}
 
-  if [ ${_shunit_exit_} -eq ${SHUNIT_TRUE} ]; then
-    echo
-    echo 'OK'
-  else
-    echo
-    echo 'FAILED'
-  fi
-  exit ${_shunit_exit_}
-}
+  # TODO(kward): is this still useful? it is supposed be, I think...
+  __shunit_reportGenerated=${SHUNIT_TRUE}
 
-_shunit_generateReport()
-{
   echo
-
   if [ ${__shunit_testsTotal} -eq 1 ]; then
     echo "Ran ${__shunit_testsTotal} test."
   else
     echo "Ran ${__shunit_testsTotal} tests."
   fi
 
-  if [ ${__shunit_assertsFailed} -gt 0 ]; then
-    if [ ${__shunit_assertsFailed} -eq 1 ]; then
-      echo "There was ${__shunit_assertsFailed} failure."
-    else
-      echo "There were ${__shunit_assertsFailed} failures."
-    fi
+  _shunit_errors_=''
+  _shunit_skipped_=''
+  [ ${__shunit_assertsFailed} -gt 0 ] \
+      && _shunit_errors_="errors={__shunit_assertsFailed}"
+  [ ${__shunit_assertsSkipped} -gt 0 ] \
+      && _shunit_skipped_="skipped={__shunit_assertsSkipped}"
+
+  if [ ${_shunit_exit_} -eq ${SHUNIT_TRUE} ]; then
+    _shunit_msg_='OK'
+    [ -n "${_shunit_skipped_}" ] \
+        && _shunit_msg_="${_shunit_msg_} (${_shunit_skipped_})"
+  else
+    _shunit_msg_="FAILED (${_shunit_errors_}"
+    [ -n "${_shunit_skipped_}" ] \
+        && _shunit_msg_="${_shunit_msg_},${_shunit_skipped_}"
+    _shunit_msg_="${_shunit_msg_})"
   fi
 
-  if [ ${__shunit_assertsSkipped} -gt 0 ]; then
-    if [ ${__shunit_assertsSkipped} -eq 1 ]; then
-      echo "There was ${__shunit_assertsSkipped} assertion skipped."
-    else
-      echo "There were ${__shunit_assertsSkipped} assertions skipped."
-    fi
-  fi
-
-  __shunit_reportGenerated=${SHUNIT_TRUE}
+  echo
+  echo ${_shunit_msg_}
+  exit ${_shunit_exit_}
 }
 
 # this function is a cross-platform temporary directory creation tool. not all
