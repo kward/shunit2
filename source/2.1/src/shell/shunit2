@@ -863,6 +863,50 @@ suite_addTest()
 # internal shUnit2 functions
 #
 
+# this function is a cross-platform temporary directory creation tool. not all
+# OSes have the mktemp function, so one is included here.
+_shunit_mktempDir()
+{
+  # try the standard mktemp function
+  ( exec mktemp -dqt shunit.XXXXXX 2>/dev/null ) && return
+
+  # the standard mktemp didn't work.  doing our own.
+  if [ -r '/dev/urandom' ]; then
+    _shunit_random_=`od -vAn -N4 -tx4 </dev/urandom |sed 's/^[^0-9a-f]*//'`
+  elif [ -n "${RANDOM:-}" ]; then
+    # $RANDOM works
+    _shunit_random_=${RANDOM}${RANDOM}${RANDOM}$$
+  else
+    # $RANDOM doesn't work
+    _shunit_date_=`date '+%Y%m%d%H%M%S'`
+    _shunit_random_=`expr ${_shunit_date_} / $$`
+  fi
+
+  _shunit_tmpDir_="${TMPDIR:-/tmp}/shunit.${_shunit_random_}"
+  ( umask 077 && mkdir "${_shunit_tmpDir_}" ) || {
+    _shunit_fatal 'could not create temporary directory! exiting'
+    exit ${SHUNIT_FALSE}
+  }
+
+  echo ${_shunit_tmpDir_}
+  unset _shunit_date_ _shunit_random_ _shunit_tmpDir_
+}
+
+# this function is here to work around issues in Cygwin
+_shunit_mktempFunc()
+{
+  for _shunit_func_ in oneTimeSetUp oneTimeTearDown setUp tearDown suite; do
+    _shunit_file_="${__shunit_tmpDir}/${_shunit_func_}"
+    cat <<EOF >"${_shunit_file_}"
+#! /bin/sh
+exit ${SHUNIT_TRUE}
+EOF
+    chmod +x "${_shunit_file_}"
+  done
+
+  unset _shunit_file_
+}
+
 _shunit_cleanup()
 {
   _shunit_name_=$1
@@ -886,10 +930,11 @@ _shunit_cleanup()
     # disable EXIT trap
     trap 0
     # add 128 to signal and exit
-    _shunit_exit `expr ${_shunit_signal_} + 128`
+    exit `expr ${_shunit_signal_} + 128`
   elif [ ${__shunit_reportGenerated} -eq ${SHUNIT_FALSE} ] ; then
     _shunit_assertFail 'Unknown failure encountered running a test'
-    _shunit_exit ${SHUNIT_ERROR}
+    _shunit_generateReport
+    exit ${SHUNIT_ERROR}
   fi
 
   unset _shunit_name_ _shunit_signal_
@@ -927,16 +972,14 @@ _shunit_execSuite()
 
 # This function exits shUnit2 with the appropriate error code and OK/FAILED
 # message.
-_shunit_exit()
+_shunit_generateReport()
 {
-  _shunit_exit_=${1:-${SHUNIT_TRUE}}
+  _shunit_ok_=${SHUNIT_TRUE}
 
   # if no exit code was provided one, determine an appropriate one
-  [ ${_shunit_exit_} -eq ${SHUNIT_TRUE} -a ${__shunit_testsFailed} -ne 0 ] \
-      && _shunit_exit_=${SHUNIT_FALSE}
-
-  # TODO(kward): is this still useful? it is supposed be, I think...
-  __shunit_reportGenerated=${SHUNIT_TRUE}
+  [ ${__shunit_testsFailed} -gt 0 \
+      -o ${__shunit_testSuccess} -eq ${SHUNIT_FALSE} ] \
+          && _shunit_ok_=${SHUNIT_FALSE}
 
   echo
   if [ ${__shunit_testsTotal} -eq 1 ]; then
@@ -945,19 +988,19 @@ _shunit_exit()
     echo "Ran ${__shunit_testsTotal} tests."
   fi
 
-  _shunit_errors_=''
+  _shunit_failures_=''
   _shunit_skipped_=''
   [ ${__shunit_assertsFailed} -gt 0 ] \
-      && _shunit_errors_="errors={__shunit_assertsFailed}"
+      && _shunit_failures_="failures=${__shunit_assertsFailed}"
   [ ${__shunit_assertsSkipped} -gt 0 ] \
-      && _shunit_skipped_="skipped={__shunit_assertsSkipped}"
+      && _shunit_skipped_="skipped=${__shunit_assertsSkipped}"
 
-  if [ ${_shunit_exit_} -eq ${SHUNIT_TRUE} ]; then
+  if [ ${_shunit_ok_} -eq ${SHUNIT_TRUE} ]; then
     _shunit_msg_='OK'
     [ -n "${_shunit_skipped_}" ] \
         && _shunit_msg_="${_shunit_msg_} (${_shunit_skipped_})"
   else
-    _shunit_msg_="FAILED (${_shunit_errors_}"
+    _shunit_msg_="FAILED (${_shunit_failures_}"
     [ -n "${_shunit_skipped_}" ] \
         && _shunit_msg_="${_shunit_msg_},${_shunit_skipped_}"
     _shunit_msg_="${_shunit_msg_})"
@@ -965,51 +1008,9 @@ _shunit_exit()
 
   echo
   echo ${_shunit_msg_}
-  exit ${_shunit_exit_}
-}
+  __shunit_reportGenerated=${SHUNIT_TRUE}
 
-# this function is a cross-platform temporary directory creation tool. not all
-# OSes have the mktemp function, so one is included here.
-_shunit_mktempDir()
-{
-  # try the standard mktemp function
-  ( exec mktemp -dqt shunit.XXXXXX 2>/dev/null ) && return
-
-  # the standard mktemp didn't work.  doing our own.
-  if [ -r '/dev/urandom' ]; then
-    _shunit_random_=`od -vAn -N4 -tx4 </dev/urandom |sed 's/^[^0-9a-f]*//'`
-  elif [ -n "${RANDOM:-}" ]; then
-    # $RANDOM works
-    _shunit_random_=${RANDOM}${RANDOM}${RANDOM}$$
-  else
-    # $RANDOM doesn't work
-    _shunit_date_=`date '+%Y%m%d%H%M%S'`
-    _shunit_random_=`expr ${_shunit_date_} / $$`
-  fi
-
-  _shunit_tmpDir_="${TMPDIR:-/tmp}/shunit.${_shunit_random_}"
-  ( umask 077 && mkdir "${_shunit_tmpDir_}" ) || {
-    _shunit_fatal 'could not create temporary directory! exiting'
-    exit 1
-  }
-
-  echo ${_shunit_tmpDir_}
-  unset _shunit_date_ _shunit_random_ _shunit_tmpDir_
-}
-
-# this function is here to work around issues in Cygwin
-_shunit_mktempFunc()
-{
-  for _shunit_func_ in oneTimeSetUp oneTimeTearDown setUp tearDown suite; do
-    _shunit_file_="${__shunit_tmpDir}/${_shunit_func_}"
-    cat <<EOF >"${_shunit_file_}"
-#! /bin/sh
-exit 0
-EOF
-    chmod +x "${_shunit_file_}"
-  done
-
-  unset _shunit_file_
+  unset _shunit_failures_ _shunit_msg_ _shunit_ok_ _shunit_skipped_
 }
 
 _shunit_shouldSkip()
@@ -1081,8 +1082,12 @@ _shunit_execSuite
 # execute the oneTimeTearDown function (if it exists)
 oneTimeTearDown
 
+# generate the report
+_shunit_generateReport
+
 # that's it folks
-_shunit_exit
+[ ${__shunit_testsFailed} -eq 0 ]
+exit $?
 
 #/**
 # </s:shelldoc>

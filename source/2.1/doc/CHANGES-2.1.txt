@@ -30,8 +30,6 @@ shunit2 code up to par with the documented standards.
 Completely changed the reporting output to be a closer match for JUnit and
 PyUnit. As a result, tests are counted separately from assertions.
 
-Moved all exit handling into _shunit_exit().
-
 
 Changes with 2.1.4
 ------------------
