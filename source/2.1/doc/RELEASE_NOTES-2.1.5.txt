@@ -105,8 +105,9 @@ zsh requires the ``shwordsplit`` option to be set.
 
 Line numbers in assert messages do not work properly with Bash 2.x.
 
-Unable to catch shell failures of Bourne shell and BASH 2.x properly
-(shunit_test_output.sh).
+The Bourne shell of Solaris and BASH 2.x do not properly catch the SIGTERM
+signal. As such, shell intrepreter failures due to such things as unbound
+variables cannot be caught. (See shunit_test_output.sh)
 
 
 .. vim:ft=rst:spell:tw=80

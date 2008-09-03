@@ -41,11 +41,6 @@ EOF
   assertTrue 'test count message was not generated' $?
   grep '^FAILED' "${stdoutF}" >/dev/null
   assertTrue 'failure message was not generated' $?
-  #echo ---
-  #cat ${stdoutF}
-  #echo ---
-  #cat ${stderrF}
-  #echo ---
 }
 
 #------------------------------------------------------------------------------
