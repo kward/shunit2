@@ -103,11 +103,11 @@ Known Bugs and Issues
 
 zsh requires the ``shwordsplit`` option to be set.
 
-Line numbers in assert messages do not work properly with Bash 2.x.
+Line numbers in assert messages do not work properly with BASH 2.x.
 
-The Bourne shell of Solaris and BASH 2.x do not properly catch the SIGTERM
-signal. As such, shell intrepreter failures due to such things as unbound
-variables cannot be caught. (See shunit_test_output.sh)
+The Bourne shell of Solaris, BASH 2.x, and Zsh 3.0.x do not properly catch the
+SIGTERM signal. As such, shell intrepreter failures due to such things as
+unbound variables cannot be caught. (See shunit_test_output.sh)
 
 
 .. vim:ft=rst:spell:tw=80
