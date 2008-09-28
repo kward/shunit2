@@ -50,23 +50,19 @@ __SHUNIT_ASSERT_MSG_PREFIX='ASSERT:'
 __SHUNIT_PARENT=${SHUNIT_PARENT:-$0}
 
 # set the constants readonly
-shunit_constants_=`set |grep "^__SHUNIT_" |cut -d= -f1`
-echo "${shunit_constants_}" |grep "^Binary file" >/dev/null
-if [ $? -eq 0 ]; then
-  # deal with binary junk in 'set' output
-  shunit_constants_=`set |grep -a "^__SHUNIT_" |cut -d= -f1`
-fi
-for shunit_const_ in ${shunit_constants_}; do
+shunit_constants_=`set |grep '^__SHUNIT_' |cut -d= -f1`
+echo "${shunit_constants_}" |grep '^Binary file' >/dev/null \
+    && shunit_constants_=`set |grep -a '^__SHUNIT_' |cut -d= -f1`
+for shunit_constant_ in ${shunit_constants_}; do
   shunit_ro_opts_=''
-  if [ -n "${ZSH_VERSION:-}" ]; then
-    case ${ZSH_VERSION} in
-      [123].*) ;;
-      *) shunit_ro_opts_='-g' ;;  # declare readonly constants globally
-    esac
-  fi
-  readonly ${shunit_ro_opts_} ${shunit_const_}
+  case ${ZSH_VERSION:-} in
+    '') ;;  # this isn't zsh
+    [123].*) ;;  # early versions (1.x, 2.x, 3.x)
+    *) shunit_ro_opts_='-g' ;;  # all later versions. declare readonly globally
+  esac
+  readonly ${shunit_ro_opts_} ${shunit_constant_}
 done
-unset shunit_const_ shunit_constants_ shunit_ro_opts_
+unset shunit_constant_ shunit_constants_ shunit_ro_opts_
 
 # variables
 __shunit_skip=${SHUNIT_FALSE}
@@ -1049,6 +1045,10 @@ _shunit_assertSkip()
 
 # create a temporary storage location
 __shunit_tmpDir=`_shunit_mktempDir`
+
+# provide a public temporary directory for unit test scripts
+# TODO(kward): document this
+shunit_tmpDir="${__shunit_tmpDir}/tmp"
 
 # setup traps to clean up after ourselves
 trap '_shunit_cleanup EXIT' 0

@@ -13,6 +13,9 @@ appropriately with 'shunit'. This is to distinguish usage in the shUnit2 code
 from users own scripts so that the shell name space remains predictable to
 users. The exceptions here are the standard ``assertEquals``, etc. functions.
 
+All non-builtin constants and variables will be surrouned with squiggle
+brackets, e.g. '${shunit_someVariable}' to improve code readability.
+
 Due to some shells not supporting local variables in functions, care in the
 naming and use of variables, both public and private, is very important.
 Accidental overriding of the variables can occur easily if care is not taken as
@@ -50,6 +53,26 @@ Local Variable Cleanup
 As many shells do not support local variables, no support for cleanup of
 variables is present either. As such, all variables local to a function must be
 cleared up with the ``unset`` command at the end of each function.
+
+Indentation
+-----------
+
+Code block indentation is two (2) spaces, and tabs may not be used. ::
+
+  if [ -z 'some string' ]; then
+    someFunction
+  fi
+
+Lines of code should be no longer than 80 characters unless absolutely
+necessary. When lines are wrapped using the backslash character '\', subsequent
+lines should be indented with four (4) spaces so as to differentiate from the
+standard spacing of two characters, and tabs may not be used. ::
+
+  for x in some set of very long set of arguments that make for a very long \
+      that extends much too long for one line
+  do
+    echo ${x}
+  done
 
 
 code.google.com

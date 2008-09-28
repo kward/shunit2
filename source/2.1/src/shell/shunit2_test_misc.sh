@@ -7,7 +7,7 @@
 #
 # Author: kate.ward@forestent.com (Kate Ward)
 #
-# shUnit2 unit test for actual output
+# shUnit2 unit tests of miscellaneous things
 
 # load test helpers
 . ./shunit2_test_helpers
