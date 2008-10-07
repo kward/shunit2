@@ -592,8 +592,8 @@ _FAIL_NOT_EQUALS_='eval failNotEquals --lineno "${LINENO:-}"'
 #       <paramdef>string <parameter>[message]</parameter></paramdef>
 #     </funcprototype>
 #   </funcsynopsis>
-#   <para>Indicate test failure because arguments were not the same. The
-#   message is optional.</para>
+#   <para>Indicate test failure because arguments were the same. The message is
+#   optional.</para>
 # </entry>
 # </s:function>
 #*/
@@ -633,9 +633,8 @@ _FAIL_SAME_='eval failSame --lineno "${LINENO:-}"'
 #       <paramdef>string <parameter>actual</parameter></paramdef>
 #     </funcprototype>
 #   </funcsynopsis>
-#   <para>Fails the test if <emphasis>expected</emphasis> and
-#   <emphasis>actual</emphasis> are equal to one another. The message is
-#   optional.</para>
+#   <para>Indicate test failure because arguments were not the same. The
+#   message is optional.</para>
 # </entry>
 # </s:function>
 #*/

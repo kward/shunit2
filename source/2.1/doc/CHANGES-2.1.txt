@@ -33,6 +33,10 @@ PyUnit. As a result, tests are counted separately from assertions.
 Provide public shunit_tmpDir variable that can be used by unit test scripts that
 need automated and guaranteed cleanup.
 
+Issue #7: Fixed duplicated printing of messages passed to asserts.
+
+Per code review, fixed wording of failSame() and failNotSame() messaged.
+
 
 Changes with 2.1.4
 ------------------
