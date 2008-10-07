@@ -43,6 +43,17 @@ EOF
   assertTrue 'failure message was not generated' $?
 }
 
+testIssue7()
+{
+  ( assertEquals 'Some message.' 1 2 >"${stdoutF}" 2>"${stderrF}" )
+  diff "${stdoutF}" - >/dev/null <<EOF
+ASSERT:Some message. expected:<1> but was:<2>
+EOF
+  rtrn=$?
+  assertEquals ${SHUNIT_TRUE} ${rtrn}
+  [ ${rtrn} -ne ${SHUNIT_TRUE} ] && cat "${stderrF}" >&2
+}
+
 #------------------------------------------------------------------------------
 # suite functions
 #

@@ -80,10 +80,11 @@ __shunit_assertsPassed=0
 __shunit_assertsFailed=0
 __shunit_assertsSkipped=0
 
+__shunit_lineno=''
 __shunit_reportGenerated=${SHUNIT_FALSE}
 
 # macros
-_SHUNIT_LINENO_='eval if [ "${1:-}" = "--lineno" ]; then [ -n "$2" ] && shunit_message_="[$2]"; shift 2; fi'
+_SHUNIT_LINENO_='eval __shunit_lineno=""; if [ "${1:-}" = "--lineno" ]; then [ -n "$2" ] && __shunit_lineno="[$2]"; shift 2; fi'
 
 #-----------------------------------------------------------------------------
 # assert functions
@@ -118,7 +119,7 @@ assertEquals()
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
-  [ -z "${shunit_message_:-}" ] && shunit_message_=''
+  shunit_message_=${__shunit_lineno}
   if [ $# -eq 3 ]; then
     shunit_message_="${shunit_message_}$1"
     shift
@@ -134,7 +135,7 @@ assertEquals()
     shunit_return=${SHUNIT_FALSE}
   fi
 
-  unset shunit_message_ shunit_expected_ shunit_actual_ __shunit_lineno
+  unset shunit_message_ shunit_expected_ shunit_actual_
   return ${shunit_return}
 }
 _ASSERT_EQUALS_='eval assertEquals --lineno "${LINENO:-}"'
@@ -168,7 +169,7 @@ assertNotEquals()
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
-  [ -z "${shunit_message_:-}" ] && shunit_message_=''
+  shunit_message_=${__shunit_lineno}
   if [ $# -eq 3 ]; then
     shunit_message_="${shunit_message_}$1"
     shift
@@ -216,16 +217,16 @@ assertNull()
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
-  [ -z "${shunit_message_:-}" ] && shunit_message_=''
+  shunit_message_=${__shunit_lineno}
   if [ $# -eq 2 ]; then
     shunit_message_="${shunit_message_}$1"
     shift
   fi
-  if [ $# -eq 2 ]; then
-    assertTrue "${shunit_message_}$1" "[ -z '$2' ]"
-  else
-    assertTrue "[ -z '$1' ]"
-  fi
+  assertTrue "${shunit_message_}" "[ -z '$1' ]"
+  shunit_return=$?
+
+  unset shunit_message_
+  return ${shunit_return}
 }
 _ASSERT_NULL_='eval assertNull --lineno "${LINENO:-}"'
 
@@ -257,11 +258,16 @@ assertNotNull()
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
+  shunit_message_=${__shunit_lineno}
   if [ $# -eq 2 ]; then
-    assertTrue "$1" "[ -n '$2' ]"
-  else
-    assertTrue "[ -n '${1:-}' ]"
+    shunit_message_="${shunit_message_}$1"
+    shift
   fi
+  assertTrue "${shunit_message_}" "[ -n '${1:-}' ]"
+  shunit_return=$?
+
+  unset shunit_message_
+  return ${shunit_return}
 }
 _ASSERT_NOT_NULL_='eval assertNotNull --lineno "${LINENO:-}"'
 
@@ -293,11 +299,16 @@ assertSame()
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
-  if [ $# -eq 2 ]; then
-    assertEquals "$1" "$2"
-  else
-    assertEquals "$1" "$2" "$3"
+  shunit_message_=${__shunit_lineno}
+  if [ $# -eq 3 ]; then
+    shunit_message_="${shunit_message_}$1"
+    shift
   fi
+  assertEquals "${shunit_message_}" "$1" "$2"
+  shunit_return=$?
+
+  unset shunit_message_
+  return ${shunit_return}
 }
 _ASSERT_SAME_='eval assertSame --lineno "${LINENO:-}"'
 
@@ -330,11 +341,16 @@ assertNotSame()
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
-  if [ $# -eq 2 ]; then
-    assertNotEquals "$1" "$2"
-  else
-    assertNotEquals "$1" "$2" "$3"
+  shunit_message_=${__shunit_lineno}
+  if [ $# -eq 3 ]; then
+    shunit_message_="${shunit_message_:-}$1"
+    shift
   fi
+  assertNotEquals "${shunit_message_}" "$1" "$2"
+  shunit_return=$?
+
+  unset shunit_message_
+  return ${shunit_return}
 }
 _ASSERT_NOT_SAME_='eval assertNotSame --lineno "${LINENO:-}"'
 
@@ -374,7 +390,7 @@ assertTrue()
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
-  [ -z "${shunit_message_:-}" ] && shunit_message_=''
+  shunit_message_=${__shunit_lineno}
   if [ $# -eq 2 ]; then
     shunit_message_="${shunit_message_}$1"
     shift
@@ -444,7 +460,7 @@ assertFalse()
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
-  [ -z "${shunit_message_:-}" ] && shunit_message_=''
+  shunit_message_=${__shunit_lineno}
   if [ $# -eq 2 ]; then
     shunit_message_="${shunit_message_}$1"
     shift
@@ -507,7 +523,7 @@ fail()
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
-  [ -z "${shunit_message_:-}" ] && shunit_message_=''
+  shunit_message_=${__shunit_lineno}
   if [ $# -eq 1 ]; then
     shunit_message_="${shunit_message_}$1"
     shift
@@ -549,7 +565,7 @@ failNotEquals()
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
-  [ -z "${shunit_message_:-}" ] && shunit_message_=''
+  shunit_message_=${__shunit_lineno}
   if [ $# -eq 3 ]; then
     shunit_message_="${shunit_message_}$1"
     shift
@@ -590,7 +606,7 @@ failSame()
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
-  [ -z "${shunit_message_:-}" ] && shunit_message_=''
+  shunit_message_=${__shunit_lineno}
   if [ $# -eq 3 ]; then
     shunit_message_="${shunit_message_}$1"
     shift
@@ -632,11 +648,16 @@ failNotSame()
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
 
-  if [ $# -eq 2 ]; then
-    failNotEquals "$1" "$2"
-  else
-    failNotEquals "$1" "$2" "$3"
+  shunit_message_=${__shunit_lineno}
+  if [ $# -eq 3 ]; then
+    shunit_message_="${shunit_message_}$1"
+    shift
   fi
+  failNotEquals "${shunit_message_}" "$1" "$2"
+  shunit_return=$?
+
+  unset shunit_message_
+  return ${shunit_return}
 }
 _FAIL_NOT_SAME_='eval failNotSame --lineno "${LINENO:-}"'
 
