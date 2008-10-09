@@ -1069,6 +1069,7 @@ __shunit_tmpDir=`_shunit_mktempDir`
 # provide a public temporary directory for unit test scripts
 # TODO(kward): document this
 shunit_tmpDir="${__shunit_tmpDir}/tmp"
+mkdir "${shunit_tmpDir}"
 
 # setup traps to clean up after ourselves
 trap '_shunit_cleanup EXIT' 0
