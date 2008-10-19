@@ -73,8 +73,8 @@ Issue #2: Added assertNotEquals() assert.
 Changes and Enhancements
 ------------------------
 
-Rewrote the test summary. It is now greatly simplified and much more script
-friendly.
+Issue #4: Rewrote the test summary. It is now greatly simplified and much more
+script friendly.
 
 Issue #3: Removed the check for unset variables as shUnit2 should not expect
 scripts being tested to be clean.
@@ -90,6 +90,8 @@ Bug Fixes
 ---------
 
 Issue #1: ending report is now always generated.
+
+Issue #7: fixed assert messages being printed multiple times.
 
 
 Deprecated Features
@@ -107,7 +109,7 @@ Line numbers in assert messages do not work properly with BASH 2.x.
 
 The Bourne shell of Solaris, BASH 2.x, and Zsh 3.0.x do not properly catch the
 SIGTERM signal. As such, shell intrepreter failures due to such things as
-unbound variables cannot be caught. (See shunit_test_output.sh)
+unbound variables cannot be caught. (See shunit_test_misc.sh)
 
 
 .. vim:ft=rst:spell:tw=80
