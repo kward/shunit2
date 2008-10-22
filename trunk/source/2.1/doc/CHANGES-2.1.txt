@@ -37,6 +37,13 @@ Issue #7: Fixed duplicated printing of messages passed to asserts.
 
 Per code review, fixed wording of failSame() and failNotSame() messaged.
 
+Replaced version_info.sh with versions library and made appropriate changes in
+other scripts to use it.
+
+Added gen_test_results.sh to make releases easier.
+
+Fixed bugs in shlib_relToAbsPath() in shlib.
+
 
 Changes with 2.1.4
 ------------------
