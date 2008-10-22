@@ -1,0 +1,596 @@
+﻿===========================
+shUnit2 2.1.x Documentation
+===========================
+
+Kate Ward (kate.ward@forestent.com)
+          
+Abstract
+========
+
+shUnit2_ is a unit test framework for Bourne based shell scripts, and it is
+designed to work in a similar manner to JUnit_, PyUnit_, etc..
+
+.. contents:: Table of Contents
+   :depth: 2
+
+Introduction
+============
+
+shUnit2 was originally developed to provide a consistent testing solution for
+log4sh_, a shell based logging framework similar to log4j_. During the
+development of that product, a repeated problem of having things work just fine
+under one shell (``/bin/bash`` on Linux to be specific), and then not working
+under another shell (``/bin/sh`` on Solaris) kept coming up. Although several
+simple tests were run, they were not adequate and did not catch some corner
+cases. The decision was finally made to write a proper unit test framework after
+multiple brown-bag releases were made. *Research was done to look for an
+existing product that met the testing requirements, but no adequate product was
+found.*
+
+Tested Operating Systems
+
+- Cygwin
+- FreeBSD (user supported)
+- Linux (Gentoo, Ubuntu)
+- Mac OS X
+- Solaris 8, 9, 10
+- Tested Shells
+- Bourne Shell (**sh**)
+- BASH - GNU Bourne Again SHell (**bash**)
+- DASH (**dash**)
+- Korn Shell (**ksh**)
+- pdksh - Public Domain Korn Shell (**pdksh**)
+- zsh - ZSH (**zsh**) (since 2.1.2) — *please see the ZSH shell errata for more
+  information*
+
+See the appropriate Release Notes for this release
+(``doc/RELEASE_NOTES-X.X.X.txt``) for the list of actual versions tested.
+
+Credits / Contributors
+----------------------
+
+A list of contributors to shUnit2 can be found in the source archive in
+``doc/contributors.txt``. I want to personally thank all those who have
+contributed to make this a better tool.
+
+Feedback
+--------
+
+Feedback is most certainly welcome for this document. Send your additions,
+comments and criticisms to the shunit2-users@googlegroups.com mailing list.
+
+Quickstart
+==========
+
+This section will give a very quick start to running unit tests with shUnit2.
+More information is located in later sections.
+
+Here is a quick sample script to show how easy it is to write a unit test in
+shell. *Note: the script as it stands expects that you are running it from the
+``examples`` directory.* ::
+
+  #! /bin/sh
+  # file: examples/equality_test.sh
+
+  testEquality()
+  {
+    assertEquals 1 1
+  }
+
+  # load shunit2
+  . ../src/shell/shunit2
+
+Running the unit test should give results similar to the following. ::
+
+  testEquality
+
+  Ran 1 test.
+
+  OK
+
+W00t! You've just run your first successful unit test. So, what just happened?
+Quite a bit really, and it all happened simply by sourcing the ``shunit2``
+script. The basic functionality for the script above goes like this:
+
+- When shUnit2 is sourced, it will walk through any functions defined whose
+  namestart with the string ``test`` and add those to an internal list of tests
+  to execute. Once a list of test functions to be run has been determined,
+  shunit2 will go to work.
+- Before any tests are executed, shUnit2 again looks for a function, this time
+  one named ``oneTimeSetUp()``. If it exists, it will be run. This function is
+  normally used to setup the environment for all tests to be run. Things like
+  creating directories for output or setting environment variables are good to
+  place here. Just so you know, you can also declare a corresponding function
+  named ``oneTimeTearDown()`` function that does the same thing, but once all
+  the tests have been completed. It is good for removing temporary directories,
+  etc.
+- shUnit2 is now ready to run tests. Before doing so though, it again looks for
+  another function that might be declared, one named ``setUp()``. If the
+  function exists, it will be run before each test. It is good for resetting the
+  environment so that each test starts with a clean slate. At this stage, the
+  first test is finally run. The success of the test is recorded for a report
+  that will be generated later. After the test is run, shUnit2 looks for a final
+  function that might be declared, one named ``tearDown()``. If it exists, it
+  will be run after each test. It is a good place for cleaning up after each
+  test, maybe doing things like removing files that were created, or removing
+  directories. This set of steps, ``setUp()`` > ``test()`` > ``tearDown()``, is
+  repeated for all of the available tests.
+- Once all the work is done, shUnit2 will generate the nice report you saw
+  above. A summary of all the successes and failures will be given so that you
+  know how well your code is doing.
+
+We should now try adding a test that fails. Change your unit test to look like
+this. ::
+
+  #! /bin/sh
+  # file: examples/party_test.sh
+
+  testEquality()
+  {
+    assertEquals 1 1
+  }
+
+  testPartyLikeItIs1999()
+  {
+    year=`date '+%Y'`
+    assertEquals "It's not 1999 :-(" \
+        '1999' "${year}"
+  }
+
+  # load shunit2
+  . ../src/shell/shunit2
+
+So, what did you get? I guess it told you that this isn't 1999. Bummer, eh?
+Hopefully, you noticed a couple of things that were different about the second
+test. First, we added an optional message that the user will see if the assert
+fails. Second, we did comparisons of strings instead of integers as in the first
+test. It doesn't matter whether you are testing for equality of strings or
+integers. Both work equally well with shUnit2.
+
+Hopefully, this is enough to get you started with unit testing. If you want a
+ton more examples, take a look at the tests provided with log4sh_ or shFlags_.
+Both provide excellent examples of more advanced usage. shUnit2 was after all
+written to help with the unit testing problems that log4sh_ had.
+
+Advanced Usage
+==============
+
+This section covers several advanced usage topics.
+
+Test Skipping
+-------------
+
+There are times where the test code you have written is just not applicable to
+the system you are running on. This section describes how to skip these tests
+but maintain the total test count.
+
+Probably the easiest example would be shell code that is meant to run under the
+**bash** shell, but the unit test is running under the Bourne shell. There are
+things that just won't work. The following test code demonstrates two sample
+functions, one that will be run under any shell, and the another that will run
+only under the **bash** shell.
+
+Example -- math include ::
+
+  # available as examples/math.inc
+
+  add_generic()
+  {
+    num_a=$1
+    num_b=$2
+
+    expr $1 + $2
+  }
+
+  add_bash()
+  {
+    num_a=$1
+    num_b=$2
+
+    echo $(($1 + $2))
+  }
+
+And here is a corresponding unit test that correctly skips the ``add_bash()``
+function when the unit test is not running under the **bash** shell.
+
+Example -- math unit test ::
+
+  #! /bin/sh
+  # available as examples/math_test.sh
+
+  testAdding()
+  {
+    result=`add_generic 1 2`
+    assertEquals \
+        "the result of '${result}' was wrong" \
+        3 "${result}"
+
+    # disable non-generic tests
+    [ -z "${BASH_VERSION:-}" ] && startSkipping
+
+    result=`add_bash 1 2`
+    assertEquals \
+        "the result of '${result}' was wrong" \
+        3 "${result}"
+  }
+
+  oneTimeSetUp()
+  {
+    # load include to test
+    . ./math.inc
+  }
+
+  # load and run shUnit2
+  . ../src/shell/shunit2
+
+Running the above test under the **bash** shell will result in the following
+output. ::
+
+  $ /bin/bash math_test.sh
+  testAdding
+
+  Ran 1 test.
+
+  OK
+
+But, running the test under any other shell will result in the following output.
+::
+
+  $ /bin/ksh math_test.sh
+  testAdding
+
+  Ran 1 test.
+
+  OK (skipped=1)
+
+As you can see, the total number of tests has not changed, but the report
+indicates that some tests were skipped.
+
+Skipping can be controlled with the following functions: ``startSkipping()``,
+``stopSkipping()``, and ``isSkipping()``. Once skipping is enabled, it will
+remain enabled until the end of the current test function call, after which
+skipping is disabled.
+
+Including Line Numbers in Asserts
+---------------------------------
+
+If you include lots of assert statements in an individual test function, it can
+become difficult to determine exactly which assert was thrown unless your
+messages are unique. To help somewhat, line numbers can be included in the
+assert messages. To enable this, a special shell "macro" must be used rather
+than the standard assert calls.
+
+For example, to include line numbers for a ``assertEquals()`` function call,
+replace the ``assertEquals()`` with ``${_ASSERT_EQUALS_}``.
+
+Example -- Asserts with and without line numbers ::
+
+  #! /bin/sh
+  # file: examples/lineno_test.sh
+
+  testLineNo()
+  {
+    # this assert will have line numbers included (e.g. "ASSERT:[123] ...")
+    echo "ae: ${_ASSERT_EQUALS_}"
+    ${_ASSERT_EQUALS_} 'not equal' 1 2
+
+    # this assert will not have line numbers included (e.g. "ASSERT: ...")
+    assertEquals 'not equal' 1 2
+  }
+
+  # load shunit2
+  . ../src/shell/shunit2
+
+Note: line numbers are not supported in all shells. If a shell does not support
+them, no errors will be thrown. Supported shells include: **bash** (>=3.0),
+**ksh**, **pdksh**, and **zsh**.
+
+Function Reference
+==================
+
+Note: any string values passed should be properly quoted -- they should must be
+surrounded by single-quote (') or double-quote (") characters -- so that the
+shell will properly parse them.
+
+Asserts
+-------
+
+``assertEquals [message] expected actual``
+
+Asserts that *expected* and *actual* are equal to one another. The *expected*
+and *actual* values can be either strings or integer values as both will be
+treated as strings. The message is optional, and must be quoted.
+
+``assertNull [message] value``
+ 
+Asserts that value is *null*, or in shell terms, a zero-length string. The
+*value* must be a string as an integer value does not translate into a
+zero-length string. The message is optional, and must be quoted.
+
+void
+
+assertNotNull (
+[message],
+ 
+ 
+value);
+ 
+
+string  
+[message];
+string  
+value;
+
+Asserts that value is notnull, or in shell terms not a zero-length string. The message is optional.
+void
+
+assertSame (
+[message],
+ 
+ 
+expected,
+ 
+ 
+actual);
+ 
+
+string  
+[message];
+string  
+expected;
+string  
+actual;
+
+This function is functionally equivalent to assertEquals.
+void
+
+assertNotSame (
+[message],
+ 
+ 
+unexpected,
+ 
+ 
+actual);
+ 
+
+string  
+[message];
+string  
+unexpected;
+string  
+actual;
+
+Asserts that unexpected and actual are not equal to one another. The message is optional.
+void
+
+assertTrue (
+[message],
+ 
+ 
+condition);
+ 
+
+string  
+[message];
+string  
+condition;
+
+Asserts that a given shell test condition is true. The message is optional.
+Testing whether something is true or false is easy enough by using the assertEquals/assertNotSame functions. Shell supports much more complicated tests though, and a means to support them was needed. As such, this function tests that conditions are true or false through evaluation rather than just looking for a true or false.
+The following test will succeed:
+assertTrue "[ 34 -gt 23 ]"
+The folloing test will fail with a message:
+assertTrue "test failed" "[ -r '/non/existant/file' ]"
+void
+
+assertFalse (
+[message],
+ 
+ 
+condition);
+ 
+
+string  
+[message];
+string  
+condition;
+
+Asserts that a given shell test condition is false. The message is optional.
+Testing whether something is true or false is easy enough by using the assertEquals/assertNotSame functions. Shell supports much more complicated tests though, and a means to support them was needed. As such, this function tests that conditions are true or false through evaluation rather than just looking for a true or false.
+The following test will succeed:
+assertFalse "[ 'apples' = 'oranges' ]"
+The folloing test will fail with a message:
+assertFalse "test failed" "[ 1 -eq 1 -a 2 -eq 2 ]"
+
+2. failures
+Table 4.2. failures
+void
+
+fail (
+[message]);
+ 
+
+string  
+[message];
+
+Fails the test immediately, with the optional message.
+void
+
+failNotEquals (
+[message],
+ 
+ 
+unexpected,
+ 
+ 
+actual);
+ 
+string  
+[message];
+string  
+unexpected;
+string  
+actual;
+
+Fails the test if unexpected and actual are not equal to one another. The message is optional.
+void
+
+failSame (
+[message]);
+ 
+
+string  
+[message];
+
+Indicate test failure because arguments were not the same. The message is optional.
+void
+
+failNotSame (
+[message],
+ 
+ 
+expected,
+ 
+ 
+actual);
+ 
+string  
+[message];
+string  
+expected;
+string  
+actual;
+
+Fails the test if expected and actual are equal to one another. The message is optional.
+
+3. skipping
+Table 4.3. skipping
+void
+
+startSkipping (
+);
+ 
+ 
+;
+
+This function forces the remaining assert and fail functions to be "skipped", i.e. they will have no effect. Each function skipped will be recorded so that the total of asserts and fails will not be altered.
+void
+
+endSkipping (
+);
+ 
+ 
+;
+
+This function returns calls to the assert and fail functions to their default behavior, i.e. they will be called.
+boolean
+
+isSkipping (
+);
+ 
+
+ 
+;
+
+This function returns the state of skipping.
+
+4. suites
+Table 4.4. suites
+void
+
+suite (
+);
+ 
+
+ 
+;
+
+This function can be optionally overridden by the user in their test suite.
+If this function exists, it will be called when shunit2 is sourced. If it does not exist, shUnit2 will search the parent script for all functions beginning with the word test, and they will be added dynamically to the test suite.
+void
+
+suite_addTest (
+function);
+ 
+string  
+function;
+This function adds a function name to the list of tests scheduled for execution as part of this test suite. This function should only be called from within the suite() function.
+void
+
+oneTimeSetUp (
+);
+ 
+
+ 
+;
+
+This function can be be optionally overridden by the user in their test suite.
+If this function exists, it will be called once before any tests are run. It is useful to prepare a common environment for all tests.
+void
+
+oneTimeTearDown (
+);
+ 
+ 
+;
+
+This function can be be optionally overridden by the user in their test suite.
+If this function exists, it will be called once after all tests are completed. It is useful to clean up the environment after all tests.
+void
+
+setUp (
+);
+ 
+
+ 
+;
+
+This function can be be optionally overridden by the user in their test suite.
+If this function exists, it will be called before each test is run. It is useful to reset the environment before each test.
+void
+
+tearDown (
+);
+ 
+
+ 
+;
+
+This function can be be optionally overridden by the user in their test suite.
+If this function exists, it will be called after each test completes. It is useful to clean up the environment after each test.
+
+Appendix
+========
+
+For compatibility with ZSH, there is one requirement that must be met -- the
+``shwordsplit`` option must be set. There are three ways to accomplish this.
+
+#. In the unit-test script, add the following shell code snippet before sourcing
+   the **shunit2** library. ::
+
+     setopt shwordsplit
+
+#. When invoking **zsh** from either the command-line or as a script with
+   ``#!``, add the ``-y`` parameter. ::
+
+     #! /bin/zsh -y
+
+#. When invoking **zsh** from the command-line, add ``-o shwordsplit --`` as
+   parameters before the script name. ::
+
+     $ zsh -o shwordsplit -- some_script
+
+.. mailto:
+.. _log4sh: http://log4sh.sourceforge.net/
+.. _log4j: http://logging.apache.org/
+.. _JUnit: http://www.junit.org/
+.. _PyUnit: http://pyunit.sourceforge.net/
+.. _shFlags: http://shflags.googlecode.com/
+.. _shUnit2: http://shunit2.googlecode.com/
+
+.. generate HTML using rst2html from Docutils of
+.. http://docutils.sourceforge.net/
+..
+.. vim:ft=rst:spell:sts=2:sw=2:tw=80
+.. $Revision: 233 $

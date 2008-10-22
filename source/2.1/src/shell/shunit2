@@ -84,7 +84,7 @@ __shunit_lineno=''
 __shunit_reportGenerated=${SHUNIT_FALSE}
 
 # macros
-_SHUNIT_LINENO_='eval __shunit_lineno=""; if [ "${1:-}" = "--lineno" ]; then [ -n "$2" ] && __shunit_lineno="[$2]"; shift 2; fi'
+_SHUNIT_LINENO_='eval __shunit_lineno=""; if [ "${1:-}" = "--lineno" ]; then [ -n "$2" ] && __shunit_lineno="[$2] "; shift 2; fi'
 
 #-----------------------------------------------------------------------------
 # assert functions
@@ -114,7 +114,7 @@ assertEquals()
 {
   ${_SHUNIT_LINENO_}
   if [ $# -lt 2 -o $# -gt 3 ]; then
-    _shunit_error 'assertEquals() requires one or two arguments'
+    _shunit_error "assertEquals() requires two or three arguments; $# given"
     return ${SHUNIT_ERROR}
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
