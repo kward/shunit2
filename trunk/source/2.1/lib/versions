@@ -51,7 +51,7 @@ versions_osVersion()
       ;;
     Linux)
       if [ -r '/etc/lsb-release' ]; then
-        os_version=`. /etc/lsb-release \
+        os_version_=`. /etc/lsb-release \
             && echo "${DISTRIB_ID}-${DISTRIB_RELEASE}"`
       fi
       ;;
