@@ -44,6 +44,8 @@ Added gen_test_results.sh to make releases easier.
 
 Fixed bugs in shlib_relToAbsPath() in shlib.
 
+Converted DocBook documentation to reStructuredText for easier maintenance.
+
 
 Changes with 2.1.4
 ------------------

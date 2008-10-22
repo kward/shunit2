@@ -16,18 +16,30 @@
 # suite tests
 #
 
-testLineNo()
+testAssertEquals()
 {
   # start skipping if LINENO not available
   [ -z "${LINENO:-}" ] && startSkipping
-
-  ### asserts
 
   ( ${_ASSERT_EQUALS_} 'x' 'y' >"${stdoutF}" 2>"${stderrF}" )
   grep '^ASSERT:\[[0-9]*\] *' "${stdoutF}" >/dev/null
   rtrn=$?
   assertTrue '_ASSERT_EQUALS_ failure' ${rtrn}
   [ ${rtrn} -ne ${SHUNIT_TRUE} ] && cat "${stderrF}">&2
+
+  ( ${_ASSERT_EQUALS_} 'some msg' 'x' 'y' >"${stdoutF}" 2>"${stderrF}" )
+  grep '^ASSERT:\[[0-9]*\] *' "${stdoutF}" >/dev/null
+  rtrn=$?
+  assertTrue '_ASSERT_EQUALS_ failure' ${rtrn}
+  [ ${rtrn} -ne ${SHUNIT_TRUE} ] && cat "${stderrF}">&2
+}
+
+testLineNo()
+{
+  # start skipping if LINENO not available
+  [ -z "${LINENO:-}" ] && startSkipping
+
+  ### asserts
 
   ( ${_ASSERT_NOT_EQUALS_} 'x' 'x' >"${stdoutF}" 2>"${stderrF}" )
   grep '^ASSERT:\[[0-9]*\] *' "${stdoutF}" >/dev/null
