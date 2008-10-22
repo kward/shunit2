@@ -1,12 +1,15 @@
 #! /bin/sh
 # $Id$
+# vim:et:ft=sh:sts=2:sw=2
 #
 # Copyright 2008 Kate Ward. All Rights Reserved.
 # Released under the LGPL (GNU Lesser General Public License)
-#
 # Author: kate.ward@forestent.com (Kate Ward)
 #
-# shUnit2 unit test wrapper
+# shUnit2 unit test suite runner.
+#
+# This script runs all the unit tests that can be found, and generates a nice
+# report of the tests.
 
 MY_NAME=`basename $0`
 MY_PATH=`dirname $0`
@@ -19,6 +22,7 @@ for test in ${PREFIX}[a-z]*.sh; do
 done
 
 # load common unit test functions
+. ../../lib/versions
 . ./shunit2_test_helpers
 
 usage()
@@ -29,7 +33,7 @@ usage()
 # process command line flags
 while getopts 'e:hs:t:' opt; do
   case ${opt} in
-    e)
+    e)  # set an environment variable
       key=`expr "${OPTARG}" : '\([^=]*\)='`
       val=`expr "${OPTARG}" : '[^=]*=\(.*\)'`
       if [ -z "${key}" -o -z "${val}" ]; then
@@ -40,9 +44,9 @@ while getopts 'e:hs:t:' opt; do
       export ${key}
       env="${env:+${env} }${key}"
       ;;
-    h) usage; exit 0 ;;
-    s) shells=${OPTARG} ;;
-    t) tests=${OPTARG} ;;
+    h) usage; exit 0 ;;  # output help
+    s) shells=${OPTARG} ;;  # list of shells to run
+    t) tests=${OPTARG} ;;  # list of tests to run
     *) usage; exit 1 ;;
   esac
 done
@@ -103,32 +107,16 @@ for shell in ${shells}; do
 EOF
 
   shell_name=`basename ${shell}`
-  case ${shell_name} in
-    bash) echo; ${shell} --version; ;;
-    dash) ;;
-    ksh)
-      version=`${shell} --version exit 2>&1`
-      exitVal=$?
-      if [ ${exitVal} -eq 2 ]; then
-        echo
-        echo "version: ${version}"
-      fi
-      ;;
-    pdksh) ;;
-    zsh)
-      version=`echo 'echo ${ZSH_VERSION}' |${shell}`
-      echo
-      echo "version: ${version}"
-      ;;
-  esac
+  shell_version=`versions_shellVersion "${shell}"`
+
+  echo "shell name: ${shell_name}"
+  echo "shell version: ${shell_version}"
 
   # execute the tests
   for suite in ${tests}; do
     suiteName=`expr "${suite}" : "${PREFIX}\(.*\).sh"`
     echo
-    echo "--- Executing the '${suiteName}' test suite ---" >&2
-    ( exec ${shell} ./${suite}; )
+    echo "--- Executing the '${suiteName}' test suite ---"
+    ( exec ${shell} ./${suite} 2>&1; )
   done
 done
-
-# vim:et:ft=sh:sts=2:sw=2
