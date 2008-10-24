@@ -5,8 +5,10 @@ shUnit2 2.1.x Documentation
 Abstract
 ========
 
-shUnit2_ is a unit test framework for Bourne based shell scripts, and it is
-designed to work in a similar manner to JUnit_, PyUnit_, etc..
+shUnit2_ is a xUnit_ unit test framework for Bourne based shell scripts, and it
+is designed to work in a similar manner to JUnit_, PyUnit_, etc.. If you have
+ever had the desire to write a unit test for a shell script, shUnit2 can do the
+job.
 
 .. contents:: Table of Contents
    :depth: 2
@@ -549,6 +551,7 @@ For compatibility with ZSH, there is one requirement that must be met -- the
 .. _PyUnit: http://pyunit.sourceforge.net/
 .. _shFlags: http://shflags.googlecode.com/
 .. _shUnit2: http://shunit2.googlecode.com/
+.. _xUnit: http://en.wikipedia.org/wiki/XUnit
 
 .. generate HTML using rst2html from Docutils of
 .. http://docutils.sourceforge.net/
