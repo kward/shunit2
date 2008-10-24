@@ -305,7 +305,6 @@ h1.title { font-size: 150%; border-top:0px; padding-top: 1em; }
 <div class="document" id="shunit2-2-1-x-documentation">
 <h1 class="title">shUnit2 2.1.x Documentation</h1>
 
-<p>Kate Ward (<a class="reference external" href="mailto:kate.ward&#64;forestent.com">kate.ward&#64;forestent.com</a>)</p>
 <div class="section" id="abstract">
 <h1><a class="toc-backref" href="#id1">Abstract</a></h1>
 <p><a class="reference external" href="http://shunit2.googlecode.com/">shUnit2</a> is a unit test framework for Bourne based shell scripts, and it is
@@ -320,16 +319,27 @@ designed to work in a similar manner to <a class="reference external" href="http
 </ul>
 </li>
 <li><a class="reference internal" href="#quickstart" id="id5">Quickstart</a></li>
-<li><a class="reference internal" href="#advanced-usage" id="id6">Advanced Usage</a><ul>
-<li><a class="reference internal" href="#test-skipping" id="id7">Test Skipping</a></li>
-<li><a class="reference internal" href="#including-line-numbers-in-asserts" id="id8">Including Line Numbers in Asserts</a></li>
+<li><a class="reference internal" href="#function-reference" id="id6">Function Reference</a><ul>
+<li><a class="reference internal" href="#general-info" id="id7">General Info</a></li>
+<li><a class="reference internal" href="#asserts" id="id8">Asserts</a></li>
+<li><a class="reference internal" href="#failures" id="id9">Failures</a></li>
+<li><a class="reference internal" href="#setup-teardown" id="id10">Setup/Teardown</a></li>
+<li><a class="reference internal" href="#skipping" id="id11">Skipping</a></li>
+<li><a class="reference internal" href="#suites" id="id12">Suites</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#function-reference" id="id9">Function Reference</a><ul>
-<li><a class="reference internal" href="#asserts" id="id10">Asserts</a></li>
+<li><a class="reference internal" href="#advanced-usage" id="id13">Advanced Usage</a><ul>
+<li><a class="reference internal" href="#some-constants-you-can-use" id="id14">Some constants you can use</a></li>
+<li><a class="reference internal" href="#error-handling" id="id15">Error handling</a></li>
+<li><a class="reference internal" href="#including-line-numbers-in-asserts-macros" id="id16">Including Line Numbers in Asserts (Macros)</a></li>
+<li><a class="reference internal" href="#test-skipping" id="id17">Test Skipping</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#appendix" id="id11">Appendix</a></li>
+<li><a class="reference internal" href="#appendix" id="id18">Appendix</a><ul>
+<li><a class="reference internal" href="#getting-help" id="id19">Getting help</a></li>
+<li><a class="reference internal" href="#zsh" id="id20">ZSH</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -368,6 +378,9 @@ information</em></li>
 <p>A list of contributors to shUnit2 can be found in the source archive in
 <tt class="docutils literal"><span class="pre">doc/contributors.txt</span></tt>. I want to personally thank all those who have
 contributed to make this a better tool.</p>
+<p>shUnit2 is the original product of many hours of work by Kate Ward, the primary
+author of the code. For other products by her, look up <a class="reference external" href="http://log4sh.sourceforge.net/">log4sh</a> or <a class="reference external" href="http://shflags.googlecode.com/">shFlags</a>, or
+visit her website at <a class="reference external" href="http://forestent.com/">http://forestent.com/</a>.</p>
 </div>
 <div class="section" id="feedback">
 <h2><a class="toc-backref" href="#id4">Feedback</a></h2>
@@ -465,11 +478,256 @@ ton more examples, take a look at the tests provided with <a class="reference ex
 Both provide excellent examples of more advanced usage. shUnit2 was after all
 written to help with the unit testing problems that <a class="reference external" href="http://log4sh.sourceforge.net/">log4sh</a> had.</p>
 </div>
+<div class="section" id="function-reference">
+<h1><a class="toc-backref" href="#id6">Function Reference</a></h1>
+<div class="section" id="general-info">
+<h2><a class="toc-backref" href="#id7">General Info</a></h2>
+<p>Any string values passed should be properly quoted -- they should must be
+surrounded by single-quote (') or double-quote (&quot;) characters -- so that the
+shell will properly parse them.</p>
+<p>All asserts and failures return with a ??</p>
+</div>
+<div class="section" id="asserts">
+<h2><a class="toc-backref" href="#id8">Asserts</a></h2>
+<p><tt class="docutils literal"><span class="pre">assertEquals</span> <span class="pre">[message]</span> <span class="pre">expected</span> <span class="pre">value</span></tt></p>
+<blockquote>
+Asserts that <em>expected</em> and <em>actual</em> are equal to one another. The <em>expected</em>
+and <em>actual</em> values can be either strings or integer values as both will be
+treated as strings. The <em>message</em> is optional, and must be quoted.</blockquote>
+<p><tt class="docutils literal"><span class="pre">assertSame</span> <span class="pre">[message]</span> <span class="pre">expected</span> <span class="pre">actual</span></tt></p>
+<blockquote>
+This function is functionally equivalent to <tt class="docutils literal"><span class="pre">assertEquals</span></tt>.</blockquote>
+<p><tt class="docutils literal"><span class="pre">assertNotSame</span> <span class="pre">[message]</span> <span class="pre">unexpected</span> <span class="pre">actual</span></tt></p>
+<blockquote>
+Asserts that <em>unexpected</em> and <em>actual</em> are not equal to one another. The
+<em>unexpected</em> and <em>actual</em> values can be either strings or integer values as
+both will be treaded as strings. The <em>message</em> is optional, and must be
+quoted.</blockquote>
+<p><tt class="docutils literal"><span class="pre">assertNull</span> <span class="pre">[message]</span> <span class="pre">value</span></tt></p>
+<blockquote>
+Asserts that <em>value</em> is <em>null</em>, or in shell terms, a zero-length string. The
+<em>value</em> must be a string as an integer value does not translate into a
+zero-length string. The <em>message</em> is optional, and must be quoted.</blockquote>
+<p><tt class="docutils literal"><span class="pre">assertNotNull</span> <span class="pre">[message]</span> <span class="pre">value</span></tt></p>
+<blockquote>
+Asserts that <em>value</em> is <em>not null</em>, or in shell terms, a non-empty string. The
+<em>value</em> may be a string or an integer as the later will be parsed as a
+non-empty string value. The <em>message</em> is optional, and must be quoted.</blockquote>
+<p><tt class="docutils literal"><span class="pre">assertTrue</span> <span class="pre">[message]</span> <span class="pre">condition</span></tt></p>
+<blockquote>
+<p>Asserts that a given shell test <em>condition</em> is <em>true</em>. The condition can be as
+simple as a shell <em>true</em> value (the value <tt class="docutils literal"><span class="pre">0</span></tt> -- equivalent to
+<tt class="docutils literal"><span class="pre">${SHUNIT_TRUE}</span></tt>), or a more sophisticated shell conditional expression. The
+<em>message</em> is optional, and must be quoted.</p>
+<p>A sophisticated shell conditional expression is equivalent to what the <strong>if</strong>
+or <strong>while</strong> shell built-ins would use (more specifically, what the <strong>test</strong>
+command would use). Testing for example whether some value is greater than
+another value can be done this way.</p>
+<pre class="literal-block">
+assertTrue &quot;[ 34 -gt 23 ]&quot;
+</pre>
+<p>Testing for the ability to read a file can also be done. This particular test
+will fail.</p>
+<pre class="literal-block">
+assertTrue 'test failed' &quot;[ -r /some/non-existant/file' ]&quot;
+</pre>
+<p>As the expressions are standard shell <strong>test</strong> expressions, it is possible to
+string multiple expressions together with <tt class="docutils literal"><span class="pre">-a</span></tt> and <tt class="docutils literal"><span class="pre">-o</span></tt> in the standard
+fashion. This test will succeed as the entire expression evaluates to <em>true</em>.</p>
+<pre class="literal-block">
+assertTrue 'test failed' '[ 1 -eq 1 -a 2 -eq 2 ]'
+</pre>
+<p><em>One word of warning: be very careful with your quoting as shell is not the
+most forgiving of bad quoting, and things will fail in strange ways.</em></p>
+</blockquote>
+<p><tt class="docutils literal"><span class="pre">assertFalse</span> <span class="pre">[message]</span> <span class="pre">condition</span></tt></p>
+<blockquote>
+<p>Asserts that a given shell test <em>condition</em> is <em>false</em>. The condition can be
+as simple as a shell <em>false</em> value (the value <tt class="docutils literal"><span class="pre">1</span></tt> -- equivalent to
+<tt class="docutils literal"><span class="pre">${SHUNIT_FALSE}</span></tt>), or a more sophisticated shell conditional expression.
+The <em>message</em> is optional, and must be quoted.</p>
+<p><em>For examples of more sophisticated expressions, see ``assertTrue``.</em></p>
+</blockquote>
+</div>
+<div class="section" id="failures">
+<h2><a class="toc-backref" href="#id9">Failures</a></h2>
+<p>Just to clarify, failures <strong>do not</strong> test the various arguments against one
+another. Failures simply fail, optionally with a message, and that is all they
+do. If you need to test arguments against one another, use asserts.</p>
+<p>If all failures do is fail, why might one use them? There are times when you may
+have some very complicated logic that you need to test, and the simple asserts
+provided are simply not adequate. You can do your own validation of the code,
+use an <tt class="docutils literal"><span class="pre">assertTrue</span> <span class="pre">${SHUNIT_TRUE}</span></tt> if your own tests succeeded, and use a
+failure to record a failure.</p>
+<p><tt class="docutils literal"><span class="pre">fail</span> <span class="pre">[message]</span></tt></p>
+<blockquote>
+Fails the test immediately. The <em>message</em> is optional, and must be quoted.</blockquote>
+<p><tt class="docutils literal"><span class="pre">failNotEquals</span> <span class="pre">[message]</span> <span class="pre">unexpected</span> <span class="pre">actual</span></tt></p>
+<blockquote>
+<p>Fails the test immediately, reporting that the <em>unexpected</em> and <em>actual</em>
+values are not equal to one another. The <em>message</em> is optional, and must be
+quoted.</p>
+<p><em>Note: no actual comparison of unexpected and actual is done.</em></p>
+</blockquote>
+<p><tt class="docutils literal"><span class="pre">failSame</span> <span class="pre">[message]</span> <span class="pre">expected</span> <span class="pre">actual</span></tt></p>
+<blockquote>
+<p>Fails the test immediately, reporting that the <em>expected</em> and <em>actual</em> values
+are the same. The <em>message</em> is optional, and must be quoted.</p>
+<p><em>Note: no actual comparison of expected and actual is done.</em></p>
+</blockquote>
+<p><tt class="docutils literal"><span class="pre">failNotSame</span> <span class="pre">[message]</span> <span class="pre">expected</span> <span class="pre">actual</span></tt></p>
+<blockquote>
+<p>Fails the test immediately, reporting that the <em>expected</em> and <em>actual</em> values
+are not the same. The <em>message</em> is optional, and must be quoted.</p>
+<p><em>Note: no actual comparison of expected and actual is done.</em></p>
+</blockquote>
+</div>
+<div class="section" id="setup-teardown">
+<h2><a class="toc-backref" href="#id10">Setup/Teardown</a></h2>
+<p><tt class="docutils literal"><span class="pre">oneTimeSetUp</span></tt></p>
+<blockquote>
+<p>This function can be be optionally overridden by the user in their test suite.</p>
+<p>If this function exists, it will be called once before any tests are run. It
+is useful to prepare a common environment for all tests.</p>
+</blockquote>
+<p><tt class="docutils literal"><span class="pre">oneTimeTearDown</span></tt></p>
+<blockquote>
+<p>This function can be be optionally overridden by the user in their test suite.</p>
+<p>If this function exists, it will be called once after all tests are completed.
+It is useful to clean up the environment after all tests.</p>
+</blockquote>
+<p><tt class="docutils literal"><span class="pre">setUp</span></tt></p>
+<blockquote>
+<p>This function can be be optionally overridden by the user in their test suite.</p>
+<p>If this function exists, it will be called before each test is run. It is
+useful to reset the environment before each test.</p>
+</blockquote>
+<p><tt class="docutils literal"><span class="pre">tearDown</span></tt></p>
+<blockquote>
+<p>This function can be be optionally overridden by the user in their test suite.</p>
+<p>If this function exists, it will be called after each test completes. It is
+useful to clean up the environment after each test.</p>
+</blockquote>
+</div>
+<div class="section" id="skipping">
+<h2><a class="toc-backref" href="#id11">Skipping</a></h2>
+<p><tt class="docutils literal"><span class="pre">startSkipping</span></tt></p>
+<blockquote>
+This function forces the remaining <em>assert</em> and <em>fail</em> functions to be
+&quot;skipped&quot;, i.e. they will have no effect. Each function skipped will be
+recorded so that the total of asserts and fails will not be altered.</blockquote>
+<p><tt class="docutils literal"><span class="pre">endSkipping</span></tt></p>
+<blockquote>
+This function returns calls to the <em>assert</em> and <em>fail</em> functions to their
+default behavior, i.e. they will be called.</blockquote>
+<p><tt class="docutils literal"><span class="pre">isSkipping</span></tt></p>
+<blockquote>
+This function returns the current state of skipping. It can be compared
+against <tt class="docutils literal"><span class="pre">${SHUNIT_TRUE}</span></tt> or <tt class="docutils literal"><span class="pre">${SHUNIT_FALSE}</span></tt> if desired.</blockquote>
+</div>
+<div class="section" id="suites">
+<h2><a class="toc-backref" href="#id12">Suites</a></h2>
+<p>The default behavior of shUnit2 is that all tests will be found dynamically. If
+you have a specific set of tests you want to run, or you don't want to use the
+standard naming scheme of prefixing your tests with <tt class="docutils literal"><span class="pre">test</span></tt>, these functions
+are for you. Most users will never use them though.</p>
+<p><tt class="docutils literal"><span class="pre">suite</span></tt></p>
+<blockquote>
+<p>This function can be optionally overridden by the user in their test suite.</p>
+<p>If this function exists, it will be called when <strong>shunit2</strong> is sourced. If it
+does not exist, shUnit2 will search the parent script for all functions
+beginning with the word <tt class="docutils literal"><span class="pre">test</span></tt>, and they will be added dynamically to the
+test suite.</p>
+</blockquote>
+<p><tt class="docutils literal"><span class="pre">suite_addTest</span> <span class="pre">name</span></tt></p>
+<blockquote>
+This function adds a function named <em>name</em> to the list of tests scheduled for
+execution as part of this test suite. This function should only be called from
+within the <tt class="docutils literal"><span class="pre">suite()</span></tt> function.</blockquote>
+</div>
+</div>
 <div class="section" id="advanced-usage">
-<h1><a class="toc-backref" href="#id6">Advanced Usage</a></h1>
+<h1><a class="toc-backref" href="#id13">Advanced Usage</a></h1>
 <p>This section covers several advanced usage topics.</p>
+<div class="section" id="some-constants-you-can-use">
+<h2><a class="toc-backref" href="#id14">Some constants you can use</a></h2>
+<p>There are several constants provided by shUnit2 as variables that might be of
+use to you.</p>
+<p>Predefined</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%" />
+<col width="77%" />
+</colgroup>
+<tbody valign="top">
+<tr><td><tt class="docutils literal"><span class="pre">SHUNIT_VERSION</span></tt></td>
+<td>The version of shUnit2 you are running.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">SHUNIT_TRUE</span></tt></td>
+<td>Standard shell <em>true</em> value (the integer value 0).</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">SHUNIT_FALSE</span></tt></td>
+<td>Standard shell <em>false</em> value (the integer value 1).</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">SHUNIT_ERROR</span></tt></td>
+<td>The integer value 2.</td>
+</tr>
+</tbody>
+</table>
+<p>User defined</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%" />
+<col width="77%" />
+</colgroup>
+<tbody valign="top">
+<tr><td><tt class="docutils literal"><span class="pre">SHUNIT_PARENT</span></tt></td>
+<td>The filename of the shell script containing the tests. This
+is needed specifically for ZSH support.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="error-handling">
+<h2><a class="toc-backref" href="#id15">Error handling</a></h2>
+<p>The constants values <tt class="docutils literal"><span class="pre">SHUNIT_TRUE</span></tt>, <tt class="docutils literal"><span class="pre">SHUNIT_FALSE</span></tt>, and <tt class="docutils literal"><span class="pre">SHUNIT_ERROR</span></tt> are
+returned from nearly every function to indicate the success or failure of the
+function. Additionally the variable <tt class="docutils literal"><span class="pre">flags_error</span></tt> is filled with a detailed
+error message if any function returns with a <tt class="docutils literal"><span class="pre">SHUNIT_ERROR</span></tt> value.</p>
+</div>
+<div class="section" id="including-line-numbers-in-asserts-macros">
+<h2><a class="toc-backref" href="#id16">Including Line Numbers in Asserts (Macros)</a></h2>
+<p>If you include lots of assert statements in an individual test function, it can
+become difficult to determine exactly which assert was thrown unless your
+messages are unique. To help somewhat, line numbers can be included in the
+assert messages. To enable this, a special shell &quot;macro&quot; must be used rather
+than the standard assert calls.</p>
+<p>For example, to include line numbers for a <tt class="docutils literal"><span class="pre">assertEquals()</span></tt> function call,
+replace the <tt class="docutils literal"><span class="pre">assertEquals()</span></tt> with <tt class="docutils literal"><span class="pre">${_ASSERT_EQUALS_}</span></tt>.</p>
+<p>Example&nbsp;--&nbsp;Asserts with and without line numbers</p>
+<pre class="literal-block">
+#! /bin/sh
+# file: examples/lineno_test.sh
+
+testLineNo()
+{
+  # this assert will have line numbers included (e.g. &quot;ASSERT:[123] ...&quot;)
+  echo &quot;ae: ${_ASSERT_EQUALS_}&quot;
+  ${_ASSERT_EQUALS_} 'not equal' 1 2
+
+  # this assert will not have line numbers included (e.g. &quot;ASSERT: ...&quot;)
+  assertEquals 'not equal' 1 2
+}
+
+# load shunit2
+. ../src/shell/shunit2
+</pre>
+<p>Note: line numbers are not supported in all shells. If a shell does not support
+them, no errors will be thrown. Supported shells include: <strong>bash</strong> (&gt;=3.0),
+<strong>ksh</strong>, <strong>pdksh</strong>, and <strong>zsh</strong>.</p>
+</div>
 <div class="section" id="test-skipping">
-<h2><a class="toc-backref" href="#id7">Test Skipping</a></h2>
+<h2><a class="toc-backref" href="#id17">Test Skipping</a></h2>
 <p>There are times where the test code you have written is just not applicable to
 the system you are running on. This section describes how to skip these tests
 but maintain the total test count.</p>
@@ -556,211 +814,18 @@ indicates that some tests were skipped.</p>
 remain enabled until the end of the current test function call, after which
 skipping is disabled.</p>
 </div>
-<div class="section" id="including-line-numbers-in-asserts">
-<h2><a class="toc-backref" href="#id8">Including Line Numbers in Asserts</a></h2>
-<p>If you include lots of assert statements in an individual test function, it can
-become difficult to determine exactly which assert was thrown unless your
-messages are unique. To help somewhat, line numbers can be included in the
-assert messages. To enable this, a special shell &quot;macro&quot; must be used rather
-than the standard assert calls.</p>
-<p>For example, to include line numbers for a <tt class="docutils literal"><span class="pre">assertEquals()</span></tt> function call,
-replace the <tt class="docutils literal"><span class="pre">assertEquals()</span></tt> with <tt class="docutils literal"><span class="pre">${_ASSERT_EQUALS_}</span></tt>.</p>
-<p>Example&nbsp;--&nbsp;Asserts with and without line numbers</p>
-<pre class="literal-block">
-#! /bin/sh
-# file: examples/lineno_test.sh
-
-testLineNo()
-{
-  # this assert will have line numbers included (e.g. &quot;ASSERT:[123] ...&quot;)
-  echo &quot;ae: ${_ASSERT_EQUALS_}&quot;
-  ${_ASSERT_EQUALS_} 'not equal' 1 2
-
-  # this assert will not have line numbers included (e.g. &quot;ASSERT: ...&quot;)
-  assertEquals 'not equal' 1 2
-}
-
-# load shunit2
-. ../src/shell/shunit2
-</pre>
-<p>Note: line numbers are not supported in all shells. If a shell does not support
-them, no errors will be thrown. Supported shells include: <strong>bash</strong> (&gt;=3.0),
-<strong>ksh</strong>, <strong>pdksh</strong>, and <strong>zsh</strong>.</p>
-</div>
-</div>
-<div class="section" id="function-reference">
-<h1><a class="toc-backref" href="#id9">Function Reference</a></h1>
-<p>Note: any string values passed should be properly quoted -- they should must be
-surrounded by single-quote (') or double-quote (&quot;) characters -- so that the
-shell will properly parse them.</p>
-<div class="section" id="asserts">
-<h2><a class="toc-backref" href="#id10">Asserts</a></h2>
-<p><tt class="docutils literal"><span class="pre">assertEquals</span> <span class="pre">[message]</span> <span class="pre">expected</span> <span class="pre">actual</span></tt></p>
-<p>Asserts that <em>expected</em> and <em>actual</em> are equal to one another. The <em>expected</em>
-and <em>actual</em> values can be either strings or integer values as both will be
-treated as strings. The message is optional, and must be quoted.</p>
-<p><tt class="docutils literal"><span class="pre">assertNull</span> <span class="pre">[message]</span> <span class="pre">value</span></tt></p>
-<p>Asserts that value is <em>null</em>, or in shell terms, a zero-length string. The
-<em>value</em> must be a string as an integer value does not translate into a
-zero-length string. The message is optional, and must be quoted.</p>
-<p>void</p>
-<p>assertNotNull (
-[message],</p>
-<p>value);</p>
-<p>string
-[message];
-string
-value;</p>
-<p>Asserts that value is notnull, or in shell terms not a zero-length string. The message is optional.
-void</p>
-<p>assertSame (
-[message],</p>
-<p>expected,</p>
-<p>actual);</p>
-<p>string
-[message];
-string
-expected;
-string
-actual;</p>
-<p>This function is functionally equivalent to assertEquals.
-void</p>
-<p>assertNotSame (
-[message],</p>
-<p>unexpected,</p>
-<p>actual);</p>
-<p>string
-[message];
-string
-unexpected;
-string
-actual;</p>
-<p>Asserts that unexpected and actual are not equal to one another. The message is optional.
-void</p>
-<p>assertTrue (
-[message],</p>
-<p>condition);</p>
-<p>string
-[message];
-string
-condition;</p>
-<p>Asserts that a given shell test condition is true. The message is optional.
-Testing whether something is true or false is easy enough by using the assertEquals/assertNotSame functions. Shell supports much more complicated tests though, and a means to support them was needed. As such, this function tests that conditions are true or false through evaluation rather than just looking for a true or false.
-The following test will succeed:
-assertTrue &quot;[ 34 -gt 23 ]&quot;
-The folloing test will fail with a message:
-assertTrue &quot;test failed&quot; &quot;[ -r '/non/existant/file' ]&quot;
-void</p>
-<p>assertFalse (
-[message],</p>
-<p>condition);</p>
-<p>string
-[message];
-string
-condition;</p>
-<p>Asserts that a given shell test condition is false. The message is optional.
-Testing whether something is true or false is easy enough by using the assertEquals/assertNotSame functions. Shell supports much more complicated tests though, and a means to support them was needed. As such, this function tests that conditions are true or false through evaluation rather than just looking for a true or false.
-The following test will succeed:
-assertFalse &quot;[ 'apples' = 'oranges' ]&quot;
-The folloing test will fail with a message:
-assertFalse &quot;test failed&quot; &quot;[ 1 -eq 1 -a 2 -eq 2 ]&quot;</p>
-<p>2.&nbsp;failures
-Table&nbsp;4.2.&nbsp;failures
-void</p>
-<p>fail (
-[message]);</p>
-<p>string
-[message];</p>
-<p>Fails the test immediately, with the optional message.
-void</p>
-<p>failNotEquals (
-[message],</p>
-<p>unexpected,</p>
-<p>actual);</p>
-<p>string
-[message];
-string
-unexpected;
-string
-actual;</p>
-<p>Fails the test if unexpected and actual are not equal to one another. The message is optional.
-void</p>
-<p>failSame (
-[message]);</p>
-<p>string
-[message];</p>
-<p>Indicate test failure because arguments were not the same. The message is optional.
-void</p>
-<p>failNotSame (
-[message],</p>
-<p>expected,</p>
-<p>actual);</p>
-<p>string
-[message];
-string
-expected;
-string
-actual;</p>
-<p>Fails the test if expected and actual are equal to one another. The message is optional.</p>
-<p>3.&nbsp;skipping
-Table&nbsp;4.3.&nbsp;skipping
-void</p>
-<p>startSkipping (
-);</p>
-<p>;</p>
-<p>This function forces the remaining assert and fail functions to be &quot;skipped&quot;, i.e. they will have no effect. Each function skipped will be recorded so that the total of asserts and fails will not be altered.
-void</p>
-<p>endSkipping (
-);</p>
-<p>;</p>
-<p>This function returns calls to the assert and fail functions to their default behavior, i.e. they will be called.
-boolean</p>
-<p>isSkipping (
-);</p>
-<p>;</p>
-<p>This function returns the state of skipping.</p>
-<p>4.&nbsp;suites
-Table&nbsp;4.4.&nbsp;suites
-void</p>
-<p>suite (
-);</p>
-<p>;</p>
-<p>This function can be optionally overridden by the user in their test suite.
-If this function exists, it will be called when shunit2 is sourced. If it does not exist, shUnit2 will search the parent script for all functions beginning with the word test, and they will be added dynamically to the test suite.
-void</p>
-<p>suite_addTest (
-function);</p>
-<p>string
-function;
-This function adds a function name to the list of tests scheduled for execution as part of this test suite. This function should only be called from within the suite() function.
-void</p>
-<p>oneTimeSetUp (
-);</p>
-<p>;</p>
-<p>This function can be be optionally overridden by the user in their test suite.
-If this function exists, it will be called once before any tests are run. It is useful to prepare a common environment for all tests.
-void</p>
-<p>oneTimeTearDown (
-);</p>
-<p>;</p>
-<p>This function can be be optionally overridden by the user in their test suite.
-If this function exists, it will be called once after all tests are completed. It is useful to clean up the environment after all tests.
-void</p>
-<p>setUp (
-);</p>
-<p>;</p>
-<p>This function can be be optionally overridden by the user in their test suite.
-If this function exists, it will be called before each test is run. It is useful to reset the environment before each test.
-void</p>
-<p>tearDown (
-);</p>
-<p>;</p>
-<p>This function can be be optionally overridden by the user in their test suite.
-If this function exists, it will be called after each test completes. It is useful to clean up the environment after each test.</p>
-</div>
 </div>
 <div class="section" id="appendix">
-<h1><a class="toc-backref" href="#id11">Appendix</a></h1>
+<h1><a class="toc-backref" href="#id18">Appendix</a></h1>
+<div class="section" id="getting-help">
+<h2><a class="toc-backref" href="#id19">Getting help</a></h2>
+<p>For help, please send requests to either the shUnit2 users mailing list
+&lt;<a class="reference external" href="mailto:shunit2-users&#64;googlegroups.com">shunit2-users&#64;googlegroups.com</a>&gt; (archives available on the web at
+<a class="reference external" href="http://groups.google.com/group/shunit2-users">http://groups.google.com/group/shunit2-users</a>) or directly to
+Kate Ward &lt;kate dot ward at forestent dot com&gt;.</p>
+</div>
+<div class="section" id="zsh">
+<h2><a class="toc-backref" href="#id20">ZSH</a></h2>
 <p>For compatibility with ZSH, there is one requirement that must be met -- the
 <tt class="docutils literal"><span class="pre">shwordsplit</span></tt> option must be set. There are three ways to accomplish this.</p>
 <ol class="arabic">
@@ -783,12 +848,12 @@ $ zsh -o shwordsplit -- some_script
 </pre>
 </li>
 </ol>
-<!-- mailto: -->
 <!-- generate HTML using rst2html from Docutils of -->
 <!-- http://docutils.sourceforge.net/ -->
 <!--  -->
 <!-- vim:ft=rst:spell:sts=2:sw=2:tw=80 -->
 <!-- $Revision: 233 $ -->
+</div>
 </div>
 </div>
 </body>

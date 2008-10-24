@@ -2,8 +2,6 @@
 shUnit2 2.1.x Documentation
 ===========================
 
-Kate Ward (kate.ward@forestent.com)
-          
 Abstract
 ========
 
@@ -50,8 +48,12 @@ Credits / Contributors
 ----------------------
 
 A list of contributors to shUnit2 can be found in the source archive in
-``doc/contributors.txt``. I want to personally thank all those who have
-contributed to make this a better tool.
+``doc/contributors.txt``. Many thanks go out to all those who have contributed
+to make this a better tool.
+
+shUnit2 is the original product of many hours of work by Kate Ward, the primary
+author of the code. For other products by her, look up log4sh_ or shFlags_, or
+visit her website at http://forestent.com/.
 
 Feedback
 --------
@@ -152,10 +154,268 @@ ton more examples, take a look at the tests provided with log4sh_ or shFlags_.
 Both provide excellent examples of more advanced usage. shUnit2 was after all
 written to help with the unit testing problems that log4sh_ had.
 
+Function Reference
+==================
+
+General Info
+------------
+
+Any string values passed should be properly quoted -- they should must be
+surrounded by single-quote (') or double-quote (") characters -- so that the
+shell will properly parse them.
+
+All asserts and failures return with a ??
+
+Asserts
+-------
+
+``assertEquals [message] expected value``
+
+  Asserts that *expected* and *actual* are equal to one another. The *expected*
+  and *actual* values can be either strings or integer values as both will be
+  treated as strings. The *message* is optional, and must be quoted.
+
+``assertSame [message] expected actual``
+ 
+  This function is functionally equivalent to ``assertEquals``.
+
+``assertNotSame [message] unexpected actual``
+
+  Asserts that *unexpected* and *actual* are not equal to one another. The
+  *unexpected* and *actual* values can be either strings or integer values as
+  both will be treaded as strings. The *message* is optional, and must be
+  quoted.
+
+``assertNull [message] value``
+
+  Asserts that *value* is *null*, or in shell terms, a zero-length string. The
+  *value* must be a string as an integer value does not translate into a
+  zero-length string. The *message* is optional, and must be quoted.
+
+``assertNotNull [message] value``
+ 
+  Asserts that *value* is *not null*, or in shell terms, a non-empty string. The
+  *value* may be a string or an integer as the later will be parsed as a
+  non-empty string value. The *message* is optional, and must be quoted.
+
+``assertTrue [message] condition``
+ 
+  Asserts that a given shell test *condition* is *true*. The condition can be as
+  simple as a shell *true* value (the value ``0`` -- equivalent to
+  ``${SHUNIT_TRUE}``), or a more sophisticated shell conditional expression. The
+  *message* is optional, and must be quoted.
+
+  A sophisticated shell conditional expression is equivalent to what the **if**
+  or **while** shell built-ins would use (more specifically, what the **test**
+  command would use). Testing for example whether some value is greater than
+  another value can be done this way. ::
+
+    assertTrue "[ 34 -gt 23 ]"
+
+  Testing for the ability to read a file can also be done. This particular test
+  will fail. ::
+
+    assertTrue 'test failed' "[ -r /some/non-existant/file' ]"
+
+  As the expressions are standard shell **test** expressions, it is possible to
+  string multiple expressions together with ``-a`` and ``-o`` in the standard
+  fashion. This test will succeed as the entire expression evaluates to *true*.
+  ::
+
+    assertTrue 'test failed' '[ 1 -eq 1 -a 2 -eq 2 ]'
+
+  *One word of warning: be very careful with your quoting as shell is not the
+  most forgiving of bad quoting, and things will fail in strange ways.*
+
+``assertFalse [message] condition``
+
+  Asserts that a given shell test *condition* is *false*. The condition can be
+  as simple as a shell *false* value (the value ``1`` -- equivalent to
+  ``${SHUNIT_FALSE}``), or a more sophisticated shell conditional expression.
+  The *message* is optional, and must be quoted.
+
+  *For examples of more sophisticated expressions, see ``assertTrue``.*
+
+Failures
+--------
+
+Just to clarify, failures **do not** test the various arguments against one
+another. Failures simply fail, optionally with a message, and that is all they
+do. If you need to test arguments against one another, use asserts.
+
+If all failures do is fail, why might one use them? There are times when you may
+have some very complicated logic that you need to test, and the simple asserts
+provided are simply not adequate. You can do your own validation of the code,
+use an ``assertTrue ${SHUNIT_TRUE}`` if your own tests succeeded, and use a
+failure to record a failure.
+
+``fail [message]``
+
+  Fails the test immediately. The *message* is optional, and must be quoted.
+
+``failNotEquals [message] unexpected actual``
+
+  Fails the test immediately, reporting that the *unexpected* and *actual*
+  values are not equal to one another. The *message* is optional, and must be
+  quoted.
+
+  *Note: no actual comparison of unexpected and actual is done.*
+
+``failSame [message] expected actual``
+
+  Fails the test immediately, reporting that the *expected* and *actual* values
+  are the same. The *message* is optional, and must be quoted.
+
+  *Note: no actual comparison of expected and actual is done.*
+
+``failNotSame [message] expected actual``
+ 
+  Fails the test immediately, reporting that the *expected* and *actual* values
+  are not the same. The *message* is optional, and must be quoted.
+
+  *Note: no actual comparison of expected and actual is done.*
+
+Setup/Teardown
+--------------
+
+``oneTimeSetUp``
+
+  This function can be be optionally overridden by the user in their test suite.
+
+  If this function exists, it will be called once before any tests are run. It
+  is useful to prepare a common environment for all tests.
+
+``oneTimeTearDown``
+
+  This function can be be optionally overridden by the user in their test suite.
+
+  If this function exists, it will be called once after all tests are completed.
+  It is useful to clean up the environment after all tests.
+
+``setUp``
+
+  This function can be be optionally overridden by the user in their test suite.
+
+  If this function exists, it will be called before each test is run. It is
+  useful to reset the environment before each test.
+
+``tearDown``
+
+  This function can be be optionally overridden by the user in their test suite.
+
+  If this function exists, it will be called after each test completes. It is
+  useful to clean up the environment after each test.
+
+Skipping
+--------
+
+``startSkipping``
+
+  This function forces the remaining *assert* and *fail* functions to be
+  "skipped", i.e. they will have no effect. Each function skipped will be
+  recorded so that the total of asserts and fails will not be altered.
+
+``endSkipping``
+
+  This function returns calls to the *assert* and *fail* functions to their
+  default behavior, i.e. they will be called.
+
+``isSkipping``
+
+  This function returns the current state of skipping. It can be compared
+  against ``${SHUNIT_TRUE}`` or ``${SHUNIT_FALSE}`` if desired.
+
+Suites
+------
+
+The default behavior of shUnit2 is that all tests will be found dynamically. If
+you have a specific set of tests you want to run, or you don't want to use the
+standard naming scheme of prefixing your tests with ``test``, these functions
+are for you. Most users will never use them though.
+
+``suite``
+
+  This function can be optionally overridden by the user in their test suite.
+
+  If this function exists, it will be called when **shunit2** is sourced. If it
+  does not exist, shUnit2 will search the parent script for all functions
+  beginning with the word ``test``, and they will be added dynamically to the
+  test suite.
+
+``suite_addTest name``
+
+  This function adds a function named *name* to the list of tests scheduled for
+  execution as part of this test suite. This function should only be called from
+  within the ``suite()`` function.
+
 Advanced Usage
 ==============
 
 This section covers several advanced usage topics.
+
+Some constants you can use
+--------------------------
+
+There are several constants provided by shUnit2 as variables that might be of
+use to you.
+
+Predefined
+
+==================  ===========================================================
+``SHUNIT_VERSION``  The version of shUnit2 you are running.
+``SHUNIT_TRUE``     Standard shell *true* value (the integer value 0).
+``SHUNIT_FALSE``    Standard shell *false* value (the integer value 1).
+``SHUNIT_ERROR``    The integer value 2.
+==================  ===========================================================
+
+User defined
+
+==================  ===========================================================
+``SHUNIT_PARENT``   The filename of the shell script containing the tests. This
+                    is needed specifically for ZSH support.
+==================  ===========================================================
+
+Error handling
+--------------
+
+The constants values ``SHUNIT_TRUE``, ``SHUNIT_FALSE``, and ``SHUNIT_ERROR`` are
+returned from nearly every function to indicate the success or failure of the
+function. Additionally the variable ``flags_error`` is filled with a detailed
+error message if any function returns with a ``SHUNIT_ERROR`` value.
+
+Including Line Numbers in Asserts (Macros)
+------------------------------------------
+
+If you include lots of assert statements in an individual test function, it can
+become difficult to determine exactly which assert was thrown unless your
+messages are unique. To help somewhat, line numbers can be included in the
+assert messages. To enable this, a special shell "macro" must be used rather
+than the standard assert calls.
+
+For example, to include line numbers for a ``assertEquals()`` function call,
+replace the ``assertEquals()`` with ``${_ASSERT_EQUALS_}``.
+
+Example -- Asserts with and without line numbers ::
+
+  #! /bin/sh
+  # file: examples/lineno_test.sh
+
+  testLineNo()
+  {
+    # this assert will have line numbers included (e.g. "ASSERT:[123] ...")
+    echo "ae: ${_ASSERT_EQUALS_}"
+    ${_ASSERT_EQUALS_} 'not equal' 1 2
+
+    # this assert will not have line numbers included (e.g. "ASSERT: ...")
+    assertEquals 'not equal' 1 2
+  }
+
+  # load shunit2
+  . ../src/shell/shunit2
+
+Note: line numbers are not supported in all shells. If a shell does not support
+them, no errors will be thrown. Supported shells include: **bash** (>=3.0),
+**ksh**, **pdksh**, and **zsh**.
 
 Test Skipping
 -------------
@@ -251,317 +511,19 @@ Skipping can be controlled with the following functions: ``startSkipping()``,
 remain enabled until the end of the current test function call, after which
 skipping is disabled.
 
-Including Line Numbers in Asserts
----------------------------------
-
-If you include lots of assert statements in an individual test function, it can
-become difficult to determine exactly which assert was thrown unless your
-messages are unique. To help somewhat, line numbers can be included in the
-assert messages. To enable this, a special shell "macro" must be used rather
-than the standard assert calls.
-
-For example, to include line numbers for a ``assertEquals()`` function call,
-replace the ``assertEquals()`` with ``${_ASSERT_EQUALS_}``.
-
-Example -- Asserts with and without line numbers ::
-
-  #! /bin/sh
-  # file: examples/lineno_test.sh
-
-  testLineNo()
-  {
-    # this assert will have line numbers included (e.g. "ASSERT:[123] ...")
-    echo "ae: ${_ASSERT_EQUALS_}"
-    ${_ASSERT_EQUALS_} 'not equal' 1 2
-
-    # this assert will not have line numbers included (e.g. "ASSERT: ...")
-    assertEquals 'not equal' 1 2
-  }
-
-  # load shunit2
-  . ../src/shell/shunit2
-
-Note: line numbers are not supported in all shells. If a shell does not support
-them, no errors will be thrown. Supported shells include: **bash** (>=3.0),
-**ksh**, **pdksh**, and **zsh**.
-
-Function Reference
-==================
-
-Note: any string values passed should be properly quoted -- they should must be
-surrounded by single-quote (') or double-quote (") characters -- so that the
-shell will properly parse them.
-
-Asserts
--------
-
-``assertEquals [message] expected actual``
-
-Asserts that *expected* and *actual* are equal to one another. The *expected*
-and *actual* values can be either strings or integer values as both will be
-treated as strings. The message is optional, and must be quoted.
-
-``assertNull [message] value``
- 
-Asserts that value is *null*, or in shell terms, a zero-length string. The
-*value* must be a string as an integer value does not translate into a
-zero-length string. The message is optional, and must be quoted.
-
-void
-
-assertNotNull (
-[message],
- 
- 
-value);
- 
-
-string  
-[message];
-string  
-value;
-
-Asserts that value is notnull, or in shell terms not a zero-length string. The message is optional.
-void
-
-assertSame (
-[message],
- 
- 
-expected,
- 
- 
-actual);
- 
-
-string  
-[message];
-string  
-expected;
-string  
-actual;
-
-This function is functionally equivalent to assertEquals.
-void
-
-assertNotSame (
-[message],
- 
- 
-unexpected,
- 
- 
-actual);
- 
-
-string  
-[message];
-string  
-unexpected;
-string  
-actual;
-
-Asserts that unexpected and actual are not equal to one another. The message is optional.
-void
-
-assertTrue (
-[message],
- 
- 
-condition);
- 
-
-string  
-[message];
-string  
-condition;
-
-Asserts that a given shell test condition is true. The message is optional.
-Testing whether something is true or false is easy enough by using the assertEquals/assertNotSame functions. Shell supports much more complicated tests though, and a means to support them was needed. As such, this function tests that conditions are true or false through evaluation rather than just looking for a true or false.
-The following test will succeed:
-assertTrue "[ 34 -gt 23 ]"
-The folloing test will fail with a message:
-assertTrue "test failed" "[ -r '/non/existant/file' ]"
-void
-
-assertFalse (
-[message],
- 
- 
-condition);
- 
-
-string  
-[message];
-string  
-condition;
-
-Asserts that a given shell test condition is false. The message is optional.
-Testing whether something is true or false is easy enough by using the assertEquals/assertNotSame functions. Shell supports much more complicated tests though, and a means to support them was needed. As such, this function tests that conditions are true or false through evaluation rather than just looking for a true or false.
-The following test will succeed:
-assertFalse "[ 'apples' = 'oranges' ]"
-The folloing test will fail with a message:
-assertFalse "test failed" "[ 1 -eq 1 -a 2 -eq 2 ]"
-
-2. failures
-Table 4.2. failures
-void
-
-fail (
-[message]);
- 
-
-string  
-[message];
-
-Fails the test immediately, with the optional message.
-void
-
-failNotEquals (
-[message],
- 
- 
-unexpected,
- 
- 
-actual);
- 
-string  
-[message];
-string  
-unexpected;
-string  
-actual;
-
-Fails the test if unexpected and actual are not equal to one another. The message is optional.
-void
-
-failSame (
-[message]);
- 
-
-string  
-[message];
-
-Indicate test failure because arguments were not the same. The message is optional.
-void
-
-failNotSame (
-[message],
- 
- 
-expected,
- 
- 
-actual);
- 
-string  
-[message];
-string  
-expected;
-string  
-actual;
-
-Fails the test if expected and actual are equal to one another. The message is optional.
-
-3. skipping
-Table 4.3. skipping
-void
-
-startSkipping (
-);
- 
- 
-;
-
-This function forces the remaining assert and fail functions to be "skipped", i.e. they will have no effect. Each function skipped will be recorded so that the total of asserts and fails will not be altered.
-void
-
-endSkipping (
-);
- 
- 
-;
-
-This function returns calls to the assert and fail functions to their default behavior, i.e. they will be called.
-boolean
-
-isSkipping (
-);
- 
-
- 
-;
-
-This function returns the state of skipping.
-
-4. suites
-Table 4.4. suites
-void
-
-suite (
-);
- 
-
- 
-;
-
-This function can be optionally overridden by the user in their test suite.
-If this function exists, it will be called when shunit2 is sourced. If it does not exist, shUnit2 will search the parent script for all functions beginning with the word test, and they will be added dynamically to the test suite.
-void
-
-suite_addTest (
-function);
- 
-string  
-function;
-This function adds a function name to the list of tests scheduled for execution as part of this test suite. This function should only be called from within the suite() function.
-void
-
-oneTimeSetUp (
-);
- 
-
- 
-;
-
-This function can be be optionally overridden by the user in their test suite.
-If this function exists, it will be called once before any tests are run. It is useful to prepare a common environment for all tests.
-void
-
-oneTimeTearDown (
-);
- 
- 
-;
-
-This function can be be optionally overridden by the user in their test suite.
-If this function exists, it will be called once after all tests are completed. It is useful to clean up the environment after all tests.
-void
-
-setUp (
-);
- 
-
- 
-;
-
-This function can be be optionally overridden by the user in their test suite.
-If this function exists, it will be called before each test is run. It is useful to reset the environment before each test.
-void
-
-tearDown (
-);
- 
-
- 
-;
-
-This function can be be optionally overridden by the user in their test suite.
-If this function exists, it will be called after each test completes. It is useful to clean up the environment after each test.
-
 Appendix
 ========
+
+Getting help
+------------
+
+For help, please send requests to either the shUnit2 users mailing list
+<shunit2-users@googlegroups.com> (archives available on the web at
+http://groups.google.com/group/shunit2-users) or directly to
+Kate Ward <kate dot ward at forestent dot com>.
+
+ZSH
+---
 
 For compatibility with ZSH, there is one requirement that must be met -- the
 ``shwordsplit`` option must be set. There are three ways to accomplish this.
@@ -581,7 +543,6 @@ For compatibility with ZSH, there is one requirement that must be met -- the
 
      $ zsh -o shwordsplit -- some_script
 
-.. mailto:
 .. _log4sh: http://log4sh.sourceforge.net/
 .. _log4j: http://logging.apache.org/
 .. _JUnit: http://www.junit.org/

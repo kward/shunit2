@@ -3,6 +3,8 @@ contributed in some way or another to shunit2.
 
 Bryan Larsen
 Kevin Van Horn
+Maciej Bliziński
+Mario Sparada
 Mathias Goldau
 Richard Jensen
 Rob Holland
