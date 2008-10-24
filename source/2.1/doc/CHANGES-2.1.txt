@@ -27,13 +27,13 @@ for Issue# 3.
 Flushed out the coding standards in the README.txt a bit more, and brought the
 shunit2 code up to par with the documented standards.
 
-Completely changed the reporting output to be a closer match for JUnit and
-PyUnit. As a result, tests are counted separately from assertions.
+Issue# 4: Completely changed the reporting output to be a closer match for
+JUnit and PyUnit. As a result, tests are counted separately from assertions.
 
 Provide public shunit_tmpDir variable that can be used by unit test scripts that
 need automated and guaranteed cleanup.
 
-Issue #7: Fixed duplicated printing of messages passed to asserts.
+Issue# 7: Fixed duplicated printing of messages passed to asserts.
 
 Per code review, fixed wording of failSame() and failNotSame() messaged.
 
@@ -44,7 +44,11 @@ Added gen_test_results.sh to make releases easier.
 
 Fixed bugs in shlib_relToAbsPath() in shlib.
 
-Converted DocBook documentation to reStructuredText for easier maintenance.
+Converted DocBook documentation to reStructuredText for easier maintenance. The
+DocBook documentation is now considered obsolete, and will be removed in a
+future release.
+
+Issue# 5: Fixed the documentation around the usage of failures.
 
 
 Changes with 2.1.4
