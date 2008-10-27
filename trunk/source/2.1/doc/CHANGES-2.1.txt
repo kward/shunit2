@@ -50,6 +50,13 @@ future release.
 
 Issue# 5: Fixed the documentation around the usage of failures.
 
+Issue# 8: Added unit tests and updated documentation to demonstrate the
+requirement of quoting values twice when macros are used. This is due to how
+shell parses arguments.
+
+When an invalid number of arguments is passed to a function, the invalid number
+is returned to the user so they are more aware of what the cause might be.
+
 
 Changes with 2.1.4
 ------------------
@@ -172,4 +179,4 @@ result, rather than just those successful.
 
 
 .. $Revision$
-.. vim:ft=rst:spell:textwidth=80
+.. vim:ft=rst:spell:tw=80
