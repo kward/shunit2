@@ -171,11 +171,18 @@ All asserts and failures return with a ??
 Asserts
 -------
 
-``assertEquals [message] expected value``
+``assertEquals [message] expected actual``
 
   Asserts that *expected* and *actual* are equal to one another. The *expected*
   and *actual* values can be either strings or integer values as both will be
   treated as strings. The *message* is optional, and must be quoted.
+
+``assertNotEquals [message] expected actual``
+
+  Asserts that *unexpected* and *actual* are not equal to one another. The
+  *unexpected* and *actual* values can be either strings or integer values as
+  both will be treaded as strings. The *message* is optional, and must be
+  quoted.
 
 ``assertSame [message] expected actual``
  
@@ -183,10 +190,7 @@ Asserts
 
 ``assertNotSame [message] unexpected actual``
 
-  Asserts that *unexpected* and *actual* are not equal to one another. The
-  *unexpected* and *actual* values can be either strings or integer values as
-  both will be treaded as strings. The *message* is optional, and must be
-  quoted.
+  This function is functionally equivalent to ``assertNotEquals``.
 
 ``assertNull [message] value``
 

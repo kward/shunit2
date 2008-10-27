@@ -491,20 +491,23 @@ shell will properly parse them.</p>
 </div>
 <div class="section" id="asserts">
 <h2><a class="toc-backref" href="#id8">Asserts</a></h2>
-<p><tt class="docutils literal"><span class="pre">assertEquals</span> <span class="pre">[message]</span> <span class="pre">expected</span> <span class="pre">value</span></tt></p>
+<p><tt class="docutils literal"><span class="pre">assertEquals</span> <span class="pre">[message]</span> <span class="pre">expected</span> <span class="pre">actual</span></tt></p>
 <blockquote>
 Asserts that <em>expected</em> and <em>actual</em> are equal to one another. The <em>expected</em>
 and <em>actual</em> values can be either strings or integer values as both will be
 treated as strings. The <em>message</em> is optional, and must be quoted.</blockquote>
-<p><tt class="docutils literal"><span class="pre">assertSame</span> <span class="pre">[message]</span> <span class="pre">expected</span> <span class="pre">actual</span></tt></p>
-<blockquote>
-This function is functionally equivalent to <tt class="docutils literal"><span class="pre">assertEquals</span></tt>.</blockquote>
-<p><tt class="docutils literal"><span class="pre">assertNotSame</span> <span class="pre">[message]</span> <span class="pre">unexpected</span> <span class="pre">actual</span></tt></p>
+<p><tt class="docutils literal"><span class="pre">assertNotEquals</span> <span class="pre">[message]</span> <span class="pre">expected</span> <span class="pre">actual</span></tt></p>
 <blockquote>
 Asserts that <em>unexpected</em> and <em>actual</em> are not equal to one another. The
 <em>unexpected</em> and <em>actual</em> values can be either strings or integer values as
 both will be treaded as strings. The <em>message</em> is optional, and must be
 quoted.</blockquote>
+<p><tt class="docutils literal"><span class="pre">assertSame</span> <span class="pre">[message]</span> <span class="pre">expected</span> <span class="pre">actual</span></tt></p>
+<blockquote>
+This function is functionally equivalent to <tt class="docutils literal"><span class="pre">assertEquals</span></tt>.</blockquote>
+<p><tt class="docutils literal"><span class="pre">assertNotSame</span> <span class="pre">[message]</span> <span class="pre">unexpected</span> <span class="pre">actual</span></tt></p>
+<blockquote>
+This function is functionally equivalent to <tt class="docutils literal"><span class="pre">assertNotEquals</span></tt>.</blockquote>
 <p><tt class="docutils literal"><span class="pre">assertNull</span> <span class="pre">[message]</span> <span class="pre">value</span></tt></p>
 <blockquote>
 Asserts that <em>value</em> is <em>null</em>, or in shell terms, a zero-length string. The
