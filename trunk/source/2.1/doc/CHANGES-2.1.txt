@@ -50,7 +50,7 @@ future release.
 
 Issue# 5: Fixed the documentation around the usage of failures.
 
-Issue# 8: Added unit tests and updated documentation to demonstrate the
+Issue# 9: Added unit tests and updated documentation to demonstrate the
 requirement of quoting values twice when macros are used. This is due to how
 shell parses arguments.
 
