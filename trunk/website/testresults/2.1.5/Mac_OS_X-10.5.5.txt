@@ -8,7 +8,7 @@ tests=" shunit2_test_asserts.sh shunit2_test_failures.sh shunit2_test_macros.sh 
 
 # system info
 $ date
-Wed Oct 22 01:12:19 IST 2008
+Mon Oct 27 18:32:53 GMT 2008
 $ uname -mprsv
 Darwin 9.5.0 Darwin Kernel Version 9.5.0: Wed Sep  3 11:29:43 PDT 2008; root:xnu-1228.7.58~1/RELEASE_I386 i386 i386
 
@@ -43,9 +43,20 @@ Ran 3 tests.
 OK
 
 --- Executing the 'macros' test suite ---
-testLineNo
+testAssertEquals
+testAssertNotEquals
+testSame
+testNotSame
+testNull
+testNotNull
+testAssertTrue
+testAssertFalse
+testFail
+testFailNotEquals
+testFailSame
+testFailNotSame
 
-Ran 1 test.
+Ran 12 tests.
 
 OK
 
@@ -88,9 +99,20 @@ Ran 3 tests.
 OK
 
 --- Executing the 'macros' test suite ---
-testLineNo
+testAssertEquals
+testAssertNotEquals
+testSame
+testNotSame
+testNull
+testNotNull
+testAssertTrue
+testAssertFalse
+testFail
+testFailNotEquals
+testFailSame
+testFailNotSame
 
-Ran 1 test.
+Ran 12 tests.
 
 OK
 
@@ -134,9 +156,20 @@ Ran 3 tests.
 OK
 
 --- Executing the 'macros' test suite ---
-testLineNo
+testAssertEquals
+testAssertNotEquals
+testSame
+testNotSame
+testNull
+testNotNull
+testAssertTrue
+testAssertFalse
+testFail
+testFailNotEquals
+testFailSame
+testFailNotSame
 
-Ran 1 test.
+Ran 12 tests.
 
 OK
 
@@ -180,9 +213,20 @@ Ran 3 tests.
 OK
 
 --- Executing the 'macros' test suite ---
-testLineNo
+testAssertEquals
+testAssertNotEquals
+testSame
+testNotSame
+testNull
+testNotNull
+testAssertTrue
+testAssertFalse
+testFail
+testFailNotEquals
+testFailSame
+testFailNotSame
 
-Ran 1 test.
+Ran 12 tests.
 
 OK
 
