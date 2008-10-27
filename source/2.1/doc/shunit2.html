@@ -706,7 +706,8 @@ error message if any function returns with a <tt class="docutils literal"><span 
 become difficult to determine exactly which assert was thrown unless your
 messages are unique. To help somewhat, line numbers can be included in the
 assert messages. To enable this, a special shell &quot;macro&quot; must be used rather
-than the standard assert calls.</p>
+than the standard assert calls. <em>Shell doesn't actually have macros; the name is
+used here as the operation is similar to a standard macro.</em></p>
 <p>For example, to include line numbers for a <tt class="docutils literal"><span class="pre">assertEquals()</span></tt> function call,
 replace the <tt class="docutils literal"><span class="pre">assertEquals()</span></tt> with <tt class="docutils literal"><span class="pre">${_ASSERT_EQUALS_}</span></tt>.</p>
 <p>Example&nbsp;--&nbsp;Asserts with and without line numbers</p>
@@ -727,9 +728,27 @@ testLineNo()
 # load shunit2
 . ../src/shell/shunit2
 </pre>
-<p>Note: line numbers are not supported in all shells. If a shell does not support
+<p>Notes:</p>
+<ol class="arabic">
+<li><p class="first">Due to how shell parses command-line arguments, all strings used with macros
+should be quoted twice. Namely, single-quotes must be converted to
+single-double-quotes, and vice-versa. If the string being passed is
+absolutely for sure not empty, the extra quoting is not necessary.</p>
+<p>Normal <tt class="docutils literal"><span class="pre">assertEquals</span></tt> call.</p>
+<pre class="literal-block">
+assertEquals 'some message' 'x' ''
+</pre>
+<p>Macro <tt class="docutils literal"><span class="pre">_ASSERT_EQUALS_</span></tt> call. Note the extra quoting around the <em>message</em>
+and the <em>null</em> value.</p>
+<pre class="literal-block">
+_ASSERT_EQUALS_ '&quot;some message&quot;' 'x' '&quot;&quot;'
+</pre>
+</li>
+<li><p class="first">Line numbers are not supported in all shells. If a shell does not support
 them, no errors will be thrown. Supported shells include: <strong>bash</strong> (&gt;=3.0),
 <strong>ksh</strong>, <strong>pdksh</strong>, and <strong>zsh</strong>.</p>
+</li>
+</ol>
 </div>
 <div class="section" id="test-skipping">
 <h2><a class="toc-backref" href="#id17">Test Skipping</a></h2>

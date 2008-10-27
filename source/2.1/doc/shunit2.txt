@@ -396,7 +396,8 @@ If you include lots of assert statements in an individual test function, it can
 become difficult to determine exactly which assert was thrown unless your
 messages are unique. To help somewhat, line numbers can be included in the
 assert messages. To enable this, a special shell "macro" must be used rather
-than the standard assert calls.
+than the standard assert calls. *Shell doesn't actually have macros; the name is
+used here as the operation is similar to a standard macro.*
 
 For example, to include line numbers for a ``assertEquals()`` function call,
 replace the ``assertEquals()`` with ``${_ASSERT_EQUALS_}``.
@@ -419,9 +420,25 @@ Example -- Asserts with and without line numbers ::
   # load shunit2
   . ../src/shell/shunit2
 
-Note: line numbers are not supported in all shells. If a shell does not support
-them, no errors will be thrown. Supported shells include: **bash** (>=3.0),
-**ksh**, **pdksh**, and **zsh**.
+Notes:
+
+#. Due to how shell parses command-line arguments, all strings used with macros
+   should be quoted twice. Namely, single-quotes must be converted to
+   single-double-quotes, and vice-versa. If the string being passed is
+   absolutely for sure not empty, the extra quoting is not necessary.
+
+   Normal ``assertEquals`` call. ::
+
+     assertEquals 'some message' 'x' ''
+
+   Macro ``_ASSERT_EQUALS_`` call. Note the extra quoting around the *message*
+   and the *null* value. ::
+
+     _ASSERT_EQUALS_ '"some message"' 'x' '""'
+
+#. Line numbers are not supported in all shells. If a shell does not support
+   them, no errors will be thrown. Supported shells include: **bash** (>=3.0),
+   **ksh**, **pdksh**, and **zsh**.
 
 Test Skipping
 -------------

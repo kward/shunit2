@@ -14,7 +14,7 @@
 # written by Kate Ward &lt;kate.ward@forestent.com&gt;
 # released under the LGPL
 #
-# this module implements a xUnit based unit test framework similar to JUnit
+# This module implements a xUnit based unit test framework similar to JUnit.
 # </s:header>
 #*/
 
@@ -115,6 +115,7 @@ assertEquals()
   ${_SHUNIT_LINENO_}
   if [ $# -lt 2 -o $# -gt 3 ]; then
     _shunit_error "assertEquals() requires two or three arguments; $# given"
+    _shunit_error "1: ${1:+$1} 2: ${2:+$2} 3: ${3:+$3}"
     return ${SHUNIT_ERROR}
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
@@ -164,7 +165,7 @@ assertNotEquals()
 {
   ${_SHUNIT_LINENO_}
   if [ $# -lt 2 -o $# -gt 3 ]; then
-    _shunit_error 'assertNotEquals() requires two or three arguments'
+    _shunit_error "assertNotEquals() requires two or three arguments; $# given"
     return ${SHUNIT_ERROR}
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
@@ -212,7 +213,7 @@ assertNull()
 {
   ${_SHUNIT_LINENO_}
   if [ $# -lt 1 -o $# -gt 2 ]; then
-    _shunit_error 'assertNull() requires one or two arguments'
+    _shunit_error "assertNull() requires one or two arguments; $# given"
     return ${SHUNIT_ERROR}
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
@@ -253,7 +254,7 @@ assertNotNull()
 {
   ${_SHUNIT_LINENO_}
   if [ $# -gt 2 ]; then  # allowing 0 arguments as $1 might actually be null
-    _shunit_error 'assertNotNull() requires one or two arguments'
+    _shunit_error "assertNotNull() requires one or two arguments; $# given"
     return ${SHUNIT_ERROR}
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
@@ -294,7 +295,7 @@ assertSame()
 {
   ${_SHUNIT_LINENO_}
   if [ $# -lt 2 -o $# -gt 3 ]; then
-    _shunit_error 'assertSame() requires one or two arguments'
+    _shunit_error "assertSame() requires one or two arguments; $# given"
     return ${SHUNIT_ERROR}
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
@@ -336,7 +337,7 @@ assertNotSame()
 {
   ${_SHUNIT_LINENO_}
   if [ $# -lt 2 -o $# -gt 3 ]; then
-    _shunit_error 'assertNotSame() requires two or three arguments'
+    _shunit_error "assertNotSame() requires two or three arguments; $# given"
     return ${SHUNIT_ERROR}
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
@@ -385,7 +386,7 @@ assertTrue()
 {
   ${_SHUNIT_LINENO_}
   if [ $# -gt 2 ]; then
-    _shunit_error 'assertTrue() takes one two arguments'
+    _shunit_error "assertTrue() takes one two arguments; $# given"
     return ${SHUNIT_ERROR}
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
@@ -455,7 +456,7 @@ assertFalse()
 {
   ${_SHUNIT_LINENO_}
   if [ $# -lt 1 -o $# -gt 2 ]; then
-    _shunit_error 'assertFalse() quires one or two arguments'
+    _shunit_error "assertFalse() quires one or two arguments; $# given"
     return ${SHUNIT_ERROR}
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
@@ -518,7 +519,7 @@ fail()
 {
   ${_SHUNIT_LINENO_}
   if [ $# -gt 1 ]; then
-    _shunit_error 'fail() requires one or two arguments'
+    _shunit_error "fail() requires one or two arguments; $# given"
     return ${SHUNIT_ERROR}
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
@@ -560,7 +561,7 @@ failNotEquals()
 {
   ${_SHUNIT_LINENO_}
   if [ $# -lt 2 -o $# -gt 3 ]; then
-    _shunit_error 'failNotEquals() requires one or two arguments'
+    _shunit_error "failNotEquals() requires one or two arguments; $# given"
     return ${SHUNIT_ERROR}
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
@@ -601,7 +602,7 @@ failSame()
 {
   ${_SHUNIT_LINENO_}
   if [ $# -lt 2 -o $# -gt 3 ]; then
-    _shunit_error 'failSame() requires two or three arguments'
+    _shunit_error "failSame() requires two or three arguments; $# given"
     return ${SHUNIT_ERROR}
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
@@ -642,7 +643,7 @@ failNotSame()
 {
   ${_SHUNIT_LINENO_}
   if [ $# -lt 2 -o $# -gt 3 ]; then
-    _shunit_error 'failNotEquals() requires one or two arguments'
+    _shunit_error "failNotEquals() requires one or two arguments; $# given"
     return ${SHUNIT_ERROR}
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
