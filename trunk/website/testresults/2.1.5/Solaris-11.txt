@@ -8,7 +8,7 @@ tests=" shunit2_test_asserts.sh shunit2_test_failures.sh shunit2_test_macros.sh 
 
 # system info
 $ date
-Sat Jul 12 11:37:35 GMT 2008
+Sat Jul 12 11:43:59 GMT 2008
 $ uname -mprsv
 SunOS 5.11 snv_77 i86pc i386
 
@@ -43,11 +43,22 @@ Ran 3 tests.
 OK
 
 --- Executing the 'macros' test suite ---
-testLineNo
+testAssertEquals
+testAssertNotEquals
+testSame
+testNotSame
+testNull
+testNotNull
+testAssertTrue
+testAssertFalse
+testFail
+testFailNotEquals
+testFailSame
+testFailNotSame
 
-Ran 1 test.
+Ran 12 tests.
 
-OK (skipped=13)
+OK (skipped=24)
 
 --- Executing the 'misc' test suite ---
 testUnboundVariable
@@ -91,9 +102,20 @@ Ran 3 tests.
 OK
 
 --- Executing the 'macros' test suite ---
-testLineNo
+testAssertEquals
+testAssertNotEquals
+testSame
+testNotSame
+testNull
+testNotNull
+testAssertTrue
+testAssertFalse
+testFail
+testFailNotEquals
+testFailSame
+testFailNotSame
 
-Ran 1 test.
+Ran 12 tests.
 
 OK
 
@@ -140,9 +162,20 @@ Ran 3 tests.
 OK
 
 --- Executing the 'macros' test suite ---
-testLineNo
+testAssertEquals
+testAssertNotEquals
+testSame
+testNotSame
+testNull
+testNotNull
+testAssertTrue
+testAssertFalse
+testFail
+testFailNotEquals
+testFailSame
+testFailNotSame
 
-Ran 1 test.
+Ran 12 tests.
 
 OK
 
@@ -189,9 +222,20 @@ Ran 3 tests.
 OK
 
 --- Executing the 'macros' test suite ---
-testLineNo
+testAssertEquals
+testAssertNotEquals
+testSame
+testNotSame
+testNull
+testNotNull
+testAssertTrue
+testAssertFalse
+testFail
+testFailNotEquals
+testFailSame
+testFailNotSame
 
-Ran 1 test.
+Ran 12 tests.
 
 OK
 
