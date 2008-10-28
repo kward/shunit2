@@ -30,7 +30,7 @@ testAssertEquals()
   ( ${_ASSERT_EQUALS_} '"some msg"' 'x' 'y' >"${stdoutF}" 2>"${stderrF}" )
   grep '^ASSERT:\[[0-9]*\] *' "${stdoutF}" >/dev/null
   rtrn=$?
-  assertTrue '_ASSERT_EQUALS_ failure' ${rtrn}
+  assertTrue '_ASSERT_EQUALS_ w/ msg failure' ${rtrn}
   [ ${rtrn} -ne ${SHUNIT_TRUE} ] && cat "${stderrF}" >&2
 }
 
@@ -48,7 +48,7 @@ testAssertNotEquals()
   ( ${_ASSERT_NOT_EQUALS_} '"some msg"' 'x' 'x' >"${stdoutF}" 2>"${stderrF}" )
   grep '^ASSERT:\[[0-9]*\] *' "${stdoutF}" >/dev/null
   rtrn=$?
-  assertTrue '_ASSERT_NOT_EQUALS_ failure' ${rtrn}
+  assertTrue '_ASSERT_NOT_EQUALS_ w/ msg failure' ${rtrn}
   [ ${rtrn} -ne ${SHUNIT_TRUE} ] && cat "${stderrF}" >&2
 }
 
@@ -66,7 +66,7 @@ testSame()
   ( ${_ASSERT_SAME_} '"some msg"' 'x' 'y' >"${stdoutF}" 2>"${stderrF}" )
   grep '^ASSERT:\[[0-9]*\] *' "${stdoutF}" >/dev/null
   rtrn=$?
-  assertTrue '_ASSERT_SAME_ failure' ${rtrn}
+  assertTrue '_ASSERT_SAME_ w/ msg failure' ${rtrn}
   [ ${rtrn} -ne ${SHUNIT_TRUE} ] && cat "${stderrF}" >&2
 }
 
@@ -84,7 +84,7 @@ testNotSame()
   ( ${_ASSERT_NOT_SAME_} '"some msg"' 'x' 'x' >"${stdoutF}" 2>"${stderrF}" )
   grep '^ASSERT:\[[0-9]*\] *' "${stdoutF}" >/dev/null
   rtrn=$?
-  assertTrue '_ASSERT_NOT_SAME_ failure' ${rtrn}
+  assertTrue '_ASSERT_NOT_SAME_ w/ msg failure' ${rtrn}
   [ ${rtrn} -ne ${SHUNIT_TRUE} ] && cat "${stderrF}" >&2
 }
 
@@ -102,7 +102,7 @@ testNull()
   ( ${_ASSERT_NULL_} '"some msg"' 'x' >"${stdoutF}" 2>"${stderrF}" )
   grep '^ASSERT:\[[0-9]*\] *' "${stdoutF}" >/dev/null
   rtrn=$?
-  assertTrue '_ASSERT_NULL_ failure' ${rtrn}
+  assertTrue '_ASSERT_NULL_ w/ msg failure' ${rtrn}
   [ ${rtrn} -ne ${SHUNIT_TRUE} ] && cat "${stderrF}" >&2
 }
 
@@ -139,7 +139,7 @@ testAssertTrue()
   ( ${_ASSERT_TRUE_} '"some msg"' ${SHUNIT_FALSE} >"${stdoutF}" 2>"${stderrF}" )
   grep '^ASSERT:\[[0-9]*\] *' "${stdoutF}" >/dev/null
   rtrn=$?
-  assertTrue '_ASSERT_TRUE_ failure' ${rtrn}
+  assertTrue '_ASSERT_TRUE_ w/ msg failure' ${rtrn}
   [ ${rtrn} -ne ${SHUNIT_TRUE} ] && cat "${stderrF}" >&2
 }
 
@@ -157,7 +157,7 @@ testAssertFalse()
   ( ${_ASSERT_FALSE_} '"some msg"' ${SHUNIT_TRUE} >"${stdoutF}" 2>"${stderrF}" )
   grep '^ASSERT:\[[0-9]*\] *' "${stdoutF}" >/dev/null
   rtrn=$?
-  assertTrue '_ASSERT_FALSE_ failure' ${rtrn}
+  assertTrue '_ASSERT_FALSE_ w/ msg failure' ${rtrn}
   [ ${rtrn} -ne ${SHUNIT_TRUE} ] && cat "${stderrF}" >&2
 }
 
@@ -175,7 +175,7 @@ testFail()
   ( ${_FAIL_} '"some msg"' >"${stdoutF}" 2>"${stderrF}" )
   grep '^ASSERT:\[[0-9]*\] *' "${stdoutF}" >/dev/null
   rtrn=$?
-  assertTrue '_FAIL_ failure' ${rtrn}
+  assertTrue '_FAIL_ w/ msg failure' ${rtrn}
   [ ${rtrn} -ne ${SHUNIT_TRUE} ] && cat "${stderrF}" >&2
 }
 
@@ -193,7 +193,7 @@ testFailNotEquals()
   ( ${_FAIL_NOT_EQUALS_} '"some msg"' 'x' 'y' >"${stdoutF}" 2>"${stderrF}" )
   grep '^ASSERT:\[[0-9]*\] *' "${stdoutF}" >/dev/null
   rtrn=$?
-  assertTrue '_FAIL_NOT_EQUALS_ failure' ${rtrn}
+  assertTrue '_FAIL_NOT_EQUALS_ w/ msg failure' ${rtrn}
   [ ${rtrn} -ne ${SHUNIT_TRUE} ] && cat "${stderrF}" >&2
 }
 
@@ -211,7 +211,7 @@ testFailSame()
   ( ${_FAIL_SAME_} '"some msg"' 'x' 'x' >"${stdoutF}" 2>"${stderrF}" )
   grep '^ASSERT:\[[0-9]*\] *' "${stdoutF}" >/dev/null
   rtrn=$?
-  assertTrue '_FAIL_SAME_ failure' ${rtrn}
+  assertTrue '_FAIL_SAME_ w/ msg failure' ${rtrn}
   [ ${rtrn} -ne ${SHUNIT_TRUE} ] && cat "${stderrF}" >&2
 }
 
@@ -229,7 +229,7 @@ testFailNotSame()
   ( ${_FAIL_NOT_SAME_} '"some msg"' 'x' 'y' >"${stdoutF}" 2>"${stderrF}" )
   grep '^ASSERT:\[[0-9]*\] *' "${stdoutF}" >/dev/null
   rtrn=$?
-  assertTrue '_FAIL_NOT_SAME_ failure' ${rtrn}
+  assertTrue '_FAIL_NOT_SAME_ w/ msg failure' ${rtrn}
   [ ${rtrn} -ne ${SHUNIT_TRUE} ] && cat "${stderrF}" >&2
 }
 
