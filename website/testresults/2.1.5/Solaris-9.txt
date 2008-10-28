@@ -8,7 +8,7 @@ tests=" shunit2_test_asserts.sh shunit2_test_failures.sh shunit2_test_macros.sh 
 
 # system info
 $ date
-Wed Oct 22 00:25:39 GMT 2008
+Tue Oct 28 23:46:44 GMT 2008
 $ uname -mprsv
 SunOS 5.9 Generic_117172-08 i86pc i386
 
@@ -43,11 +43,22 @@ Ran 3 tests.
 OK
 
 --- Executing the 'macros' test suite ---
-testLineNo
+testAssertEquals
+testAssertNotEquals
+testSame
+testNotSame
+testNull
+testNotNull
+testAssertTrue
+testAssertFalse
+testFail
+testFailNotEquals
+testFailSame
+testFailNotSame
 
-Ran 1 test.
+Ran 12 tests.
 
-OK (skipped=13)
+OK (skipped=24)
 
 --- Executing the 'misc' test suite ---
 testUnboundVariable
@@ -91,24 +102,47 @@ Ran 3 tests.
 OK
 
 --- Executing the 'macros' test suite ---
-testLineNo
+testAssertEquals
 ASSERT:_ASSERT_EQUALS_ failure
+ASSERT:_ASSERT_EQUALS_ w/ msg failure
+testAssertNotEquals
 ASSERT:_ASSERT_NOT_EQUALS_ failure
-ASSERT:_ASSERT_NULL_ failure
-ASSERT:_ASSERT_NOT_NULL_ failure
+ASSERT:_ASSERT_NOT_EQUALS_ w/ msg failure
+testSame
 ASSERT:_ASSERT_SAME_ failure
+ASSERT:_ASSERT_SAME_ w/ msg failure
+testNotSame
 ASSERT:_ASSERT_NOT_SAME_ failure
+ASSERT:_ASSERT_NOT_SAME_ w/ msg failure
+testNull
+ASSERT:_ASSERT_NULL_ failure
+ASSERT:_ASSERT_NULL_ w/ msg failure
+testNotNull
+ASSERT:_ASSERT_NOT_NULL_ failure
+ASSERT:_ASSERT_NOT_NULL_ w/ msg failure
+ASSERT:[-1045] some msg
+testAssertTrue
 ASSERT:_ASSERT_TRUE_ failure
+ASSERT:_ASSERT_TRUE_ w/ msg failure
+testAssertFalse
 ASSERT:_ASSERT_FALSE_ failure
-ASSERT:_ASSERT_FALSE_ failure
+ASSERT:_ASSERT_FALSE_ w/ msg failure
+testFail
 ASSERT:_FAIL_ failure
+ASSERT:_FAIL_ w/ msg failure
+testFailNotEquals
 ASSERT:_FAIL_NOT_EQUALS_ failure
+ASSERT:_FAIL_NOT_EQUALS_ w/ msg failure
+testFailSame
 ASSERT:_FAIL_SAME_ failure
+ASSERT:_FAIL_SAME_ w/ msg failure
+testFailNotSame
 ASSERT:_FAIL_NOT_SAME_ failure
+ASSERT:_FAIL_NOT_SAME_ w/ msg failure
 
-Ran 1 test.
+Ran 12 tests.
 
-FAILED (failures=13)
+FAILED (failures=24)
 
 --- Executing the 'misc' test suite ---
 testUnboundVariable
@@ -153,9 +187,20 @@ Ran 3 tests.
 OK
 
 --- Executing the 'macros' test suite ---
-testLineNo
+testAssertEquals
+testAssertNotEquals
+testSame
+testNotSame
+testNull
+testNotNull
+testAssertTrue
+testAssertFalse
+testFail
+testFailNotEquals
+testFailSame
+testFailNotSame
 
-Ran 1 test.
+Ran 12 tests.
 
 OK
 
@@ -202,9 +247,20 @@ Ran 3 tests.
 OK
 
 --- Executing the 'macros' test suite ---
-testLineNo
+testAssertEquals
+testAssertNotEquals
+testSame
+testNotSame
+testNull
+testNotNull
+testAssertTrue
+testAssertFalse
+testFail
+testFailNotEquals
+testFailSame
+testFailNotSame
 
-Ran 1 test.
+Ran 12 tests.
 
 OK
 
