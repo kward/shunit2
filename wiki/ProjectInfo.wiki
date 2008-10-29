@@ -20,7 +20,7 @@ _Supported Operating Systems_
   * [http://www.freebsd.org/ FreeBSD] (user supported)
   * Linux ([http://www.ubuntu.com/ Ubuntu])
   * [http://www.apple.com/macosx/ Mac OS X]
-  * [http://www.sun.com/software/solaris/ Solaris] 8-10 and OpenSolaris
+  * [http://www.sun.com/software/solaris/ Solaris] 8-10 and [http://www.opensolaris.org/ OpenSolaris]
 
 _Tested Shells_
   * Bourne Shell (*`sh`*)
