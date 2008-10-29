@@ -124,7 +124,7 @@ we'd better build it. ::
 Check In All the Code
 ---------------------
 
-This step is pretty self-explainatory ::
+This step is pretty self-explanatory ::
 
   $ pwd
   .../shunit2/source/2.0
