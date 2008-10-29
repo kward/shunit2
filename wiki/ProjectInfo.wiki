@@ -58,7 +58,7 @@ HTML documentation is also included in the `doc` directory of each distribution.
 [http://shunit2.googlecode.com/svn/trunk/source/2.0/doc/shunit2.html 2.0] ·
 [http://shunit2.googlecode.com/svn/trunk/source/2.1/doc/shunit2.html 2.1]
 
-Various testing techniques are provided in the [http://forestent.com/wiki/ShUnit2:BasicTesting Basic] and [http://forestent.com/wiki/ShUnit2:AdvancedTesting Advanced] pages.
+You might also be interested in our GeneralFAQs page.
 
 === Examples ===
 One case study for writing a function to convert a [http://forestent.com/wiki/ShUnit2:AbsolutePathExample relative path to an absolute path].
