@@ -1,0 +1,242 @@
+#------------------------------------------------------------------------------
+# System data
+#
+
+# test run info
+shells="/bin/sh /bin/bash /bin/dash /bin/ksh /bin/pdksh /bin/zsh"
+tests=" shunit2_test_asserts.sh shunit2_test_failures.sh shunit2_test_macros.sh"
+
+# system info
+$ date
+Fri Jul 11 12:01:03 GMT 2008
+$ uname -mprsv
+SunOS 5.11 snv_77 i86pc i386
+
+
+#------------------------------------------------------------------------------
+# Running the test suite with /bin/sh
+#
+
+--- Executing the 'asserts' test suite ---
+#
+# Performing tests
+#
+testAssertEquals
+testAssertSame
+testAssertNotSame
+testAssertNull
+testAssertNotNull
+testAssertTrue
+testAssertFalse
+
+#
+# Test report
+#
+tests passed:   138 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:    138 100%
+
+--- Executing the 'failures' test suite ---
+#
+# Performing tests
+#
+testFail
+testFailNotEquals
+testFailSame
+
+#
+# Test report
+#
+tests passed:    45 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     45 100%
+
+--- Executing the 'macros' test suite ---
+#
+# Performing tests
+#
+testLineNo
+
+#
+# Test report
+#
+tests passed:     0   0%
+tests failed:     0   0%
+tests skipped:   12 100%
+tests total:     12 100%
+
+
+#------------------------------------------------------------------------------
+# Running the test suite with /bin/bash
+#
+
+GNU bash, version 3.2.25(1)-release (i386-pc-solaris2.11)
+Copyright (C) 2005 Free Software Foundation, Inc.
+
+--- Executing the 'asserts' test suite ---
+#
+# Performing tests
+#
+testAssertEquals
+testAssertSame
+testAssertNotSame
+testAssertNull
+testAssertNotNull
+testAssertTrue
+testAssertFalse
+
+#
+# Test report
+#
+tests passed:   138 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:    138 100%
+
+--- Executing the 'failures' test suite ---
+#
+# Performing tests
+#
+testFail
+testFailNotEquals
+testFailSame
+
+#
+# Test report
+#
+tests passed:    45 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     45 100%
+
+--- Executing the 'macros' test suite ---
+#
+# Performing tests
+#
+testLineNo
+
+#
+# Test report
+#
+tests passed:    12 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     12 100%
+
+shunit2_test.sh:WARN unable to run tests with the /bin/dash shell
+
+
+#------------------------------------------------------------------------------
+# Running the test suite with /bin/ksh
+#
+
+--- Executing the 'asserts' test suite ---
+#
+# Performing tests
+#
+testAssertEquals
+testAssertSame
+testAssertNotSame
+testAssertNull
+testAssertNotNull
+testAssertTrue
+testAssertFalse
+
+#
+# Test report
+#
+tests passed:   138 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:    138 100%
+
+--- Executing the 'failures' test suite ---
+#
+# Performing tests
+#
+testFail
+testFailNotEquals
+testFailSame
+
+#
+# Test report
+#
+tests passed:    45 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     45 100%
+
+--- Executing the 'macros' test suite ---
+#
+# Performing tests
+#
+testLineNo
+
+#
+# Test report
+#
+tests passed:    12 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     12 100%
+
+shunit2_test.sh:WARN unable to run tests with the /bin/pdksh shell
+
+
+#------------------------------------------------------------------------------
+# Running the test suite with /bin/zsh
+#
+
+version: 4.3.4
+
+--- Executing the 'asserts' test suite ---
+#
+# Performing tests
+#
+testAssertEquals
+testAssertSame
+testAssertNotSame
+testAssertNull
+testAssertNotNull
+testAssertTrue
+testAssertFalse
+
+#
+# Test report
+#
+tests passed:   138 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:    138 100%
+
+--- Executing the 'failures' test suite ---
+#
+# Performing tests
+#
+testFail
+testFailNotEquals
+testFailSame
+
+#
+# Test report
+#
+tests passed:    45 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     45 100%
+
+--- Executing the 'macros' test suite ---
+#
+# Performing tests
+#
+testLineNo
+
+#
+# Test report
+#
+tests passed:    12 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     12 100%

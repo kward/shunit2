@@ -1,0 +1,350 @@
+#------------------------------------------------------------------------------
+# System data
+#
+
+# test run info
+shells="/bin/sh /bin/bash /bin/dash /bin/ksh /bin/pdksh /bin/zsh"
+tests=" shunit2_test_asserts.sh shunit2_test_failures.sh shunit2_test_macros.sh"
+
+# system info
+$ date
+Fri Jul 11 11:54:41 GMT 2008
+$ uname -mprsv
+Linux 2.6.24-19-server #1 SMP Wed Jun 18 15:18:00 UTC 2008 i686 unknown
+
+
+#------------------------------------------------------------------------------
+# Running the test suite with /bin/sh
+#
+
+--- Executing the 'asserts' test suite ---
+#
+# Performing tests
+#
+testAssertEquals
+testAssertSame
+testAssertNotSame
+testAssertNull
+testAssertNotNull
+testAssertTrue
+testAssertFalse
+
+#
+# Test report
+#
+tests passed:   138 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:    138 100%
+
+--- Executing the 'failures' test suite ---
+#
+# Performing tests
+#
+testFail
+testFailNotEquals
+testFailSame
+
+#
+# Test report
+#
+tests passed:    45 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     45 100%
+
+--- Executing the 'macros' test suite ---
+#
+# Performing tests
+#
+testLineNo
+
+#
+# Test report
+#
+tests passed:     0   0%
+tests failed:     0   0%
+tests skipped:   12 100%
+tests total:     12 100%
+
+
+#------------------------------------------------------------------------------
+# Running the test suite with /bin/bash
+#
+
+GNU bash, version 3.2.39(1)-release (i486-pc-linux-gnu)
+Copyright (C) 2007 Free Software Foundation, Inc.
+
+--- Executing the 'asserts' test suite ---
+#
+# Performing tests
+#
+testAssertEquals
+testAssertSame
+testAssertNotSame
+testAssertNull
+testAssertNotNull
+testAssertTrue
+testAssertFalse
+
+#
+# Test report
+#
+tests passed:   138 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:    138 100%
+
+--- Executing the 'failures' test suite ---
+#
+# Performing tests
+#
+testFail
+testFailNotEquals
+testFailSame
+
+#
+# Test report
+#
+tests passed:    45 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     45 100%
+
+--- Executing the 'macros' test suite ---
+#
+# Performing tests
+#
+testLineNo
+
+#
+# Test report
+#
+tests passed:    12 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     12 100%
+
+
+#------------------------------------------------------------------------------
+# Running the test suite with /bin/dash
+#
+
+--- Executing the 'asserts' test suite ---
+#
+# Performing tests
+#
+testAssertEquals
+testAssertSame
+testAssertNotSame
+testAssertNull
+testAssertNotNull
+testAssertTrue
+testAssertFalse
+
+#
+# Test report
+#
+tests passed:   138 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:    138 100%
+
+--- Executing the 'failures' test suite ---
+#
+# Performing tests
+#
+testFail
+testFailNotEquals
+testFailSame
+
+#
+# Test report
+#
+tests passed:    45 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     45 100%
+
+--- Executing the 'macros' test suite ---
+#
+# Performing tests
+#
+testLineNo
+
+#
+# Test report
+#
+tests passed:     0   0%
+tests failed:     0   0%
+tests skipped:   12 100%
+tests total:     12 100%
+
+
+#------------------------------------------------------------------------------
+# Running the test suite with /bin/ksh
+#
+
+version:   version         sh (AT&T Research) 1993-12-28 s+
+
+--- Executing the 'asserts' test suite ---
+#
+# Performing tests
+#
+testAssertEquals
+testAssertSame
+testAssertNotSame
+testAssertNull
+testAssertNotNull
+testAssertTrue
+testAssertFalse
+
+#
+# Test report
+#
+tests passed:   138 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:    138 100%
+
+--- Executing the 'failures' test suite ---
+#
+# Performing tests
+#
+testFail
+testFailNotEquals
+testFailSame
+
+#
+# Test report
+#
+tests passed:    45 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     45 100%
+
+--- Executing the 'macros' test suite ---
+#
+# Performing tests
+#
+testLineNo
+
+#
+# Test report
+#
+tests passed:    12 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     12 100%
+
+
+#------------------------------------------------------------------------------
+# Running the test suite with /bin/pdksh
+#
+
+--- Executing the 'asserts' test suite ---
+#
+# Performing tests
+#
+testAssertEquals
+testAssertSame
+testAssertNotSame
+testAssertNull
+testAssertNotNull
+testAssertTrue
+testAssertFalse
+
+#
+# Test report
+#
+tests passed:   138 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:    138 100%
+
+--- Executing the 'failures' test suite ---
+#
+# Performing tests
+#
+testFail
+testFailNotEquals
+testFailSame
+
+#
+# Test report
+#
+tests passed:    45 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     45 100%
+
+--- Executing the 'macros' test suite ---
+#
+# Performing tests
+#
+testLineNo
+
+#
+# Test report
+#
+tests passed:    12 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     12 100%
+
+
+#------------------------------------------------------------------------------
+# Running the test suite with /bin/zsh
+#
+
+version: 4.3.4
+
+--- Executing the 'asserts' test suite ---
+#
+# Performing tests
+#
+testAssertEquals
+testAssertSame
+testAssertNotSame
+testAssertNull
+testAssertNotNull
+testAssertTrue
+testAssertFalse
+
+#
+# Test report
+#
+tests passed:   138 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:    138 100%
+
+--- Executing the 'failures' test suite ---
+#
+# Performing tests
+#
+testFail
+testFailNotEquals
+testFailSame
+
+#
+# Test report
+#
+tests passed:    45 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     45 100%
+
+--- Executing the 'macros' test suite ---
+#
+# Performing tests
+#
+testLineNo
+
+#
+# Test report
+#
+tests passed:    12 100%
+tests failed:     0   0%
+tests skipped:    0   0%
+tests total:     12 100%
