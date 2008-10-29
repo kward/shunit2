@@ -1,0 +1,1116 @@
+# $Id$
+# vim:et:ft=sh:sts=2:sw=2
+# vim:foldmethod=marker:foldmarker=/**,*/
+#
+#/**
+# <?xml version="1.0" encoding="UTF-8"?>
+# <s:shelldoc xmlns:s="http://www.forestent.com/projects/shelldoc/xsl/2005.0">
+# <s:header>
+# shUnit 2.1.5
+# Shell Unit Test Framework
+#
+# http://shunit2.googlecode.com/
+#
+# written by Kate Ward &lt;kate.ward@forestent.com&gt;
+# released under the LGPL
+#
+# This module implements a xUnit based unit test framework similar to JUnit.
+# </s:header>
+#*/
+
+SHUNIT_VERSION='2.1.5'
+
+SHUNIT_TRUE=0
+SHUNIT_FALSE=1
+SHUNIT_ERROR=2
+
+_shunit_warn() { echo "shunit2:WARN $@" >&2; }
+_shunit_error() { echo "shunit2:ERROR $@" >&2; }
+_shunit_fatal() { echo "shunit2:FATAL $@" >&2; }
+
+# specific shell checks
+if [ -n "${ZSH_VERSION:-}" ]; then
+  setopt |grep "^shwordsplit$" >/dev/null
+  if [ $? -ne ${SHUNIT_TRUE} ]; then
+    _shunit_fatal 'zsh shwordsplit option is required for proper operation'
+    exit ${SHUNIT_ERROR}
+  fi
+  if [ -z "${SHUNIT_PARENT:-}" ]; then
+    _shunit_fatal "zsh does not pass \$0 through properly. please declare \
+\"SHUNIT_PARENT=\$0\" before calling shUnit2"
+    exit ${SHUNIT_ERROR}
+  fi
+fi
+
+#
+# constants
+#
+
+__SHUNIT_ASSERT_MSG_PREFIX='ASSERT:'
+__SHUNIT_PARENT=${SHUNIT_PARENT:-$0}
+
+# set the constants readonly
+shunit_constants_=`set |grep '^__SHUNIT_' |cut -d= -f1`
+echo "${shunit_constants_}" |grep '^Binary file' >/dev/null \
+    && shunit_constants_=`set |grep -a '^__SHUNIT_' |cut -d= -f1`
+for shunit_constant_ in ${shunit_constants_}; do
+  shunit_ro_opts_=''
+  case ${ZSH_VERSION:-} in
+    '') ;;  # this isn't zsh
+    [123].*) ;;  # early versions (1.x, 2.x, 3.x)
+    *) shunit_ro_opts_='-g' ;;  # all later versions. declare readonly globally
+  esac
+  readonly ${shunit_ro_opts_} ${shunit_constant_}
+done
+unset shunit_constant_ shunit_constants_ shunit_ro_opts_
+
+# variables
+__shunit_skip=${SHUNIT_FALSE}
+__shunit_suite=''
+
+# counts of tests
+__shunit_testSuccess=${SHUNIT_TRUE}
+__shunit_testsTotal=0
+__shunit_testsPassed=0
+__shunit_testsFailed=0
+
+# counts of asserts
+__shunit_assertsTotal=0
+__shunit_assertsPassed=0
+__shunit_assertsFailed=0
+__shunit_assertsSkipped=0
+
+__shunit_lineno=''
+__shunit_reportGenerated=${SHUNIT_FALSE}
+
+# macros
+_SHUNIT_LINENO_='eval __shunit_lineno=""; if [ "${1:-}" = "--lineno" ]; then [ -n "$2" ] && __shunit_lineno="[$2] "; shift 2; fi'
+
+#-----------------------------------------------------------------------------
+# assert functions
+#
+
+#/**
+# <s:function group="asserts">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>assertEquals</function></funcdef>
+#       <paramdef>string <parameter>[message]</parameter></paramdef>
+#       <paramdef>string <parameter>expected</parameter></paramdef>
+#       <paramdef>string <parameter>actual</parameter></paramdef>
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>Asserts that <emphasis>expected</emphasis> and
+#   <emphasis>actual</emphasis> are equal to one another. The message is
+#   optional.</para>
+# </entry>
+# </s:function>
+#*/
+assertEquals()
+{
+  ${_SHUNIT_LINENO_}
+  if [ $# -lt 2 -o $# -gt 3 ]; then
+    _shunit_error "assertEquals() requires two or three arguments; $# given"
+    _shunit_error "1: ${1:+$1} 2: ${2:+$2} 3: ${3:+$3}"
+    return ${SHUNIT_ERROR}
+  fi
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
+  shunit_message_=${__shunit_lineno}
+  if [ $# -eq 3 ]; then
+    shunit_message_="${shunit_message_}$1"
+    shift
+  fi
+  shunit_expected_=$1
+  shunit_actual_=$2
+
+  shunit_return=${SHUNIT_TRUE}
+  if [ "${shunit_expected_}" = "${shunit_actual_}" ]; then
+    _shunit_assertPass
+  else
+    failNotEquals "${shunit_message_}" "${shunit_expected_}" "${shunit_actual_}"
+    shunit_return=${SHUNIT_FALSE}
+  fi
+
+  unset shunit_message_ shunit_expected_ shunit_actual_
+  return ${shunit_return}
+}
+_ASSERT_EQUALS_='eval assertEquals --lineno "${LINENO:-}"'
+
+#/**
+# <s:function group="asserts">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>assertNotEquals</function></funcdef>
+#       <paramdef>string <parameter>[message]</parameter></paramdef>
+#       <paramdef>string <parameter>unexpected</parameter></paramdef>
+#       <paramdef>string <parameter>actual</parameter></paramdef>
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>Asserts that <emphasis>unexpected</emphasis> and
+#   <emphasis>actual</emphasis> are <emphasis role="strong">not</emphasis>
+#   equal to one another. The message is optional.</para>
+# </entry>
+# </s:function>
+#*/
+assertNotEquals()
+{
+  ${_SHUNIT_LINENO_}
+  if [ $# -lt 2 -o $# -gt 3 ]; then
+    _shunit_error "assertNotEquals() requires two or three arguments; $# given"
+    return ${SHUNIT_ERROR}
+  fi
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
+  shunit_message_=${__shunit_lineno}
+  if [ $# -eq 3 ]; then
+    shunit_message_="${shunit_message_}$1"
+    shift
+  fi
+  shunit_unexpected_=$1
+  shunit_actual_=$2
+
+  shunit_return=${SHUNIT_TRUE}
+  if [ "${shunit_unexpected_}" != "${shunit_actual_}" ]; then
+    _shunit_assertPass
+  else
+    failSame "${shunit_message_}" "$@"
+    shunit_return=${SHUNIT_FALSE}
+  fi
+
+  unset shunit_message_ shunit_unexpected_ shunit_actual_
+  return ${shunit_return}
+}
+_ASSERT_NOT_EQUALS_='eval assertNotEquals --lineno "${LINENO:-}"'
+
+#/**
+# <s:function group="asserts">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>assertNull</function></funcdef>
+#       <paramdef>string <parameter>[message]</parameter></paramdef>
+#       <paramdef>string <parameter>value</parameter></paramdef>
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>Asserts that <emphasis>value</emphasis> is <literal>null</literal>,
+#   or in shell terms a zero-length string. The message is optional.</para>
+# </entry>
+# </s:function>
+#*/
+assertNull()
+{
+  ${_SHUNIT_LINENO_}
+  if [ $# -lt 1 -o $# -gt 2 ]; then
+    _shunit_error "assertNull() requires one or two arguments; $# given"
+    return ${SHUNIT_ERROR}
+  fi
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
+  shunit_message_=${__shunit_lineno}
+  if [ $# -eq 2 ]; then
+    shunit_message_="${shunit_message_}$1"
+    shift
+  fi
+  assertTrue "${shunit_message_}" "[ -z '$1' ]"
+  shunit_return=$?
+
+  unset shunit_message_
+  return ${shunit_return}
+}
+_ASSERT_NULL_='eval assertNull --lineno "${LINENO:-}"'
+
+#/**
+# <s:function group="asserts">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>assertNotNull</function></funcdef>
+#       <paramdef>string <parameter>[message]</parameter></paramdef>
+#       <paramdef>string <parameter>value</parameter></paramdef>
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>Asserts that <emphasis>value</emphasis> is <emphasis
+#   role="strong">not</emphasis> <literal>null</literal>, or in shell terms not
+#   a zero-length string. The message is optional.</para>
+# </entry>
+# </s:function>
+#*/
+assertNotNull()
+{
+  ${_SHUNIT_LINENO_}
+  if [ $# -gt 2 ]; then  # allowing 0 arguments as $1 might actually be null
+    _shunit_error "assertNotNull() requires one or two arguments; $# given"
+    return ${SHUNIT_ERROR}
+  fi
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
+  shunit_message_=${__shunit_lineno}
+  if [ $# -eq 2 ]; then
+    shunit_message_="${shunit_message_}$1"
+    shift
+  fi
+  assertTrue "${shunit_message_}" "[ -n '${1:-}' ]"
+  shunit_return=$?
+
+  unset shunit_message_
+  return ${shunit_return}
+}
+_ASSERT_NOT_NULL_='eval assertNotNull --lineno "${LINENO:-}"'
+
+#/**
+# <s:function group="asserts">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>assertSame</function></funcdef>
+#       <paramdef>string <parameter>[message]</parameter></paramdef>
+#       <paramdef>string <parameter>expected</parameter></paramdef>
+#       <paramdef>string <parameter>actual</parameter></paramdef>
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>This function is functionally equivalent to
+#   <function>assertEquals</function>.</para>
+# </entry>
+# </s:function>
+#*/
+assertSame()
+{
+  ${_SHUNIT_LINENO_}
+  if [ $# -lt 2 -o $# -gt 3 ]; then
+    _shunit_error "assertSame() requires one or two arguments; $# given"
+    return ${SHUNIT_ERROR}
+  fi
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
+  shunit_message_=${__shunit_lineno}
+  if [ $# -eq 3 ]; then
+    shunit_message_="${shunit_message_}$1"
+    shift
+  fi
+  assertEquals "${shunit_message_}" "$1" "$2"
+  shunit_return=$?
+
+  unset shunit_message_
+  return ${shunit_return}
+}
+_ASSERT_SAME_='eval assertSame --lineno "${LINENO:-}"'
+
+#/**
+# <s:function group="asserts">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>assertNotSame</function></funcdef>
+#       <paramdef>string <parameter>[message]</parameter></paramdef>
+#       <paramdef>string <parameter>unexpected</parameter></paramdef>
+#       <paramdef>string <parameter>actual</parameter></paramdef>
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>Asserts that <emphasis>unexpected</emphasis> and
+#   <emphasis>actual</emphasis> are <emphasis role="strong">not</emphasis>
+#   equal to one another. The message is optional.</para>
+# </entry>
+# </s:function>
+#*/
+assertNotSame()
+{
+  ${_SHUNIT_LINENO_}
+  if [ $# -lt 2 -o $# -gt 3 ]; then
+    _shunit_error "assertNotSame() requires two or three arguments; $# given"
+    return ${SHUNIT_ERROR}
+  fi
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
+  shunit_message_=${__shunit_lineno}
+  if [ $# -eq 3 ]; then
+    shunit_message_="${shunit_message_:-}$1"
+    shift
+  fi
+  assertNotEquals "${shunit_message_}" "$1" "$2"
+  shunit_return=$?
+
+  unset shunit_message_
+  return ${shunit_return}
+}
+_ASSERT_NOT_SAME_='eval assertNotSame --lineno "${LINENO:-}"'
+
+#/**
+# <s:function group="asserts">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>assertTrue</function></funcdef>
+#       <paramdef>string <parameter>[message]</parameter></paramdef>
+#       <paramdef>string <parameter>condition</parameter></paramdef>
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>Asserts that a given shell test condition is true. The message is
+#   optional.</para>
+#   <para>Testing whether something is true or false is easy enough by using
+#   the assertEquals/assertNotSame functions. Shell supports much more
+#   complicated tests though, and a means to support them was needed. As such,
+#   this function tests that conditions are true or false through evaluation
+#   rather than just looking for a true or false.</para>
+#   <funcsynopsis>
+#     The following test will succeed: <funcsynopsisinfo>assertTrue "[ 34 -gt 23 ]"</funcsynopsisinfo>
+#     The folloing test will fail with a message: <funcsynopsisinfo>assertTrue "test failed" "[ -r '/non/existant/file' ]"</funcsynopsisinfo>
+#   </funcsynopsis>
+# </entry>
+# </s:function>
+#*/
+assertTrue()
+{
+  ${_SHUNIT_LINENO_}
+  if [ $# -gt 2 ]; then
+    _shunit_error "assertTrue() takes one two arguments; $# given"
+    return ${SHUNIT_ERROR}
+  fi
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
+  shunit_message_=${__shunit_lineno}
+  if [ $# -eq 2 ]; then
+    shunit_message_="${shunit_message_}$1"
+    shift
+  fi
+  shunit_condition_=$1
+
+  # see if condition is an integer, i.e. a return value
+  shunit_match_=`expr "${shunit_condition_}" : '\([0-9]*\)'`
+  shunit_return=${SHUNIT_TRUE}
+  if [ -z "${shunit_condition_}" ]; then
+    # null condition
+    shunit_return=${SHUNIT_FALSE}
+  elif [ "${shunit_condition_}" = "${shunit_match_}" ]; then
+    # possible return value. treating 0 as true, and non-zero as false.
+    [ ${shunit_condition_} -ne 0 ] && shunit_return=${SHUNIT_FALSE}
+  else
+    # (hopefully) a condition
+    ( eval ${shunit_condition_} ) >/dev/null 2>&1
+    [ $? -ne 0 ] && shunit_return=${SHUNIT_FALSE}
+  fi
+
+  # record the test
+  if [ ${shunit_return} -eq ${SHUNIT_TRUE} ]; then
+    _shunit_assertPass
+  else
+    _shunit_assertFail "${shunit_message_}"
+  fi
+
+  unset shunit_message_ shunit_condition_ shunit_match_
+  return ${shunit_return}
+}
+_ASSERT_TRUE_='eval assertTrue --lineno "${LINENO:-}"'
+
+#/**
+# <s:function group="asserts">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>assertFalse</function></funcdef>
+#       <paramdef>string <parameter>[message]</parameter></paramdef>
+#       <paramdef>string <parameter>condition</parameter></paramdef>
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>Asserts that a given shell test condition is false. The message is
+#   optional.</para>
+#   <para>Testing whether something is true or false is easy enough by using
+#   the assertEquals/assertNotSame functions. Shell supports much more
+#   complicated tests though, and a means to support them was needed. As such,
+#   this function tests that conditions are true or false through evaluation
+#   rather than just looking for a true or false.</para>
+#   <funcsynopsis>
+#     The following test will succeed: <funcsynopsisinfo>assertFalse "[ 'apples' = 'oranges' ]"</funcsynopsisinfo>
+#     The folloing test will fail with a message: <funcsynopsisinfo>assertFalse "test failed" "[ 1 -eq 1 -a 2 -eq 2 ]"</funcsynopsisinfo>
+#   </funcsynopsis>
+# </entry>
+# </s:function>
+#*/
+assertFalse()
+{
+  ${_SHUNIT_LINENO_}
+  if [ $# -lt 1 -o $# -gt 2 ]; then
+    _shunit_error "assertFalse() quires one or two arguments; $# given"
+    return ${SHUNIT_ERROR}
+  fi
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
+  shunit_message_=${__shunit_lineno}
+  if [ $# -eq 2 ]; then
+    shunit_message_="${shunit_message_}$1"
+    shift
+  fi
+  shunit_condition_=$1
+
+  # see if condition is an integer, i.e. a return value
+  shunit_match_=`expr "${shunit_condition_}" : '\([0-9]*\)'`
+  shunit_return=${SHUNIT_TRUE}
+  if [ -z "${shunit_condition_}" ]; then
+    # null condition
+    shunit_return=${SHUNIT_FALSE}
+  elif [ "${shunit_condition_}" = "${shunit_match_}" ]; then
+    # possible return value. treating 0 as true, and non-zero as false.
+    [ ${shunit_condition_} -eq 0 ] && shunit_return=${SHUNIT_FALSE}
+  else
+    # (hopefully) a condition
+    ( eval ${shunit_condition_} ) >/dev/null 2>&1
+    [ $? -eq 0 ] && shunit_return=${SHUNIT_FALSE}
+  fi
+
+  # record the test
+  if [ ${shunit_return} -eq ${SHUNIT_TRUE} ]; then
+    _shunit_assertPass
+  else
+    _shunit_assertFail "${shunit_message_}"
+  fi
+
+  unset shunit_message_ shunit_condition_ shunit_match_
+  return ${shunit_return}
+}
+_ASSERT_FALSE_='eval assertFalse --lineno "${LINENO:-}"'
+
+#-----------------------------------------------------------------------------
+# failure functions
+#
+
+#/**
+# <s:function group="failures">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>fail</function></funcdef>
+#       <paramdef>string <parameter>[message]</parameter></paramdef>
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>Fails the test immediately, with the optional message.</para>
+# </entry>
+# </s:function>
+#*/
+fail()
+{
+  ${_SHUNIT_LINENO_}
+  if [ $# -gt 1 ]; then
+    _shunit_error "fail() requires one or two arguments; $# given"
+    return ${SHUNIT_ERROR}
+  fi
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
+  shunit_message_=${__shunit_lineno}
+  if [ $# -eq 1 ]; then
+    shunit_message_="${shunit_message_}$1"
+    shift
+  fi
+
+  _shunit_assertFail "${shunit_message_}"
+
+  unset shunit_message_
+  return ${SHUNIT_FALSE}
+}
+_FAIL_='eval fail --lineno "${LINENO:-}"'
+
+#/**
+# <s:function group="failures">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>failNotEquals</function></funcdef>
+#       <paramdef>string <parameter>[message]</parameter></paramdef>
+#       <paramdef>string <parameter>unexpected</parameter></paramdef>
+#       <paramdef>string <parameter>actual</parameter></paramdef>
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>Fails the test if <emphasis>unexpected</emphasis> and
+#   <emphasis>actual</emphasis> are <emphasis role="strong">not</emphasis>
+#   equal to one another. The message is optional.</para>
+# </entry>
+# </s:function>
+#*/
+failNotEquals()
+{
+  ${_SHUNIT_LINENO_}
+  if [ $# -lt 2 -o $# -gt 3 ]; then
+    _shunit_error "failNotEquals() requires one or two arguments; $# given"
+    return ${SHUNIT_ERROR}
+  fi
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
+  shunit_message_=${__shunit_lineno}
+  if [ $# -eq 3 ]; then
+    shunit_message_="${shunit_message_}$1"
+    shift
+  fi
+  shunit_unexpected_=$1
+  shunit_actual_=$2
+
+  _shunit_assertFail "${shunit_message_:+${shunit_message_} }expected:<${shunit_unexpected_}> but was:<${shunit_actual_}>"
+
+  unset shunit_message_ shunit_unexpected_ shunit_actual_
+  return ${SHUNIT_FALSE}
+}
+_FAIL_NOT_EQUALS_='eval failNotEquals --lineno "${LINENO:-}"'
+
+#/**
+# <s:function group="failures">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>failSame</function></funcdef>
+#       <paramdef>string <parameter>[message]</parameter></paramdef>
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>Indicate test failure because arguments were the same. The message is
+#   optional.</para>
+# </entry>
+# </s:function>
+#*/
+failSame()
+{
+  ${_SHUNIT_LINENO_}
+  if [ $# -lt 2 -o $# -gt 3 ]; then
+    _shunit_error "failSame() requires two or three arguments; $# given"
+    return ${SHUNIT_ERROR}
+  fi
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
+  shunit_message_=${__shunit_lineno}
+  if [ $# -eq 3 ]; then
+    shunit_message_="${shunit_message_}$1"
+    shift
+  fi
+
+  _shunit_assertFail "${shunit_message_:+${shunit_message_} }expected not same"
+
+  unset shunit_message_
+  return ${SHUNIT_FALSE}
+}
+_FAIL_SAME_='eval failSame --lineno "${LINENO:-}"'
+
+#/**
+# <s:function group="failures">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>failNotSame</function></funcdef>
+#       <paramdef>string <parameter>[message]</parameter></paramdef>
+#       <paramdef>string <parameter>expected</parameter></paramdef>
+#       <paramdef>string <parameter>actual</parameter></paramdef>
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>Indicate test failure because arguments were not the same. The
+#   message is optional.</para>
+# </entry>
+# </s:function>
+#*/
+failNotSame()
+{
+  ${_SHUNIT_LINENO_}
+  if [ $# -lt 2 -o $# -gt 3 ]; then
+    _shunit_error "failNotEquals() requires one or two arguments; $# given"
+    return ${SHUNIT_ERROR}
+  fi
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
+  shunit_message_=${__shunit_lineno}
+  if [ $# -eq 3 ]; then
+    shunit_message_="${shunit_message_}$1"
+    shift
+  fi
+  failNotEquals "${shunit_message_}" "$1" "$2"
+  shunit_return=$?
+
+  unset shunit_message_
+  return ${shunit_return}
+}
+_FAIL_NOT_SAME_='eval failNotSame --lineno "${LINENO:-}"'
+
+#-----------------------------------------------------------------------------
+# skipping functions
+#
+
+#/**
+# <s:function group="skipping">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>startSkipping</function></funcdef>
+#       <paramdef />
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>This function forces the remaining assert and fail functions to be
+#   "skipped", i.e. they will have no effect. Each function skipped will be
+#   recorded so that the total of asserts and fails will not be altered.</para>
+# </entry>
+# </s:function>
+#*/
+startSkipping()
+{
+  __shunit_skip=${SHUNIT_TRUE}
+}
+
+#/**
+# <s:function group="skipping">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>endSkipping</function></funcdef>
+#       <paramdef />
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>This function returns calls to the assert and fail functions to their
+#   default behavior, i.e. they will be called.</para>
+# </entry>
+# </s:function>
+#*/
+endSkipping()
+{
+  __shunit_skip=${SHUNIT_FALSE}
+}
+
+#/**
+# <s:function group="skipping">
+# <entry align="right">
+#   <emphasis>boolean</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>isSkipping</function></funcdef>
+#       <paramdef />
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>This function returns the state of skipping.</para>
+# </entry>
+# </s:function>
+#*/
+isSkipping()
+{
+  return ${__shunit_skip}
+}
+
+#-----------------------------------------------------------------------------
+# suite functions
+#
+
+#/**
+# <s:function group="suites">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>suite</function></funcdef>
+#       <paramdef />
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>This function can be optionally overridden by the user in their test
+#   suite.</para>
+#   <para>If this function exists, it will be called when
+#   <command>shunit2</command> is sourced. If it does not exist, shUnit2 will
+#   search the parent script for all functions beginning with the word
+#   <literal>test</literal>, and they will be added dynamically to the test
+#   suite.</para>
+# </entry>
+# </s:function>
+#*/
+# Note: see _shunit_mktempFunc() for actual implementation
+# suite() { :; }
+
+#/**
+# <s:function group="suites">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>suite_addTest</function></funcdef>
+#       <paramdef>string <parameter>function</parameter></paramdef>
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>This function adds a function name to the list of tests scheduled for
+#   execution as part of this test suite. This function should only be called
+#   from within the <function>suite()</function> function.</para>
+# </entry>
+# </s:function>
+#*/
+suite_addTest()
+{
+  shunit_func_=${1:-}
+
+  __shunit_suite="${__shunit_suite:+${__shunit_suite} }${shunit_func_}"
+  __shunit_testsTotal=`expr ${__shunit_testsTotal} + 1`
+
+  unset shunit_func_
+}
+
+#/**
+# <s:function group="suites">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>oneTimeSetUp</function></funcdef>
+#       <paramdef />
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>This function can be be optionally overridden by the user in their
+#   test suite.</para>
+#   <para>If this function exists, it will be called once before any tests are
+#   run. It is useful to prepare a common environment for all tests.</para>
+# </entry>
+# </s:function>
+#*/
+# Note: see _shunit_mktempFunc() for actual implementation
+# oneTimeSetUp() { :; }
+
+#/**
+# <s:function group="suites">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>oneTimeTearDown</function></funcdef>
+#       <paramdef />
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>This function can be be optionally overridden by the user in their
+#   test suite.</para>
+#   <para>If this function exists, it will be called once after all tests are
+#   completed. It is useful to clean up the environment after all tests.</para>
+# </entry>
+# </s:function>
+#*/
+# Note: see _shunit_mktempFunc() for actual implementation
+# oneTimeTearDown() { :; }
+
+#/**
+# <s:function group="suites">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>setUp</function></funcdef>
+#       <paramdef />
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>This function can be be optionally overridden by the user in their
+#   test suite.</para>
+#   <para>If this function exists, it will be called before each test is run.
+#   It is useful to reset the environment before each test.</para>
+# </entry>
+# </s:function>
+#*/
+# Note: see _shunit_mktempFunc() for actual implementation
+# setUp() { :; }
+
+#/**
+# <s:function group="suites">
+# <entry align="right">
+#   <emphasis>void</emphasis>
+# </entry>
+# <entry>
+#   <funcsynopsis>
+#     <funcprototype>
+#       <funcdef><function>tearDown</function></funcdef>
+#       <paramdef />
+#     </funcprototype>
+#   </funcsynopsis>
+#   <para>This function can be be optionally overridden by the user in their
+#   test suite.</para>
+#   <para>If this function exists, it will be called after each test completes.
+#   It is useful to clean up the environment after each test.</para>
+# </entry>
+# </s:function>
+#*/
+# Note: see _shunit_mktempFunc() for actual implementation
+# tearDown() { :; }
+
+#------------------------------------------------------------------------------
+# internal shUnit2 functions
+#
+
+# this function is a cross-platform temporary directory creation tool. not all
+# OSes have the mktemp function, so one is included here.
+_shunit_mktempDir()
+{
+  # try the standard mktemp function
+  ( exec mktemp -dqt shunit.XXXXXX 2>/dev/null ) && return
+
+  # the standard mktemp didn't work.  doing our own.
+  if [ -r '/dev/urandom' ]; then
+    _shunit_random_=`od -vAn -N4 -tx4 </dev/urandom |sed 's/^[^0-9a-f]*//'`
+  elif [ -n "${RANDOM:-}" ]; then
+    # $RANDOM works
+    _shunit_random_=${RANDOM}${RANDOM}${RANDOM}$$
+  else
+    # $RANDOM doesn't work
+    _shunit_date_=`date '+%Y%m%d%H%M%S'`
+    _shunit_random_=`expr ${_shunit_date_} / $$`
+  fi
+
+  _shunit_tmpDir_="${TMPDIR:-/tmp}/shunit.${_shunit_random_}"
+  ( umask 077 && mkdir "${_shunit_tmpDir_}" ) || {
+    _shunit_fatal 'could not create temporary directory! exiting'
+    exit ${SHUNIT_FALSE}
+  }
+
+  echo ${_shunit_tmpDir_}
+  unset _shunit_date_ _shunit_random_ _shunit_tmpDir_
+}
+
+# this function is here to work around issues in Cygwin
+_shunit_mktempFunc()
+{
+  for _shunit_func_ in oneTimeSetUp oneTimeTearDown setUp tearDown suite; do
+    _shunit_file_="${__shunit_tmpDir}/${_shunit_func_}"
+    cat <<EOF >"${_shunit_file_}"
+#! /bin/sh
+exit ${SHUNIT_TRUE}
+EOF
+    chmod +x "${_shunit_file_}"
+  done
+
+  unset _shunit_file_
+}
+
+_shunit_cleanup()
+{
+  _shunit_name_=$1
+
+  case ${_shunit_name_} in
+    EXIT) _shunit_signal_=0 ;;
+    INT) _shunit_signal_=2 ;;
+    TERM) _shunit_signal_=15 ;;
+    *)
+      _shunit_warn "unrecognized trap value (${_shunit_name_})"
+      _shunit_signal_=0
+      ;;
+  esac
+
+  # do our work
+  rm -fr "${__shunit_tmpDir}"
+
+  # exit for all non-EXIT signals
+  if [ ${_shunit_name_} != 'EXIT' ]; then
+    _shunit_warn "trapped and now handling the (${_shunit_name_}) signal"
+    # disable EXIT trap
+    trap 0
+    # add 128 to signal and exit
+    exit `expr ${_shunit_signal_} + 128`
+  elif [ ${__shunit_reportGenerated} -eq ${SHUNIT_FALSE} ] ; then
+    _shunit_assertFail 'Unknown failure encountered running a test'
+    _shunit_generateReport
+    exit ${SHUNIT_ERROR}
+  fi
+
+  unset _shunit_name_ _shunit_signal_
+}
+
+# The actual running of the tests happens here.
+_shunit_execSuite()
+{
+  for _shunit_test_ in ${__shunit_suite}; do
+    __shunit_testSuccess=${SHUNIT_TRUE}
+
+    # disable skipping
+    endSkipping
+
+    # execute the per-test setup function
+    setUp
+
+    # execute the test
+    echo "${_shunit_test_}"
+    eval ${_shunit_test_}
+
+    # execute the per-test tear-down function
+    tearDown
+
+    # update stats
+    if [ ${__shunit_testSuccess} -eq ${SHUNIT_TRUE} ]; then
+      __shunit_testsPassed=`expr ${__shunit_testsPassed} + 1`
+    else
+      __shunit_testsFailed=`expr ${__shunit_testsFailed} + 1`
+    fi
+  done
+
+  unset _shunit_test_
+}
+
+# This function exits shUnit2 with the appropriate error code and OK/FAILED
+# message.
+_shunit_generateReport()
+{
+  _shunit_ok_=${SHUNIT_TRUE}
+
+  # if no exit code was provided one, determine an appropriate one
+  [ ${__shunit_testsFailed} -gt 0 \
+      -o ${__shunit_testSuccess} -eq ${SHUNIT_FALSE} ] \
+          && _shunit_ok_=${SHUNIT_FALSE}
+
+  echo
+  if [ ${__shunit_testsTotal} -eq 1 ]; then
+    echo "Ran ${__shunit_testsTotal} test."
+  else
+    echo "Ran ${__shunit_testsTotal} tests."
+  fi
+
+  _shunit_failures_=''
+  _shunit_skipped_=''
+  [ ${__shunit_assertsFailed} -gt 0 ] \
+      && _shunit_failures_="failures=${__shunit_assertsFailed}"
+  [ ${__shunit_assertsSkipped} -gt 0 ] \
+      && _shunit_skipped_="skipped=${__shunit_assertsSkipped}"
+
+  if [ ${_shunit_ok_} -eq ${SHUNIT_TRUE} ]; then
+    _shunit_msg_='OK'
+    [ -n "${_shunit_skipped_}" ] \
+        && _shunit_msg_="${_shunit_msg_} (${_shunit_skipped_})"
+  else
+    _shunit_msg_="FAILED (${_shunit_failures_}"
+    [ -n "${_shunit_skipped_}" ] \
+        && _shunit_msg_="${_shunit_msg_},${_shunit_skipped_}"
+    _shunit_msg_="${_shunit_msg_})"
+  fi
+
+  echo
+  echo ${_shunit_msg_}
+  __shunit_reportGenerated=${SHUNIT_TRUE}
+
+  unset _shunit_failures_ _shunit_msg_ _shunit_ok_ _shunit_skipped_
+}
+
+_shunit_shouldSkip()
+{
+  [ ${__shunit_skip} -eq ${SHUNIT_FALSE} ] && return ${SHUNIT_FALSE}
+  _shunit_assertSkip
+}
+
+_shunit_assertPass()
+{
+  __shunit_assertsPassed=`expr ${__shunit_assertsPassed} + 1`
+  __shunit_assertsTotal=`expr ${__shunit_assertsTotal} + 1`
+}
+
+_shunit_assertFail()
+{
+  _shunit_msg_=$1
+
+  __shunit_testSuccess=${SHUNIT_FALSE}
+  __shunit_assertsFailed=`expr ${__shunit_assertsFailed} + 1`
+  __shunit_assertsTotal=`expr ${__shunit_assertsTotal} + 1`
+  echo "${__SHUNIT_ASSERT_MSG_PREFIX}${_shunit_msg_}"
+
+  unset _shunit_msg_
+}
+
+_shunit_assertSkip()
+{
+  __shunit_assertsSkipped=`expr ${__shunit_assertsSkipped} + 1`
+  __shunit_assertsTotal=`expr ${__shunit_assertsTotal} + 1`
+}
+
+#------------------------------------------------------------------------------
+# main
+#
+
+# create a temporary storage location
+__shunit_tmpDir=`_shunit_mktempDir`
+
+# provide a public temporary directory for unit test scripts
+# TODO(kward): document this
+shunit_tmpDir="${__shunit_tmpDir}/tmp"
+mkdir "${shunit_tmpDir}"
+
+# setup traps to clean up after ourselves
+trap '_shunit_cleanup EXIT' 0
+trap '_shunit_cleanup INT' 2
+trap '_shunit_cleanup TERM' 15
+
+# create phantom functions to work around issues with Cygwin
+_shunit_mktempFunc
+PATH="${__shunit_tmpDir}:${PATH}"
+
+# execute the oneTimeSetUp function (if it exists)
+oneTimeSetUp
+
+# execute the suite function defined in the parent test script
+# deprecated as of 2.1.0
+suite
+
+# if no suite function was defined, dynamically build a list of functions
+if [ -z "${__shunit_suite}" ]; then
+  shunit_funcs_=`grep "^[ \t]*test[A-Za-z0-9_]* *()" ${__SHUNIT_PARENT} \
+      |sed 's/[^A-Za-z0-9_]//g'`
+  for shunit_func_ in ${shunit_funcs_}; do
+    suite_addTest ${shunit_func_}
+  done
+fi
+unset shunit_func_ shunit_funcs_
+
+# execute the tests
+_shunit_execSuite
+
+# execute the oneTimeTearDown function (if it exists)
+oneTimeTearDown
+
+# generate the report
+_shunit_generateReport
+
+# that's it folks
+[ ${__shunit_testsFailed} -eq 0 ]
+exit $?
+
+#/**
+# </s:shelldoc>
+#*/
