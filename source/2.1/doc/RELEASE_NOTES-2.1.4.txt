@@ -61,8 +61,7 @@ Solaris 11 x86 (Nevada 77)
 New Features
 ------------
 
-Support added for outputing assert source line number as part of assert
-messages.
+Support added to output assert source line number as part of assert messages.
 
 
 Changes and Enhancements
