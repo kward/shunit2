@@ -1,6 +1,5 @@
-#summary HOWTO test a possibility matrix.
+#summary Demonstration of testing a possibility matrix.
 
-= Testing a Possibility Matrix =
 _The following code is pulled from the unit tests of [http://log4sh.sourceforge.net/ log4sh]. The example is somewhat complex, but it does demonstrate the use of a possibility matrix for test outcomes._
 
 In this example, sending a logging message to a log4sh appender at a given logging level should result in a message at that logging level or above. Basically, what is happening is that a logging message is being sent at all six possible logging levels simultaneously, and the data file contains a list of the logging levels where a message should actually show up. Don't worry if that makes no sense as the example is for log4sh, but some studying of what is happening will help you understand how you might implement a possibility matrix of your own.
