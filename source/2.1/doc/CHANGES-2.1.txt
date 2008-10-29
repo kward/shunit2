@@ -35,7 +35,7 @@ need automated and guaranteed cleanup.
 
 Issue# 7: Fixed duplicated printing of messages passed to asserts.
 
-Per code review, fixed wording of failSame() and failNotSame() messaged.
+Per code review, fixed wording of failSame() and failNotSame() messages.
 
 Replaced version_info.sh with versions library and made appropriate changes in
 other scripts to use it.
@@ -179,4 +179,4 @@ result, rather than just those successful.
 
 
 .. $Revision$
-.. vim:ft=rst:spell:tw=80
+.. vim:fileencoding=latin1:ft=rst:spell:tw=80

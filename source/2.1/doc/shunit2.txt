@@ -1,4 +1,4 @@
-ï»¿===========================
+===========================
 shUnit2 2.1.x Documentation
 ===========================
 
@@ -40,7 +40,7 @@ Tested Operating Systems
 - DASH (**dash**)
 - Korn Shell (**ksh**)
 - pdksh - Public Domain Korn Shell (**pdksh**)
-- zsh - ZSH (**zsh**) (since 2.1.2) â€” *please see the ZSH shell errata for more
+- zsh - ZSH (**zsh**) (since 2.1.2) ¿ *please see the ZSH shell errata for more
   information*
 
 See the appropriate Release Notes for this release
@@ -185,7 +185,7 @@ Asserts
   quoted.
 
 ``assertSame [message] expected actual``
-Â 
+ 
   This function is functionally equivalent to ``assertEquals``.
 
 ``assertNotSame [message] unexpected actual``
@@ -199,13 +199,13 @@ Asserts
   zero-length string. The *message* is optional, and must be quoted.
 
 ``assertNotNull [message] value``
-Â 
+ 
   Asserts that *value* is *not null*, or in shell terms, a non-empty string. The
   *value* may be a string or an integer as the later will be parsed as a
   non-empty string value. The *message* is optional, and must be quoted.
 
 ``assertTrue [message] condition``
-Â 
+ 
   Asserts that a given shell test *condition* is *true*. The condition can be as
   simple as a shell *true* value (the value ``0`` -- equivalent to
   ``${SHUNIT_TRUE}``), or a more sophisticated shell conditional expression. The
@@ -275,7 +275,7 @@ failure to record a failure.
   *Note: no actual comparison of expected and actual is done.*
 
 ``failNotSame [message] expected actual``
-Â 
+ 
   Fails the test immediately, reporting that the *expected* and *actual* values
   are not the same. The *message* is optional, and must be quoted.
 
@@ -402,7 +402,7 @@ used here as the operation is similar to a standard macro.*
 For example, to include line numbers for a ``assertEquals()`` function call,
 replace the ``assertEquals()`` with ``${_ASSERT_EQUALS_}``.
 
-ExampleÂ --Â Asserts with and without line numbers ::
+Example -- Asserts with and without line numbers ::
 
   #! /bin/sh
   # file: examples/lineno_test.sh
@@ -453,7 +453,7 @@ things that just won't work. The following test code demonstrates two sample
 functions, one that will be run under any shell, and the another that will run
 only under the **bash** shell.
 
-ExampleÂ -- math include ::
+Example -- math include ::
 
   # available as examples/math.inc
 
@@ -476,7 +476,7 @@ ExampleÂ -- math include ::
 And here is a corresponding unit test that correctly skips the ``add_bash()``
 function when the unit test is not running under the **bash** shell.
 
-ExampleÂ -- math unit test ::
+Example -- math unit test ::
 
   #! /bin/sh
   # available as examples/math_test.sh
@@ -577,5 +577,5 @@ For compatibility with ZSH, there is one requirement that must be met -- the
 .. generate HTML using rst2html from Docutils of
 .. http://docutils.sourceforge.net/
 ..
-.. vim:ft=rst:spell:sts=2:sw=2:tw=80
+.. vim:fileencoding=latin1:ft=rst:spell:sts=2:sw=2:tw=80
 .. $Revision: 233 $
