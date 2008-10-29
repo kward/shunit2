@@ -1,0 +1,158 @@
+#! /bin/sh
+# $Id$
+# vim:et:ft=sh:sts=2:sw=2
+#
+# Copyright 2008 Kate Ward. All Rights Reserved.
+# Released under the LGPL (GNU Lesser General Public License)
+#
+# Author: kate.ward@forestent.com (Kate Ward)
+#
+# This library provides reusable functions that determine actual names and
+# versions of installed shells and the OS. The library can also be run as a
+# script if set execuatable.
+
+VERSIONS_SHELLS='/bin/bash /bin/dash /bin/ksh /bin/pdksh /bin/sh /bin/zsh'
+
+#------------------------------------------------------------------------------
+# functions
+#
+
+versions_osName()
+{
+  os_name_='unrecognized'
+  os_system_=`uname -s`
+  case ${os_system_} in
+    Cygwin) os_name_='Cygwin' ;;
+    Darwin) os_name_='Mac OS X' ;;
+    Linux) os_name_='Linux' ;;
+    SunOS) os_name_='Solaris' ;;
+  esac
+  echo ${os_name_}
+  unset os_name_ os_system_
+}
+
+versions_osVersion()
+{
+  os_version_='unrecognized'
+  os_system_=`uname -s`
+  os_release_=`uname -r`
+  case ${os_system_} in
+    Cygwin) os_version_='unknown' ;;
+    Darwin)
+      major_='10'
+      sub_=`echo ${os_release_} |\
+          sed 's/^[0-9]*\.\([0-9]*\)\.[0-9]*$/\1/'`
+      case ${os_release_} in
+        8.*) minor_='4' ;;
+        9.*) minor_='5' ;;
+        *) minor_='X'; sub_='X' ;;
+      esac
+      os_version_="${major_}.${minor_}.${sub_}"
+      ;;
+    Linux)
+      if [ -r '/etc/lsb-release' ]; then
+        os_version_=`. /etc/lsb-release \
+            && echo "${DISTRIB_ID}-${DISTRIB_RELEASE}"`
+      fi
+      ;;
+    SunOS) os_version_=`echo ${os_release_} |sed 's/[0-9]*\.\([0-9]*\)/\1/'` ;;
+  esac
+  echo ${os_version_}
+  unset os_name_ os_release_ os_version_ major_ minor_ sub_
+}
+
+versions_shellVersion()
+{
+  shell_=$1
+
+  if [ ! -x "${shell_}" ]; then
+    echo 'not installed'
+    return
+  fi
+
+  version_='unknown'
+  case ${shell_} in
+    */sh)
+      # TODO(kward): fix this
+      ## this could be one of any number of shells. try until one fits.
+      #version_=`versions_shell_bash ${shell_}`
+      ## dash cannot be self determined yet
+      #[ -z "${version_}" ] && version_=`versions_shell_ksh ${shell_}`
+      ## pdksh is covered in versions_shell_ksh()
+      #[ -z "${version_}" ] && version_=`versions_shell_zsh ${shell_}`
+      ;;
+    */bash) version_=`versions_shell_bash ${shell_}` ;;
+    */dash)
+      # simply assuming Ubuntu Linux until somebody comes up with a better
+      # test. the following test will return an empty string if dash is not
+      # installed.
+      version_=`versions_shell_dash`
+      ;;
+    */ksh) version_=`versions_shell_ksh ${shell_}` ;;
+    */pdksh) version_=`versions_shell_pdksh ${shell_}` ;;
+    */zsh) version_=`versions_shell_zsh ${shell_}` ;;
+    *) version_='invalid'
+  esac
+
+  echo ${version_}
+  unset shell_ version_
+}
+
+versions_shell_bash()
+{
+  $1 --version 2>&1 |grep 'GNU bash' |sed 's/.*version \([^ ]*\).*/\1/'
+}
+
+versions_shell_dash()
+{
+  dpkg -l |grep ' dash ' |awk '{print $3}'
+}
+
+versions_shell_ksh()
+{
+  versions_shell_=$1
+
+  versions_version_=`strings ${versions_shell_} 2>&1 \
+      |grep Version \
+      |sed 's/^.*Version \(.*\)$/\1/;s/ s+ \$$//;s/ /-/g'`
+  [ -z "${versions_version_}" ] \
+      && versions_version_=`versions_shell_pdksh ${versions_shell_}`
+  echo ${versions_version_}
+
+  unset versions_shell_ versions_version_
+}
+
+versions_shell_pdksh()
+{
+  strings $1 2>&1 \
+  |grep 'PD KSH' \
+  |sed -e 's/.*PD KSH \(.*\)/\1/;s/ /-/g'
+}
+
+versions_shell_zsh()
+{
+  echo 'echo ${ZSH_VERSION}' |$1
+}
+
+#------------------------------------------------------------------------------
+# main
+#
+
+versions_main()
+{
+  # treat unset variables as an error
+  set -u
+
+  os_name=`versions_osName`
+  os_version=`versions_osVersion`
+  echo "os: ${os_name} version: ${os_version}"
+
+  for shell in ${VERSIONS_SHELLS}; do
+    shell_version=`versions_shellVersion ${shell}`
+    echo "shell: ${shell} version: ${shell_version}"
+  done
+}
+
+if [ "`basename $0`" = 'versions' ]; then
+  versions_main "$@"
+fi
