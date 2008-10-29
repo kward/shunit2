@@ -1,4 +1,4 @@
-﻿Release Notes for shUnit2 2.1.2
+Release Notes for shUnit2 2.1.2
 ===============================
 
 This release adds initial support for the zsh shell. Due to some differences
@@ -80,4 +80,4 @@ zsh requires the ``shwordsplit`` option to be set, and the ``function_argzero``
 option to be unset for proper operation.
 
 
-.. vim:ft=rst:spell:textwidth=80
+.. vim:fileencoding=latin1:ft=rst:spell:textwidth=80

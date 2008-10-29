@@ -207,5 +207,5 @@ Related Documentation
 .. generate HTML using rst2html from Docutils of
 .. http://docutils.sourceforge.net/
 ..
-.. vim:spell:syntax=rst:textwidth=80
+.. vim:fileencoding=latin1:ft=rst:spell:tw=80
 .. $Revision$

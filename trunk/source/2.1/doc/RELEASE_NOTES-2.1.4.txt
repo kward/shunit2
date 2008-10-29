@@ -1,4 +1,4 @@
-﻿Release Notes for shUnit2 2.1.4
+Release Notes for shUnit2 2.1.4
 ===============================
 
 This release contains lots of bug fixes and changes. Mostly, it fixes zsh
@@ -97,4 +97,4 @@ zsh requires the ``shwordsplit`` option to be set.
 
 Line numbers in assert messages do not work properly with Bash 2.x.
 
-.. vim:ft=rst:spell:tw=80
+.. vim:fileencoding=latin1:ft=rst:spell:tw=80

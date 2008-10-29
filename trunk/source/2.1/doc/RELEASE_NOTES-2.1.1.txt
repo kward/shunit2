@@ -1,4 +1,4 @@
-﻿Release Notes for shUnit2 2.1.1
+Release Notes for shUnit2 2.1.1
 ===============================
 
 This is mainly a bug fix release, but it also incorporates a realignment with
@@ -85,4 +85,4 @@ Known Bugs and Issues
 Functions do not properly test for an invalid number of arguments.
 
 
-.. vim:spell:syntax=rst:textwidth=80
+.. vim:fileencoding=latin1:ft=rst:spell:textwidth=80

@@ -1,4 +1,4 @@
-﻿Release Notes for shUnit2 2.1.0
+Release Notes for shUnit2 2.1.0
 ===============================
 
 This release was branched from shUnit2 2.0.1. It mostly adds new functionality,
@@ -101,4 +101,4 @@ None.
 
 
 .. $Revision$
-.. vim:spell:syntax=rst:textwidth=80
+.. vim:fileencoding=latin1:spell:syntax=rst:textwidth=80

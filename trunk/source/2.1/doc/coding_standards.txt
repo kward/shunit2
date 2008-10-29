@@ -70,4 +70,5 @@ standard spacing of two characters, and tabs may not be used. ::
     echo ${x}
   done
 
+.. vim:fileencoding=latin1:ft=rst:spell:tw=80
 .. $Revision$
