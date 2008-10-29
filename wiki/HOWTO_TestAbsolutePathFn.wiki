@@ -2,7 +2,6 @@
 
 <wiki:toc max_depth="1" />
 
-= Overview =
 This example is based upon a real battle I encountered trying to get a particular regular expression to work. I'm not the best when it comes to writing new regexes off the top of my head, and so I end up doing what one might consider a brute-force attack in getting my regexes to work. You might wonder why I don't just learn them, but I must admit that I don't write them often enough for the nuances to stick in my brain. I'm sure others have a better way of doing what you see here (there always is), but I didn't have one at the time. In any case, maybe some of you will sympathize with my battle, and maybe this will give somebody else some ideas for testing their own code.
 
 = First Go =
