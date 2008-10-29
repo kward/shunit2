@@ -18,7 +18,7 @@
 # </s:header>
 #*/
 
-SHUNIT_VERSION='2.1.5pre'
+SHUNIT_VERSION='2.1.5'
 
 SHUNIT_TRUE=0
 SHUNIT_FALSE=1
