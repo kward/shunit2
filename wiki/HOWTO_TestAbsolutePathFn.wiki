@@ -1,12 +1,12 @@
 #summary Demonstration of testing a simple path to absolute path conversion function.
 
-= HOWTO: Testing of an absolute path function =
 <wiki:toc max_depth="1" />
 
 = Overview =
 This example is based upon a real battle I encountered trying to get a particular regular expression to work. I'm not the best when it comes to writing new regexes off the top of my head, and so I end up doing what one might consider a brute-force attack in getting my regexes to work. You might wonder why I don't just learn them, but I must admit that I don't write them often enough for the nuances to stick in my brain. I'm sure others have a better way of doing what you see here (there always is), but I didn't have one at the time. In any case, maybe some of you will sympathize with my battle, and maybe this will give somebody else some ideas for testing their own code.
 
 = First Go =
+_Jan 2007_
 
 == Problem ==
 I once had a tiny shell function I needed to write that took a relative path (e.g. `./bin`) and turned it into the absolute path (e.g. `/home/kward/bin`).
@@ -41,6 +41,8 @@ myDir='/home/kward/bin' myBase='reltoabs'
 Perfect! It did _exactly_ what I wanted it to do, so I stuck the function in another script and started using it.
 
 = Second Go =
+_Jan 2007_
+
 == Problem ==
 After time, I found a case where my function wasn't doing quite what I wanted. Let's say I had some non-existant relative path `abc/def/ghi` that I wanted to turn into an absolute path. If you noticed, the first version of the function used the *cd* command to change to the *dirname* of the relative directory, and used that information to determine the absolute path. In this case, I had a directory that didn't exist, but I still wanted the function to work.
 
@@ -154,18 +156,15 @@ Perfect! It did _exactly_ what I wanted it to do, so I now had a working functio
 _Based on previous experience, I did not delete the unit test. I figured that if ever the occasion presented itself where my function failed, I would still have the unit test available to work from._
 
 = Third Go =
+_Feb 2007_
 
 == Problem ==
 The majority of shell scripts that I write are for Linux. There is however the rare occasion where I must write something for Solaris. When I do, I want that all the scripts that I have written be functional under Solaris as well as Linux. I have the added difficulty that I sometimes run on very old Solaris releases (2.5.1 and 2.6), and I want my scripts to function there as well. This presents a problem for the average script writer as they never leave Linux these days, but for me I cope just fine.
 
-Well, as you can imagine, the above {{function|shlib_relToAbsPath()}} function did not work under Solaris. I'm not perfect, and I'd forgotten that the nice little {{option|-r}} command-line flag to {{command|sed}} was not present on Solaris. Argh! Oh, but wait! Learning from previous pain, I had left my {{command|shlib_base_test}} unit test in the same directory as my {{filename|shlib_base.inc}} library, so I already had a way to begin my debugging.
+Well, as you can imagine, the above `shlib_relToAbsPath()` function did not work under Solaris. I'm not perfect, and I'd forgotten that the nice little `-r` command-line flag to *sed* was not present on Solaris. Argh! Oh, but wait! Learning from previous pain, I had left my *shlib_base_test* unit test in the same directory as my `shlib_base.inc` library, so I already had a way to begin my debugging.
 
 == Solution ==
-
-To start with, I ran my unit test to see what kind of output I would get. As you can see, it failed all over the place.
-{{{
-N/A
-}}}
+To start with, I ran my unit test to see what kind of output I would get. It failed miserably.
 
 Well, needless to say, I removed the offending `-r` command-line flag from *sed*, and got to work. The process was much easier this time as I already had a working unit test, so all I had to do was tweak my regex until it worked. It didn't take long, maybe 5 minutes, before I had a working test. This time, I tested the regex in both Linux _and_ Solaris, and as such I was confident that I had a working function for both platforms.
 
@@ -193,3 +192,69 @@ shlib_relToAbsPath()
 }}}
 
 _The `shlib_base_test` unit test remained unchanged, so it is not re-listed._
+
+= Fourth Go =
+_*Update:* Oct 2008_
+
+Believe it or not, more than a year and a half after I wrote the original document, I found more bugs! I bet you're not surprised. Basically, including multiple parent references caused problems. Here is the latest version of my code.
+
+`shlib_base.inc`
+{{{
+shlib_relToAbsPath()
+{
+  shlib_path_=$1
+
+  # prepend current directory to relative paths
+  echo "${shlib_path_}" |grep '^/' >/dev/null 2>&1 \
+      || shlib_path_="`pwd`/${shlib_path_}"
+
+  # clean up the path. if all seds supported true regular expressions, then
+  # this is what it would be:
+  shlib_old_=${shlib_path_}
+  while true; do
+    shlib_new_=`echo "${shlib_old_}" |sed 's/[^/]*\/\.\.\/*//g;s/\/\.\//\//'`
+    [ "${shlib_old_}" = "${shlib_new_}" ] && break
+    shlib_old_=${shlib_new_}
+  done
+  echo "${shlib_new_}"
+
+  unset shlib_path_ shlib_old_ shlib_new_
+}
+}}}
+
+`shlib_base_test`
+{{{
+testRelToAbsPath()
+{
+  parent=`dirname ${PWD}`
+
+  # save stdin and redirect it from an in-line file
+  exec 9<&0 <<EOF
+abc ${PWD}/abc
+abc/def ${PWD}/abc/def
+abc/def/ghi ${PWD}/abc/def/ghi
+abc/./def ${PWD}/abc/def
+abc/../def ${PWD}/def
+abc/../def/../ghi ${PWD}/ghi
+/abc /abc
+/abc/def /abc/def
+/abc/def/ghi /abc/def/ghi
+/abc/def/../../ghi /ghi
+/abc/def/ghi/../../jkl /abc/jkl
+/abc/../def /def
+/abc/../def/../ghi /ghi
+./abc ${PWD}/abc
+../abc ${parent}/abc
+../abc/def ${parent}/abc/def
+EOF
+  while read relPath absPath; do
+    # ignore comment and blank lines
+    echo "${relPath}" |egrep -v "^(#|$)" >/dev/null || continue
+
+    # test the function
+    newPath=`shlib_relToAbsPath "${relPath}"`
+    assertEquals "${relPath}" "${absPath}" "${newPath}"
+  done
+  exec 0<&9 9<&-
+}
+}}}
