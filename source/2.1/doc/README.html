@@ -306,44 +306,6 @@ h1.title { font-size: 150%; border-top:0px; padding-top: 1em; }
 <div class="document" id="shunit2-2-1-x-readme">
 <h1 class="title">shUnit2 2.1.x README</h1>
 
-<div class="section" id="coding-standards">
-<h1>Coding Standards</h1>
-<p><em>Note: these are incomplete</em></p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="40%" />
-<col width="60%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head">type</th>
-<th class="head">sample</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>local variable</td>
-<td><tt class="docutils literal"><span class="pre">shunit_someVariable_</span></tt></td>
-</tr>
-<tr><td>global variable</td>
-<td><tt class="docutils literal"><span class="pre">__shunit_someVariable</span></tt></td>
-</tr>
-<tr><td>public constant</td>
-<td><tt class="docutils literal"><span class="pre">SHUNIT_TRUE</span></tt></td>
-</tr>
-<tr><td>private constant</td>
-<td><tt class="docutils literal"><span class="pre">__SHUNIT_SHELL_FLAGS</span></tt></td>
-</tr>
-<tr><td>public function</td>
-<td><tt class="docutils literal"><span class="pre">assertEquals</span></tt></td>
-</tr>
-<tr><td>private function</td>
-<td><tt class="docutils literal"><span class="pre">_shunit_someFunction</span></tt></td>
-</tr>
-<tr><td>macro</td>
-<td><tt class="docutils literal"><span class="pre">_SHUNIT_SOME_MACRO_</span></tt></td>
-</tr>
-</tbody>
-</table>
-</div>
 <div class="section" id="code-google-com">
 <h1>code.google.com</h1>
 <p>This project is stored on code.google.com as <a class="reference external" href="http://code.google.com/p/shunit2/">http://code.google.com/p/shunit2/</a>.
@@ -394,9 +356,13 @@ $ svn co https://shunit2.svn.sourceforge.net/svnroot/shunit2/trunk/source/2.1 sh
 </ul>
 <div class="section" id="write-release-notes">
 <h2>Write Release Notes</h2>
-<p>This should be pretty self explainatory. Use one of the release notes from a
+<p>This should be pretty self explanatory. Use one of the release notes from a
 previous release as an example.</p>
-<p>To get the versions of the various shells, do the following:</p>
+<p>The versions of the various platforms and shells are included when the
+master unit test script is run, or when <tt class="docutils literal"><span class="pre">bin/gen_test_results.sh</span></tt> is
+used. To determine the versions of the installed shells by hand, use the
+<tt class="docutils literal"><span class="pre">lib/versions</span></tt> script.</p>
+<p>Alternatively, do the following:</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="9%" />
@@ -447,21 +413,17 @@ previous release as an example.</p>
 </tr>
 </tbody>
 </table>
-<p>Alternativly, a <tt class="docutils literal"><span class="pre">version_info.sh</span></tt> script is included in the <tt class="docutils literal"><span class="pre">bin</span></tt> directory
-that provides similar information.</p>
 </div>
 <div class="section" id="update-version">
 <h2>Update Version</h2>
 <p>Edit <tt class="docutils literal"><span class="pre">src/shell/shunit2</span></tt> and change the version number in the comment, as well
-as in the <tt class="docutils literal"><span class="pre">SHUNIT_VERSION</span></tt> variable. Next, edit the
-<tt class="docutils literal"><span class="pre">src/docbook/shunit2.xml</span></tt> file, edit the version in the <tt class="docutils literal"><span class="pre">&lt;title&gt;</span></tt> element,
-and make sure there is a revision section for this release.</p>
+as in the <tt class="docutils literal"><span class="pre">SHUNIT_VERSION</span></tt> variable.</p>
 </div>
 <div class="section" id="finish-documentation">
 <h2>Finish Documentation</h2>
-<p>Make sure that any remaning changes get put into the <tt class="docutils literal"><span class="pre">CHANGES-X.X.txt</span></tt> file.</p>
-<p>Finish writing the <tt class="docutils literal"><span class="pre">RELEASE_NOTES-X.X.X.txt</span></tt>. Once it is finished, run it
-through the <strong>fmt</strong> command to make it pretty.</p>
+<p>Make sure that any remaining changes get put into the <tt class="docutils literal"><span class="pre">CHANGES-X.X.txt</span></tt> file.</p>
+<p>Finish writing the <tt class="docutils literal"><span class="pre">RELEASE_NOTES-X.X.X.txt</span></tt>. If necessary, run it
+through the <strong>fmt</strong> command to make it pretty (hopefully it is already).</p>
 <pre class="literal-block">
 $ fmt -w 80 RELEASE_NOTES-2.0.0.txt &gt;RELEASE_NOTES-2.0.0.txt.new
 $ mv RELEASE_NOTES-2.0.0.txt.new RELEASE_NOTES-2.0.0.txt
@@ -470,11 +432,11 @@ $ mv RELEASE_NOTES-2.0.0.txt.new RELEASE_NOTES-2.0.0.txt
 we'd better build it.</p>
 <pre class="literal-block">
 $ pwd
-.../shunit2/source/2.0
-$ make docs
-...
-$ cp -p build/shunit2.html doc
-$ rst2html --stylesheet-path=share/css/rst2html.css doc/README.txt &gt;doc/README.html
+.../shunit2/source/2.1
+$ cd doc
+$ RST2HTML_OPTS='--stylesheet-path=../share/css/rst2html.css'
+$ rst2html ${RST2HTML_OPTS} shunit2.txt &gt;shunit2.html
+$ rst2html ${RST2HTML_OPTS} README.txt &gt;README.html
 </pre>
 </div>
 <div class="section" id="check-in-all-the-code">
@@ -520,7 +482,7 @@ $ gpg --default-key kate.ward&#64;forestent.com --detach-sign shunit2-2.0.0.tgz
 </div>
 <div class="section" id="update-website">
 <h2>Update Website</h2>
-<p>Again, pretty self-explainatory. Make sure to copy the MD5 and GPG signature
+<p>Again, pretty self-explanatory. Make sure to copy the MD5 and GPG signature
 files. Once that is done, make sure to tag the website so we can go back in
 time if needed.</p>
 <pre class="literal-block">
@@ -544,53 +506,36 @@ server and use <tt class="docutils literal"><span class="pre">svn</span> <span c
 </div>
 <div class="section" id="related-documentation">
 <h1>Related Documentation</h1>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Docbook:</th><td class="field-body"><p class="first"><a class="reference external" href="http://www.docbook.org/">http://www.docbook.org/</a></p>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Docbook XML:</th><td class="field-body"><table class="first docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name" colspan="2">docbook-xml-4.4.zip:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"><a class="reference external" href="http://www.docbook.org/xml/4.4/docbook-xml-4.4.zip">http://www.docbook.org/xml/4.4/docbook-xml-4.4.zip</a>
-<a class="reference external" href="http://www.oasis-open.org/docbook/xml/4.4/docbook-xml-4.4.zip">http://www.oasis-open.org/docbook/xml/4.4/docbook-xml-4.4.zip</a></td>
-</tr>
-<tr class="field"><th class="field-name" colspan="2">docbook-xml-4.5.zip:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"><a class="reference external" href="http://www.docbook.org/xml/4.5/docbook-xml-4.5.zip">http://www.docbook.org/xml/4.5/docbook-xml-4.5.zip</a></td>
-</tr>
-</tbody>
-</table>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Docbook XSL:</th><td class="field-body"><table class="first docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name" colspan="2">docbook-xsl-1.71.0.tar.bz2:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"><a class="reference external" href="http://prdownloads.sourceforge.net/docbook/docbook-xsl-1.71.0.tar.bz2?download">http://prdownloads.sourceforge.net/docbook/docbook-xsl-1.71.0.tar.bz2?download</a></td>
-</tr>
-<tr class="field"><th class="field-name" colspan="2">docbook-xsl-1.71.1.tar.bz2:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"><a class="reference external" href="http://downloads.sourceforge.net/docbook/docbook-xsl-1.71.1.tar.bz2?use_mirror=puzzle">http://downloads.sourceforge.net/docbook/docbook-xsl-1.71.1.tar.bz2?use_mirror=puzzle</a></td>
-</tr>
-</tbody>
-</table>
-</td>
-</tr>
-<tr class="field"><th class="field-name">JUnit:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://www.junit.org/">http://www.junit.org/</a></p>
-</td>
-</tr>
-</tbody>
-</table>
-<!--  -->
+<dl class="docutils">
+<dt>Docbook:</dt>
+<dd><a class="reference external" href="http://www.docbook.org/">http://www.docbook.org/</a></dd>
+<dt>Docbook XML</dt>
+<dd><dl class="first last docutils">
+<dt>docbook-xml-4.4.zip:</dt>
+<dd><a class="reference external" href="http://www.docbook.org/xml/4.4/docbook-xml-4.4.zip">http://www.docbook.org/xml/4.4/docbook-xml-4.4.zip</a>
+<a class="reference external" href="http://www.oasis-open.org/docbook/xml/4.4/docbook-xml-4.4.zip">http://www.oasis-open.org/docbook/xml/4.4/docbook-xml-4.4.zip</a></dd>
+<dt>docbook-xml-4.5.zip:</dt>
+<dd><a class="reference external" href="http://www.docbook.org/xml/4.5/docbook-xml-4.5.zip">http://www.docbook.org/xml/4.5/docbook-xml-4.5.zip</a></dd>
+</dl>
+</dd>
+<dt>Docbook XSL</dt>
+<dd><dl class="first last docutils">
+<dt>docbook-xsl-1.71.0.tar.bz2:</dt>
+<dd><a class="reference external" href="http://prdownloads.sourceforge.net/docbook/docbook-xsl-1.71.0.tar.bz2?download">http://prdownloads.sourceforge.net/docbook/docbook-xsl-1.71.0.tar.bz2?download</a></dd>
+<dt>docbook-xsl-1.71.1.tar.bz2:</dt>
+<dd><a class="reference external" href="http://downloads.sourceforge.net/docbook/docbook-xsl-1.71.1.tar.bz2?use_mirror=puzzle">http://downloads.sourceforge.net/docbook/docbook-xsl-1.71.1.tar.bz2?use_mirror=puzzle</a></dd>
+</dl>
+</dd>
+<dt>JUnit:</dt>
+<dd><a class="reference external" href="http://www.junit.org/">http://www.junit.org/</a></dd>
+<dt>reStructuredText:</dt>
+<dd><a class="reference external" href="http://docutils.sourceforge.net/docs/user/rst/quickstart.html">http://docutils.sourceforge.net/docs/user/rst/quickstart.html</a></dd>
+</dl>
 <!-- generate HTML using rst2html from Docutils of -->
 <!-- http://docutils.sourceforge.net/ -->
 <!--  -->
-<!-- vim:syntax=rst:textwidth=80 -->
-<!-- $Revision: 196 $ -->
+<!-- vim:fileencoding=latin1:ft=rst:spell:tw=80 -->
+<!-- $Revision: 273 $ -->
 </div>
 </div>
 </body>

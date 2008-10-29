@@ -34,13 +34,15 @@ Tested Operating Systems
 - Linux (Gentoo, Ubuntu)
 - Mac OS X
 - Solaris 8, 9, 10
-- Tested Shells
+
+Tested Shells
+
 - Bourne Shell (**sh**)
 - BASH - GNU Bourne Again SHell (**bash**)
 - DASH (**dash**)
 - Korn Shell (**ksh**)
 - pdksh - Public Domain Korn Shell (**pdksh**)
-- zsh - ZSH (**zsh**) (since 2.1.2) ¿ *please see the ZSH shell errata for more
+- zsh - Zsh (**zsh**) (since 2.1.2) ¿ *please see the Zsh shell errata for more
   information*
 
 See the appropriate Release Notes for this release
@@ -61,7 +63,7 @@ Feedback
 --------
 
 Feedback is most certainly welcome for this document. Send your additions,
-comments and criticisms to the shunit2-users@googlegroups.com mailing list.
+comments and criticisms to the shunit2-users@google.com mailing list.
 
 Quickstart
 ==========
@@ -94,7 +96,7 @@ Running the unit test should give results similar to the following. ::
 
 W00t! You've just run your first successful unit test. So, what just happened?
 Quite a bit really, and it all happened simply by sourcing the ``shunit2``
-script. The basic functionality for the script above goes like this:
+library. The basic functionality for the script above goes like this:
 
 - When shUnit2 is sourced, it will walk through any functions defined whose
   namestart with the string ``test`` and add those to an internal list of tests
@@ -166,46 +168,37 @@ Any string values passed should be properly quoted -- they should must be
 surrounded by single-quote (') or double-quote (") characters -- so that the
 shell will properly parse them.
 
-All asserts and failures return with a ??
-
 Asserts
 -------
 
 ``assertEquals [message] expected actual``
-
   Asserts that *expected* and *actual* are equal to one another. The *expected*
   and *actual* values can be either strings or integer values as both will be
   treated as strings. The *message* is optional, and must be quoted.
 
 ``assertNotEquals [message] expected actual``
-
   Asserts that *unexpected* and *actual* are not equal to one another. The
   *unexpected* and *actual* values can be either strings or integer values as
   both will be treaded as strings. The *message* is optional, and must be
   quoted.
 
 ``assertSame [message] expected actual``
- 
   This function is functionally equivalent to ``assertEquals``.
 
 ``assertNotSame [message] unexpected actual``
-
   This function is functionally equivalent to ``assertNotEquals``.
 
 ``assertNull [message] value``
-
   Asserts that *value* is *null*, or in shell terms, a zero-length string. The
   *value* must be a string as an integer value does not translate into a
   zero-length string. The *message* is optional, and must be quoted.
 
 ``assertNotNull [message] value``
- 
   Asserts that *value* is *not null*, or in shell terms, a non-empty string. The
   *value* may be a string or an integer as the later will be parsed as a
   non-empty string value. The *message* is optional, and must be quoted.
 
 ``assertTrue [message] condition``
- 
   Asserts that a given shell test *condition* is *true*. The condition can be as
   simple as a shell *true* value (the value ``0`` -- equivalent to
   ``${SHUNIT_TRUE}``), or a more sophisticated shell conditional expression. The
@@ -234,7 +227,6 @@ Asserts
   most forgiving of bad quoting, and things will fail in strange ways.*
 
 ``assertFalse [message] condition``
-
   Asserts that a given shell test *condition* is *false*. The condition can be
   as simple as a shell *false* value (the value ``1`` -- equivalent to
   ``${SHUNIT_FALSE}``), or a more sophisticated shell conditional expression.
@@ -256,11 +248,9 @@ use an ``assertTrue ${SHUNIT_TRUE}`` if your own tests succeeded, and use a
 failure to record a failure.
 
 ``fail [message]``
-
   Fails the test immediately. The *message* is optional, and must be quoted.
 
 ``failNotEquals [message] unexpected actual``
-
   Fails the test immediately, reporting that the *unexpected* and *actual*
   values are not equal to one another. The *message* is optional, and must be
   quoted.
@@ -268,14 +258,12 @@ failure to record a failure.
   *Note: no actual comparison of unexpected and actual is done.*
 
 ``failSame [message] expected actual``
-
   Fails the test immediately, reporting that the *expected* and *actual* values
   are the same. The *message* is optional, and must be quoted.
 
   *Note: no actual comparison of expected and actual is done.*
 
 ``failNotSame [message] expected actual``
- 
   Fails the test immediately, reporting that the *expected* and *actual* values
   are not the same. The *message* is optional, and must be quoted.
 
@@ -285,28 +273,24 @@ Setup/Teardown
 --------------
 
 ``oneTimeSetUp``
-
   This function can be be optionally overridden by the user in their test suite.
 
   If this function exists, it will be called once before any tests are run. It
   is useful to prepare a common environment for all tests.
 
 ``oneTimeTearDown``
-
   This function can be be optionally overridden by the user in their test suite.
 
   If this function exists, it will be called once after all tests are completed.
   It is useful to clean up the environment after all tests.
 
 ``setUp``
-
   This function can be be optionally overridden by the user in their test suite.
 
   If this function exists, it will be called before each test is run. It is
   useful to reset the environment before each test.
 
 ``tearDown``
-
   This function can be be optionally overridden by the user in their test suite.
 
   If this function exists, it will be called after each test completes. It is
@@ -316,18 +300,15 @@ Skipping
 --------
 
 ``startSkipping``
-
   This function forces the remaining *assert* and *fail* functions to be
   "skipped", i.e. they will have no effect. Each function skipped will be
   recorded so that the total of asserts and fails will not be altered.
 
 ``endSkipping``
-
   This function returns calls to the *assert* and *fail* functions to their
   default behavior, i.e. they will be called.
 
 ``isSkipping``
-
   This function returns the current state of skipping. It can be compared
   against ``${SHUNIT_TRUE}`` or ``${SHUNIT_FALSE}`` if desired.
 
@@ -340,16 +321,14 @@ standard naming scheme of prefixing your tests with ``test``, these functions
 are for you. Most users will never use them though.
 
 ``suite``
-
   This function can be optionally overridden by the user in their test suite.
 
-  If this function exists, it will be called when **shunit2** is sourced. If it
+  If this function exists, it will be called when ``shunit2`` is sourced. If it
   does not exist, shUnit2 will search the parent script for all functions
   beginning with the word ``test``, and they will be added dynamically to the
   test suite.
 
 ``suite_addTest name``
-
   This function adds a function named *name* to the list of tests scheduled for
   execution as part of this test suite. This function should only be called from
   within the ``suite()`` function.
@@ -378,7 +357,7 @@ User defined
 
 ==================  ===========================================================
 ``SHUNIT_PARENT``   The filename of the shell script containing the tests. This
-                    is needed specifically for ZSH support.
+                    is needed specifically for Zsh support.
 ==================  ===========================================================
 
 Error handling
@@ -540,19 +519,19 @@ Appendix
 Getting help
 ------------
 
-For help, please send requests to either the shUnit2 users mailing list
-<shunit2-users@googlegroups.com> (archives available on the web at
+For help, please send requests to either the shunit2-users@googlegroups.com
+mailing list (archives available on the web at
 http://groups.google.com/group/shunit2-users) or directly to
 Kate Ward <kate dot ward at forestent dot com>.
 
-ZSH
+Zsh
 ---
 
-For compatibility with ZSH, there is one requirement that must be met -- the
+For compatibility with Zsh, there is one requirement that must be met -- the
 ``shwordsplit`` option must be set. There are three ways to accomplish this.
 
 #. In the unit-test script, add the following shell code snippet before sourcing
-   the **shunit2** library. ::
+   the ``shunit2`` library. ::
 
      setopt shwordsplit
 
