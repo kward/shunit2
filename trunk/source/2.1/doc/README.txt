@@ -60,10 +60,15 @@ Steps:
 Write Release Notes
 -------------------
 
-This should be pretty self explainatory. Use one of the release notes from a
+This should be pretty self explanatory. Use one of the release notes from a
 previous release as an example.
 
-To get the versions of the various shells, do the following:
+The versions of the various platforms and shells are included when the
+master unit test script is run, or when ``bin/gen_test_results.sh`` is
+used. To determine the versions of the installed shells by hand, use the
+``lib/versions`` script.
+
+Alternatively, do the following:
 
 +-------+---------+-----------------------------------------------------------+
 | Shell | OS      | Notes                                                     |
@@ -89,24 +94,19 @@ To get the versions of the various shells, do the following:
 | zsh   |         | ``$ zsh --version``                                       |
 +-------+---------+-----------------------------------------------------------+
 
-Alternativly, a ``version_info.sh`` script is included in the ``bin`` directory
-that provides similar information.
-
 Update Version
 --------------
 
 Edit ``src/shell/shunit2`` and change the version number in the comment, as well
-as in the ``SHUNIT_VERSION`` variable. Next, edit the
-``src/docbook/shunit2.xml`` file, edit the version in the ``<title>`` element,
-and make sure there is a revision section for this release.
+as in the ``SHUNIT_VERSION`` variable.
 
 Finish Documentation
 --------------------
 
-Make sure that any remaning changes get put into the ``CHANGES-X.X.txt`` file.
+Make sure that any remaining changes get put into the ``CHANGES-X.X.txt`` file.
 
-Finish writing the ``RELEASE_NOTES-X.X.X.txt``. Once it is finished, run it
-through the **fmt** command to make it pretty. ::
+Finish writing the ``RELEASE_NOTES-X.X.X.txt``. If necessary, run it
+through the **fmt** command to make it pretty (hopefully it is already). ::
 
   $ fmt -w 80 RELEASE_NOTES-2.0.0.txt >RELEASE_NOTES-2.0.0.txt.new
   $ mv RELEASE_NOTES-2.0.0.txt.new RELEASE_NOTES-2.0.0.txt
@@ -115,11 +115,11 @@ We want to have an up-to-date version of the documentation in the release, so
 we'd better build it. ::
 
   $ pwd
-  .../shunit2/source/2.0
-  $ make docs
-  ...
-  $ cp -p build/shunit2.html doc
-  $ rst2html --stylesheet-path=share/css/rst2html.css doc/README.txt >doc/README.html
+  .../shunit2/source/2.1
+  $ cd doc
+  $ RST2HTML_OPTS='--stylesheet-path=../share/css/rst2html.css'
+  $ rst2html ${RST2HTML_OPTS} shunit2.txt >shunit2.html
+  $ rst2html ${RST2HTML_OPTS} README.txt >README.html
 
 Check In All the Code
 ---------------------
@@ -165,7 +165,7 @@ md5sum the Tarball and Sign With gpg
 Update Website
 --------------
 
-Again, pretty self-explainatory. Make sure to copy the MD5 and GPG signature
+Again, pretty self-explanatory. Make sure to copy the MD5 and GPG signature
 files. Once that is done, make sure to tag the website so we can go back in
 time if needed. ::
 
@@ -189,21 +189,25 @@ Post to code.google.com and Freshmeat
 Related Documentation
 =====================
 
-:Docbook: http://www.docbook.org/
-:Docbook XML:
-  :docbook-xml-4.4.zip:
+Docbook:
+  http://www.docbook.org/
+
+Docbook XML
+  docbook-xml-4.4.zip:
     http://www.docbook.org/xml/4.4/docbook-xml-4.4.zip
     http://www.oasis-open.org/docbook/xml/4.4/docbook-xml-4.4.zip
-  :docbook-xml-4.5.zip:
+  docbook-xml-4.5.zip:
     http://www.docbook.org/xml/4.5/docbook-xml-4.5.zip
-:Docbook XSL:
-  :docbook-xsl-1.71.0.tar.bz2:
+Docbook XSL
+  docbook-xsl-1.71.0.tar.bz2:
     http://prdownloads.sourceforge.net/docbook/docbook-xsl-1.71.0.tar.bz2?download
-  :docbook-xsl-1.71.1.tar.bz2:
+  docbook-xsl-1.71.1.tar.bz2:
     http://downloads.sourceforge.net/docbook/docbook-xsl-1.71.1.tar.bz2?use_mirror=puzzle
-:JUnit: http://www.junit.org/
+JUnit:
+  http://www.junit.org/
+reStructuredText:
+  http://docutils.sourceforge.net/docs/user/rst/quickstart.html
 
-..
 .. generate HTML using rst2html from Docutils of
 .. http://docutils.sourceforge.net/
 ..
