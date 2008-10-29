@@ -8,8 +8,7 @@ This version also includes a slightly expanded set of coding standards by which
 shUnit2 is coded. It should help anyone reading the code to better understand
 it.
 
-To use zsh with shUnit2, the following requirement must be met:
-- The ``shwordsplit`` option must be set.
+
 
 Please read the Shell Errata section of the documentation for guidance on how
 to meet these requirements.
@@ -70,29 +69,41 @@ Support added for output assert source line number as part of assert messages.
 
 Issue #2: Added assertNotEquals() assert.
 
+Provided a public ``shunit_tmpDir`` variable that can be used by unit test
+scripts that need automated and guaranteed cleanup.
+
 
 Changes and Enhancements
 ------------------------
 
-Issue #4: Rewrote the test summary. It is now greatly simplified and much more
-script friendly.
-
 Issue #3: Removed the check for unset variables as shUnit2 should not expect
 scripts being tested to be clean.
 
+Issue #4: Rewrote the test summary. It is now greatly simplified and much more
+script friendly.
+
+Issue #5: Fixed the documentation around the usage of failures.
+
+Issue #9: Added unit tests and improved documentation around the use of macros.
+
 Code updated to meet documented coding standards.
 
-Improved code reuse of _shunit_exit() and _shunit_fatal() functions.
+Improved code reuse of ``_shunit_exit()`` and ``_shunit_fatal()`` functions.
 
 All output except shUnit2 error messages now goes to STDOUT.
+
+Converted DocBook documentation to reStructuredText for easier maintenance.
 
 
 Bug Fixes
 ---------
 
-Issue #1: ending report is now always generated.
+Issue #1: Fixed bug in rap code where certain types of exit conditions did not
+generate the ending report.
 
-Issue #7: fixed assert messages being printed multiple times.
+Issue #7: Fixed duplicated printing of messages passed to asserts.
+
+Fixed bugs in ``shlib_relToAbsPath()`` in ``shlib``.
 
 
 Deprecated Features
@@ -104,7 +115,8 @@ None.
 Known Bugs and Issues
 ---------------------
 
-zsh requires the ``shwordsplit`` option to be set.
+Zsh requires the ``shwordsplit`` option to be set. See the documentation for
+examples of how to do this.
 
 Line numbers in assert messages do not work properly with BASH 2.x.
 
@@ -113,4 +125,4 @@ SIGTERM signal. As such, shell interpreter failures due to such things as
 unbound variables cannot be caught. (See ``shunit_test_misc.sh``)
 
 
-.. vim:ft=rst:spell:tw=80
+.. vim:fileencoding=latin1:ft=rst:spell:tw=80
