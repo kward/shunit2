@@ -1,6 +1,9 @@
 #summary General information regarding the shUnit2 project.
 #labels Featured
 
+= Project Info =
+<wiki:toc max_depth="2" />
+
 == Overview ==
 [http://sourceforge.net/projects/shunit2 shUnit2] is a [http://en.wikipedia.org/wiki/XUnit xUnit] unit test framework for Bourne based shell scripts, and it is designed to work in a similar manner to [http://www.junit.org/ JUnit], [http://pyunit.sourceforge.net/ PyUnit], etc. If you have ever had the desire to write a unit test for a shell script, shUnit2 can do the job.
 
