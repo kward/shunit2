@@ -30,6 +30,8 @@ usage()
   echo "usage: ${MY_NAME} [-e key=val ...] [-s shell(s)] [-t test(s)]"
 }
 
+env=''
+
 # process command line flags
 while getopts 'e:hs:t:' opt; do
   case ${opt} in
@@ -71,11 +73,9 @@ cat <<EOF
 shells="${shells}"
 tests="${tests}"
 EOF
-if [ -n "${env:-}" ]; then
-  for key in ${env}; do
-    eval "echo \"${key}=\$${key}\""
-  done
-fi
+for key in ${env}; do
+  eval "echo \"${key}=\$${key}\""
+done
 echo
 
 # output system data
