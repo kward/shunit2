@@ -53,6 +53,7 @@ if [ -f "${output}" ]; then
     exit ${FLAGS_ERROR}
   fi
 fi
+touch "${output}" 2>/dev/null || die "unable to write to '${output}'"
 
 # run tests
 ( cd "${SRC_DIR}"; ./${FLAGS_suite} |tee "${output}" )
