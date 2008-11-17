@@ -130,3 +130,8 @@ testCategoryPattern()
   assertPattern "${msg}" "${expected}" "${pattern}"
 }
 }}}
+
+= How do I write tests for an already existing command? =
+Writing unit tests for a pre-existing binary is not much different than writing unit tests for functions. The only real difference is that you do not have the degree of flexibility of being able to rewrite the command to make testing of unique conditions easier.
+
+If you would like to see an example of testing the *mkdir* command, look at the `examples/mkdir_test.sh` file in the 2.1.5 (or later) release, or you can browse the source of [http://code.google.com/p/shunit2/source/browse/trunk/source/2.1/examples/mkdir_test.sh mkdir_test.sh] locally.
