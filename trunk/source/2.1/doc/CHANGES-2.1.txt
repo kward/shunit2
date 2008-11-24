@@ -1,6 +1,14 @@
 Changes in shUnit2 2.1.X
 ========================
 
+Changes with 2.1.6
+------------------
+
+Removed all references to the DocBook documentation.
+
+Simplifed the 'src' structure.
+
+
 Changes with 2.1.5
 ------------------
 
