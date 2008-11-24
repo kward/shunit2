@@ -1,5 +1,5 @@
 #! /bin/sh
-# $Id$
+# $Id: versions 100 2008-11-15 20:24:03Z kate.ward@forestent.com $
 # vim:et:ft=sh:sts=2:sw=2
 #
 # Copyright 2008 Kate Ward. All Rights Reserved.
@@ -51,8 +51,14 @@ versions_osVersion()
       ;;
     Linux)
       if [ -r '/etc/lsb-release' ]; then
-        os_version_=`. /etc/lsb-release \
-            && echo "${DISTRIB_ID}-${DISTRIB_RELEASE}"`
+        os_version_=`. /etc/lsb-release && \
+            echo "${DISTRIB_ID:-}-${DISTRIB_RELEASE:-}"`
+      fi
+      if [ "${os_version_}" = '-' ]; then
+        os_version_=''
+        if [ -r '/etc/redhat-release' ]; then
+          os_version_=`cat /etc/redhat-release`
+        fi
       fi
       ;;
     SunOS) os_version_=`echo ${os_release_} |sed 's/[0-9]*\.\([0-9]*\)/\1/'` ;;
@@ -70,7 +76,7 @@ versions_shellVersion()
     return
   fi
 
-  version_='unknown'
+  version_=''
   case ${shell_} in
     */sh)
       # TODO(kward): fix this
@@ -94,7 +100,7 @@ versions_shellVersion()
     *) version_='invalid'
   esac
 
-  echo ${version_}
+  echo ${version_:-unknown}
   unset shell_ version_
 }
 
