@@ -8,6 +8,8 @@ Removed all references to the DocBook documentation.
 
 Simplifed the 'src' structure.
 
+Fixed error message in fail() that stated wrong number of required arguments.
+
 Updated lib/versions from shunit2-2.1.5.
 
 
