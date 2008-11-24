@@ -8,6 +8,8 @@ Removed all references to the DocBook documentation.
 
 Simplifed the 'src' structure.
 
+Updated lib/versions from shunit2-2.1.5.
+
 
 Changes with 2.1.5
 ------------------
