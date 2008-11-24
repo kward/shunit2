@@ -154,20 +154,19 @@ Create Tarball
 
   $ tar cfz ../releases/shunit2-2.0.0.tgz shunit2-2.0.0
 
-md5sum the Tarball and Sign With gpg
-------------------------------------
+Sign the Tarball with gpg
+-------------------------
 ::
 
   $ cd ../releases
-  $ md5sum shunit2-2.0.0.tgz >shunit2-2.0.0.tgz.md5
   $ gpg --default-key kate.ward@forestent.com --detach-sign shunit2-2.0.0.tgz
 
 Update Website
 --------------
 
-Again, pretty self-explanatory. Make sure to copy the MD5 and GPG signature
-files. Once that is done, make sure to tag the website so we can go back in
-time if needed. ::
+Again, pretty self-explanatory. Make sure to copy the GPG signature file. Once
+that is done, make sure to tag the website so we can go back in time if needed.
+::
 
   $ pwd
   .../shunit2
