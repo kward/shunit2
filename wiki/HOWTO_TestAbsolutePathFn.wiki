@@ -94,20 +94,20 @@ testRelToAbsPath()
 {
   parent=`dirname ${PWD}`
   exec 9<&0 <<EOF
-abc ${PWD}/abc
-abc/def ${PWD}/abc/def
-abc/def/ghi ${PWD}/abc/def/ghi
-abc/./def ${PWD}/abc/def
-abc/../def ${PWD}/def
-abc/../def/../ghi ${PWD}/ghi
-/abc /abc
-/abc/def /abc/def
-/abc/def/ghi /abc/def/ghi
-/abc/../def /def
+abc                ${PWD}/abc
+abc/def            ${PWD}/abc/def
+abc/def/ghi        ${PWD}/abc/def/ghi
+abc/./def          ${PWD}/abc/def
+abc/../def         ${PWD}/def
+abc/../def/../ghi  ${PWD}/ghi
+/abc               /abc
+/abc/def           /abc/def
+/abc/def/ghi       /abc/def/ghi
+/abc/../def        /def
 /abc/../def/../ghi /ghi
-./abc ${PWD}/abc
-../abc ${parent}/abc
-../abc/def ${parent}/abc/def
+./abc              ${PWD}/abc
+../abc             ${parent}/abc
+../abc/def         ${parent}/abc/def
 EOF
   while read relPath absPath; do
     echo "${relPath}" |grep "^#" >/dev/null 2>&1 && continue
