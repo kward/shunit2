@@ -4,12 +4,13 @@
 # Copyright 2008 Kate Ward. All Rights Reserved.
 # Released under the LGPL (GNU Lesser General Public License)
 #
-# Shell Unit Test Framework
-# http://shunit2.googlecode.com/
+# shUnit2 -- Unit testing framework for Unix shell scripts.
+# http://code.google.com/p/shunit2/
 #
 # Author: kate.ward@forestent.com (Kate Ward)
 #
-# shUnit2 is a xUnit based unit test framework for Bourne shell scripts.
+# shUnit2 is a xUnit based unit test framework for Bourne shell scripts. It is
+# based on the popular JUnit unit testing framework for Java.
 
 SHUNIT_VERSION='2.1.6pre'
 
@@ -673,8 +674,9 @@ _shunit_mktempDir()
   ( exec mktemp -dqt shunit.XXXXXX 2>/dev/null ) && return
 
   # the standard mktemp didn't work.  doing our own.
-  if [ -r '/dev/urandom' ]; then
-    _shunit_random_=`od -vAn -N4 -tx4 </dev/urandom |sed 's/^[^0-9a-f]*//'`
+  if [ -r '/dev/urandom' -a -x '/usr/bin/od' ]; then
+    _shunit_random_=`/usr/bin/od -vAn -N4 -tx4 </dev/urandom \
+        |sed 's/^[^0-9a-f]*//'`
   elif [ -n "${RANDOM:-}" ]; then
     # $RANDOM works
     _shunit_random_=${RANDOM}${RANDOM}${RANDOM}$$
@@ -687,7 +689,7 @@ _shunit_mktempDir()
   _shunit_tmpDir_="${TMPDIR:-/tmp}/shunit.${_shunit_random_}"
   ( umask 077 && mkdir "${_shunit_tmpDir_}" ) || {
     _shunit_fatal 'could not create temporary directory! exiting'
-    exit ${SHUNIT_FALSE}
+    return ${SHUNIT_ERROR}
   }
 
   echo ${_shunit_tmpDir_}
@@ -886,7 +888,7 @@ _shunit_assertSkip()
 #
 
 # create a temporary storage location
-__shunit_tmpDir=`_shunit_mktempDir`
+__shunit_tmpDir=`_shunit_mktempDir` || exit ${SHUNIT_ERROR}
 
 # provide a public temporary directory for unit test scripts
 # TODO(kward): document this
