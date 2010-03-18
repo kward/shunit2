@@ -4,6 +4,8 @@ Unset additional variables that were missed.
 
 Fixed off-by-one in exit value for scripts caught by the trap handler.
 
+The library did not fail gracefully when the 'od' command was not installed.
+
 
 CHANGES WITH 2.0.3
 

@@ -1,0 +1,51 @@
+﻿RELEASE NOTES FOR 2.0.4
+
+This is a minor bugfix release.
+
+See the CHANGES-2.0.txt file for a full list of changes.
+
+
+TESTED PLATFORMS
+
+This list of platforms comes from the latest version of log4sh as shUnit2 is
+used in the testing of log4sh on each of these platforms.
+
+Cygwin -- untested
+
+Linux
+- bash 3.2.13(1)
+- dash 0.5.3
+- ksh 1993-12-28
+- pdksh 5.2.14
+
+Mac OS X -- untested
+Solaris 8 -- untested
+Solaris 10 -- untested
+
+
+NEW FEATURES
+
+None.
+
+
+CHANGES AND ENHANCEMENTS
+
+None.
+
+
+BUG FIXES
+
+The library no longer fails when the 'od' command is not present.
+
+
+DEPRECATED FEATURES
+
+None.
+
+
+KNOWN BUGS AND ISSUES
+
+Functions do not properly test for an invalid number of arguments.
+
+
+vim:spell
