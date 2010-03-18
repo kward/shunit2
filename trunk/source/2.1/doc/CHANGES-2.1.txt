@@ -6,11 +6,13 @@ Changes with 2.1.6
 
 Removed all references to the DocBook documentation.
 
-Simplifed the 'src' structure.
+Simplified the 'src' structure.
 
 Fixed error message in fail() that stated wrong number of required arguments.
 
 Updated lib/versions from shunit2-2.1.5.
+
+The library did not fail gracefully when the 'od' command was not installed.
 
 
 Changes with 2.1.5
