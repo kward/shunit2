@@ -54,6 +54,13 @@ EOF
   [ ${rtrn} -ne ${SHUNIT_TRUE} ] && cat "${stderrF}" >&2
 }
 
+testPrepForSourcing()
+{
+  assertEquals '/abc' `_shunit_prepForSourcing '/abc'`
+  assertEquals './abc' `_shunit_prepForSourcing './abc'`
+  assertEquals './abc' `_shunit_prepForSourcing 'abc'`
+}
+
 #------------------------------------------------------------------------------
 # suite functions
 #
