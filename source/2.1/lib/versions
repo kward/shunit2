@@ -25,6 +25,7 @@ versions_osName()
   case ${os_system_} in
     CYGWIN_NT-*) os_name_='Cygwin' ;;
     Darwin) os_name_='Mac OS X' ;;
+    FreeBSD) os_name_='FreeBSD' ;;
     Linux) os_name_='Linux' ;;
     SunOS) os_name_='Solaris' ;;
   esac
@@ -51,6 +52,9 @@ versions_osVersion()
         *) minor_='X'; sub_='X' ;;
       esac
       os_version_="${major_}.${minor_}.${sub_}"
+      ;;
+    FreeBSD)
+      os_version_=`expr "${os_release_}" : '\([0-9]*\.[0-9]*\)-.*'`
       ;;
     Linux)
       if [ -r '/etc/lsb-release' ]; then
