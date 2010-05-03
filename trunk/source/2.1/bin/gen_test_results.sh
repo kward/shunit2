@@ -29,7 +29,7 @@ LIB_DIR="${BASE_DIR}/lib"
 . ${LIB_DIR}/versions || die 'unable to load versions library'
 
 BASE_DIR=`shlib_relToAbsPath "${BASE_DIR}"`
-SRC_DIR="${BASE_DIR}/src/shell"
+SRC_DIR="${BASE_DIR}/src"
 
 os_name=`versions_osName |sed 's/ /_/g'`
 os_version=`versions_osVersion`
