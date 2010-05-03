@@ -1,3 +1,4 @@
+#! /bin/sh
 # $Id$
 # vim:et:ft=sh:sts=2:sw=2
 #
@@ -12,6 +13,9 @@
 # shUnit2 is a xUnit based unit test framework for Bourne shell scripts. It is
 # based on the popular JUnit unit testing framework for Java.
 
+# return if shunit already loaded
+[ -n "${SHUNIT_VERSION:-}" ] && exit 0
+
 SHUNIT_VERSION='2.1.6pre'
 
 SHUNIT_TRUE=0
@@ -20,19 +24,17 @@ SHUNIT_ERROR=2
 
 _shunit_warn() { echo "shunit2:WARN $@" >&2; }
 _shunit_error() { echo "shunit2:ERROR $@" >&2; }
-_shunit_fatal() { echo "shunit2:FATAL $@" >&2; }
+_shunit_fatal() { echo "shunit2:FATAL $@" >&2; exit ${SHUNIT_ERROR}; }
 
 # specific shell checks
 if [ -n "${ZSH_VERSION:-}" ]; then
   setopt |grep "^shwordsplit$" >/dev/null
   if [ $? -ne ${SHUNIT_TRUE} ]; then
     _shunit_fatal 'zsh shwordsplit option is required for proper operation'
-    exit ${SHUNIT_ERROR}
   fi
   if [ -z "${SHUNIT_PARENT:-}" ]; then
     _shunit_fatal "zsh does not pass \$0 through properly. please declare \
 \"SHUNIT_PARENT=\$0\" before calling shUnit2"
-    exit ${SHUNIT_ERROR}
   fi
 fi
 
@@ -41,6 +43,8 @@ fi
 #
 
 __SHUNIT_ASSERT_MSG_PREFIX='ASSERT:'
+__SHUNIT_MODE_SOURCED='sourced'
+__SHUNIT_MODE_STANDALONE='standalone'
 __SHUNIT_PARENT=${SHUNIT_PARENT:-$0}
 
 # set the constants readonly
@@ -59,8 +63,12 @@ done
 unset shunit_constant_ shunit_constants_ shunit_ro_opts_
 
 # variables
-__shunit_skip=${SHUNIT_FALSE}
-__shunit_suite=''
+__shunit_lineno=''  # line number of executed test
+__shunit_mode=${__SHUNIT_MODE_SOURCED}  # operating mode
+__shunit_reportGenerated=${SHUNIT_FALSE}  # is report generated
+__shunit_script=''  # filename of unittest script (standalone mode)
+__shunit_skip=${SHUNIT_FALSE}  # is skipping enabled
+__shunit_suite=''  # suite of tests to execute
 
 # counts of tests
 __shunit_testSuccess=${SHUNIT_TRUE}
@@ -73,9 +81,6 @@ __shunit_assertsTotal=0
 __shunit_assertsPassed=0
 __shunit_assertsFailed=0
 __shunit_assertsSkipped=0
-
-__shunit_lineno=''
-__shunit_reportGenerated=${SHUNIT_FALSE}
 
 # macros
 _SHUNIT_LINENO_='eval __shunit_lineno=""; if [ "${1:-}" = "--lineno" ]; then [ -n "$2" ] && __shunit_lineno="[$2] "; shift 2; fi'
@@ -687,10 +692,8 @@ _shunit_mktempDir()
   fi
 
   _shunit_tmpDir_="${TMPDIR:-/tmp}/shunit.${_shunit_random_}"
-  ( umask 077 && mkdir "${_shunit_tmpDir_}" ) || {
-    _shunit_fatal 'could not create temporary directory! exiting'
-    return ${SHUNIT_ERROR}
-  }
+  ( umask 077 && mkdir "${_shunit_tmpDir_}" ) || \
+      _shunit_fatal 'could not create temporary directory! exiting'
 
   echo ${_shunit_tmpDir_}
   unset _shunit_date_ _shunit_random_ _shunit_tmpDir_
@@ -883,17 +886,44 @@ _shunit_assertSkip()
   __shunit_assertsTotal=`expr ${__shunit_assertsTotal} + 1`
 }
 
+# Prepare a script filename for sourcing.
+#
+# Args:
+#   filename: string: path to a file
+# Returns:
+#   string: filename prefixed with ./ (if necessary)
+_shunit_prepForSourcing()
+{
+  _shunit_script_=$1
+  case "${_shunit_script_}" in
+    /*|./*) echo "${_shunit_script_}" ;;
+    *) echo "./${_shunit_script_}" ;;
+  esac
+  unset _shunit_script_
+}
+
 #------------------------------------------------------------------------------
 # main
 #
 
+# determine the operating mode
+if [ $# -eq 0 ]; then
+  __shunit_script=${__SHUNIT_PARENT}
+  __shunit_mode=${__SHUNIT_MODE_SOURCED}
+else
+  __shunit_script=$1
+  [ -r "${__shunit_script}" ] || \
+      _shunit_fatal "unable to read from ${__shunit_script}"
+  __shunit_mode=${__SHUNIT_MODE_STANDALONE}
+fi
+
 # create a temporary storage location
-__shunit_tmpDir=`_shunit_mktempDir` || exit ${SHUNIT_ERROR}
+__shunit_tmpDir=`_shunit_mktempDir`
 
 # provide a public temporary directory for unit test scripts
 # TODO(kward): document this
-shunit_tmpDir="${__shunit_tmpDir}/tmp"
-mkdir "${shunit_tmpDir}"
+SHUNIT_TMPDIR="${__shunit_tmpDir}/tmp"
+mkdir "${SHUNIT_TMPDIR}"
 
 # setup traps to clean up after ourselves
 trap '_shunit_cleanup EXIT' 0
@@ -904,6 +934,11 @@ trap '_shunit_cleanup TERM' 15
 _shunit_mktempFunc
 PATH="${__shunit_tmpDir}:${PATH}"
 
+# we must manually source the tests in standalone mode
+if [ "${__shunit_mode}" = "${__SHUNIT_MODE_STANDALONE}" ]; then
+  . "`_shunit_prepForSourcing \"${__shunit_script}\"`"
+fi
+
 # execute the oneTimeSetUp function (if it exists)
 oneTimeSetUp
 
@@ -913,7 +948,7 @@ suite
 
 # if no suite function was defined, dynamically build a list of functions
 if [ -z "${__shunit_suite}" ]; then
-  shunit_funcs_=`grep "^[ \t]*test[A-Za-z0-9_]* *()" ${__SHUNIT_PARENT} \
+  shunit_funcs_=`grep "^[ \t]*test[A-Za-z0-9_]* *()" "${__shunit_script}" \
       |sed 's/[^A-Za-z0-9_]//g'`
   for shunit_func_ in ${shunit_funcs_}; do
     suite_addTest ${shunit_func_}
