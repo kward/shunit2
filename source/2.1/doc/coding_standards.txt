@@ -62,7 +62,7 @@ Code block indentation is two (2) spaces, and tabs may not be used. ::
 Lines of code should be no longer than 80 characters unless absolutely
 necessary. When lines are wrapped using the backslash character '\', subsequent
 lines should be indented with four (4) spaces so as to differentiate from the
-standard spacing of two characters, and tabs may not be used. ::
+standard spacing of two characters. Tabs may *not* be used. ::
 
   for x in some set of very long set of arguments that make for a very long \
       that extends much too long for one line
