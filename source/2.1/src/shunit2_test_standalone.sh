@@ -37,5 +37,5 @@ main()
 
 # are we running as a standalone?
 if [ "${ARGV0}" = 'shunit2_test_standalone.sh' ]; then
-  main "$@"
+  if [ $# -gt 0 ]; then main "$@"; else main; fi
 fi
