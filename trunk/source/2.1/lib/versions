@@ -150,6 +150,7 @@ versions_shell_ksh()
 
 versions_shell_pdksh()
 {
+  _versions_have_strings
   strings $1 2>&1 \
   |grep 'PD KSH' \
   |sed -e 's/.*PD KSH \(.*\)/\1/;s/ /-/g'
@@ -163,12 +164,12 @@ versions_shell_zsh()
 # Determine if the 'strings' binary installed.
 _versions_have_strings()
 {
-  [ ${__versions_haveStrings} -eq ${ERROR} ] && return
+  [ ${__versions_haveStrings} -ne ${ERROR} ] && return
   eval strings /dev/null >/dev/null 2>&1
   if [ $? -eq 0 ]; then
     __versions_haveStrings=${TRUE}
   else
-    echo 'WARN: strings not installed' >&2
+    echo 'WARN: strings not installed. try installing binutils?' >&2
     __versions_haveStrings=${FALSE}
   fi
 }
