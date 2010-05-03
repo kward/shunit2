@@ -70,8 +70,8 @@ cat <<EOF
 #
 
 # test run info
-shells="${shells}"
-tests="${tests}"
+shells: ${shells}
+tests: ${tests}
 EOF
 for key in ${env}; do
   eval "echo \"${key}=\$${key}\""
@@ -82,6 +82,7 @@ echo
 echo "# system info"
 echo "$ date"
 date
+echo
 
 echo "$ uname -mprsv"
 uname -mprsv
