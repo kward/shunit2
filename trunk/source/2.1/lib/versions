@@ -14,6 +14,12 @@
 ARGV0=`basename "$0"`
 VERSIONS_SHELLS='/bin/bash /bin/dash /bin/ksh /bin/pdksh /bin/sh /bin/zsh'
 
+TRUE=0
+FALSE=1
+ERROR=2
+
+__versions_haveStrings=${ERROR}
+
 #------------------------------------------------------------------------------
 # functions
 #
@@ -49,6 +55,7 @@ versions_osVersion()
       case ${os_release_} in
         8.*) minor_='4' ;;
         9.*) minor_='5' ;;
+        10.*) minor_='6' ;;
         *) minor_='X'; sub_='X' ;;
       esac
       os_version_="${major_}.${minor_}.${sub_}"
@@ -130,6 +137,7 @@ versions_shell_ksh()
 {
   versions_shell_=$1
 
+  _versions_have_strings
   versions_version_=`strings ${versions_shell_} 2>&1 \
       |grep Version \
       |sed 's/^.*Version \(.*\)$/\1/;s/ s+ \$$//;s/ /-/g'`
@@ -150,6 +158,19 @@ versions_shell_pdksh()
 versions_shell_zsh()
 {
   echo 'echo ${ZSH_VERSION}' |$1
+}
+
+# Determine if the 'strings' binary installed.
+_versions_have_strings()
+{
+  [ ${__versions_haveStrings} -eq ${ERROR} ] && return
+  eval strings /dev/null >/dev/null 2>&1
+  if [ $? -eq 0 ]; then
+    __versions_haveStrings=${TRUE}
+  else
+    echo 'WARN: strings not installed' >&2
+    __versions_haveStrings=${FALSE}
+  fi
 }
 
 #------------------------------------------------------------------------------
