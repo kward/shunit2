@@ -11,6 +11,7 @@
 # versions of installed shells and the OS. The library can also be run as a
 # script if set execuatable.
 
+ARGV0=`basename "$0"`
 VERSIONS_SHELLS='/bin/bash /bin/dash /bin/ksh /bin/pdksh /bin/sh /bin/zsh'
 
 #------------------------------------------------------------------------------
@@ -22,7 +23,7 @@ versions_osName()
   os_name_='unrecognized'
   os_system_=`uname -s`
   case ${os_system_} in
-    Cygwin) os_name_='Cygwin' ;;
+    CYGWIN_NT-*) os_name_='Cygwin' ;;
     Darwin) os_name_='Mac OS X' ;;
     Linux) os_name_='Linux' ;;
     SunOS) os_name_='Solaris' ;;
@@ -37,7 +38,9 @@ versions_osVersion()
   os_system_=`uname -s`
   os_release_=`uname -r`
   case ${os_system_} in
-    Cygwin) os_version_='unknown' ;;
+    CYGWIN_NT-*)
+      os_version_=`expr "${os_release_}" : '\([0-9]*\.[0-9]\.[0-9]*\).*'`
+      ;;
     Darwin)
       major_='10'
       sub_=`echo ${os_release_} |\
@@ -61,7 +64,9 @@ versions_osVersion()
         fi
       fi
       ;;
-    SunOS) os_version_=`echo ${os_release_} |sed 's/[0-9]*\.\([0-9]*\)/\1/'` ;;
+    SunOS)
+      os_version_=`echo ${os_release_} |sed 's/[0-9]*\.\([0-9]*\)/\1/'`
+      ;;
   esac
   echo ${os_version_}
   unset os_name_ os_release_ os_version_ major_ minor_ sub_
@@ -111,6 +116,9 @@ versions_shell_bash()
 
 versions_shell_dash()
 {
+  eval dpkg >/dev/null 2>&1
+  [ $? -eq 127 ] && return  # return if dpkg not found
+
   dpkg -l |grep ' dash ' |awk '{print $3}'
 }
 
@@ -159,6 +167,6 @@ versions_main()
   done
 }
 
-if [ "`basename $0`" = 'versions' ]; then
+if [ "${ARGV0}" = 'versions' ]; then
   versions_main "$@"
 fi
