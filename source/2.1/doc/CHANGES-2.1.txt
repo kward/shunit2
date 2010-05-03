@@ -12,7 +12,15 @@ Fixed error message in fail() that stated wrong number of required arguments.
 
 Updated lib/versions from shunit2-2.1.5.
 
-The library did not fail gracefully when the 'od' command was not installed.
+Fixed bug in _shunit_mktempDir() where a failure occurred when the 'od' command was not present in /usr/bin.
+
+Renamed shunit_tmpDir variable to SHUNIT_TMPDIR to closer match the standard
+TMPDIR variable.
+
+Added support for calling shunit2 as an executable, in addition to the existing
+method of sourcing it in as a library. This allows users to keep tests working
+despite the location of the shunit2 executable being different for each OS
+distribution.
 
 
 Changes with 2.1.5
@@ -193,4 +201,4 @@ result, rather than just those successful.
 
 
 .. $Revision$
-.. vim:fileencoding=latin1:ft=rst:spell:tw=80
+.. vim:fileencoding=latin1:ft=text:spell:tw=80
