@@ -16,7 +16,7 @@
 # return if shunit already loaded
 [ -n "${SHUNIT_VERSION:-}" ] && exit 0
 
-SHUNIT_VERSION='2.1.6pre'
+SHUNIT_VERSION='2.1.6'
 
 SHUNIT_TRUE=0
 SHUNIT_FALSE=1

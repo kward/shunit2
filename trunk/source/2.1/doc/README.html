@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.6: http://docutils.sourceforge.net/" />
 <title>shUnit2 2.1.x README</title>
 <style type="text/css">
 
@@ -359,9 +359,9 @@ $ svn co https://shunit2.svn.sourceforge.net/svnroot/shunit2/trunk/source/2.1 sh
 <p>This should be pretty self explanatory. Use one of the release notes from a
 previous release as an example.</p>
 <p>The versions of the various platforms and shells are included when the
-master unit test script is run, or when <tt class="docutils literal"><span class="pre">bin/gen_test_results.sh</span></tt> is
+master unit test script is run, or when <tt class="docutils literal">bin/gen_test_results.sh</tt> is
 used. To determine the versions of the installed shells by hand, use the
-<tt class="docutils literal"><span class="pre">lib/versions</span></tt> script.</p>
+<tt class="docutils literal">lib/versions</tt> script.</p>
 <p>Alternatively, do the following:</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -378,27 +378,27 @@ used. To determine the versions of the installed shells by hand, use the
 <tbody valign="top">
 <tr><td>bash</td>
 <td>&nbsp;</td>
-<td><tt class="docutils literal"><span class="pre">$</span> <span class="pre">bash</span> <span class="pre">--version</span></tt></td>
+<td><tt class="docutils literal">$ bash <span class="pre">--version</span></tt></td>
 </tr>
 <tr><td>dash</td>
 <td>Linux</td>
-<td><tt class="docutils literal"><span class="pre">$</span> <span class="pre">dpkg</span> <span class="pre">-l</span> <span class="pre">|grep</span> <span class="pre">dash</span></tt></td>
+<td><tt class="docutils literal">$ dpkg <span class="pre">-l</span> |grep dash</tt></td>
 </tr>
 <tr><td rowspan="3">ksh</td>
 <td>&nbsp;</td>
-<td><tt class="docutils literal"><span class="pre">$</span> <span class="pre">ksh</span> <span class="pre">--version</span></tt>
+<td><tt class="docutils literal">$ ksh <span class="pre">--version</span></tt>
 -or-
-<tt class="docutils literal"><span class="pre">$</span> <span class="pre">echo</span> <span class="pre">'echo</span> <span class="pre">$KSH_VERSION'</span> <span class="pre">|ksh</span></tt></td>
+<tt class="docutils literal">$ echo 'echo $KSH_VERSION' |ksh</tt></td>
 </tr>
 <tr><td>Cygwin</td>
 <td>see pdksh</td>
 </tr>
 <tr><td>Solaris</td>
-<td><tt class="docutils literal"><span class="pre">$</span> <span class="pre">strings</span> <span class="pre">/usr/bin/ksh</span> <span class="pre">|grep</span> <span class="pre">'Version'</span></tt></td>
+<td><tt class="docutils literal">$ strings /usr/bin/ksh |grep 'Version'</tt></td>
 </tr>
 <tr><td rowspan="2">pdksh</td>
 <td>&nbsp;</td>
-<td><tt class="docutils literal"><span class="pre">$</span> <span class="pre">strings</span> <span class="pre">/bin/pdksh</span> <span class="pre">|grep</span> <span class="pre">'PD</span> <span class="pre">KSH'</span></tt></td>
+<td><tt class="docutils literal">$ strings /bin/pdksh |grep 'PD KSH'</tt></td>
 </tr>
 <tr><td>Cygwin</td>
 <td>look in the downloaded Cygwin directory</td>
@@ -409,15 +409,15 @@ used. To determine the versions of the installed shells by hand, use the
 </tr>
 <tr><td>zsh</td>
 <td>&nbsp;</td>
-<td><tt class="docutils literal"><span class="pre">$</span> <span class="pre">zsh</span> <span class="pre">--version</span></tt></td>
+<td><tt class="docutils literal">$ zsh <span class="pre">--version</span></tt></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="update-version">
 <h2>Update Version</h2>
-<p>Edit <tt class="docutils literal"><span class="pre">src/shell/shunit2</span></tt> and change the version number in the comment, as well
-as in the <tt class="docutils literal"><span class="pre">SHUNIT_VERSION</span></tt> variable.</p>
+<p>Edit <tt class="docutils literal">src/shell/shunit2</tt> and change the version number in the comment, as well
+as in the <tt class="docutils literal">SHUNIT_VERSION</tt> variable.</p>
 </div>
 <div class="section" id="finish-documentation">
 <h2>Finish Documentation</h2>
@@ -434,7 +434,7 @@ we'd better build it.</p>
 $ pwd
 .../shunit2/source/2.1
 $ cd doc
-$ RST2HTML_OPTS='--stylesheet-path=../share/css/rst2html.css'
+$ RST2HTML_OPTS='--stylesheet-path=rst2html.css'
 $ rst2html ${RST2HTML_OPTS} shunit2.txt &gt;shunit2.html
 $ rst2html ${RST2HTML_OPTS} README.txt &gt;README.html
 </pre>
@@ -472,19 +472,17 @@ $ svn export https://shunit2.googlecode.com/svn/tags/source/2.0.0 shunit2-2.0.0
 $ tar cfz ../releases/shunit2-2.0.0.tgz shunit2-2.0.0
 </pre>
 </div>
-<div class="section" id="md5sum-the-tarball-and-sign-with-gpg">
-<h2>md5sum the Tarball and Sign With gpg</h2>
+<div class="section" id="sign-the-tarball-with-gpg">
+<h2>Sign the Tarball with gpg</h2>
 <pre class="literal-block">
 $ cd ../releases
-$ md5sum shunit2-2.0.0.tgz &gt;shunit2-2.0.0.tgz.md5
 $ gpg --default-key kate.ward&#64;forestent.com --detach-sign shunit2-2.0.0.tgz
 </pre>
 </div>
 <div class="section" id="update-website">
 <h2>Update Website</h2>
-<p>Again, pretty self-explanatory. Make sure to copy the MD5 and GPG signature
-files. Once that is done, make sure to tag the website so we can go back in
-time if needed.</p>
+<p>Again, pretty self-explanatory. Make sure to copy the GPG signature file. Once
+that is done, make sure to tag the website so we can go back in time if needed.</p>
 <pre class="literal-block">
 $ pwd
 .../shunit2
@@ -494,7 +492,7 @@ $ svn cp -m &quot;Release 2.0.0&quot; \
 website https://shunit2.googlecode.com/svn/tags/website/20060916
 </pre>
 <p>Now, update the website. It too is held in Subversion, so <strong>ssh</strong> into the web
-server and use <tt class="docutils literal"><span class="pre">svn</span> <span class="pre">up</span></tt> to grab the latest version.</p>
+server and use <tt class="docutils literal">svn up</tt> to grab the latest version.</p>
 </div>
 <div class="section" id="post-to-code-google-com-and-freshmeat">
 <h2>Post to code.google.com and Freshmeat</h2>
@@ -535,7 +533,7 @@ server and use <tt class="docutils literal"><span class="pre">svn</span> <span c
 <!-- http://docutils.sourceforge.net/ -->
 <!--  -->
 <!-- vim:fileencoding=latin1:ft=rst:spell:tw=80 -->
-<!-- $Revision: 275 $ -->
+<!-- $Revision: 286 $ -->
 </div>
 </div>
 </body>
