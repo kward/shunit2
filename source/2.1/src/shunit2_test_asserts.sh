@@ -111,6 +111,22 @@ testAssertNotNull()
   ( assertNotNull "${MSG}" 'x' >"${stdoutF}" 2>"${stderrF}" )
   th_assertTrueWithNoOutput 'not null, with msg' $? "${stdoutF}" "${stderrF}"
 
+  ( assertNotNull 'x"b' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'not null, with double-quote' $? \
+      "${stdoutF}" "${stderrF}"
+
+  ( assertNotNull "x'b" >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'not null, with single-quote' $? \
+      "${stdoutF}" "${stderrF}"
+
+  ( assertNotNull 'x$b' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'not null, with dollar' $? \
+      "${stdoutF}" "${stderrF}"
+
+  ( assertNotNull 'x`b' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'not null, with backtick' $? \
+      "${stdoutF}" "${stderrF}"
+
   ( assertNotNull '' >"${stdoutF}" 2>"${stderrF}" )
   th_assertFalseWithOutput 'null' $? "${stdoutF}" "${stderrF}"
 

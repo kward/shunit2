@@ -22,6 +22,9 @@ SHUNIT_TRUE=0
 SHUNIT_FALSE=1
 SHUNIT_ERROR=2
 
+# enable strict mode by default
+SHUNIT_STRICT=${SHUNIT_STRICT:-${SHUNIT_TRUE}}
+
 _shunit_warn() { echo "shunit2:WARN $@" >&2; }
 _shunit_error() { echo "shunit2:ERROR $@" >&2; }
 _shunit_fatal() { echo "shunit2:FATAL $@" >&2; exit ${SHUNIT_ERROR}; }
@@ -150,18 +153,18 @@ assertNotEquals()
     shunit_message_="${shunit_message_}$1"
     shift
   fi
-  shunit_unexpected_=$1
+  shunit_expected_=$1
   shunit_actual_=$2
 
   shunit_return=${SHUNIT_TRUE}
-  if [ "${shunit_unexpected_}" != "${shunit_actual_}" ]; then
+  if [ "${shunit_expected_}" != "${shunit_actual_}" ]; then
     _shunit_assertPass
   else
     failSame "${shunit_message_}" "$@"
     shunit_return=${SHUNIT_FALSE}
   fi
 
-  unset shunit_message_ shunit_unexpected_ shunit_actual_
+  unset shunit_message_ shunit_expected_ shunit_actual_
   return ${shunit_return}
 }
 _ASSERT_NOT_EQUALS_='eval assertNotEquals --lineno "${LINENO:-}"'
@@ -216,10 +219,12 @@ assertNotNull()
     shunit_message_="${shunit_message_}$1"
     shift
   fi
-  assertTrue "${shunit_message_}" "[ -n '${1:-}' ]"
+  shunit_actual_=`_shunit_escapeCharactersInString "${1:-}"`
+  test -n "${shunit_actual_}"
+  assertTrue "${shunit_message_}" $?
   shunit_return=$?
 
-  unset shunit_message_
+  unset shunit_actual_ shunit_message_
   return ${shunit_return}
 }
 _ASSERT_NOT_NULL_='eval assertNotNull --lineno "${LINENO:-}"'
@@ -327,7 +332,8 @@ assertTrue()
   if [ -z "${shunit_condition_}" ]; then
     # null condition
     shunit_return=${SHUNIT_FALSE}
-  elif [ "${shunit_condition_}" = "${shunit_match_}" ]; then
+  elif [ -n "${shunit_match_}" -a "${shunit_condition_}" = "${shunit_match_}" ]
+  then
     # possible return value. treating 0 as true, and non-zero as false.
     [ ${shunit_condition_} -ne 0 ] && shunit_return=${SHUNIT_FALSE}
   else
@@ -391,7 +397,8 @@ assertFalse()
   if [ -z "${shunit_condition_}" ]; then
     # null condition
     shunit_return=${SHUNIT_FALSE}
-  elif [ "${shunit_condition_}" = "${shunit_match_}" ]; then
+  elif [ -n "${shunit_match_}" -a "${shunit_condition_}" = "${shunit_match_}" ]
+  then
     # possible return value. treating 0 as true, and non-zero as false.
     [ ${shunit_condition_} -eq 0 ] && shunit_return=${SHUNIT_FALSE}
   else
@@ -448,7 +455,7 @@ _FAIL_='eval fail --lineno "${LINENO:-}"'
 #
 # Args:
 #   message: string: failure message [optional]
-#   unexpected: string: unexpected value
+#   expected: string: expected value
 #   actual: string: actual value
 # Returns:
 #   integer: success (TRUE/FALSE/ERROR constant)
@@ -466,12 +473,12 @@ failNotEquals()
     shunit_message_="${shunit_message_}$1"
     shift
   fi
-  shunit_unexpected_=$1
+  shunit_expected_=$1
   shunit_actual_=$2
 
-  _shunit_assertFail "${shunit_message_:+${shunit_message_} }expected:<${shunit_unexpected_}> but was:<${shunit_actual_}>"
+  _shunit_assertFail "${shunit_message_:+${shunit_message_} }expected:<${shunit_expected_}> but was:<${shunit_actual_}>"
 
-  unset shunit_message_ shunit_unexpected_ shunit_actual_
+  unset shunit_message_ shunit_expected_ shunit_actual_
   return ${SHUNIT_FALSE}
 }
 _FAIL_NOT_EQUALS_='eval failNotEquals --lineno "${LINENO:-}"'
@@ -512,7 +519,7 @@ _FAIL_SAME_='eval failSame --lineno "${LINENO:-}"'
 #
 # Args:
 #   message: string: failure message [optional]
-#   unexpected: string: unexpected value
+#   expected: string: expected value
 #   actual: string: actual value
 # Returns:
 #   integer: success (TRUE/FALSE/ERROR constant)
@@ -889,7 +896,7 @@ _shunit_assertSkip()
 # Prepare a script filename for sourcing.
 #
 # Args:
-#   filename: string: path to a file
+#   script: string: path to a script to source
 # Returns:
 #   string: filename prefixed with ./ (if necessary)
 _shunit_prepForSourcing()
@@ -900,6 +907,48 @@ _shunit_prepForSourcing()
     *) echo "./${_shunit_script_}" ;;
   esac
   unset _shunit_script_
+}
+
+# Escape a character in a string.
+#
+# Args:
+#   charUnXed: string: unescaped character
+#   s: string: to escape char in
+# Returns:
+#   string: with escaped character(s)
+_shunit_escapeCharInStr()
+{
+  # Note: using shorter variable names to prevent conflicts with
+  # _shunit_escapeCharactersInString().
+  _shunit_c_=$1
+  _shunit_s_=$2
+
+  # escape the character
+  echo ''${_shunit_s_}'' |sed 's/\'${_shunit_c_}'/\\\'${_shunit_c_}'/g'
+
+  unset _shunit_c_ _shunit_s_
+}
+
+# Escape a character in a string.
+#
+# Args:
+#   charUnXed: string: unescaped character
+#   s: string: to escape char in
+# Returns:
+#   string: with escaped character(s)
+_shunit_escapeCharactersInString()
+{
+  [ -n "$1" ] || return  # no point in doing work on an empty string
+  _shunit_str_=$1
+
+  # Note: using longer variable names to prevent conflicts with
+  # _shunit_escapeCharInStr().
+  for _shunit_char_ in '"' '$' "'" '`'; do
+    _shunit_str_=`_shunit_escapeCharInStr "${_shunit_char_}" "${_shunit_str_}"`
+  done
+
+  echo "${_shunit_str_}"
+  unset _shunit_char_ _shunit_str_
 }
 
 #------------------------------------------------------------------------------
@@ -948,7 +997,7 @@ suite
 
 # if no suite function was defined, dynamically build a list of functions
 if [ -z "${__shunit_suite}" ]; then
-  shunit_funcs_=`grep "^[ \t]*test[A-Za-z0-9_]* *()" "${__shunit_script}" \
+  shunit_funcs_=`grep '^[ \t]*test[A-Za-z0-9_]* *()' "${__shunit_script}" \
       |sed 's/[^A-Za-z0-9_]//g'`
   for shunit_func_ in ${shunit_funcs_}; do
     suite_addTest ${shunit_func_}
