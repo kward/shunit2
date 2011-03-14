@@ -20,7 +20,7 @@
 # incorrectly interpret the embedded functions as real functions.
 testUnboundVariable()
 {
-  sed 's/^#//' >"${testF}" <<EOF
+  sed 's/^#//' >"${unittestF}" <<EOF
 ## treat unset variables as an error when performing parameter expansion
 #set -u
 #
@@ -33,7 +33,7 @@ testUnboundVariable()
 #}
 #. ${TH_SHUNIT}
 EOF
-  ( exec sh "${testF}" >"${stdoutF}" 2>"${stderrF}" )
+  ( exec sh "${unittestF}" >"${stdoutF}" 2>"${stderrF}" )
   assertFalse 'expected a non-zero exit value' $?
   grep '^ASSERT:Unknown failure' "${stdoutF}" >/dev/null
   assertTrue 'assert message was not generated' $?
@@ -61,17 +61,69 @@ testPrepForSourcing()
   assertEquals './abc' `_shunit_prepForSourcing 'abc'`
 }
 
+testEscapeCharInStr()
+{
+  assertEquals '' "`_shunit_escapeCharInStr '\' ''`"
+  assertEquals 'abc\\' `_shunit_escapeCharInStr '\' 'abc\'`
+  assertEquals 'abc\\def' `_shunit_escapeCharInStr '\' 'abc\def'`
+  assertEquals '\\def' `_shunit_escapeCharInStr '\' '\def'`
+
+  assertEquals '' "`_shunit_escapeCharInStr '"' ''`"
+  assertEquals 'abc\"' `_shunit_escapeCharInStr '"' 'abc"'`
+  assertEquals 'abc\"def' `_shunit_escapeCharInStr '"' 'abc"def'`
+  assertEquals '\"def' `_shunit_escapeCharInStr '"' '"def'`
+
+  assertEquals '' "`_shunit_escapeCharInStr '$' ''`"
+  assertEquals 'abc\$' `_shunit_escapeCharInStr '$' 'abc$'`
+  assertEquals 'abc\$def' `_shunit_escapeCharInStr '$' 'abc$def'`
+  assertEquals '\$def' `_shunit_escapeCharInStr '$' '$def'`
+
+  assertEquals '' "`_shunit_escapeCharInStr "'" ''`"
+  assertEquals "abc\\'" `_shunit_escapeCharInStr "'" "abc'"`
+  assertEquals "abc\\'def" `_shunit_escapeCharInStr "'" "abc'def"`
+  assertEquals "\\'def" `_shunit_escapeCharInStr "'" "'def"`
+
+  # must put the backtick in a variable so the shell doesn't misinterpret it
+  # while inside a backticked sequence (e.g. `echo '`'` would fail).
+  backtick='`'
+  assertEquals '' \
+      "`_shunit_escapeCharInStr ${backtick} ''`"
+  assertEquals '\`abc' \
+      `_shunit_escapeCharInStr "${backtick}" ${backtick}'abc'`
+  assertEquals 'abc\`' \
+      `_shunit_escapeCharInStr "${backtick}" 'abc'${backtick}`
+  assertEquals 'abc\`def' \
+      `_shunit_escapeCharInStr "${backtick}" 'abc'${backtick}'def'`
+}
+
+testEscapeCharInStr_specialChars()
+{
+  # make sure our forward slash doesn't upset sed
+  assertEquals '/' `_shunit_escapeCharInStr '\' '/'`
+
+  # some shells escape these differently
+  #assertEquals '\\a' `_shunit_escapeCharInStr '\' '\a'`
+  #assertEquals '\\b' `_shunit_escapeCharInStr '\' '\b'`
+}
 #------------------------------------------------------------------------------
 # suite functions
 #
+
+setUp()
+{
+  for f in ${expectedF} ${stdoutF} ${stderrF}; do
+    cp /dev/null ${f}
+  done
+}
 
 oneTimeSetUp()
 {
   tmpDir="${__shunit_tmpDir}/output"
   mkdir "${tmpDir}"
+  expectedF="${tmpDir}/expected"
   stdoutF="${tmpDir}/stdout"
   stderrF="${tmpDir}/stderr"
-  testF="${tmpDir}/unittest"
+  unittestF="${tmpDir}/unittest"
 }
 
 # load and run shUnit2
