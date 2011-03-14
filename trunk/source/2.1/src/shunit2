@@ -241,7 +241,7 @@ assertSame()
 {
   ${_SHUNIT_LINENO_}
   if [ $# -lt 2 -o $# -gt 3 ]; then
-    _shunit_error "assertSame() requires one or two arguments; $# given"
+    _shunit_error "assertSame() requires two or three arguments; $# given"
     return ${SHUNIT_ERROR}
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
