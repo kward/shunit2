@@ -22,6 +22,11 @@ method of sourcing it in as a library. This allows users to keep tests working
 despite the location of the shunit2 executable being different for each OS
 distribution.
 
+Issue #14: Improved handling of some strange chars (e.g. single and double
+quotes).
+
+Issue# 27: Fixed error message for assertSame().
+
 
 Changes with 2.1.5
 ------------------
