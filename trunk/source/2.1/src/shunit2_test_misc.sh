@@ -114,16 +114,17 @@ testExtractTestFunctions()
 {
   f="${tmpD}/extract_test_functions"
   sed 's/^#//' <<EOF >"${f}"
-#testABC() { echo '1'; }
+#testABC() { echo 'ABC'; }
 #test_def() {
-#  echo '2'
+#  echo 'def'
 #}
 #testG3 ()
 #{
-#  echo '3'
+#  echo 'G3'
 #}
 #function test4() { echo '4'; }
-#some_test_function() { echo '5'; }
+#	test5() { echo '5'; }
+#some_test_function() { echo 'some func'; }
 EOF
 
   actual=`_shunit_extractTestFunctions "${f}"`
