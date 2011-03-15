@@ -706,13 +706,14 @@ _shunit_mktempDir()
   unset _shunit_date_ _shunit_random_ _shunit_tmpDir_
 }
 
-# This function is here to work around issues in Cygwin
+# This function is here to work around issues in Cygwin.
 #
 # Args:
 #   None
 _shunit_mktempFunc()
 {
-  for _shunit_func_ in oneTimeSetUp oneTimeTearDown setUp tearDown suite; do
+  for _shunit_func_ in oneTimeSetUp oneTimeTearDown setUp tearDown suite noexec
+  do
     _shunit_file_="${__shunit_tmpDir}/${_shunit_func_}"
     cat <<EOF >"${_shunit_file_}"
 #! /bin/sh
@@ -982,6 +983,12 @@ trap '_shunit_cleanup TERM' 15
 # create phantom functions to work around issues with Cygwin
 _shunit_mktempFunc
 PATH="${__shunit_tmpDir}:${PATH}"
+
+# make sure phantom functions are executable. this will bite if /tmp (or the
+# current $TMPDIR) points to a path on a partition that was mounted with the
+# 'noexec' option. the noexec command was created with _shunit_mktempFunc().
+noexec 2>/dev/null || _shunit_fatal \
+    'please declare TMPDIR with path on partition with exec permission'
 
 # we must manually source the tests in standalone mode
 if [ "${__shunit_mode}" = "${__SHUNIT_MODE_STANDALONE}" ]; then
