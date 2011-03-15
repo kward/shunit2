@@ -105,6 +105,31 @@ testEscapeCharInStr_specialChars()
   #assertEquals '\\a' `_shunit_escapeCharInStr '\' '\a'`
   #assertEquals '\\b' `_shunit_escapeCharInStr '\' '\b'`
 }
+
+# Test the various ways of declaring functions.
+#
+# Prefixing (then stripping) with comment symbol so these functions aren't
+# treated as real functions by shUnit2.
+testExtractTestFunctions()
+{
+  f="${tmpD}/extract_test_functions"
+  sed 's/^#//' <<EOF >"${f}"
+#testABC() { echo '1'; }
+#test_def() {
+#  echo '2'
+#}
+#testG3 ()
+#{
+#  echo '3'
+#}
+#function test4() { echo '4'; }
+#some_test_function() { echo '5'; }
+EOF
+
+  actual=`_shunit_extractTestFunctions "${f}"`
+  assertEquals 'testABC test_def testG3 test4' "${actual}"
+}
+
 #------------------------------------------------------------------------------
 # suite functions
 #
@@ -114,16 +139,17 @@ setUp()
   for f in ${expectedF} ${stdoutF} ${stderrF}; do
     cp /dev/null ${f}
   done
+  rm -fr "${tmpD}"
+  mkdir "${tmpD}"
 }
 
 oneTimeSetUp()
 {
-  tmpDir="${__shunit_tmpDir}/output"
-  mkdir "${tmpDir}"
-  expectedF="${tmpDir}/expected"
-  stdoutF="${tmpDir}/stdout"
-  stderrF="${tmpDir}/stderr"
-  unittestF="${tmpDir}/unittest"
+  tmpD="${SHUNIT_TMPDIR}/tmp"
+  expectedF="${SHUNIT_TMPDIR}/expected"
+  stdoutF="${SHUNIT_TMPDIR}/stdout"
+  stderrF="${SHUNIT_TMPDIR}/stderr"
+  unittestF="${SHUNIT_TMPDIR}/unittest"
 }
 
 # load and run shUnit2
