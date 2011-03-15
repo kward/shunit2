@@ -27,6 +27,8 @@ quotes).
 
 Issue# 27: Fixed error message for assertSame().
 
+Issue# 25: Added check and error message to user when phantom functions are
+written to a partition mounted with noexec.
 
 Changes with 2.1.5
 ------------------
