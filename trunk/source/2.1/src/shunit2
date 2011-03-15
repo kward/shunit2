@@ -52,8 +52,8 @@ __SHUNIT_PARENT=${SHUNIT_PARENT:-$0}
 
 # set the constants readonly
 shunit_constants_=`set |grep '^__SHUNIT_' |cut -d= -f1`
-echo "${shunit_constants_}" |grep '^Binary file' >/dev/null \
-    && shunit_constants_=`set |grep -a '^__SHUNIT_' |cut -d= -f1`
+echo "${shunit_constants_}" |grep '^Binary file' >/dev/null && \
+    shunit_constants_=`set |grep -a '^__SHUNIT_' |cut -d= -f1`
 for shunit_constant_ in ${shunit_constants_}; do
   shunit_ro_opts_=''
   case ${ZSH_VERSION:-} in
@@ -952,6 +952,31 @@ _shunit_escapeCharactersInString()
   unset _shunit_char_ _shunit_str_
 }
 
+# Extract list of functions to run tests against.
+#
+# Args:
+#   script: string: name of script to extract functions from
+# Returns:
+#   string: of function names
+_shunit_extractTestFunctions()
+{
+  _shunit_script_=$1
+
+  # determine egrep version
+  echo '()' |egrep '()' >/dev/null 2>&1
+  case $? in
+    0) _shunit_regex_='^[ \t]*(function |)test[A-Za-z0-9_]* *()' ;;
+    2) _shunit_regex_='^[ \t]*\(function |\)*test[A-Za-z0-9_]*[(][)]' ;;
+    *) _shunit_fatal 'unable to determine egrep version' ;;
+  esac
+
+  egrep "${_shunit_regex_}" "${_shunit_script_}" \
+  |sed 's/^[ \t]*//;s/^function //;s/\([A-Za-z0-9_]*\).*/\1/g' \
+  |xargs
+
+  unset _shunit_regex_ _shunit_script_
+}
+
 #------------------------------------------------------------------------------
 # main
 #
@@ -1004,8 +1029,7 @@ suite
 
 # if no suite function was defined, dynamically build a list of functions
 if [ -z "${__shunit_suite}" ]; then
-  shunit_funcs_=`grep '^[ \t]*test[A-Za-z0-9_]* *()' "${__shunit_script}" \
-      |sed 's/[^A-Za-z0-9_]//g'`
+  shunit_funcs_=`_shunit_extractTestFunctions "${__shunit_script}"`
   for shunit_func_ in ${shunit_funcs_}; do
     suite_addTest ${shunit_func_}
   done
