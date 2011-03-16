@@ -125,6 +125,9 @@ testExtractTestFunctions()
 #function test4() { echo '4'; }
 #	test5() { echo '5'; }
 #some_test_function() { echo 'some func'; }
+#func_with_test_vars() {
+#  testVariable=1234
+#}
 EOF
 
   actual=`_shunit_extractTestFunctions "${f}"`
