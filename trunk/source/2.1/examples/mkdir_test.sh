@@ -18,53 +18,65 @@
 
 testMissingDirectoryCreation()
 {
-  ${cmd} "${testDir}" >${stdoutF} 2>${stderrF}
+  ${mkdirCmd} "${testDir}" >${stdoutF} 2>${stderrF}
   rtrn=$?
+  th_assertTrueWithNoOutput ${rtrn} "${stdoutF}" "${stderrF}"
+
   assertTrue 'directory missing' "[ -d '${testDir}' ]"
-  assertEquals 'expecting return code of 0' ${rtrn} 0
-  assertNull 'unexpected output to stdout' "`cat ${stdoutF}`"
-  assertNull 'unexpected output to stderr' "`cat ${stderrF}`"
 }
 
 testExistingDirectoryCreationFails()
 {
   # create a directory to test against
-  ${cmd} "${testDir}"
+  ${mkdirCmd} "${testDir}"
 
   # test for expected failure while trying to create directory that exists
-  ${cmd} "${testDir}" >${stdoutF} 2>${stderrF}
+  ${mkdirCmd} "${testDir}" >${stdoutF} 2>${stderrF}
   rtrn=$?
-  assertTrue 'directory missing' "[ -d '${testDir}' ]"
-  assertEquals 'expecting return code of 1' ${rtrn} 1
+  assertFalse 'expecting return code of 1 (false)' ${rtrn}
   assertNull 'unexpected output to stdout' "`cat ${stdoutF}`"
   assertNotNull 'expected error message to stderr' "`cat ${stderrF}`"
+
+  assertTrue 'directory missing' "[ -d '${testDir}' ]"
 }
 
-testParentDirectoryCreation()
+testRecursiveDirectoryCreation()
 {
   testDir2="${testDir}/test2"
-  ${cmd} -p "${testDir2}" >${stdoutF} 2>${stderrF}
+
+  ${mkdirCmd} -p "${testDir2}" >${stdoutF} 2>${stderrF}
   rtrn=$?
+  th_assertTrueWithNoOutput ${rtrn} "${stdoutF}" "${stderrF}"
+
   assertTrue 'first directory missing' "[ -d '${testDir}' ]"
   assertTrue 'second directory missing' "[ -d '${testDir2}' ]"
-  assertEquals 'expecting return code of 0' ${rtrn} 0
-  assertNull 'unexpected output to stdout' "`cat ${stdoutF}`"
-  assertNull 'unexpected output to stderr' "`cat ${stderrF}`"
 }
 
 #-----------------------------------------------------------------------------
 # suite functions
 #
 
+th_assertTrueWithNoOutput()
+{
+  th_return_=$1
+  th_stdout_=$2
+  th_stderr_=$3
+
+  assertFalse 'unexpected output to STDOUT' "[ -s '${th_stdout_}' ]"
+  assertFalse 'unexpected output to STDERR' "[ -s '${th_stderr_}' ]"
+
+  unset th_return_ th_stdout_ th_stderr_
+}
+
 oneTimeSetUp()
 {
-  outputDir="${__shunit_tmpDir}/output"
+  outputDir="${SHUNIT_TMPDIR}/output"
   mkdir "${outputDir}"
   stdoutF="${outputDir}/stdout"
   stderrF="${outputDir}/stderr"
 
-  cmd='mkdir'  # save command name in variable to make future changes easy
-  testDir="${__shunit_tmpDir}/some_test_dir"
+  mkdirCmd='mkdir'  # save command name in variable to make future changes easy
+  testDir="${SHUNIT_TMPDIR}/some_test_dir"
 }
 
 tearDown()
