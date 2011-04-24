@@ -107,6 +107,7 @@ for shell in ${shells}; do
 #
 EOF
 
+  SHUNIT_SHELL=${shell}  # pass shell onto tests
   shell_name=`basename ${shell}`
   shell_version=`versions_shellVersion "${shell}"`
 
