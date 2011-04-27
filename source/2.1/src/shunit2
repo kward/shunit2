@@ -105,7 +105,7 @@ assertEquals()
   ${_SHUNIT_LINENO_}
   if [ $# -lt 2 -o $# -gt 3 ]; then
     _shunit_error "assertEquals() requires two or three arguments; $# given"
-    _shunit_error "1: ${1:+$1} 2: ${2:+$2} 3: ${3:+$3}"
+    _shunit_error "1: ${1:+$1} 2: ${2:+$2} 3: ${3:+$3}${4:+ 4: $4}"
     return ${SHUNIT_ERROR}
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
