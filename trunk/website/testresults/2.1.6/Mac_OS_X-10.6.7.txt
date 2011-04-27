@@ -8,7 +8,7 @@ tests:  shunit2_test_asserts.sh shunit2_test_failures.sh shunit2_test_macros.sh 
 
 # system info
 $ date
-Fri Apr 22 02:01:10 PDT 2011
+Thu Apr 28 00:42:17 IST 2011
 
 $ uname -mprsv
 Darwin 10.7.0 Darwin Kernel Version 10.7.0: Sat Jan 29 15:17:16 PST 2011; root:xnu-1504.9.37~1/RELEASE_I386 i386 i386
@@ -201,23 +201,12 @@ testUnboundVariable
 testIssue7
 testPrepForSourcing
 testEscapeCharInStr
-ASSERT:expected:<> but was:<
-  assertEquals abc\" abc\"
-  assertEquals abc\"def abc\"def
-  assertEquals \"def \"def
-
-  assertEquals  
-  assertEquals abc\$ abc\$
-  assertEquals abc\$def abc\$def
-  assertEquals \$def \$def
-
-  assertEquals  >
 testEscapeCharInStr_specialChars
 testExtractTestFunctions
 
 Ran 6 tests.
 
-FAILED (failures=1)
+OK
 
 --- Executing the 'standalone' test suite ---
 testStandalone

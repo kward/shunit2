@@ -8,10 +8,10 @@ tests:  shunit2_test_asserts.sh shunit2_test_failures.sh shunit2_test_macros.sh 
 
 # system info
 $ date
-Thu Apr 21 08:31:20 MDT 2011
+Wed Apr 27 17:24:17 CDT 2011
 
 $ uname -mprsv
-Linux 2.6.15-55-server #1 SMP Sat Oct 16 18:45:36 UTC 2010 i686 unknown
+Linux 2.6.24-29-server #1 SMP Wed Mar 16 19:04:28 UTC 2011 x86_64 unknown
 
 
 #------------------------------------------------------------------------------
@@ -59,7 +59,7 @@ testFailNotSame
 
 Ran 12 tests.
 
-OK
+OK (skipped=24)
 
 --- Executing the 'misc' test suite ---
 testUnboundVariable
@@ -85,7 +85,7 @@ OK
 # Running the test suite with /bin/bash
 #
 shell name: bash
-shell version: 3.1.17(1)-release
+shell version: 3.2.39(1)-release
 
 --- Executing the 'asserts' test suite ---
 testAssertEquals
@@ -152,7 +152,7 @@ OK
 # Running the test suite with /bin/dash
 #
 shell name: dash
-shell version: 0.5.3-1ubuntu1
+shell version: 0.5.4-8ubuntu1.1
 
 --- Executing the 'asserts' test suite ---
 testAssertEquals
@@ -219,7 +219,7 @@ OK
 # Running the test suite with /bin/ksh
 #
 shell name: ksh
-shell version: v5.2.14-99/07/13.2
+shell version: M-1993-12-28
 
 --- Executing the 'asserts' test suite ---
 testAssertEquals
@@ -353,7 +353,7 @@ OK
 # Running the test suite with /bin/zsh
 #
 shell name: zsh
-shell version: 4.2.5
+shell version: 4.3.4
 
 --- Executing the 'asserts' test suite ---
 testAssertEquals
