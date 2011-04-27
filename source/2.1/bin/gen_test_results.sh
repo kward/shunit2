@@ -38,7 +38,7 @@ DEFINE_boolean force false 'force overwrite' f
 DEFINE_string output_dir "`pwd`" 'output dir' d
 DEFINE_string output_file "${os_name}-${os_version}.txt" 'output file' o
 DEFINE_string suite 'shunit2_test.sh' 'unit test suite' s
-FLAGS "$@" || exit $?; shift ${FLAGS_ARGC}
+FLAGS "${@:-}" || exit $?; shift ${FLAGS_ARGC}
 
 # determine output filename
 output="${FLAGS_output_dir:+${FLAGS_output_dir}/}${FLAGS_output_file}"
