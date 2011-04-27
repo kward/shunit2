@@ -12,6 +12,7 @@
 # script if set execuatable.
 
 ARGV0=`basename "$0"`
+LSB_RELEASE='/etc/lsb-release'
 VERSIONS_SHELLS='/bin/bash /bin/dash /bin/ksh /bin/pdksh /bin/sh /bin/zsh'
 
 TRUE=0
@@ -50,8 +51,7 @@ versions_osVersion()
       ;;
     Darwin)
       major_='10'
-      sub_=`echo ${os_release_} |\
-          sed 's/^[0-9]*\.\([0-9]*\)\.[0-9]*$/\1/'`
+      sub_=`echo ${os_release_} |sed 's/^[0-9]*\.\([0-9]*\)\.[0-9]*$/\1/'`
       case ${os_release_} in
         8.*) minor_='4' ;;
         9.*) minor_='5' ;;
@@ -64,19 +64,20 @@ versions_osVersion()
       os_version_=`expr "${os_release_}" : '\([0-9]*\.[0-9]*\)-.*'`
       ;;
     Linux)
-      if [ -r '/etc/lsb-release' ]; then
-        os_version_=`. /etc/lsb-release && \
-            echo "${DISTRIB_ID:-}-${DISTRIB_RELEASE:-}"`
-      fi
-      if [ "${os_version_}" = '-' ]; then
-        os_version_=''
-        if [ -r '/etc/redhat-release' ]; then
-          os_version_=`cat /etc/redhat-release`
+      if [ -r "${LSB_RELEASE}" ]; then
+        if grep -q 'DISTRIB_ID=Ubuntu' "${LSB_RELEASE}"; then
+          os_version_=`cat "${LSB_RELEASE}" \
+            |awk -F= '$1~/DISTRIB_DESCRIPTION/{print $2}' \
+            |sed 's/"//g;s/ /-/g'`
         fi
+      elif [ -r '/etc/redhat-release' ]; then
+        os_version_=`cat /etc/redhat-release`
       fi
       ;;
     SunOS)
-      os_version_=`echo ${os_release_} |sed 's/[0-9]*\.\([0-9]*\)/\1/'`
+      major_=`echo ${os_release_} |sed 's/[0-9]*\.\([0-9]*\)/\1/'`
+      minor_=`grep Solaris /etc/release |sed 's/[^u]*\(u[0-9]*\).*/\1/'`
+      os_version_="${major_}${minor_}"
       ;;
   esac
   echo ${os_version_}
