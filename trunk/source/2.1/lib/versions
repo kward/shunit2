@@ -13,7 +13,7 @@
 
 ARGV0=`basename "$0"`
 LSB_RELEASE='/etc/lsb-release'
-VERSIONS_SHELLS='/bin/bash /bin/dash /bin/ksh /bin/pdksh /bin/sh /bin/zsh'
+VERSIONS_SHELLS="/bin/bash /bin/dash /bin/ksh /bin/pdksh /bin/sh /bin/zsh"
 
 TRUE=0
 FALSE=1
@@ -34,7 +34,13 @@ versions_osName()
     Darwin) os_name_='Mac OS X' ;;
     FreeBSD) os_name_='FreeBSD' ;;
     Linux) os_name_='Linux' ;;
-    SunOS) os_name_='Solaris' ;;
+    SunOS)
+      if grep 'OpenSolaris' /etc/release >/dev/null; then
+        os_name_='OpenSolaris'
+      else
+        os_name_='Solaris'
+      fi
+      ;;
   esac
   echo ${os_name_}
   unset os_name_ os_system_
@@ -75,9 +81,13 @@ versions_osVersion()
       fi
       ;;
     SunOS)
-      major_=`echo ${os_release_} |sed 's/[0-9]*\.\([0-9]*\)/\1/'`
-      minor_=`grep Solaris /etc/release |sed 's/[^u]*\(u[0-9]*\).*/\1/'`
-      os_version_="${major_}${minor_}"
+      if grep 'OpenSolaris' /etc/release >/dev/null; then
+        os_version_=`grep 'OpenSolaris' /etc/release |awk '{print $2"("$3")"}'`
+      else
+        major_=`echo ${os_release_} |sed 's/[0-9]*\.\([0-9]*\)/\1/'`
+        minor_=`grep Solaris /etc/release |sed 's/[^u]*\(u[0-9]*\).*/\1/'`
+        os_version_="${major_}${minor_}"
+      fi
       ;;
   esac
   echo ${os_version_}
@@ -138,12 +148,20 @@ versions_shell_ksh()
 {
   versions_shell_=$1
 
-  _versions_have_strings
-  versions_version_=`strings ${versions_shell_} 2>&1 \
+  # see if --version gives a result
+  versions_version_=`${versions_shell_} --version 2>&1 \
+    |sed 's/.*\([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\).*/\1/'`
+
+  # --version didn't work... look into the binary
+  if [ $? -ne ${TRUE} ]; then 
+    _versions_have_strings
+    versions_version_=`strings ${versions_shell_} 2>&1 \
       |grep Version \
       |sed 's/^.*Version \(.*\)$/\1/;s/ s+ \$$//;s/ /-/g'`
-  [ -z "${versions_version_}" ] \
-      && versions_version_=`versions_shell_pdksh ${versions_shell_}`
+    [ -z "${versions_version_}" ] \
+        && versions_version_=`versions_shell_pdksh ${versions_shell_}`
+  fi
+
   echo ${versions_version_}
 
   unset versions_shell_ versions_version_
@@ -159,7 +177,17 @@ versions_shell_pdksh()
 
 versions_shell_zsh()
 {
-  echo 'echo ${ZSH_VERSION}' |$1
+  versions_shell_=$1
+
+  versions_version_=`${versions_shell_} --version 2>&1 |awk '{print $2}'`
+
+  if [ $? -ne ${TRUE} ]; then
+    versions_version_=`echo 'echo ${ZSH_VERSION}' |${versions_shell_}`
+  fi
+
+  echo ${versions_version_}
+
+  unset versions_shell_ versions_version_
 }
 
 # Determine if the 'strings' binary installed.
