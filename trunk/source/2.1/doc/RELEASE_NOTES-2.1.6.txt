@@ -1,8 +1,8 @@
 Release Notes for shUnit2 2.1.6
 ===============================
 
-This release contains some bug fixes and changes. It is also the first release
-to support running shunit2 as a standalone program.
+This release contains bug fixes and changes. It is also the first release to
+support running shunit2 as a standalone program.
 
 Please read the Shell Errata section of the documentation for guidance on how
 to meet these requirements.
@@ -16,6 +16,8 @@ Support for running shUnit2 as a standalone program. This makes it possible for
 users to execute their unit tests in a manner that is not dependent on the
 location an OS distribution maintainer chose to place shUnit2 in the file
 system.
+
+Added support for functions defined like 'function someFunction()'.
 
 Changes and Enhancements
 ------------------------
@@ -34,7 +36,6 @@ Deprecated Features
 
 None.
 
-
 Known Bugs and Issues
 ---------------------
 
@@ -50,26 +51,23 @@ unbound variables cannot be caught. (See ``shunit_test_misc.sh``)
 Tested Platforms
 ----------------
 
-Cygwin (Windows XP SP2)
+Cygwin 1.7.9 (Windows XP SP2)
 
-- bash 3.2.39(23)
-- dash 0.5.5.1
+- bash 4.1.10(4)
+- dash 0.5.6.1
 - ksh (sym-link to pdksh)
 - pdksh 5.2.14
-- zsh 4.3.9
+- zsh 4.3.11
 
-FreeBSD 7.2 (FreeNAS 0.7.1)
-
-- bash 4.0.35(1)
-
-Linux (Ubuntu Dapper 6.06)
+Linux (Ubuntu Dapper 6.06.2 LTS)
 
 - bash 3.1.17(1)
 - dash 0.5.3
+- ksh (sym-link to pdksh)
 - pdksh 5.2.14-99/07/13.2
 - zsh 4.2.5
 
-Linux (Ubuntu Hardy 8.04)
+Linux (Ubuntu Hardy 8.04.4 LTS)
 
 - bash 3.2.39(1)
 - dash 0.5.4
@@ -77,7 +75,7 @@ Linux (Ubuntu Hardy 8.04)
 - pdksh 5.2.14-99/07/13.2
 - zsh 4.3.4
 
-Linux (Ubuntu Lucid 10.04)
+Linux (Ubuntu Lucid 10.04.2 LTS)
 
 - bash 4.1.5(1)
 - dash 0.5.5.1
@@ -85,13 +83,7 @@ Linux (Ubuntu Lucid 10.04)
 - pdksh 5.2.14-99/07/13.2
 - zsh 4.3.10
 
-Mac OS X 10.5.8
-
-- bash 3.2.17(1)
-- ksh M-1993-12-28
-- zsh 4.3.4
-
-Mac OS X 10.6.3
+Mac OS X 10.6.7
 
 - bash 3.2.48(1)
 - ksh M-1993-12-28
@@ -111,12 +103,10 @@ Solaris 9 U6 x86
 - ksh M-11/16/88i
 - zsh 3.0.8
 
-Solaris 11 x86 (Nexenta 3.0 beta 3)
+OpenSolaris 2009.06(snv_111b) x86
 
 - /bin/sh
-- bash 3.2.48(1)
-- ksh M-11/16/88i
-- zsh 4.3.4
-
+- bash 3.2.25(1)
+- ksh 2008-11-04
 
 .. vim:fileencoding=latin1:ft=rst:spell:tw=80
