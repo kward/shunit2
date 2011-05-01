@@ -1,0 +1,295 @@
+#------------------------------------------------------------------------------
+# System data
+#
+
+# test run info
+shells="/bin/sh /bin/bash /bin/dash /bin/ksh /bin/pdksh /bin/zsh"
+tests=" shunit2_test_asserts.sh shunit2_test_failures.sh shunit2_test_macros.sh shunit2_test_misc.sh"
+
+# system info
+$ date
+Wed Oct 29 00:37:38 GMTST 2008
+$ uname -mprsv
+CYGWIN_NT-5.1 1.5.25(0.156/4/2) 2008-06-12 19:34 i686 unknown
+
+
+#------------------------------------------------------------------------------
+# Running the test suite with /bin/sh
+#
+shell name: sh
+shell version: unknown
+
+--- Executing the 'asserts' test suite ---
+testAssertEquals
+testAssertNotEquals
+testAssertSame
+testAssertNotSame
+testAssertNull
+testAssertNotNull
+testAssertTrue
+testAssertFalse
+
+Ran 8 tests.
+
+OK
+
+--- Executing the 'failures' test suite ---
+testFail
+testFailNotEquals
+testFailSame
+
+Ran 3 tests.
+
+OK
+
+--- Executing the 'macros' test suite ---
+testAssertEquals
+testAssertNotEquals
+testSame
+testNotSame
+testNull
+testNotNull
+testAssertTrue
+testAssertFalse
+testFail
+testFailNotEquals
+testFailSame
+testFailNotSame
+
+Ran 12 tests.
+
+OK
+
+--- Executing the 'misc' test suite ---
+testUnboundVariable
+testIssue7
+
+Ran 2 tests.
+
+OK
+
+
+#------------------------------------------------------------------------------
+# Running the test suite with /bin/bash
+#
+shell name: bash
+shell version: 3.2.39(20)-release
+
+--- Executing the 'asserts' test suite ---
+testAssertEquals
+testAssertNotEquals
+testAssertSame
+testAssertNotSame
+testAssertNull
+testAssertNotNull
+testAssertTrue
+testAssertFalse
+
+Ran 8 tests.
+
+OK
+
+--- Executing the 'failures' test suite ---
+testFail
+testFailNotEquals
+testFailSame
+
+Ran 3 tests.
+
+OK
+
+--- Executing the 'macros' test suite ---
+testAssertEquals
+testAssertNotEquals
+testSame
+testNotSame
+testNull
+testNotNull
+testAssertTrue
+testAssertFalse
+testFail
+testFailNotEquals
+testFailSame
+testFailNotSame
+
+Ran 12 tests.
+
+OK
+
+--- Executing the 'misc' test suite ---
+testUnboundVariable
+testIssue7
+
+Ran 2 tests.
+
+OK
+
+shunit2_test.sh:WARN unable to run tests with the /bin/dash shell
+
+
+#------------------------------------------------------------------------------
+# Running the test suite with /bin/ksh
+#
+shell name: ksh
+shell version: 
+
+--- Executing the 'asserts' test suite ---
+testAssertEquals
+testAssertNotEquals
+testAssertSame
+testAssertNotSame
+testAssertNull
+testAssertNotNull
+testAssertTrue
+testAssertFalse
+
+Ran 8 tests.
+
+OK
+
+--- Executing the 'failures' test suite ---
+testFail
+testFailNotEquals
+testFailSame
+
+Ran 3 tests.
+
+OK
+
+--- Executing the 'macros' test suite ---
+testAssertEquals
+testAssertNotEquals
+testSame
+testNotSame
+testNull
+testNotNull
+testAssertTrue
+testAssertFalse
+testFail
+testFailNotEquals
+testFailSame
+testFailNotSame
+
+Ran 12 tests.
+
+OK
+
+--- Executing the 'misc' test suite ---
+testUnboundVariable
+testIssue7
+
+Ran 2 tests.
+
+OK
+
+
+#------------------------------------------------------------------------------
+# Running the test suite with /bin/pdksh
+#
+shell name: pdksh
+shell version: 
+
+--- Executing the 'asserts' test suite ---
+testAssertEquals
+testAssertNotEquals
+testAssertSame
+testAssertNotSame
+testAssertNull
+testAssertNotNull
+testAssertTrue
+testAssertFalse
+
+Ran 8 tests.
+
+OK
+
+--- Executing the 'failures' test suite ---
+testFail
+testFailNotEquals
+testFailSame
+
+Ran 3 tests.
+
+OK
+
+--- Executing the 'macros' test suite ---
+testAssertEquals
+testAssertNotEquals
+testSame
+testNotSame
+testNull
+testNotNull
+testAssertTrue
+testAssertFalse
+testFail
+testFailNotEquals
+testFailSame
+testFailNotSame
+
+Ran 12 tests.
+
+OK
+
+--- Executing the 'misc' test suite ---
+testUnboundVariable
+testIssue7
+
+Ran 2 tests.
+
+OK
+
+
+#------------------------------------------------------------------------------
+# Running the test suite with /bin/zsh
+#
+shell name: zsh
+shell version: 4.3.4
+
+--- Executing the 'asserts' test suite ---
+testAssertEquals
+testAssertNotEquals
+testAssertSame
+testAssertNotSame
+testAssertNull
+testAssertNotNull
+testAssertTrue
+testAssertFalse
+
+Ran 8 tests.
+
+OK
+
+--- Executing the 'failures' test suite ---
+testFail
+testFailNotEquals
+testFailSame
+
+Ran 3 tests.
+
+OK
+
+--- Executing the 'macros' test suite ---
+testAssertEquals
+testAssertNotEquals
+testSame
+testNotSame
+testNull
+testNotNull
+testAssertTrue
+testAssertFalse
+testFail
+testFailNotEquals
+testFailSame
+testFailNotSame
+
+Ran 12 tests.
+
+OK
+
+--- Executing the 'misc' test suite ---
+testUnboundVariable
+testIssue7
+
+Ran 2 tests.
+
+OK
