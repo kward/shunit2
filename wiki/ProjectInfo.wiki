@@ -44,6 +44,7 @@ If you would like to verify the GPG signatures of the releases, please take a lo
 
 === 2.1.x - Development Releases ===
 || *Release* || *Date* || *Known Issues* ||
+|| [http://shunit2.googlecode.com/files/shunit2-2.1.6.tgz 2.1.6] || Sun May 1 2011 || ||
 || [http://shunit2.googlecode.com/files/shunit2-2.1.5.tgz 2.1.5] || Wed Oct 29 2008 || ||
 || [http://shunit2.googlecode.com/files/shunit2-2.1.4.tgz 2.1.4] || Fri Jul 11 2008 || ||
 || [http://downloads.sourceforge.net/shunit2/shunit2-2.1.3.tgz 2.1.3] || Sun May 10 2008 || Doesn't work with *`zsh`* versions prior to 4.0. ||
