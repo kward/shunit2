@@ -27,13 +27,13 @@ multiple brown-bag releases were made. *Research was done to look for an
 existing product that met the testing requirements, but no adequate product was
 found.*
 
-Tested Operating Systems
+Tested Operating Systems (varies over time)
 
 - Cygwin
 - FreeBSD (user supported)
 - Linux (Gentoo, Ubuntu)
 - Mac OS X
-- Solaris 8, 9, 10
+- Solaris 8, 9, 10 (inc. OpenSolaris)
 
 Tested Shells
 
@@ -42,7 +42,7 @@ Tested Shells
 - DASH (**dash**)
 - Korn Shell (**ksh**)
 - pdksh - Public Domain Korn Shell (**pdksh**)
-- zsh - Zsh (**zsh**) (since 2.1.2) ¿ *please see the Zsh shell errata for more
+- zsh - Zsh (**zsh**) (since 2.1.2) *please see the Zsh shell errata for more
   information*
 
 See the appropriate Release Notes for this release
@@ -351,6 +351,8 @@ Predefined
 ``SHUNIT_TRUE``     Standard shell *true* value (the integer value 0).
 ``SHUNIT_FALSE``    Standard shell *false* value (the integer value 1).
 ``SHUNIT_ERROR``    The integer value 2.
+``SHUNIT_TMPDIR``   Path to temporary directory that will be automatically
+                    cleaned up upon exit of shUnit2.
 ==================  ===========================================================
 
 User defined
@@ -495,8 +497,8 @@ output. ::
 
   OK
 
-But, running the test under any other shell will result in the following output.
-::
+But, running the test under any other Unix shell will result in the following
+output. ::
 
   $ /bin/ksh math_test.sh
   testAdding
