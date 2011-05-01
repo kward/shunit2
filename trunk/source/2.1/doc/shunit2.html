@@ -358,13 +358,13 @@ cases. The decision was finally made to write a proper unit test framework after
 multiple brown-bag releases were made. <em>Research was done to look for an
 existing product that met the testing requirements, but no adequate product was
 found.</em></p>
-<p>Tested Operating Systems</p>
+<p>Tested Operating Systems (varies over time)</p>
 <ul class="simple">
 <li>Cygwin</li>
 <li>FreeBSD (user supported)</li>
 <li>Linux (Gentoo, Ubuntu)</li>
 <li>Mac OS X</li>
-<li>Solaris 8, 9, 10</li>
+<li>Solaris 8, 9, 10 (inc. OpenSolaris)</li>
 </ul>
 <p>Tested Shells</p>
 <ul class="simple">
@@ -373,7 +373,7 @@ found.</em></p>
 <li>DASH (<strong>dash</strong>)</li>
 <li>Korn Shell (<strong>ksh</strong>)</li>
 <li>pdksh - Public Domain Korn Shell (<strong>pdksh</strong>)</li>
-<li>zsh - Zsh (<strong>zsh</strong>) (since 2.1.2) ¿ <em>please see the Zsh shell errata for more
+<li>zsh - Zsh (<strong>zsh</strong>) (since 2.1.2) <em>please see the Zsh shell errata for more
 information</em></li>
 </ul>
 <p>See the appropriate Release Notes for this release
@@ -668,6 +668,10 @@ use to you.</p>
 <tr><td><tt class="docutils literal">SHUNIT_ERROR</tt></td>
 <td>The integer value 2.</td>
 </tr>
+<tr><td><tt class="docutils literal">SHUNIT_TMPDIR</tt></td>
+<td>Path to temporary directory that will be automatically
+cleaned up upon exit of shUnit2.</td>
+</tr>
 </tbody>
 </table>
 <p>User defined</p>
@@ -813,7 +817,8 @@ Ran 1 test.
 
 OK
 </pre>
-<p>But, running the test under any other shell will result in the following output.</p>
+<p>But, running the test under any other Unix shell will result in the following
+output.</p>
 <pre class="literal-block">
 $ /bin/ksh math_test.sh
 testAdding
