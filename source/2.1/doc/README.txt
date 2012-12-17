@@ -165,8 +165,7 @@ Update Website
 --------------
 
 Again, pretty self-explanatory. Make sure to copy the GPG signature file. Once
-that is done, make sure to tag the website so we can go back in time if needed.
-::
+done, make sure to tag the website so we can go back in time if needed. ::
 
   $ pwd
   .../shunit2
