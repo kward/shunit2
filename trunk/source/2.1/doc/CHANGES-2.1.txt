@@ -4,8 +4,8 @@ Changes in shUnit2 2.1.X
 Changes with 2.1.7
 ------------------
 
-Issue #20: Updated the LGPL license from
-http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt.
+Updated the LGPL license from http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt.
+
 
 Changes with 2.1.6
 ------------------
@@ -18,7 +18,8 @@ Fixed error message in fail() that stated wrong number of required arguments.
 
 Updated lib/versions.
 
-Fixed bug in _shunit_mktempDir() where a failure occurred when the 'od' command was not present in /usr/bin.
+Fixed bug in _shunit_mktempDir() where a failure occurred when the 'od' command
+was not present in /usr/bin.
 
 Renamed shunit_tmpDir variable to SHUNIT_TMPDIR to closer match the standard
 TMPDIR variable.
