@@ -1,6 +1,12 @@
 Changes in shUnit2 2.1.X
 ========================
 
+Changes with 2.1.7
+------------------
+
+Issue #20: Updated the LGPL license from
+http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt.
+
 Changes with 2.1.6
 ------------------
 
