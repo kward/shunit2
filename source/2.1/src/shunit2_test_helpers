@@ -203,7 +203,8 @@ _th_showOutput()
   _th_stdout_=$2
   _th_stderr_=$3
 
-  if [ ${_th_return_} != ${SHUNIT_TRUE} ]; then
+  isSkipping
+  if [ $? -eq ${SHUNIT_FALSE} -a ${_th_return_} != ${SHUNIT_TRUE} ]; then
     if [ -n "${_th_stdout_}" -a -s "${_th_stdout_}" ]; then
       echo '>>> STDOUT' >&2
       cat "${_th_stdout_}" >&2
