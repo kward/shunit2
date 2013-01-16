@@ -1,5 +1,5 @@
 #! /bin/sh
-# $Id: gen_test_results.sh 145 2011-06-10 11:45:17Z kate.ward@forestent.com $
+# $Id: gen_test_results.sh 187 2013-01-15 00:01:51Z kate.ward@forestent.com $
 # vim:et:ft=sh:sts=2:sw=2
 #
 # Copyright 2008 Kate Ward. All Rights Reserved.
@@ -43,6 +43,7 @@ os_version=`versions_osVersion`
 DEFINE_boolean force false 'force overwrite' f
 DEFINE_string output_dir "`pwd`" 'output dir' d
 DEFINE_string output_file "${os_name}-${os_version}.txt" 'output file' o
+DEFINE_boolean dry_run false "supress logging to a file" n
 FLAGS "${@:-}" || exit $?
 eval set -- "${FLAGS_ARGV}"
 
@@ -51,9 +52,9 @@ output="${FLAGS_output_dir:+${FLAGS_output_dir}/}${FLAGS_output_file}"
 output=`shlib_relToAbsPath "${output}"`
 
 # checks
-[ -n "${FLAGS_suite}" ] || die 'suite flag missing'
+[ -n "${FLAGS_suite:-}" ] || die 'suite flag missing'
 
-if [ -f "${output}" ]; then
+if [ ${FLAGS_dry_run} -eq ${FLAGS_FALSE} -a -f "${output}" ]; then
   if [ ${FLAGS_force} -eq ${FLAGS_TRUE} ]; then
     rm -f "${output}"
   else
@@ -61,10 +62,21 @@ if [ -f "${output}" ]; then
     exit ${FLAGS_ERROR}
   fi
 fi
-touch "${output}" 2>/dev/null || die "unable to write to '${output}'"
+if [ ${FLAGS_dry_run} -eq ${FLAGS_FALSE} ]; then
+  touch "${output}" 2>/dev/null || die "unable to write to '${output}'"
+fi
 
 # run tests
-( cd "${SRC_DIR}"; ./${FLAGS_suite} |tee "${output}" )
+(
+  cd "${SRC_DIR}";
+  if [ ${FLAGS_dry_run} -eq ${FLAGS_FALSE} ]; then
+    ./${FLAGS_suite} |tee "${output}"
+  else
+    ./${FLAGS_suite}
+  fi
+)
 
-echo >&2
-echo "output written to '${output}'" >&2
+if [ ! ${FLAGS_dry_run} ]; then
+  echo >&2
+  echo "output written to '${output}'" >&2
+fi
