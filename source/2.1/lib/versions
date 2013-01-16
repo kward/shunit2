@@ -1,5 +1,5 @@
 #! /bin/sh
-# $Id: versions 100 2008-11-15 20:24:03Z kate.ward@forestent.com $
+# $Id: versions 175 2013-01-14 22:16:01Z kate.ward@forestent.com $
 # vim:et:ft=sh:sts=2:sw=2
 #
 # Copyright 2008 Kate Ward. All Rights Reserved.
@@ -19,6 +19,9 @@ TRUE=0
 FALSE=1
 ERROR=2
 
+UNAME_R=`uname -r`
+UNAME_S=`uname -s`
+
 __versions_haveStrings=${ERROR}
 
 #------------------------------------------------------------------------------
@@ -28,7 +31,7 @@ __versions_haveStrings=${ERROR}
 versions_osName()
 {
   os_name_='unrecognized'
-  os_system_=`uname -s`
+  os_system_=${UNAME_S}
   case ${os_system_} in
     CYGWIN_NT-*) os_name_='Cygwin' ;;
     Darwin) os_name_='Mac OS X' ;;
@@ -42,6 +45,7 @@ versions_osName()
       fi
       ;;
   esac
+
   echo ${os_name_}
   unset os_name_ os_system_
 }
@@ -49,8 +53,8 @@ versions_osName()
 versions_osVersion()
 {
   os_version_='unrecognized'
-  os_system_=`uname -s`
-  os_release_=`uname -r`
+  os_system_=${UNAME_S}
+  os_release_=${UNAME_R}
   case ${os_system_} in
     CYGWIN_NT-*)
       os_version_=`expr "${os_release_}" : '\([0-9]*\.[0-9]\.[0-9]*\).*'`
@@ -62,6 +66,8 @@ versions_osVersion()
         8.*) minor_='4' ;;
         9.*) minor_='5' ;;
         10.*) minor_='6' ;;
+        11.*) minor_='7' ;;
+        12.*) minor_='8' ;;
         *) minor_='X'; sub_='X' ;;
       esac
       os_version_="${major_}.${minor_}.${sub_}"
@@ -90,6 +96,7 @@ versions_osVersion()
       fi
       ;;
   esac
+
   echo ${os_version_}
   unset os_name_ os_release_ os_version_ major_ minor_ sub_
 }
@@ -148,22 +155,27 @@ versions_shell_ksh()
 {
   versions_shell_=$1
 
-  # see if --version gives a result
-  versions_version_=`${versions_shell_} --version 2>&1 \
-    |sed 's/.*\([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\).*/\1/'`
+  # try a few different ways to figure out the version
+  versions_version_=`${versions_shell_} --version : 2>&1`
+  if [ $? -eq 0 ]; then
+    versions_version_=`echo "${versions_version_}" \
+      |sed 's/.*\([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\).*/\1/'`
+  else
+    versions_version_=''
+  fi
 
-  # --version didn't work... look into the binary
-  if [ $? -ne ${TRUE} ]; then 
+  if [ -z "${versions_version_}" ]; then
     _versions_have_strings
     versions_version_=`strings ${versions_shell_} 2>&1 \
       |grep Version \
       |sed 's/^.*Version \(.*\)$/\1/;s/ s+ \$$//;s/ /-/g'`
-    [ -z "${versions_version_}" ] \
-        && versions_version_=`versions_shell_pdksh ${versions_shell_}`
+  fi
+
+  if [ -z "${versions_version_}" ]; then
+    versions_version_=`versions_shell_pdksh ${versions_shell_}`
   fi
 
   echo ${versions_version_}
-
   unset versions_shell_ versions_version_
 }
 
@@ -179,14 +191,14 @@ versions_shell_zsh()
 {
   versions_shell_=$1
 
-  versions_version_=`${versions_shell_} --version 2>&1 |awk '{print $2}'`
+  # try a few different ways to figure out the version
+  versions_version_=`echo 'echo ${ZSH_VERSION}' |${versions_shell_}`
 
-  if [ $? -ne ${TRUE} ]; then
-    versions_version_=`echo 'echo ${ZSH_VERSION}' |${versions_shell_}`
+  if [ -z "${versions_version_}" ]; then
+    versions_version_=`${versions_shell_} --version 2>&1 |awk '{print $2}'`
   fi
 
   echo ${versions_version_}
-
   unset versions_shell_ versions_version_
 }
 
