@@ -1,0 +1,296 @@
+#------------------------------------------------------------------------------
+# System data
+#
+
+# test run info
+shells: /bin/sh /bin/bash /bin/dash /bin/ksh /bin/pdksh /bin/zsh
+tests:  shunit2_test_asserts.sh shunit2_test_failures.sh shunit2_test_macros.sh shunit2_test_misc.sh shunit2_test_standalone.sh
+
+# system info
+$ date
+Mon May 20 17:56:24 CEST 2013
+
+$ uname -mprsv
+SunOS 5.10 Generic_147441-01 i86pc i386
+
+
+#------------------------------------------------------------------------------
+# Running the test suite with /bin/sh
+#
+shell name: sh
+shell version: unknown
+
+--- Executing the 'asserts' test suite ---
+testAssertEquals
+testAssertNotEquals
+testAssertSame
+testAssertNotSame
+testAssertNull
+testAssertNotNull
+testAssertTrue
+testAssertFalse
+
+Ran 8 tests.
+
+OK
+
+--- Executing the 'failures' test suite ---
+testFail
+testFailNotEquals
+testFailSame
+
+Ran 3 tests.
+
+OK
+
+--- Executing the 'macros' test suite ---
+testAssertEquals
+testAssertNotEquals
+testSame
+testNotSame
+testNull
+testNotNull
+testAssertTrue
+testAssertFalse
+testFail
+testFailNotEquals
+testFailSame
+testFailNotSame
+
+Ran 12 tests.
+
+OK (skipped=24)
+
+--- Executing the 'misc' test suite ---
+testUnboundVariable
+ASSERT:assert message was not generated
+ASSERT:test count message was not generated
+ASSERT:failure message was not generated
+testIssue7
+testPrepForSourcing
+testEscapeCharInStr
+testEscapeCharInStr_specialChars
+testExtractTestFunctions
+
+Ran 6 tests.
+
+FAILED (failures=3)
+
+--- Executing the 'standalone' test suite ---
+testStandalone
+
+Ran 1 test.
+
+OK
+
+
+#------------------------------------------------------------------------------
+# Running the test suite with /bin/bash
+#
+shell name: bash
+shell version: 3.2.51(1)-release
+
+--- Executing the 'asserts' test suite ---
+testAssertEquals
+testAssertNotEquals
+testAssertSame
+testAssertNotSame
+testAssertNull
+testAssertNotNull
+testAssertTrue
+testAssertFalse
+
+Ran 8 tests.
+
+OK
+
+--- Executing the 'failures' test suite ---
+testFail
+testFailNotEquals
+testFailSame
+
+Ran 3 tests.
+
+OK
+
+--- Executing the 'macros' test suite ---
+testAssertEquals
+testAssertNotEquals
+testSame
+testNotSame
+testNull
+testNotNull
+testAssertTrue
+testAssertFalse
+testFail
+testFailNotEquals
+testFailSame
+testFailNotSame
+
+Ran 12 tests.
+
+OK
+
+--- Executing the 'misc' test suite ---
+testUnboundVariable
+ASSERT:assert message was not generated
+ASSERT:test count message was not generated
+ASSERT:failure message was not generated
+testIssue7
+testPrepForSourcing
+testEscapeCharInStr
+testEscapeCharInStr_specialChars
+testExtractTestFunctions
+
+Ran 6 tests.
+
+FAILED (failures=3)
+
+--- Executing the 'standalone' test suite ---
+testStandalone
+
+Ran 1 test.
+
+OK
+
+
+
+#------------------------------------------------------------------------------
+# Running the test suite with /bin/ksh
+#
+shell name: ksh
+shell version: M-11/16/88i
+
+--- Executing the 'asserts' test suite ---
+testAssertEquals
+testAssertNotEquals
+testAssertSame
+testAssertNotSame
+testAssertNull
+testAssertNotNull
+testAssertTrue
+testAssertFalse
+
+Ran 8 tests.
+
+OK
+
+--- Executing the 'failures' test suite ---
+testFail
+testFailNotEquals
+testFailSame
+
+Ran 3 tests.
+
+OK
+
+--- Executing the 'macros' test suite ---
+testAssertEquals
+testAssertNotEquals
+testSame
+testNotSame
+testNull
+testNotNull
+testAssertTrue
+testAssertFalse
+testFail
+testFailNotEquals
+testFailSame
+testFailNotSame
+
+Ran 12 tests.
+
+OK
+
+--- Executing the 'misc' test suite ---
+testUnboundVariable
+ASSERT:assert message was not generated
+ASSERT:test count message was not generated
+ASSERT:failure message was not generated
+testIssue7
+testPrepForSourcing
+testEscapeCharInStr
+testEscapeCharInStr_specialChars
+testExtractTestFunctions
+
+Ran 6 tests.
+
+FAILED (failures=3)
+
+--- Executing the 'standalone' test suite ---
+testStandalone
+
+Ran 1 test.
+
+OK
+
+
+
+#------------------------------------------------------------------------------
+# Running the test suite with /bin/zsh
+#
+shell name: zsh
+shell version: 4.2.1
+
+--- Executing the 'asserts' test suite ---
+testAssertEquals
+testAssertNotEquals
+testAssertSame
+testAssertNotSame
+testAssertNull
+testAssertNotNull
+testAssertTrue
+testAssertFalse
+
+Ran 8 tests.
+
+OK
+
+--- Executing the 'failures' test suite ---
+testFail
+testFailNotEquals
+testFailSame
+
+Ran 3 tests.
+
+OK
+
+--- Executing the 'macros' test suite ---
+testAssertEquals
+testAssertNotEquals
+testSame
+testNotSame
+testNull
+testNotNull
+testAssertTrue
+testAssertFalse
+testFail
+testFailNotEquals
+testFailSame
+testFailNotSame
+
+Ran 12 tests.
+
+OK
+
+--- Executing the 'misc' test suite ---
+testUnboundVariable
+ASSERT:assert message was not generated
+ASSERT:test count message was not generated
+ASSERT:failure message was not generated
+testIssue7
+testPrepForSourcing
+testEscapeCharInStr
+testEscapeCharInStr_specialChars
+testExtractTestFunctions
+
+Ran 6 tests.
+
+FAILED (failures=3)
+
+--- Executing the 'standalone' test suite ---
+testStandalone
+
+Ran 1 test.
+
+OK
