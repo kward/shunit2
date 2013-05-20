@@ -1,4 +1,3 @@
-# $Id: shlib 14 2007-02-18 19:43:41Z sfsetse $
 # vim:et:ft=sh:sts=2:sw=2
 #
 # Copyright 2008 Kate Ward. All Rights Reserved.
@@ -24,13 +23,13 @@ shlib_relToAbsPath()
 
   # prepend current directory to relative paths
   echo "${shlib_path_}" |grep '^/' >/dev/null 2>&1 \
-      || shlib_path_="`pwd`/${shlib_path_}"
+      || shlib_path_="${PWD}/${shlib_path_}"
 
   # clean up the path. if all seds supported true regular expressions, then
   # this is what it would be:
   shlib_old_=${shlib_path_}
   while true; do
-    shlib_new_=`echo "${shlib_old_}" |sed 's/[^/]*\/\.\.\/*//g;s/\/\.\//\//'`
+    shlib_new_=`echo "${shlib_old_}" |sed 's/[^/]*\/\.\.\/*//;s/\/\.\//\//'`
     [ "${shlib_old_}" = "${shlib_new_}" ] && break
     shlib_old_=${shlib_new_}
   done
