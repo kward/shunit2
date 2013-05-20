@@ -119,7 +119,6 @@ we'd better build it. ::
   $ cd doc
   $ RST2HTML_OPTS='--stylesheet-path=rst2html.css'
   $ rst2html ${RST2HTML_OPTS} shunit2.txt >shunit2.html
-  $ rst2html ${RST2HTML_OPTS} README.txt >README.html
 
 Check In All the Code
 ---------------------
