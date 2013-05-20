@@ -511,7 +511,7 @@ As you can see, the total number of tests has not changed, but the report
 indicates that some tests were skipped.
 
 Skipping can be controlled with the following functions: ``startSkipping()``,
-``stopSkipping()``, and ``isSkipping()``. Once skipping is enabled, it will
+``endSkipping()``, and ``isSkipping()``. Once skipping is enabled, it will
 remain enabled until the end of the current test function call, after which
 skipping is disabled.
 
