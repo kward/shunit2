@@ -50,10 +50,10 @@ main()
   # determine output filename
   output="${FLAGS_output_dir:+${FLAGS_output_dir}/}${FLAGS_output_file}"
   output=`shlib_relToAbsPath "${output}"`
-  
+
   # checks
   [ -n "${FLAGS_suite:-}" ] || die 'suite flag missing'
-  
+
   if [ ${FLAGS_dry_run} -eq ${FLAGS_FALSE} -a -f "${output}" ]; then
     if [ ${FLAGS_force} -eq ${FLAGS_TRUE} ]; then
       rm -f "${output}"
@@ -65,7 +65,7 @@ main()
   if [ ${FLAGS_dry_run} -eq ${FLAGS_FALSE} ]; then
     touch "${output}" 2>/dev/null || die "unable to write to '${output}'"
   fi
-  
+
   # run tests
   (
     cd "${SRC_DIR}";
@@ -75,7 +75,7 @@ main()
       ./${FLAGS_suite}
     fi
   )
-  
+
   if [ ! ${FLAGS_dry_run} ]; then
     echo >&2
     echo "output written to '${output}'" >&2
