@@ -85,4 +85,4 @@ main()
 FLAGS "$@" || exit $?
 [ ${FLAGS_help} -eq ${FALSE} ] || exit
 eval set -- "${FLAGS_ARGV}"
-main "$@"
+main "${@:-}"
