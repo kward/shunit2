@@ -20,6 +20,7 @@
 # incorrectly interpret the embedded functions as real functions.
 testUnboundVariable()
 {
+  unittestF="${SHUNIT_TMPDIR}/unittest"
   sed 's/^#//' >"${unittestF}" <<EOF
 ## treat unset variables as an error when performing parameter expansion
 #set -u
@@ -116,7 +117,7 @@ testEscapeCharInStr_specialChars()
 # treated as real functions by shUnit2.
 testExtractTestFunctions()
 {
-  f="${tmpD}/extract_test_functions"
+  f="${SHUNIT_TMPDIR}/extract_test_functions"
   sed 's/^#//' <<EOF >"${f}"
 #testABC() { echo 'ABC'; }
 #test_def() {
@@ -147,17 +148,11 @@ setUp()
   for f in ${expectedF} ${stdoutF} ${stderrF}; do
     cp /dev/null ${f}
   done
-  rm -fr "${tmpD}"
-  mkdir "${tmpD}"
 }
 
 oneTimeSetUp()
 {
-  tmpD="${SHUNIT_TMPDIR}/tmp"
-  expectedF="${SHUNIT_TMPDIR}/expected"
-  stdoutF="${SHUNIT_TMPDIR}/stdout"
-  stderrF="${SHUNIT_TMPDIR}/stderr"
-  unittestF="${SHUNIT_TMPDIR}/unittest"
+  th_oneTimeSetUp
 }
 
 # load and run shUnit2
