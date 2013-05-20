@@ -238,10 +238,7 @@ testFailNotSame()
 
 oneTimeSetUp()
 {
-  tmpDir="${__shunit_tmpDir}/output"
-  mkdir "${tmpDir}"
-  stdoutF="${tmpDir}/stdout"
-  stderrF="${tmpDir}/stderr"
+  th_oneTimeSetUp
 }
 
 # load and run shUnit2
