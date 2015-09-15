@@ -715,7 +715,7 @@ suite_addTest() {
 # Note: see _shunit_mktempFunc() for actual implementation
 #
 # Args:
-#   None
+#   testName Name of the test that will be executed after this setUp
 #setUp() { :; }  # DO NOT UNCOMMENT THIS FUNCTION
 
 # Note: see _shunit_mktempFunc() for actual implementation
@@ -727,7 +727,7 @@ suite_addTest() {
 # Note: see _shunit_mktempFunc() for actual implementation
 #
 # Args:
-#   None
+#   testName Name of the test after which this tearDown is executed
 #tearDown() { :; }  # DO NOT UNCOMMENT THIS FUNCTION
 
 #------------------------------------------------------------------------------
@@ -879,14 +879,14 @@ _shunit_execSuite() {
     endSkipping
 
     # Execute the per-test setup function.
-    setUp
+    setUp "${_shunit_test_}"
 
     # Execute the test.
     echo "${__SHUNIT_TEST_PREFIX}${_shunit_test_}"
     eval "${_shunit_test_}"
 
     # Execute the per-test tear-down function.
-    tearDown
+    tearDown "${_shunit_test_}"
 
     # Update stats.
     if \[ ${__shunit_testSuccess} -eq ${SHUNIT_TRUE} ]; then
