@@ -108,7 +108,7 @@ Any string values passed should be properly quoted -- they should must be surrou
 &nbsp;&nbsp;&nbsp;&nbsp;This function is functionally equivalent to `assertNotEquals`.
 
 `assertNull [message] value`
-&nbsp;&nbsp;&nbsp;&nbsp;Asserts that _value_ is _null, or in shell terms, a zero-length string. The _value_ must be a string as an integer value does not translate into a zero-length string. The _message_ is optional, and must be quoted.
+&nbsp;&nbsp;&nbsp;&nbsp;Asserts that _value_ is _null_, or in shell terms, a zero-length string. The _value_ must be a string as an integer value does not translate into a zero-length string. The _message_ is optional, and must be quoted.
 
 `assertNotNull [message] value`
 &nbsp;&nbsp;&nbsp;&nbsp;Asserts that _value_ is _not null_, or in shell terms, a non-empty string. The _value_ may be a string or an integer as the later will be parsed as a non-empty string value. The _message_ is optional, and must be quoted.
