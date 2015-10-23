@@ -278,6 +278,7 @@ Example -- Asserts with and without line numbers
     . ../src/shell/shunit2
 
 Notes:
+
 1. Due to how shell parses command-line arguments, all strings used with macros should be quoted twice. Namely, single-quotes must be converted to single-double-quotes, and vice-versa. If the string being passed is absolutely for sure not empty, the extra quoting is not necessary.
 
 Normal `assertEquals` call.
