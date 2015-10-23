@@ -233,17 +233,17 @@ This section covers several advanced usage topics.
 
 There are several constants provided by shUnit2 as variables that might be of use to you.
 
-Predefined
----
-SHUNIT_VERSION | The version of shUnit2 you are running.
-SHUNIT_TRUE    | Standard shell _true_ value (the integer value 0).
-SHUNIT_FALSE   | Standard shell _false_ value (the integer value 1).
-SHUNIT_ERROR   | The integer value 2.
-SHUNIT_TMPDIR  | Path to temporary directory that will be automatically cleaned up upon exit of shUnit2.
+| :Predefined: |
+| --- |
+| SHUNIT_VERSION | The version of shUnit2 you are running. |
+| SHUNIT_TRUE    | Standard shell _true_ value (the integer value 0). |
+| SHUNIT_FALSE   | Standard shell _false_ value (the integer value 1). |
+| SHUNIT_ERROR   | The integer value 2. |
+| SHUNIT_TMPDIR  | Path to temporary directory that will be automatically cleaned up upon exit of shUnit2. |
 
-User defined
----
-SHUNIT_PARENT  | The filename of the shell script containing the tests. This is needed specifically for Zsh support.
+| :User defined: |
+| --- |
+| SHUNIT_PARENT  | The filename of the shell script containing the tests. This is needed specifically for Zsh support. |
 
 ### Error handling
 
@@ -346,3 +346,22 @@ Example -- math unit test
 
 Running the above test under the __bash__ shell will result in the following output.
 
+    $ /bin/bash math_test.sh
+    testAdding
+    
+    Ran 1 test.
+    
+    OK
+
+But, running the test under any other Unix shell will result in the following output.
+
+    $ /bin/ksh math_test.sh
+    testAdding
+    
+    Ran 1 test.
+    
+    OK (skipped=1)
+
+As you can see, the total number of tests has not changed, but the report indicates that some tests were skipped.
+
+Skipping can be controlled with the following functions: `startSkipping()`, `endSkipping()`, and `isSkipping()`. Once skipping is enabled, it will remain enabled until the end of the current test function call, after which skipping is disabled.
