@@ -96,44 +96,52 @@ Any string values passed should be properly quoted -- they should must be surrou
 ### Asserts
 
 `assertEquals [message] expected actual`
-&nbsp;&nbsp;&nbsp;&nbsp;Asserts that _expected_ and _actual_ are equal to one another. The _expected_ and _actual_ values can be either strings or integer values as both will be treated as strings. The _message_ is optional, and must be quoted.
+
+Asserts that _expected_ and _actual_ are equal to one another. The _expected_ and _actual_ values can be either strings or integer values as both will be treated as strings. The _message_ is optional, and must be quoted.
 
 `assertNotEquals [message] expected actual`
-&nbsp;&nbsp;&nbsp;&nbsp;Asserts that _unexpected_ and _actual_ are not equal to one another. The _unexpected_ and _actual_ values can be either strings or integer values as both will be treaded as strings. The _message_ is optional, and must be quoted.
+
+Asserts that _unexpected_ and _actual_ are not equal to one another. The _unexpected_ and _actual_ values can be either strings or integer values as both will be treaded as strings. The _message_ is optional, and must be quoted.
 
 `assertSame [message] expected actual`
-&nbsp;&nbsp;&nbsp;&nbsp;This function is functionally equivalent to `assertEquals`.
+
+This function is functionally equivalent to `assertEquals`.
 
 `assertNotSame [message] unexpected actual`
-&nbsp;&nbsp;&nbsp;&nbsp;This function is functionally equivalent to `assertNotEquals`.
+
+This function is functionally equivalent to `assertNotEquals`.
 
 `assertNull [message] value`
-&nbsp;&nbsp;&nbsp;&nbsp;Asserts that _value_ is _null_, or in shell terms, a zero-length string. The _value_ must be a string as an integer value does not translate into a zero-length string. The _message_ is optional, and must be quoted.
+
+Asserts that _value_ is _null_, or in shell terms, a zero-length string. The _value_ must be a string as an integer value does not translate into a zero-length string. The _message_ is optional, and must be quoted.
 
 `assertNotNull [message] value`
-&nbsp;&nbsp;&nbsp;&nbsp;Asserts that _value_ is _not null_, or in shell terms, a non-empty string. The _value_ may be a string or an integer as the later will be parsed as a non-empty string value. The _message_ is optional, and must be quoted.
+
+Asserts that _value_ is _not null_, or in shell terms, a non-empty string. The _value_ may be a string or an integer as the later will be parsed as a non-empty string value. The _message_ is optional, and must be quoted.
 
 `assertTrue [message] condition`
-&nbsp;&nbsp;&nbsp;&nbsp;Asserts that a given shell test _condition_ is _true_. The condition can be as simple as a shell _true_ value (the value `0` -- equivalent to `${SHUNIT_TRUE}`), or a more sophisticated shell conditional expression. The _message_ is optional, and must be quoted.
 
-&nbsp;&nbsp;&nbsp;&nbsp;A sophisticated shell conditional expression is equivalent to what the __if__ or __while__ shell built-ins would use (more specifically, what the __test__ command would use). Testing for example whether some value is greater than another value can be done this way.
+Asserts that a given shell test _condition_ is _true_. The condition can be as simple as a shell _true_ value (the value `0` -- equivalent to `${SHUNIT_TRUE}`), or a more sophisticated shell conditional expression. The _message_ is optional, and must be quoted.
 
-    &nbsp;&nbsp;&nbsp;&nbsp;assertTrue "[ 34 -gt 23 ]"
+A sophisticated shell conditional expression is equivalent to what the __if__ or __while__ shell built-ins would use (more specifically, what the __test__ command would use). Testing for example whether some value is greater than another value can be done this way.
 
-&nbsp;&nbsp;&nbsp;&nbsp;Testing for the ability to read a file can also be done. This particular test will fail.
+    assertTrue "[ 34 -gt 23 ]"
 
-    &nbsp;&nbsp;&nbsp;&nbsp;assertTrue 'test failed' "[ -r /some/non-existant/file' ]"
+Testing for the ability to read a file can also be done. This particular test will fail.
 
-&nbsp;&nbsp;&nbsp;&nbsp;As the expressions are standard shell __test__ expressions, it is possible to string multiple expressions together with `-a` and `-o` in the standard fashion. This test will succeed as the entire expression evaluates to _true_.
+    assertTrue 'test failed' "[ -r /some/non-existant/file' ]"
 
-    &nbsp;&nbsp;&nbsp;&nbsp;assertTrue 'test failed' '[ 1 -eq 1 -a 2 -eq 2 ]'
+As the expressions are standard shell __test__ expressions, it is possible to string multiple expressions together with `-a` and `-o` in the standard fashion. This test will succeed as the entire expression evaluates to _true_.
+
+    assertTrue 'test failed' '[ 1 -eq 1 -a 2 -eq 2 ]'
 
 _One word of warning: be very careful with your quoting as shell is not the most forgiving of bad quoting, and things will fail in strange ways._
 
 `assertFalse [message] condition`
-&nbsp;&nbsp;&nbsp;&nbsp;Asserts that a given shell test _condition_ is _false_. The condition can be as simple as a shell _false_ value (the value `1` -- equivalent to `${SHUNIT_FALSE}`), or a more sophisticated shell conditional expression. The _message_ is optional, and must be quoted.
 
-&nbsp;&nbsp;&nbsp;&nbsp;_For examples of more sophisticated expressions, see `assertTrue`._
+Asserts that a given shell test _condition_ is _false_. The condition can be as simple as a shell _false_ value (the value `1` -- equivalent to `${SHUNIT_FALSE}`), or a more sophisticated shell conditional expression. The _message_ is optional, and must be quoted.
+
+_For examples of more sophisticated expressions, see `assertTrue`._
 
 ### Failures
 
@@ -142,67 +150,80 @@ Just to clarify, failures __do not__ test the various arguments against one anot
 If all failures do is fail, why might one use them? There are times when you may have some very complicated logic that you need to test, and the simple asserts provided are simply not adequate. You can do your own validation of the code, use an `assertTrue ${SHUNIT_TRUE}` if your own tests succeeded, and use a failure to record a failure.
 
 `fail [message]`
-&nbsp;&nbsp;&nbsp;&nbsp;Fails the test immediately. The _message_ is optional, and must be quoted.
+
+Fails the test immediately. The _message_ is optional, and must be quoted.
 
 `failNotEquals [message] unexpected actual`
-&nbsp;&nbsp;&nbsp;&nbsp;Fails the test immediately, reporting that the _unexpected_ and _actual_ values are not equal to one another. The _message_ is optional, and must be quoted.
 
-&nbsp;&nbsp;&nbsp;&nbsp;_Note: no actual comparison of unexpected and actual is done._
+Fails the test immediately, reporting that the _unexpected_ and _actual_ values are not equal to one another. The _message_ is optional, and must be quoted.
+
+_Note: no actual comparison of unexpected and actual is done._
 
 `failSame [message] expected actual`
-&nbsp;&nbsp;&nbsp;&nbsp;Fails the test immediately, reporting that the _expected_ and _actual_ values are the same. The _message_ is optional, and must be quoted.
 
-&nbsp;&nbsp;&nbsp;&nbsp;_Note: no actual comparison of expected and actual is done._
+Fails the test immediately, reporting that the _expected_ and _actual_ values are the same. The _message_ is optional, and must be quoted.
+
+_Note: no actual comparison of expected and actual is done._
 
 `failNotSame [message] expected actual`
-&nbsp;&nbsp;&nbsp;&nbsp;Fails the test immediately, reporting that the _expected_ and _actual_ values are not the same. The _message_ is optional, and must be quoted.
 
-&nbsp;&nbsp;&nbsp;&nbsp;_Note: no actual comparison of expected and actual is done._
+Fails the test immediately, reporting that the _expected_ and _actual_ values are not the same. The _message_ is optional, and must be quoted.
+
+_Note: no actual comparison of expected and actual is done._
 
 ### Setup/Teardown
 
 `oneTimeSetUp`
-&nbsp;&nbsp;&nbsp;&nbsp;This function can be be optionally overridden by the user in their test suite.
 
-&nbsp;&nbsp;&nbsp;&nbsp;If this function exists, it will be called once before any tests are run. It is useful to prepare a common environment for all tests.
+This function can be be optionally overridden by the user in their test suite.
+
+If this function exists, it will be called once before any tests are run. It is useful to prepare a common environment for all tests.
 
 `oneTimeTearDown`
-&nbsp;&nbsp;&nbsp;&nbsp;This function can be be optionally overridden by the user in their test suite.
 
-&nbsp;&nbsp;&nbsp;&nbsp;If this function exists, it will be called once after all tests are completed. It is useful to clean up the environment after all tests.
+This function can be be optionally overridden by the user in their test suite.
+
+If this function exists, it will be called once after all tests are completed. It is useful to clean up the environment after all tests.
 
 `setUp`
-&nbsp;&nbsp;&nbsp;&nbsp;This function can be be optionally overridden by the user in their test suite.
 
-&nbsp;&nbsp;&nbsp;&nbsp;If this function exists, it will be called before each test is run. It is useful to reset the environment before each test.
+This function can be be optionally overridden by the user in their test suite.
+
+If this function exists, it will be called before each test is run. It is useful to reset the environment before each test.
 
 `tearDown`
-&nbsp;&nbsp;&nbsp;&nbsp;This function can be be optionally overridden by the user in their test suite.
 
-&nbsp;&nbsp;&nbsp;&nbsp;If this function exists, it will be called after each test completes. It is useful to clean up the environment after each test.
+This function can be be optionally overridden by the user in their test suite.
+
+If this function exists, it will be called after each test completes. It is useful to clean up the environment after each test.
 
 ### Skipping
 
 `startSkipping`
-&nbsp;&nbsp;&nbsp;&nbsp;This function forces the remaining _assert_ and _fail_ functions to be "skipped", i.e. they will have no effect. Each function skipped will be recorded so that the total of asserts and fails will not be altered.
+
+This function forces the remaining _assert_ and _fail_ functions to be "skipped", i.e. they will have no effect. Each function skipped will be recorded so that the total of asserts and fails will not be altered.
 
 `endSkipping`
-&nbsp;&nbsp;&nbsp;&nbsp;This function returns calls to the _assert_ and _fail_ functions to their default behavior, i.e. they will be called.
+
+This function returns calls to the _assert_ and _fail_ functions to their default behavior, i.e. they will be called.
 
 `isSkipping`
-&nbsp;&nbsp;&nbsp;&nbsp;This function returns the current state of skipping. It can be compared against `${SHUNIT_TRUE}` or `${SHUNIT_FALSE}` if desired.
+
+This function returns the current state of skipping. It can be compared against `${SHUNIT_TRUE}` or `${SHUNIT_FALSE}` if desired.
 
 ### Suites
 
 The default behavior of shUnit2 is that all tests will be found dynamically. If you have a specific set of tests you want to run, or you don't want to use the standard naming scheme of prefixing your tests with `test`, these functions are for you. Most users will never use them though.
 
 `suite`
-&nbsp;&nbsp;&nbsp;&nbsp;This function can be optionally overridden by the user in their test suite.
 
-&nbsp;&nbsp;&nbsp;&nbsp;If this function exists, it will be called when `shunit2` is sourced. If it does not exist, shUnit2 will search the parent script for all functions beginning with the word `test`, and they will be added dynamically to the test suite.
+This function can be optionally overridden by the user in their test suite.
+
+If this function exists, it will be called when `shunit2` is sourced. If it does not exist, shUnit2 will search the parent script for all functions beginning with the word `test`, and they will be added dynamically to the test suite.
 
 `suite_addTest name`
-&nbsp;&nbsp;&nbsp;&nbsp;This function adds a function named _name_ to the list of tests scheduled for execution as part of this test suite. This function should only be called from within the `suite()` function.
+
+This function adds a function named _name_ to the list of tests scheduled for execution as part of this test suite. This function should only be called from within the `suite()` function.
 
 #### Advanced Usage
 
@@ -213,7 +234,7 @@ This section covers several advanced usage topics.
 There are several constants provided by shUnit2 as variables that might be of use to you.
 
 Predefined
-
+---
 SHUNIT_VERSION | The version of shUnit2 you are running.
 SHUNIT_TRUE    | Standard shell _true_ value (the integer value 0).
 SHUNIT_FALSE   | Standard shell _false_ value (the integer value 1).
@@ -221,7 +242,7 @@ SHUNIT_ERROR   | The integer value 2.
 SHUNIT_TMPDIR  | Path to temporary directory that will be automatically cleaned up upon exit of shUnit2.
 
 User defined
-
+---
 SHUNIT_PARENT  | The filename of the shell script containing the tests. This is needed specifically for Zsh support.
 
 ### Error handling
@@ -255,13 +276,13 @@ Example -- Asserts with and without line numbers
 Notes:
 1. Due to how shell parses command-line arguments, all strings used with macros should be quoted twice. Namely, single-quotes must be converted to single-double-quotes, and vice-versa. If the string being passed is absolutely for sure not empty, the extra quoting is not necessary.
 
-&nbsp;&nbsp;&nbsp;&nbsp;Normal `assertEquals` call.
+Normal `assertEquals` call.
 
-    &nbsp;&nbsp;&nbsp;&nbsp;assertEquals 'some message' 'x' ''
+    assertEquals 'some message' 'x' ''
 
-&nbsp;&nbsp;&nbsp;&nbsp;Macro `_ASSERT_EQUALS_` call. Note the extra quoting around the _message_ and the _null_ value.
+Macro `_ASSERT_EQUALS_` call. Note the extra quoting around the _message_ and the _null_ value.
 
-    &nbsp;&nbsp;&nbsp;&nbsp;_ASSERT_EQUALS_ '"some message"' 'x' '""'
+    _ASSERT_EQUALS_ '"some message"' 'x' '""'
 
 2. Line numbers are not supported in all shells. If a shell does not support them, no errors will be thrown. Supported shells include: __bash__ (>=3.0), __ksh__, __pdksh__, and __zsh__.
 
