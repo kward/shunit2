@@ -312,13 +312,13 @@ Notes:
 
 Normal `assertEquals` call.
 
-    assertEquals 'some message' 'x' ''
+        assertEquals 'some message' 'x' ''
 
 Macro `_ASSERT_EQUALS_` call. Note the extra quoting around the _message_ and the _null_ value.
 
-    _ASSERT_EQUALS_ '"some message"' 'x' '""'
+        _ASSERT_EQUALS_ '"some message"' 'x' '""'
 
-2. Line numbers are not supported in all shells. If a shell does not support them, no errors will be thrown. Supported shells include: __bash__ (>=3.0), __ksh__, __pdksh__, and __zsh__.
+1. Line numbers are not supported in all shells. If a shell does not support them, no errors will be thrown. Supported shells include: __bash__ (>=3.0), __ksh__, __pdksh__, and __zsh__.
 
 ### <a name="test-skipping"></a> Test Skipping
 
@@ -414,12 +414,12 @@ For compatibility with Zsh, there is one requirement that must be met -- the `sh
 
 1. In the unit-test script, add the following shell code snippet before sourcing the `shunit2` library.
 
-`setopt shwordsplit`
+        setopt shwordsplit
 
 1. When invoking __zsh__ from either the command-line or as a script with `#!`, add the `-y` parameter.
 
-`#! /bin/zsh -y`
+        #! /bin/zsh -y
 
 1. When invoking __zsh__ from the command-line, add `-o shwordsplit --` as parameters before the script name.
 
-`$ zsh -o shwordsplit -- some_script`
+        $ zsh -o shwordsplit -- some_script
