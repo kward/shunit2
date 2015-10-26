@@ -31,6 +31,8 @@ shUnit2 is the original product of many hours of work by Kate Ward, the primary 
 #### Feedback
 Feedback is most certainly welcome for this document. Send your additions, comments and criticisms to the shunit2-users@google.com mailing list.
 
+---
+
 #### Quickstart
 This section will give a very quick start to running unit tests with shUnit2. More information is located in later sections.
 
@@ -86,6 +88,8 @@ We should now try adding a test that fails. Change your unit test to look like t
 So, what did you get? I guess it told you that this isn't 1999. Bummer, eh? Hopefully, you noticed a couple of things that were different about the second test. First, we added an optional message that the user will see if the assert fails. Second, we did comparisons of strings instead of integers as in the first test. It doesn't matter whether you are testing for equality of strings or integers. Both work equally well with shUnit2.
 
 Hopefully, this is enough to get you started with unit testing. If you want a ton more examples, take a look at the tests provided with [log4sh](http://log4sh.sourceforge.net) or [shFlags](http://shflags.googlecode.com). Both provide excellent examples of more advanced usage. shUnit2 was after all written to help with the unit testing problems that [log4sh](http://log4sh.sourceforge.net) had.
+
+---
 
 #### Function Reference
 
@@ -224,6 +228,8 @@ If this function exists, it will be called when `shunit2` is sourced. If it does
 `suite_addTest name`
 
 This function adds a function named _name_ to the list of tests scheduled for execution as part of this test suite. This function should only be called from within the `suite()` function.
+
+---
 
 #### Advanced Usage
 
@@ -371,6 +377,8 @@ As you can see, the total number of tests has not changed, but the report indica
 
 Skipping can be controlled with the following functions: `startSkipping()`, `endSkipping()`, and `isSkipping()`. Once skipping is enabled, it will remain enabled until the end of the current test function call, after which skipping is disabled.
 
+---
+
 #### Appendix
 
 ### Getting Help
@@ -382,13 +390,13 @@ For help, please send requests to either the shunit2-users@googlegroups.com mail
 For compatibility with Zsh, there is one requirement that must be met -- the `shwordsplit` option must be set. There are three ways to accomplish this.
 
 1. In the unit-test script, add the following shell code snippet before sourcing the `shunit2` library.
-
-    setopt shwordsplit
+ 
+       setopt shwordsplit
 
 1. When invoking __zsh__ from either the command-line or as a script with `#!`, add the `-y` parameter.
 
-    #! /bin/zsh -y
+        #! /bin/zsh -y
 
 1. When invoking __zsh__ from the command-line, add `-o shwordsplit --` as parameters before the script name.
 
-    $ zsh -o shwordsplit -- some_script
+        $ zsh -o shwordsplit -- some_script
