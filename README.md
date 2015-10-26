@@ -370,4 +370,25 @@ But, running the test under any other Unix shell will result in the following ou
 As you can see, the total number of tests has not changed, but the report indicates that some tests were skipped.
 
 Skipping can be controlled with the following functions: `startSkipping()`, `endSkipping()`, and `isSkipping()`. Once skipping is enabled, it will remain enabled until the end of the current test function call, after which skipping is disabled.
- test 
+
+#### Appendix
+
+### Getting Help
+
+For help, please send requests to either the shunit2-users@googlegroups.com mailing list (archives available on the web at http://groups.google.com/group/shunit2-users) or directly to Kate Ward <kate dot ward at forestent dot com>.
+
+### Zsh
+
+For compatibility with Zsh, there is one requirement that must be met -- the `shwordsplit` option must be set. There are three ways to accomplish this.
+
+1. In the unit-test script, add the following shell code snippet before sourcing the `shunit2` library.
+
+    setopt shwordsplit
+
+1. When invoking __zsh__ from either the command-line or as a script with `#!`, add the `-y` parameter.
+
+    #! /bin/zsh -y
+
+1. When invoking __zsh__ from the command-line, add `-o shwordsplit --` as parameters before the script name.
+
+    $ zsh -o shwordsplit -- some_script
