@@ -1,7 +1,30 @@
-#### Abstract
+#### <a name="abstract"></a> Abstract
 shUnit2 is a [xUnit](http://en.wikipedia.org/wiki/XUnit) unit test framework for Bourne based shell scripts, and it is designed to work in a similar manner to [JUnit](http://www.junit.org), [PyUnit](http://pyunit.sourceforge.net), etc.. If you have ever had the desire to write a unit test for a shell script, shUnit2 can do the job.
 
-#### Introduction
+##### Table of Contents
+* [Abstract](#abstract)
+* [Introduction](#introduction)
+** [Credits / Contributors](#credits-contributors)
+** [Feedback](#feedback)
+* [Quickstart](#quickstart)
+* [Function Reference](#function-reference)
+** [General Info](#general-info)
+** [Asserts](#asserts)
+** [Failures](#failures)
+** [Setup/Teardown](#setup-teardown)
+** [Skipping](#skipping)
+** [Suites](#suites)
+* [Advanced Usage](#advanced-usage)
+** [Some constants you can use](#some-constants-you-can-use)
+** [Error Handling](#error-handling)
+** [Including Line Numbers in Asserts (Macros)](#including-line-numbers-in-asserts-macros)
+** [Test Skipping](#test-skipping)
+* [Appendix](#appendix)
+** [Getting help](#getting-help)
+** [Zsh](#zsh)
+
+---
+#### <a name="introduction"></a> Introduction
 shUnit2 was originally developed to provide a consistent testing solution for [log4sh](http://log4sh.sourceforge.net), a shell based logging framework similar to [log4j](http://logging.apache.org). During the development of that product, a repeated problem of having things work just fine under one shell (`/bin/bash` on Linux to be specific), and then not working under another shell (`/bin/sh` on Solaris) kept coming up. Although several simple tests were run, they were not adequate and did not catch some corner cases. The decision was finally made to write a proper unit test framework after multiple brown-bag releases were made. _Research was done to look for an existing product that met the testing requirements, but no adequate product was found._
 
 Tested Operating Systems (varies over time)
@@ -23,17 +46,17 @@ Tested Shells
 
 See the appropriate Release Notes for this release (`doc/RELEASE_NOTES-X.X.X.txt`) for the list of actual versions tested.
 
-#### Credits / Contributors
+#### <a name="credits-contributors"></a> Credits / Contributors
 A list of contributors to shUnit2 can be found in the source archive in `doc/contributors.txt`. Many thanks go out to all those who have contributed to make this a better tool.
 
 shUnit2 is the original product of many hours of work by Kate Ward, the primary author of the code. For other products by her, look up [log4sh](http://log4sh.sourceforge.net) or [shFlags](http://shflags.googlecode.com), or visit her website at http://forestent.com/.
 
-#### Feedback
+#### <a name="feedback"></a> Feedback
 Feedback is most certainly welcome for this document. Send your additions, comments and criticisms to the shunit2-users@google.com mailing list.
 
 ---
 
-#### Quickstart
+#### <a name="quickstart"></a> Quickstart
 This section will give a very quick start to running unit tests with shUnit2. More information is located in later sections.
 
 Here is a quick sample script to show how easy it is to write a unit test in shell. _Note: the script as it stands expects that you are running it from the "examples" directory._
@@ -91,13 +114,13 @@ Hopefully, this is enough to get you started with unit testing. If you want a to
 
 ---
 
-#### Function Reference
+#### <a name="function-reference"></a> Function Reference
 
-### General Info
+### <a name="general-info"></a> General Info
 
 Any string values passed should be properly quoted -- they should must be surrounded by single-quote (`'`) or double-quote (`"`) characters -- so that the shell will properly parse them.
 
-### Asserts
+### <a name="asserts"></a> Asserts
 
 `assertEquals [message] expected actual`
 
@@ -147,7 +170,7 @@ Asserts that a given shell test _condition_ is _false_. The condition can be as 
 
 _For examples of more sophisticated expressions, see `assertTrue`._
 
-### Failures
+### <a name="failures"></a> Failures
 
 Just to clarify, failures __do not__ test the various arguments against one another. Failures simply fail, optionally with a message, and that is all they do. If you need to test arguments against one another, use asserts.
 
@@ -175,7 +198,7 @@ Fails the test immediately, reporting that the _expected_ and _actual_ values ar
 
 _Note: no actual comparison of expected and actual is done._
 
-### Setup/Teardown
+### <a name="setup-teardown"></a> Setup/Teardown
 
 `oneTimeSetUp`
 
@@ -201,7 +224,7 @@ This function can be be optionally overridden by the user in their test suite.
 
 If this function exists, it will be called after each test completes. It is useful to clean up the environment after each test.
 
-### Skipping
+### <a name="skipping"></a> Skipping
 
 `startSkipping`
 
@@ -215,7 +238,7 @@ This function returns calls to the _assert_ and _fail_ functions to their defaul
 
 This function returns the current state of skipping. It can be compared against `${SHUNIT_TRUE}` or `${SHUNIT_FALSE}` if desired.
 
-### Suites
+### <a name="suites"></a> Suites
 
 The default behavior of shUnit2 is that all tests will be found dynamically. If you have a specific set of tests you want to run, or you don't want to use the standard naming scheme of prefixing your tests with `test`, these functions are for you. Most users will never use them though.
 
@@ -231,11 +254,11 @@ This function adds a function named _name_ to the list of tests scheduled for ex
 
 ---
 
-#### Advanced Usage
+#### <a name="advanced-usage"></a> Advanced Usage
 
 This section covers several advanced usage topics.
 
-### Some constants you can use
+### <a name="some-constants-you-can-use"></a> Some constants you can use
 
 There are several constants provided by shUnit2 as variables that might be of use to you.
 
@@ -255,11 +278,11 @@ User defined
 |---|---|
 | SHUNIT_PARENT  | The filename of the shell script containing the tests. This is needed specifically for Zsh support. |
 
-### Error handling
+### <a name="error-handling"></a> Error handling
 
 The constants values `SHUNIT_TRUE`, `SHUNIT_FALSE`, and `SHUNIT_ERROR` are returned from nearly every function to indicate the success or failure of the function. Additionally the variable `flags_error` is filled with a detailed error message if any function returns with a `SHUNIT_ERROR` value.
 
-### Including Line Numbers in Asserts (Macros)
+### <a name="including-line-numbers-in-asserts-macros"></a> Including Line Numbers in Asserts (Macros)
 
 If you include lots of assert statements in an individual test function, it can become difficult to determine exactly which assert was thrown unless your messages are unique. To help somewhat, line numbers can be included in the assert messages. To enable this, a special shell "macro" must be used rather than the standard assert calls. _Shell doesn't actually have macros; the name is used here as the operation is similar to a standard macro._
 
@@ -297,7 +320,7 @@ Macro `_ASSERT_EQUALS_` call. Note the extra quoting around the _message_ and th
 
 2. Line numbers are not supported in all shells. If a shell does not support them, no errors will be thrown. Supported shells include: __bash__ (>=3.0), __ksh__, __pdksh__, and __zsh__.
 
-### Test Skipping
+### <a name="test-skipping"></a> Test Skipping
 
 There are times where the test code you have written is just not applicable to the system you are running on. This section describes how to skip these tests but maintain the total test count.
 
@@ -379,24 +402,24 @@ Skipping can be controlled with the following functions: `startSkipping()`, `end
 
 ---
 
-#### Appendix
+#### <a name="appendix"></a> Appendix
 
-### Getting Help
+### <a name="getting-help"></a> Getting Help
 
 For help, please send requests to either the shunit2-users@googlegroups.com mailing list (archives available on the web at http://groups.google.com/group/shunit2-users) or directly to Kate Ward <kate dot ward at forestent dot com>.
 
-### Zsh
+### <a name="zsh"></a> Zsh
 
 For compatibility with Zsh, there is one requirement that must be met -- the `shwordsplit` option must be set. There are three ways to accomplish this.
 
 1. In the unit-test script, add the following shell code snippet before sourcing the `shunit2` library.
- 
-       setopt shwordsplit
+
+`setopt shwordsplit`
 
 1. When invoking __zsh__ from either the command-line or as a script with `#!`, add the `-y` parameter.
 
-        #! /bin/zsh -y
+`#! /bin/zsh -y`
 
 1. When invoking __zsh__ from the command-line, add `-o shwordsplit --` as parameters before the script name.
 
-        $ zsh -o shwordsplit -- some_script
+`$ zsh -o shwordsplit -- some_script`
