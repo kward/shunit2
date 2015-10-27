@@ -308,13 +308,7 @@ Example -- Asserts with and without line numbers
 
 Notes:
 
-1. Due to how shell parses command-line arguments, all strings used with macros should be quoted twice. Namely, single-quotes must be converted to single-double-quotes, and vice-versa. If the string being passed is absolutely for sure not empty, the extra quoting is not necessary.
-
-Normal `assertEquals` call.
-
-        assertEquals 'some message' 'x' ''
-
-Macro `_ASSERT_EQUALS_` call. Note the extra quoting around the _message_ and the _null_ value.
+1. Due to how shell parses command-line arguments, all strings used with macros should be quoted twice. Namely, single-quotes must be converted to single-double-quotes, and vice-versa. If the string being passed is absolutely for sure not empty, the extra quoting is not necessary.<br /><br />Normal `assertEquals` call.<br/><br/>`assertEquals 'some message' 'x' ''`<br/><br/>Macro `_ASSERT_EQUALS_` call. Note the extra quoting around the _message_ and the _null_ value.
 
         _ASSERT_EQUALS_ '"some message"' 'x' '""'
 
