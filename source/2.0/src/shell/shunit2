@@ -241,7 +241,7 @@ assertNotSame()
 #   rather than just looking for a true or false.</para>
 #   <funcsynopsis>
 #     The following test will succeed: <funcsynopsisinfo>assertTrue "[ 34 -gt 23 ]"</funcsynopsisinfo>
-#     The folloing test will fail with a message: <funcsynopsisinfo>assertTrue "test failed" "[ -r '/non/existant/file' ]"</funcsynopsisinfo>
+#     The following test will fail with a message: <funcsynopsisinfo>assertTrue "test failed" "[ -r '/non/existent/file' ]"</funcsynopsisinfo>
 #   </funcsynopsis>
 # </entry>
 # </s:function>
@@ -304,7 +304,7 @@ assertTrue()
 #   rather than just looking for a true or false.</para>
 #   <funcsynopsis>
 #     The following test will succeed: <funcsynopsisinfo>assertFalse "[ 'apples' = 'oranges' ]"</funcsynopsisinfo>
-#     The folloing test will fail with a message: <funcsynopsisinfo>assertFalse "test failed" "[ 1 -eq 1 -a 2 -eq 2 ]"</funcsynopsisinfo>
+#     The following test will fail with a message: <funcsynopsisinfo>assertFalse "test failed" "[ 1 -eq 1 -a 2 -eq 2 ]"</funcsynopsisinfo>
 #   </funcsynopsis>
 # </entry>
 # </s:function>

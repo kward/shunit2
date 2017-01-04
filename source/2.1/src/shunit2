@@ -320,9 +320,9 @@ _ASSERT_NOT_SAME_='eval assertNotSame --lineno "${LINENO:-}"'
 # The following test will succeed:
 #   assertTrue 0
 #   assertTrue "[ 34 -gt 23 ]"
-# The folloing test will fail with a message:
+# The following test will fail with a message:
 #   assertTrue 123
-#   assertTrue "test failed" "[ -r '/non/existant/file' ]"
+#   assertTrue "test failed" "[ -r '/non/existent/file' ]"
 #
 # Args:
 #   message: string: failure message [optional]
@@ -385,7 +385,7 @@ _ASSERT_TRUE_='eval assertTrue --lineno "${LINENO:-}"'
 # The following test will succeed:
 #   assertFalse 1
 #   assertFalse "[ 'apples' = 'oranges' ]"
-# The folloing test will fail with a message:
+# The following test will fail with a message:
 #   assertFalse 0
 #   assertFalse "test failed" "[ 1 -eq 1 -a 2 -eq 2 ]"
 #

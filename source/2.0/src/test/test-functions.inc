@@ -65,7 +65,7 @@ tf_getDataSect()
 }
 
 # this function greps a section from a file. a section is defined as a group of
-# lines preceeded and followed by blank lines.
+# lines preceded and followed by blank lines.
 tf_sgrep()
 {
   tf_pattern=$1
