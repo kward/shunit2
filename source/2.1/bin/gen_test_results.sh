@@ -43,7 +43,7 @@ os_version=`versions_osVersion`
 DEFINE_boolean force false 'force overwrite' f
 DEFINE_string output_dir "`pwd`" 'output dir' d
 DEFINE_string output_file "${os_name}-${os_version}.txt" 'output file' o
-DEFINE_boolean dry_run false "supress logging to a file" n
+DEFINE_boolean dry_run false "suppress logging to a file" n
 
 main()
 {
