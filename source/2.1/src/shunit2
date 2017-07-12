@@ -859,7 +859,13 @@ _shunit_generateReport()
   fi
 
   echo
+  if [ "${_shunit_msg_}" = 'OK' ]; then
+    echo -e "$(tput setaf 2)"
+  else
+    echo -e "$(tput setaf 2)"
+  fi
   echo ${_shunit_msg_}
+  echo -e "$(tput sgr0)"
   __shunit_reportGenerated=${SHUNIT_TRUE}
 
   unset _shunit_failures_ _shunit_msg_ _shunit_ok_ _shunit_skipped_
