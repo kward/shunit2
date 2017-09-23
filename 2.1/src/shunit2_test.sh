@@ -1,12 +1,13 @@
 #! /bin/sh
-# $Id$
 # vim:et:ft=sh:sts=2:sw=2
 #
-# Copyright 2008 Kate Ward. All Rights Reserved.
-# Released under the LGPL (GNU Lesser General Public License)
-# Author: kate.ward@forestent.com (Kate Ward)
-#
 # shUnit2 unit test suite runner.
+#
+# Copyright 2008 Kate Ward. All Rights Reserved.
+# Released under the Apache 2.0 license.
+#
+# Author: kate.ward@forestent.com (Kate Ward)
+# https://github.com/kward/shunit2
 #
 # This script runs all the unit tests that can be found, and generates a nice
 # report of the tests.
@@ -21,18 +22,17 @@ for test in ${PREFIX}[a-z]*.sh; do
   TESTS="${TESTS} ${test}"
 done
 
-# load common unit test functions
+# Load common unit test functions.
 . ../lib/versions
 . ./shunit2_test_helpers
 
-usage()
-{
+usage() {
   echo "usage: ${MY_NAME} [-e key=val ...] [-s shell(s)] [-t test(s)]"
 }
 
 env=''
 
-# process command line flags
+# Process command line flags.
 while getopts 'e:hs:t:' opt; do
   case ${opt} in
     e)  # set an environment variable
@@ -46,19 +46,19 @@ while getopts 'e:hs:t:' opt; do
       export ${key}
       env="${env:+${env} }${key}"
       ;;
-    h) usage; exit 0 ;;  # output help
-    s) shells=${OPTARG} ;;  # list of shells to run
-    t) tests=${OPTARG} ;;  # list of tests to run
+    h) usage; exit 0 ;;  # Output help.
+    s) shells=${OPTARG} ;;  # List of shells to run.
+    t) tests=${OPTARG} ;;  # List of tests to run.
     *) usage; exit 1 ;;
   esac
 done
 shift `expr ${OPTIND} - 1`
 
-# fill shells and/or tests
+# Fill shells and/or tests.
 shells=${shells:-${SHELLS}}
 tests=${tests:-${TESTS}}
 
-# error checking
+# Error checking.
 if [ -z "${tests}" ]; then
   th_error 'no tests found to run; exiting'
   exit 1
@@ -69,7 +69,7 @@ cat <<EOF
 # System data
 #
 
-# test run info
+# Test run info.
 shells: ${shells}
 tests: ${tests}
 EOF
@@ -78,8 +78,8 @@ for key in ${env}; do
 done
 echo
 
-# output system data
-echo "# system info"
+# Output system data.
+echo "# System info."
 echo "$ date"
 date
 echo
@@ -88,13 +88,13 @@ echo "$ uname -mprsv"
 uname -mprsv
 
 #
-# run tests
+# Run tests.
 #
 
 for shell in ${shells}; do
   echo
 
-  # check for existence of shell
+  # Check for existence of shell.
   if [ ! -x ${shell} ]; then
     th_warn "unable to run tests with the ${shell} shell"
     continue
@@ -103,18 +103,18 @@ for shell in ${shells}; do
   cat <<EOF
 
 #------------------------------------------------------------------------------
-# Running the test suite with ${shell}
+# Running the test suite with ${shell}.
 #
 EOF
 
-  SHUNIT_SHELL=${shell}  # pass shell onto tests
+  SHUNIT_SHELL=${shell}  # Pass shell onto tests.
   shell_name=`basename ${shell}`
   shell_version=`versions_shellVersion "${shell}"`
 
   echo "shell name: ${shell_name}"
   echo "shell version: ${shell_version}"
 
-  # execute the tests
+  # Execute the tests.
   for suite in ${tests}; do
     suiteName=`expr "${suite}" : "${PREFIX}\(.*\).sh"`
     echo
