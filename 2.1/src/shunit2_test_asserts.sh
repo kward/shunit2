@@ -1,23 +1,18 @@
 #! /bin/sh
-# $Id$
 # vim:et:ft=sh:sts=2:sw=2
 #
+# shunit2 unit test for assert functions.
+#
 # Copyright 2008 Kate Ward. All Rights Reserved.
-# Released under the LGPL (GNU Lesser General Public License)
+# Released under the Apache 2.0 license.
 #
 # Author: kate.ward@forestent.com (Kate Ward)
-#
-# shUnit2 unit test for assert functions
+# https://github.com/kward/shunit2
 
-# load test helpers
+# Load test helpers.
 . ./shunit2_test_helpers
 
-#------------------------------------------------------------------------------
-# suite tests
-#
-
-commonEqualsSame()
-{
+commonEqualsSame() {
   fn=$1
 
   ( ${fn} 'x' 'x' >"${stdoutF}" 2>"${stderrF}" )
@@ -42,8 +37,7 @@ commonEqualsSame()
   th_assertFalseWithError 'too many arguments' $? "${stdoutF}" "${stderrF}"
 }
 
-commonNotEqualsSame()
-{
+commonNotEqualsSame() {
   fn=$1
 
   ( ${fn} 'x' 'y' >"${stdoutF}" 2>"${stderrF}" )
@@ -65,28 +59,23 @@ commonNotEqualsSame()
   th_assertFalseWithError 'too many arguments' $? "${stdoutF}" "${stderrF}"
 }
 
-testAssertEquals()
-{
+testAssertEquals() {
   commonEqualsSame 'assertEquals'
 }
 
-testAssertNotEquals()
-{
+testAssertNotEquals() {
   commonNotEqualsSame 'assertNotEquals'
 }
 
-testAssertSame()
-{
+testAssertSame() {
   commonEqualsSame 'assertSame'
 }
 
-testAssertNotSame()
-{
+testAssertNotSame() {
   commonNotEqualsSame 'assertNotSame'
 }
 
-testAssertNull()
-{
+testAssertNull() {
   ( assertNull '' >"${stdoutF}" 2>"${stderrF}" )
   th_assertTrueWithNoOutput 'null' $? "${stdoutF}" "${stderrF}"
 
@@ -130,14 +119,13 @@ testAssertNotNull()
   ( assertNotNull '' >"${stdoutF}" 2>"${stderrF}" )
   th_assertFalseWithOutput 'null' $? "${stdoutF}" "${stderrF}"
 
-  # there is no test for too few arguments as $1 might actually be null
+  # There is no test for too few arguments as $1 might actually be null.
 
   ( assertNotNull arg1 arg2 arg3 >"${stdoutF}" 2>"${stderrF}" )
   th_assertFalseWithError 'too many arguments' $? "${stdoutF}" "${stderrF}"
 }
 
-testAssertTrue()
-{
+testAssertTrue() {
   ( assertTrue 0 >"${stdoutF}" 2>"${stderrF}" )
   th_assertTrueWithNoOutput 'true' $? "${stdoutF}" "${stderrF}"
 
@@ -163,8 +151,7 @@ testAssertTrue()
   th_assertFalseWithError 'too many arguments' $? "${stdoutF}" "${stderrF}"
 }
 
-testAssertFalse()
-{
+testAssertFalse() {
   ( assertFalse 1 >"${stdoutF}" 2>"${stderrF}" )
   th_assertTrueWithNoOutput 'false' $? "${stdoutF}" "${stderrF}"
 
@@ -190,17 +177,12 @@ testAssertFalse()
   th_assertFalseWithError 'too many arguments' $? "${stdoutF}" "${stderrF}"
 }
 
-#------------------------------------------------------------------------------
-# suite functions
-#
-
-oneTimeSetUp()
-{
+oneTimeSetUp() {
   th_oneTimeSetUp
 
   MSG='This is a test message'
 }
 
-# load and run shUnit2
+# Load and run shunit2.
 [ -n "${ZSH_VERSION:-}" ] && SHUNIT_PARENT=$0
 . ${TH_SHUNIT}

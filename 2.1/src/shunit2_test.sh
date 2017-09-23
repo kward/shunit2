@@ -119,6 +119,6 @@ EOF
     suiteName=`expr "${suite}" : "${PREFIX}\(.*\).sh"`
     echo
     echo "--- Executing the '${suiteName}' test suite ---"
-    ( exec ${shell} ./${suite} 2>&1; )
+    ( unset SHELL && exec ${shell} ./${suite} 2>&1; )
   done
 done

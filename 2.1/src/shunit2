@@ -29,15 +29,21 @@ _shunit_fatal() { echo "shunit2:FATAL $@" >&2; exit ${SHUNIT_ERROR}; }
 # Determine some reasonable command defaults.
 __SHUNIT_UNAME_S=`uname -s`
 case "${__SHUNIT_UNAME_S}" in
-  BSD) __SHUNIT_EXPR_CMD='gexpr' ;;
-  *) __SHUNIT_EXPR_CMD='expr' ;;
+  BSD) __SHUNIT_CMD_EXPR='gexpr' ;;
+  *) __SHUNIT_CMD_EXPR='expr' ;;
 esac
 
+__SHUNIT_CMD_ECHO_ESC='echo -e'
+[ "`echo -e test`" = '-e test' ] && __SHUNIT_CMD_ECHO_ESC='echo'
+
 # Commands a user can override if needed.
-SHUNIT_EXPR_CMD=${SHUNIT_EXPR_CMD:-${__SHUNIT_EXPR_CMD}}
+SHUNIT_CMD_EXPR=${SHUNIT_CMD_EXPR:-${__SHUNIT_CMD_EXPR}}
 
 # Enable strict mode by default.
 SHUNIT_STRICT=${SHUNIT_STRICT:-${SHUNIT_TRUE}}
+
+# Enable color output. Options are 'never', 'always', or 'auto'.
+SHUNIT_COLOR=${SHUNIT_COLOR:-auto}
 
 # Specific shell checks.
 if [ -n "${ZSH_VERSION:-}" ]; then
@@ -55,7 +61,6 @@ fi
 # Constants
 #
 
-__SHUNIT_ASSERT_MSG_PREFIX='ASSERT:'
 __SHUNIT_MODE_SOURCED='sourced'
 __SHUNIT_MODE_STANDALONE='standalone'
 __SHUNIT_PARENT=${SHUNIT_PARENT:-$0}
@@ -81,6 +86,7 @@ unset __shunit_const __shunit_constants
 #
 
 # Variables.
+__shunit_color=''  # Is color output enabled ('' == no, otherwise yes).
 __shunit_lineno=''  # Line number of executed test.
 __shunit_mode=${__SHUNIT_MODE_SOURCED}  # Operating mode.
 __shunit_reportGenerated=${SHUNIT_FALSE}  # Is report generated.
@@ -784,6 +790,28 @@ _shunit_cleanup()
   unset _shunit_name_ _shunit_signal_
 }
 
+# configureOutput based on user preferences, e.g. color.
+#
+# Args:
+#   None
+_shunit_configureOutput() {
+  __shunit_color=''  # By default, no color.
+  case ${SHUNIT_COLOR} in
+    'always') __shunit_color=${SHUNIT_TRUE} ;;
+    'auto')
+      ( exec tput >/dev/null 2>&1 )  # Check for existence of tput command.
+      if [ $? -lt 127 ]; then
+        _shunit_tput_=`tput colors`
+        [ $? -eq 0 -a ${_shunit_tput_} -ge 16 ] && __shunit_color=${SHUNIT_TRUE}
+      fi
+      ;;
+    'none') ;;
+    *) _shunit_fatal "unrecognized SHUNIT_COLOR option '${SHUNIT_COLOR}'" ;;
+  esac
+
+  unset _shunit_tput_
+}
+
 # The actual running of the tests happens here.
 #
 # Args:
@@ -847,18 +875,18 @@ _shunit_generateReport()
       && _shunit_skipped_="skipped=${__shunit_assertsSkipped}"
 
   if [ ${_shunit_ok_} -eq ${SHUNIT_TRUE} ]; then
-    _shunit_msg_='OK'
+    _shunit_msg_="${__shunit_color:+\033[1;32m}OK"
     [ -n "${_shunit_skipped_}" ] \
         && _shunit_msg_="${_shunit_msg_} (${_shunit_skipped_})"
   else
-    _shunit_msg_="FAILED (${_shunit_failures_}"
+    _shunit_msg_="${__shunit_color:+\033[1;31m}FAILED (${_shunit_failures_}"
     [ -n "${_shunit_skipped_}" ] \
         && _shunit_msg_="${_shunit_msg_},${_shunit_skipped_}"
     _shunit_msg_="${_shunit_msg_})"
   fi
 
   echo
-  echo ${_shunit_msg_}
+  ${__SHUNIT_CMD_ECHO_ESC} "${_shunit_msg_}${__shunit_color:+\033[0m}"
   __shunit_reportGenerated=${SHUNIT_TRUE}
 
   unset _shunit_failures_ _shunit_msg_ _shunit_ok_ _shunit_skipped_
@@ -897,7 +925,8 @@ _shunit_assertFail()
   __shunit_testSuccess=${SHUNIT_FALSE}
   __shunit_assertsFailed=`expr ${__shunit_assertsFailed} + 1`
   __shunit_assertsTotal=`expr ${__shunit_assertsTotal} + 1`
-  echo "${__SHUNIT_ASSERT_MSG_PREFIX}${_shunit_msg_}"
+  ${__SHUNIT_CMD_ECHO_ESC} \
+      "${__shunit_color:+\033[1;39m}ASSERT:${_shunit_msg_}${__shunit_color:+\033[0m}"
 
   unset _shunit_msg_
 }
@@ -1035,6 +1064,9 @@ noexec 2>/dev/null || _shunit_fatal \
 if [ "${__shunit_mode}" = "${__SHUNIT_MODE_STANDALONE}" ]; then
   . "`_shunit_prepForSourcing \"${__shunit_script}\"`"
 fi
+
+# Configure output (e.g. for color).
+_shunit_configureOutput
 
 # Execute the oneTimeSetUp function (if it exists).
 oneTimeSetUp
