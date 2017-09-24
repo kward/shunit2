@@ -358,6 +358,8 @@ Predefined
 User defined
 
 ==================  ===========================================================
+``SHUNIT_COLOR``    Set this flag to control colored output support. Accepted
+                    values are ``always``, ``auto`` (the default), and ``none``.
 ``SHUNIT_PARENT``   The filename of the shell script containing the tests. This
                     is needed specifically for Zsh support.
 ==================  ===========================================================

@@ -4,7 +4,12 @@ Changes in shUnit2 2.1.X
 Changes with 2.1.7
 ------------------
 
-Updated the LGPL license from http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt.
+Issue #56. Added color support. Color is enabled automatically when supported,
+but can be disabled by defining the SHUNIT_COLOR environment variable before
+sourcing shunit2. Accepted values are `always`, `auto` (the default), and
+`none`.
+
+Changed to the Apache 2.0 license.
 
 
 Changes with 2.1.6
