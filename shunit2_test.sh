@@ -23,7 +23,8 @@ for test in ${PREFIX}[a-z]*.sh; do
 done
 
 # Load common unit test functions.
-. ../lib/versions
+LIB_DIR='lib'
+. ${LIB_DIR}/versions
 . ./shunit2_test_helpers
 
 usage() {
