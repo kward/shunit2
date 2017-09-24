@@ -24,7 +24,7 @@ shUnit2 is a [xUnit](http://en.wikipedia.org/wiki/XUnit) unit test framework for
 
 ---
 ## <a name="introduction"></a> Introduction
-shUnit2 was originally developed to provide a consistent testing solution for [log4sh](http://log4sh.sourceforge.net), a shell based logging framework similar to [log4j](http://logging.apache.org). During the development of that product, a repeated problem of having things work just fine under one shell (`/bin/bash` on Linux to be specific), and then not working under another shell (`/bin/sh` on Solaris) kept coming up. Although several simple tests were run, they were not adequate and did not catch some corner cases. The decision was finally made to write a proper unit test framework after multiple brown-bag releases were made. _Research was done to look for an existing product that met the testing requirements, but no adequate product was found._
+shUnit2 was originally developed to provide a consistent testing solution for [log4sh][log4sh], a shell based logging framework similar to [log4j](http://logging.apache.org). During the development of that product, a repeated problem of having things work just fine under one shell (`/bin/bash` on Linux to be specific), and then not working under another shell (`/bin/sh` on Solaris) kept coming up. Although several simple tests were run, they were not adequate and did not catch some corner cases. The decision was finally made to write a proper unit test framework after multiple brown-bag releases were made. _Research was done to look for an existing product that met the testing requirements, but no adequate product was found._
 
 Tested Operating Systems (varies over time)
 
