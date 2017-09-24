@@ -61,24 +61,28 @@ This section will give a very quick start to running unit tests with shUnit2. Mo
 
 Here is a quick sample script to show how easy it is to write a unit test in shell. _Note: the script as it stands expects that you are running it from the "examples" directory._
 
-    #! /bin/sh
-    # file: examples/equality_test.sh
-    
-    testEquality()
-    {
-        assertEquals 1 1
-    }
-    
-    # load shunit2
-    . ../src/shell/shunit2
+```sh
+#! /bin/sh
+# file: examples/equality_test.sh
+
+testEquality()
+{
+    assertEquals 1 1
+}
+
+# load shunit2
+. ../src/shell/shunit2
+```
 
 Running the unit test should give results similar to the following.
 
-    testEquality
-    
-    Ran 1 test.
-    
-    OK
+```
+testEquality
+
+Ran 1 test.
+
+OK
+```
 
 W00t! You've just run your first successful unit test. So, what just happened? Quite a bit really, and it all happened simply by sourcing the `shunit2` library. The basic functionality for the script above goes like this:
 
@@ -90,23 +94,25 @@ W00t! You've just run your first successful unit test. So, what just happened? Q
 
 We should now try adding a test that fails. Change your unit test to look like this.
 
-    #! /bin/sh
-    # file: examples/party_test.sh
-    
-    testEquality()
-    {
-        assertEquals 1 1
-    }
-    
-    testPartyLikeItIs1999()
-    {
-        year=`date '+%Y'`
-        assertEquals "It's not 1999 :-(" \
-            '1999' "${year}"
-    }
-    
-    # load shunit2
-    . ../src/shell/shunit2
+```sh
+#! /bin/sh
+# file: examples/party_test.sh
+
+testEquality()
+{
+    assertEquals 1 1
+}
+
+testPartyLikeItIs1999()
+{
+    year=`date '+%Y'`
+    assertEquals "It's not 1999 :-(" \
+        '1999' "${year}"
+}
+
+# load shunit2
+. ../src/shell/shunit2
+```
 
 So, what did you get? I guess it told you that this isn't 1999. Bummer, eh? Hopefully, you noticed a couple of things that were different about the second test. First, we added an optional message that the user will see if the assert fails. Second, we did comparisons of strings instead of integers as in the first test. It doesn't matter whether you are testing for equality of strings or integers. Both work equally well with shUnit2.
 
@@ -152,15 +158,21 @@ Asserts that a given shell test _condition_ is _true_. The condition can be as s
 
 A sophisticated shell conditional expression is equivalent to what the __if__ or __while__ shell built-ins would use (more specifically, what the __test__ command would use). Testing for example whether some value is greater than another value can be done this way.
 
-    assertTrue "[ 34 -gt 23 ]"
+```sh
+assertTrue "[ 34 -gt 23 ]"
+```
 
 Testing for the ability to read a file can also be done. This particular test will fail.
 
-    assertTrue 'test failed' "[ -r /some/non-existant/file' ]"
+```sh
+assertTrue 'test failed' "[ -r /some/non-existant/file' ]"
+```
 
 As the expressions are standard shell __test__ expressions, it is possible to string multiple expressions together with `-a` and `-o` in the standard fashion. This test will succeed as the entire expression evaluates to _true_.
 
-    assertTrue 'test failed' '[ 1 -eq 1 -a 2 -eq 2 ]'
+```sh
+assertTrue 'test failed' '[ 1 -eq 1 -a 2 -eq 2 ]'
+```
 
 _One word of warning: be very careful with your quoting as shell is not the most forgiving of bad quoting, and things will fail in strange ways._
 
@@ -290,29 +302,41 @@ For example, to include line numbers for a `assertEquals()` function call, repla
 
 Example -- Asserts with and without line numbers
 
-    #! /bin/sh
-    # file: examples/lineno_test.sh
+```sh
+#! /bin/sh
+# file: examples/lineno_test.sh
+
+testLineNo()
+{
+    # this assert will have line numbers included (e.g. "ASSERT:[123] ...")
+    echo "ae: ${_ASSERT_EQUALS_}"
+    ${_ASSERT_EQUALS_} 'not equal' 1 2
     
-    testLineNo()
-    {
-        # this assert will have line numbers included (e.g. "ASSERT:[123] ...")
-        echo "ae: ${_ASSERT_EQUALS_}"
-        ${_ASSERT_EQUALS_} 'not equal' 1 2
-        
-        # this assert will not have line numbers included (e.g. "ASSERT: ...")
-        assertEquals 'not equal' 1 2
-    }
-    
-    # load shunit2
-    . ../src/shell/shunit2
+    # this assert will not have line numbers included (e.g. "ASSERT: ...")
+    assertEquals 'not equal' 1 2
+}
+
+# load shunit2
+. ../src/shell/shunit2
+```
 
 Notes:
 
-1. Due to how shell parses command-line arguments, all strings used with macros should be quoted twice. Namely, single-quotes must be converted to single-double-quotes, and vice-versa. If the string being passed is absolutely for sure not empty, the extra quoting is not necessary.<br /><br />Normal `assertEquals` call.<br/><br/>`assertEquals 'some message' 'x' ''`<br/><br/>Macro `_ASSERT_EQUALS_` call. Note the extra quoting around the _message_ and the _null_ value.
+1. Due to how shell parses command-line arguments, all strings used with macros should be quoted twice. Namely, single-quotes must be converted to single-double-quotes, and vice-versa. If the string being passed is absolutely for sure not empty, the extra quoting is not necessary.
 
-        _ASSERT_EQUALS_ '"some message"' 'x' '""'
+    Normal `assertEquals` call.
 
-1. Line numbers are not supported in all shells. If a shell does not support them, no errors will be thrown. Supported shells include: __bash__ (>=3.0), __ksh__, __pdksh__, and __zsh__.
+    ```sh
+    assertEquals 'some message' 'x' ''
+    ```
+    
+    Macro `_ASSERT_EQUALS_` call. Note the extra quoting around the _message_ and the _null_ value.
+
+    ```sh
+    _ASSERT_EQUALS_ '"some message"' 'x' '""'
+    ```
+
+2. Line numbers are not supported in all shells. If a shell does not support them, no errors will be thrown. Supported shells include: __bash__ (>=3.0), __ksh__, __pdksh__, and __zsh__.
 
 ### <a name="test-skipping"></a> Test Skipping
 
@@ -322,73 +346,81 @@ Probably the easiest example would be shell code that is meant to run under the 
 
 Example -- math include
 
-    # available as examples/math.inc
-    
-    add_generic()
-    {
-        num_a=$1
-        num_b=$2
-    
-        expr $1 + $2
-    }
-    
-    add_bash()
-    {
-        num_a=$1
-        num_b=$2
-    
-        echo $(($1 + $2))
-    }
+```bash
+# available as examples/math.inc
+
+add_generic()
+{
+    num_a=$1
+    num_b=$2
+
+    expr $1 + $2
+}
+
+add_bash()
+{
+    num_a=$1
+    num_b=$2
+
+    echo $(($1 + $2))
+}
+```
 
 And here is a corresponding unit test that correctly skips the `add_bash()` function when the unit test is not running under the __bash__ shell.
 
 Example -- math unit test
 
-    #! /bin/sh
-    # available as examples/math_test.sh
+```sh
+#! /bin/sh
+# available as examples/math_test.sh
+
+testAdding()
+{
+    result=`add_generic 1 2`
+    assertEquals \
+        "the result of '${result}' was wrong" \
+        3 "${result}"
+
+    # disable non-generic tests
+    [ -z "${BASH_VERSION:-}" ] && startSkipping
     
-    testAdding()
-    {
-        result=`add_generic 1 2`
-        assertEquals \
-            "the result of '${result}' was wrong" \
-            3 "${result}"
-    
-        # disable non-generic tests
-        [ -z "${BASH_VERSION:-}" ] && startSkipping
-        
-        result=`add_bash 1 2`
-        assertEquals \
-            "the result of '${result}' was wrong" \
-            3 "${result}"
-    }
-    
-    oneTimeSetUp()
-    {
-        # load include to test
-        . ./math.inc
-    }
-    
-    # load and run shUnit2
-    . ../src/shell/shunit2
+    result=`add_bash 1 2`
+    assertEquals \
+        "the result of '${result}' was wrong" \
+        3 "${result}"
+}
+
+oneTimeSetUp()
+{
+    # load include to test
+    . ./math.inc
+}
+
+# load and run shUnit2
+. ../src/shell/shunit2
+```
 
 Running the above test under the __bash__ shell will result in the following output.
 
-    $ /bin/bash math_test.sh
-    testAdding
-    
-    Ran 1 test.
-    
-    OK
+```
+$ /bin/bash math_test.sh
+testAdding
+
+Ran 1 test.
+
+OK
+```
 
 But, running the test under any other Unix shell will result in the following output.
 
-    $ /bin/ksh math_test.sh
-    testAdding
-    
-    Ran 1 test.
-    
-    OK (skipped=1)
+```
+$ /bin/ksh math_test.sh
+testAdding
+
+Ran 1 test.
+
+OK (skipped=1)
+```
 
 As you can see, the total number of tests has not changed, but the report indicates that some tests were skipped.
 
@@ -408,12 +440,19 @@ For compatibility with Zsh, there is one requirement that must be met -- the `sh
 
 1. In the unit-test script, add the following shell code snippet before sourcing the `shunit2` library.
 
-        setopt shwordsplit
+    ```sh
+    setopt shwordsplit
+    ```
 
 1. When invoking __zsh__ from either the command-line or as a script with `#!`, add the `-y` parameter.
 
-        #! /bin/zsh -y
+    ```zsh
+    #! /bin/zsh -y
+    ```
 
 1. When invoking __zsh__ from the command-line, add `-o shwordsplit --` as parameters before the script name.
 
-        $ zsh -o shwordsplit -- some_script
+    ```
+    $ zsh -o shwordsplit -- some_script
+    ```
+
