@@ -793,10 +793,10 @@ _shunit_cleanup()
 # configureOutput based on user preferences, e.g. color.
 #
 # Args:
-#   None
-_shunit_configureOutput() {
+#   color: string: color mode (one of `always`, `auto`, or `none`).
+_shunit_configureColor() {
   __shunit_color=''  # By default, no color.
-  case ${SHUNIT_COLOR} in
+  case $1 in
     'always') __shunit_color=${SHUNIT_TRUE} ;;
     'auto')
       ( exec tput >/dev/null 2>&1 )  # Check for existence of tput command.
@@ -1065,8 +1065,8 @@ if [ "${__shunit_mode}" = "${__SHUNIT_MODE_STANDALONE}" ]; then
   . "`_shunit_prepForSourcing \"${__shunit_script}\"`"
 fi
 
-# Configure output (e.g. for color).
-_shunit_configureOutput
+# Configure default output coloring behavior.
+_shunit_configureColor ${SHUNIT_COLOR}
 
 # Execute the oneTimeSetUp function (if it exists).
 oneTimeSetUp

@@ -1,33 +1,27 @@
 #! /bin/sh
-# $Id$
 # vim:et:ft=sh:sts=2:sw=2
+#
+# shUnit2 unit tests of miscellaneous things
 #
 # Copyright 2008 Kate Ward. All Rights Reserved.
 # Released under the LGPL (GNU Lesser General Public License)
 #
 # Author: kate.ward@forestent.com (Kate Ward)
-#
-# shUnit2 unit tests of miscellaneous things
+# https://github.com/kward/shunit2
 
-# load test helpers
+# Load test helpers.
 . ./shunit2_test_helpers
-
-#------------------------------------------------------------------------------
-# suite tests
-#
 
 # Note: the test script is prefixed with '#' chars so that shUnit2 does not
 # incorrectly interpret the embedded functions as real functions.
-testUnboundVariable()
-{
+testUnboundVariable() {
   unittestF="${SHUNIT_TMPDIR}/unittest"
   sed 's/^#//' >"${unittestF}" <<EOF
-## treat unset variables as an error when performing parameter expansion
+## Treat unset variables as an error when performing parameter expansion.
 #set -u
 #
-#boom() { x=\$1; }  # this function goes boom if no parameters are passed!
-#test_boom()
-#{
+#boom() { x=\$1; }  # This function goes boom if no parameters are passed!
+#test_boom() {
 #   assertEquals 1 1
 #   boom  # No parameter given
 #   assertEquals 0 \$?
@@ -44,8 +38,11 @@ EOF
   assertTrue 'failure message was not generated' $?
 }
 
-testIssue7()
-{
+# https://github.com/kward/shunit2/issues/7
+testIssue7() {
+  # Disable coloring so 'ASSERT:' lines can be matched correctly.
+  _shunit_configureColor 'none'
+
   ( assertEquals 'Some message.' 1 2 >"${stdoutF}" 2>"${stderrF}" )
   diff "${stdoutF}" - >/dev/null <<EOF
 ASSERT:Some message. expected:<1> but was:<2>
@@ -55,15 +52,13 @@ EOF
   [ ${rtrn} -ne ${SHUNIT_TRUE} ] && cat "${stderrF}" >&2
 }
 
-testPrepForSourcing()
-{
+testPrepForSourcing() {
   assertEquals '/abc' `_shunit_prepForSourcing '/abc'`
   assertEquals './abc' `_shunit_prepForSourcing './abc'`
   assertEquals './abc' `_shunit_prepForSourcing 'abc'`
 }
 
-testEscapeCharInStr()
-{
+testEscapeCharInStr() {
   actual=`_shunit_escapeCharInStr '\' ''`
   assertEquals '' "${actual}"
   assertEquals 'abc\\' `_shunit_escapeCharInStr '\' 'abc\'`
@@ -82,13 +77,14 @@ testEscapeCharInStr()
   assertEquals 'abc\$def' `_shunit_escapeCharInStr '$' 'abc$def'`
   assertEquals '\$def' `_shunit_escapeCharInStr '$' '$def'`
 
+  # TODO(20170924:kward) fix or remove.
 #  actual=`_shunit_escapeCharInStr "'" ''`
 #  assertEquals '' "${actual}"
 #  assertEquals "abc\\'" `_shunit_escapeCharInStr "'" "abc'"`
 #  assertEquals "abc\\'def" `_shunit_escapeCharInStr "'" "abc'def"`
 #  assertEquals "\\'def" `_shunit_escapeCharInStr "'" "'def"`
 
-#  # must put the backtick in a variable so the shell doesn't misinterpret it
+#  # Must put the backtick in a variable so the shell doesn't misinterpret it
 #  # while inside a backticked sequence (e.g. `echo '`'` would fail).
 #  backtick='`'
 #  actual=`_shunit_escapeCharInStr ${backtick} ''`
@@ -101,12 +97,12 @@ testEscapeCharInStr()
 #      `_shunit_escapeCharInStr "${backtick}" 'abc'${backtick}'def'`
 }
 
-testEscapeCharInStr_specialChars()
-{
-  # make sure our forward slash doesn't upset sed
+testEscapeCharInStr_specialChars() {
+  # Make sure our forward slash doesn't upset sed.
   assertEquals '/' `_shunit_escapeCharInStr '\' '/'`
 
-  # some shells escape these differently
+  # Some shells escape these differently.
+  # TODO(20170924:kward) fix or remove.
   #assertEquals '\\a' `_shunit_escapeCharInStr '\' '\a'`
   #assertEquals '\\b' `_shunit_escapeCharInStr '\' '\b'`
 }
@@ -115,21 +111,27 @@ testEscapeCharInStr_specialChars()
 #
 # Prefixing (then stripping) with comment symbol so these functions aren't
 # treated as real functions by shUnit2.
-testExtractTestFunctions()
-{
+testExtractTestFunctions() {
   f="${SHUNIT_TMPDIR}/extract_test_functions"
   sed 's/^#//' <<EOF >"${f}"
+## Function on a single line.
 #testABC() { echo 'ABC'; }
-#test_def() {
+## Multi-line function with '{' on next line.
+#test_def()
+# {
 #  echo 'def'
 #}
-#testG3 ()
-#{
+## Multi-line function with '{' on first line.
+#testG3 () {
 #  echo 'G3'
 #}
+## Function with numerical values in name.
 #function test4() { echo '4'; }
+## Leading space in front of function.
 #	test5() { echo '5'; }
+## Function with '_' chars in name.
 #some_test_function() { echo 'some func'; }
+## Function that sets variables.
 #func_with_test_vars() {
 #  testVariable=1234
 #}
@@ -139,22 +141,19 @@ EOF
   assertEquals 'testABC test_def testG3 test4 test5' "${actual}"
 }
 
-#------------------------------------------------------------------------------
-# suite functions
-#
-
-setUp()
-{
+setUp() {
   for f in ${expectedF} ${stdoutF} ${stderrF}; do
     cp /dev/null ${f}
   done
+
+  # Reconfigure coloring as some tests override default behavior.
+  _shunit_configureColor ${SHUNIT_COLOR}
 }
 
-oneTimeSetUp()
-{
+oneTimeSetUp() {
   th_oneTimeSetUp
 }
 
-# load and run shUnit2
+# Load and run shUnit2.
 [ -n "${ZSH_VERSION:-}" ] && SHUNIT_PARENT=$0
 . ${TH_SHUNIT}
