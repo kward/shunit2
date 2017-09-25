@@ -223,7 +223,7 @@ oneTimeSetUp() {
   th_oneTimeSetUp
 }
 
-# Disable color support as it breaks the tests.
+# Disable output coloring as it breaks the tests.
 SHUNIT_COLOR='none'
 
 # Load and run shunit2.
