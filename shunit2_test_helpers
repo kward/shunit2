@@ -1,27 +1,27 @@
-# $Id$
 # vim:et:ft=sh:sts=2:sw=2
 #
+# shUnit2 unit test common functions
+#
 # Copyright 2008 Kate Ward. All Rights Reserved.
-# Released under the LGPL (GNU Lesser General Public License)
+# Released under the Apache 2.0 license.
 #
 # Author: kate.ward@forestent.com (Kate Ward)
-#
-# shUnit2 unit test common functions
+# https://github.com/kward/shunit2
 
-# treat unset variables as an error when performing parameter expansion
+# Treat unset variables as an error when performing parameter expansion.
 set -u
 
-# set shwordsplit for zsh
+# Set shwordsplit for zsh.
 [ -n "${ZSH_VERSION:-}" ] && setopt shwordsplit
 
 #
-# constants
+# Constants.
 #
 
-# path to shUnit2 library. can be overridden by setting SHUNIT_INC
+# Path to shUnit2 library. Can be overridden by setting SHUNIT_INC.
 TH_SHUNIT=${SHUNIT_INC:-./shunit2}
 
-# configure debugging. set the DEBUG environment variable to any
+# Configure debugging. Set the DEBUG environment variable to any
 # non-empty value to enable debug output, or TRACE to enable trace
 # output.
 TRACE=${TRACE:+'th_trace '}
@@ -32,16 +32,16 @@ DEBUG=${DEBUG:+'th_debug '}
 [ -z "${DEBUG}" ] && DEBUG=':'
 
 #
-# variables
+# Variables.
 #
 
 th_RANDOM=0
 
 #
-# functions
+# Functions.
 #
 
-# message functions
+# Logging functions.
 th_trace() { echo "${MY_NAME}:TRACE $@" >&2; }
 th_debug() { echo "${MY_NAME}:DEBUG $@" >&2; }
 th_info() { echo "${MY_NAME}:INFO $@" >&2; }
@@ -49,21 +49,19 @@ th_warn() { echo "${MY_NAME}:WARN $@" >&2; }
 th_error() { echo "${MY_NAME}:ERROR $@" >&2; }
 th_fatal() { echo "${MY_NAME}:FATAL $@" >&2; }
 
-# output subtest name
+# Output subtest name.
 th_subtest() { echo " $@" >&2; }
 
-th_oneTimeSetUp()
-{
-  # these files will be cleaned up automatically by shUnit2
+th_oneTimeSetUp() {
+  # These files will be cleaned up automatically by shUnit2.
   stdoutF="${SHUNIT_TMPDIR}/stdout"
   stderrF="${SHUNIT_TMPDIR}/stderr"
   returnF="${SHUNIT_TMPDIR}/return"
   expectedF="${SHUNIT_TMPDIR}/expected"
 }
 
-# generate a random number
-th_generateRandom()
-{
+# Generate a random number.
+th_generateRandom() {
   tfgr_random=${th_RANDOM}
 
   while [ "${tfgr_random}" = "${th_RANDOM}" ]; do
@@ -84,18 +82,16 @@ th_generateRandom()
   unset tfgr_random
 }
 
-# this section returns the data section from the specified section of a file. a
-# datasection is defined by a [header], one or more lines of data, and then a
+# This section returns the data section from the specified section of a file. A
+# data section is defined by a [header], one or more lines of data, and then a
 # blank line.
-th_getDataSect()
-{
+th_getDataSect() {
   th_sgrep "\\[$1\\]" "$2" |sed '1d'
 }
 
-# this function greps a section from a file. a section is defined as a group of
-# lines preceded and followed by blank lines.
-th_sgrep()
-{
+# This function greps a section from a file. a section is defined as a group of
+# lines preceded and followed by blank lines..
+th_sgrep() {
   th_pattern_=$1
   shift
 
@@ -113,8 +109,7 @@ th_sgrep()
 #  th_rtrn_: integer: the return value of the subtest performed
 #  th_stdout_: string: filename where stdout was redirected to
 #  th_stderr_: string: filename where stderr was redirected to
-th_assertTrueWithNoOutput()
-{
+th_assertTrueWithNoOutput() {
   th_test_=$1
   th_rtrn_=$2
   th_stdout_=$3
@@ -164,8 +159,7 @@ th_assertFalseWithOutput()
 #  th_rtrn_: integer: the return value of the subtest performed
 #  th_stdout_: string: filename where stdout was redirected to
 #  th_stderr_: string: filename where stderr was redirected to
-th_assertFalseWithError()
-{
+th_assertFalseWithError() {
   th_test_=$1
   th_rtrn_=$2
   th_stdout_=$3
@@ -186,8 +180,7 @@ th_assertFalseWithError()
 # when a non-zero return value is encountered. To properly catch these values,
 # they are either written to disk, or recognized as an error the file is empty.
 th_clearReturn() { cp /dev/null "${returnF}"; }
-th_queryReturn()
-{
+th_queryReturn() {
   if [ -s "${returnF}" ]; then
     th_return=`cat "${returnF}"`
   else
@@ -197,8 +190,7 @@ th_queryReturn()
 
 # Providing external and internal calls to the showOutput helper function.
 th_showOutput() { _th_showOutput $@; }
-_th_showOutput()
-{
+_th_showOutput() {
   _th_return_=$1
   _th_stdout_=$2
   _th_stderr_=$3
@@ -222,7 +214,7 @@ _th_showOutput()
 }
 
 #
-# main
+# Main.
 #
 
 ${TRACE} 'trace output enabled'
