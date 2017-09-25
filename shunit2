@@ -65,6 +65,12 @@ __SHUNIT_MODE_SOURCED='sourced'
 __SHUNIT_MODE_STANDALONE='standalone'
 __SHUNIT_PARENT=${SHUNIT_PARENT:-$0}
 
+# ANSI colors.
+__SHUNIT_ANSI_NONE='\033[0m'
+__SHUNIT_ANSI_RED='\033[1;31m'
+__SHUNIT_ANSI_GREEN='\033[1;32m'
+__SHUNIT_ANSI_CYAN='\033[1;36m'
+
 # Set the constants readonly.
 __shunit_constants=`set |grep '^__SHUNIT_' |cut -d= -f1`
 echo "${__shunit_constants}" |grep '^Binary file' >/dev/null && \
@@ -86,13 +92,18 @@ unset __shunit_const __shunit_constants
 #
 
 # Variables.
-__shunit_color=''  # Is color output enabled ('' == no, otherwise yes).
 __shunit_lineno=''  # Line number of executed test.
 __shunit_mode=${__SHUNIT_MODE_SOURCED}  # Operating mode.
 __shunit_reportGenerated=${SHUNIT_FALSE}  # Is report generated.
 __shunit_script=''  # Filename of unittest script (standalone mode).
 __shunit_skip=${SHUNIT_FALSE}  # Is skipping enabled.
 __shunit_suite=''  # Suite of tests to execute.
+
+# ANSI colors (populated by _shunit_configureColor()).
+__shunit_ansi_none=''
+__shunit_ansi_red=''
+__shunit_ansi_green=''
+__shunit_ansi_cyan=''
 
 # Counts of tests.
 __shunit_testSuccess=${SHUNIT_TRUE}
@@ -795,21 +806,36 @@ _shunit_cleanup()
 # Args:
 #   color: string: color mode (one of `always`, `auto`, or `none`).
 _shunit_configureColor() {
-  __shunit_color=''  # By default, no color.
+  _shunit_color_=${SHUNIT_FALSE}  # By default, no color.
   case $1 in
-    'always') __shunit_color=${SHUNIT_TRUE} ;;
+    'always') _shunit_color_=${SHUNIT_TRUE} ;;
     'auto')
       ( exec tput >/dev/null 2>&1 )  # Check for existence of tput command.
       if [ $? -lt 127 ]; then
         _shunit_tput_=`tput colors`
-        [ $? -eq 0 -a ${_shunit_tput_} -ge 16 ] && __shunit_color=${SHUNIT_TRUE}
+        [ $? -eq 0 -a ${_shunit_tput_} -ge 16 ] && _shunit_color_=${SHUNIT_TRUE}
       fi
       ;;
     'none') ;;
     *) _shunit_fatal "unrecognized SHUNIT_COLOR option '${SHUNIT_COLOR}'" ;;
   esac
 
-  unset _shunit_tput_
+  case ${_shunit_color_} in
+    ${SHUNIT_TRUE})
+      __shunit_ansi_none=${__SHUNIT_ANSI_NONE}
+      __shunit_ansi_red=${__SHUNIT_ANSI_RED}
+      __shunit_ansi_green=${__SHUNIT_ANSI_GREEN}
+      __shunit_ansi_cyan=${__SHUNIT_ANSI_CYAN}
+      ;;
+    ${SHUNIT_FALSE})
+      __shunit_ansi_none=''
+      __shunit_ansi_red=''
+      __shunit_ansi_green=''
+      __shunit_ansi_cyan=''
+      ;;
+  esac
+
+  unset _shunit_color_ _shunit_tput_
 }
 
 # The actual running of the tests happens here.
@@ -862,9 +888,9 @@ _shunit_generateReport()
 
   echo
   if [ ${__shunit_testsTotal} -eq 1 ]; then
-    echo "Ran ${__shunit_testsTotal} test."
+    ${__SHUNIT_CMD_ECHO_ESC} "Ran ${__shunit_ansi_cyan}${__shunit_testsTotal}${__shunit_ansi_none} test."
   else
-    echo "Ran ${__shunit_testsTotal} tests."
+    ${__SHUNIT_CMD_ECHO_ESC} "Ran ${__shunit_ansi_cyan}${__shunit_testsTotal}${__shunit_ansi_none} tests."
   fi
 
   _shunit_failures_=''
@@ -875,18 +901,18 @@ _shunit_generateReport()
       && _shunit_skipped_="skipped=${__shunit_assertsSkipped}"
 
   if [ ${_shunit_ok_} -eq ${SHUNIT_TRUE} ]; then
-    _shunit_msg_="${__shunit_color:+\033[1;32m}OK"
+    _shunit_msg_="${__shunit_ansi_green}OK"
     [ -n "${_shunit_skipped_}" ] \
         && _shunit_msg_="${_shunit_msg_} (${_shunit_skipped_})"
   else
-    _shunit_msg_="${__shunit_color:+\033[1;31m}FAILED (${_shunit_failures_}"
+    _shunit_msg_="${__shunit_ansi_red}FAILED (${_shunit_failures_}"
     [ -n "${_shunit_skipped_}" ] \
         && _shunit_msg_="${_shunit_msg_},${_shunit_skipped_}"
     _shunit_msg_="${_shunit_msg_})"
   fi
 
   echo
-  ${__SHUNIT_CMD_ECHO_ESC} "${_shunit_msg_}${__shunit_color:+\033[0m}"
+  ${__SHUNIT_CMD_ECHO_ESC} "${_shunit_msg_}${__shunit_ansi_none}"
   __shunit_reportGenerated=${SHUNIT_TRUE}
 
   unset _shunit_failures_ _shunit_msg_ _shunit_ok_ _shunit_skipped_
@@ -926,7 +952,7 @@ _shunit_assertFail()
   __shunit_assertsFailed=`expr ${__shunit_assertsFailed} + 1`
   __shunit_assertsTotal=`expr ${__shunit_assertsTotal} + 1`
   ${__SHUNIT_CMD_ECHO_ESC} \
-      "${__shunit_color:+\033[1;39m}ASSERT:${_shunit_msg_}${__shunit_color:+\033[0m}"
+      "${__shunit_ansi_red}ASSERT:${__shunit_ansi_none}${_shunit_msg_}"
 
   unset _shunit_msg_
 }

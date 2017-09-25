@@ -4,7 +4,7 @@
 # shUnit2 unit tests of miscellaneous things
 #
 # Copyright 2008 Kate Ward. All Rights Reserved.
-# Released under the LGPL (GNU Lesser General Public License)
+# Released under the Apache 2.0 license.
 #
 # Author: kate.ward@forestent.com (Kate Ward)
 # https://github.com/kward/shunit2
@@ -26,6 +26,7 @@ testUnboundVariable() {
 #   boom  # No parameter given
 #   assertEquals 0 \$?
 #}
+#SHUNIT_COLOR='none'
 #. ${TH_SHUNIT}
 EOF
   ( exec ${SHUNIT_SHELL:-sh} "${unittestF}" >"${stdoutF}" 2>"${stderrF}" )
@@ -147,10 +148,11 @@ setUp() {
   done
 
   # Reconfigure coloring as some tests override default behavior.
-  _shunit_configureColor ${SHUNIT_COLOR}
+  _shunit_configureColor ${SHUNIT_COLOR_DEFAULT}
 }
 
 oneTimeSetUp() {
+  SHUNIT_COLOR_DEFAULT=${SHUNIT_COLOR}
   th_oneTimeSetUp
 }
 
