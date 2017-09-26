@@ -1,4 +1,7 @@
 language: bash
 
+env:
+  - SHUNIT_COLOR='always'
+
 script:
   - bash shunit2_test.sh
