@@ -4,4 +4,5 @@ env:
   - SHUNIT_COLOR='always'
 
 script:
-  - bash shunit2_test.sh
+  - shunit2_test.sh
+  - bash -c 'shopt -s globstar; shellcheck shunit2 shunit2_test_helpers *.sh'
