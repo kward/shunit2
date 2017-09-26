@@ -9,16 +9,19 @@
 #
 # Author: kate.ward@forestent.com (Kate Ward)
 # https://github.com/kward/shunit2
+#
+# Disable ShellCheck checks that aren't fully portable (POSIX != portable).
+# shellcheck disable=SC2006
 
 # Treat unset variables as an error.
 set -u
 
 die() {
-  [ $# -gt 0 ] && echo "error: $@" >&2
+  [ $# -gt 0 ] && echo "error: $*" >&2
   exit 1
 }
 
-BASE_DIR=`dirname $0`
+BASE_DIR=`dirname "$0"`
 LIB_DIR='lib'
 
 # Load libraries.
