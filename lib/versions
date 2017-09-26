@@ -17,8 +17,8 @@ ARGV0=`basename "$0"`
 LSB_RELEASE='/etc/lsb-release'
 VERSIONS_SHELLS="ash /bin/bash /bin/dash /bin/ksh /bin/pdksh /bin/sh /bin/zsh"
 
-TRUE=0
-FALSE=1
+true; TRUE=$?
+false; FALSE=$?
 ERROR=2
 
 UNAME_R=`uname -r`
@@ -42,7 +42,7 @@ versions_osName() {
         10.7|10.7.[0-9]*) os_name_='Mac OS X Lion' ;;
         10.8|10.8.[0-9]*) os_name_='Mac OS X Mountain Lion' ;;
         10.9|10.9.[0-9]*) os_name_='Mac OS X Mavericks' ;;
-        10.10|10.10.[0-9]*) os_name_='Mac OS X Yousemite' ;;
+        10.10|10.10.[0-9]*) os_name_='Mac OS X Yosemite' ;;
         10.11|10.11.[0-9]*) os_name_='Mac OS X El Capitan' ;;
         10.12|10.12.[0-9]*) os_name_='macOS Sierra' ;;
         10.13|10.13.[0-9]*) os_name_='macOS High Sierra' ;;
@@ -93,14 +93,14 @@ versions_osVersion() {
       if grep 'OpenSolaris' /etc/release >/dev/null; then
         os_version_=`grep 'OpenSolaris' /etc/release |awk '{print $2"("$3")"}'`
       else
-        major_=`echo ${os_release_} |sed 's/[0-9]*\.\([0-9]*\)/\1/'`
+        major_=`echo "${os_release_}" |sed 's/[0-9]*\.\([0-9]*\)/\1/'`
         minor_=`grep Solaris /etc/release |sed 's/[^u]*\(u[0-9]*\).*/\1/'`
         os_version_="${major_}${minor_}"
       fi
       ;;
   esac
 
-  echo ${os_version_}
+  echo "${os_version_}"
   unset os_name_ os_release_ os_version_ major_ minor_
 }
 
@@ -132,21 +132,21 @@ versions_shellVersion() {
       ## pdksh is covered in versions_shell_ksh()
       #[ -z "${version_}" ] && version_=`versions_shell_zsh ${shell_}`
       ;;
-    ash) version_=`versions_shell_ash ${shell_}` ;;
-    */bash) version_=`versions_shell_bash ${shell_}` ;;
+    ash) version_=`versions_shell_ash "${shell_}"` ;;
+    */bash) version_=`versions_shell_bash "${shell_}"` ;;
     */dash)
       # simply assuming Ubuntu Linux until somebody comes up with a better
       # test. the following test will return an empty string if dash is not
       # installed.
       version_=`versions_shell_dash`
       ;;
-    */ksh) version_=`versions_shell_ksh ${shell_}` ;;
-    */pdksh) version_=`versions_shell_pdksh ${shell_}` ;;
-    */zsh) version_=`versions_shell_zsh ${shell_}` ;;
+    */ksh) version_=`versions_shell_ksh "${shell_}"` ;;
+    */pdksh) version_=`versions_shell_pdksh "${shell_}"` ;;
+    */zsh) version_=`versions_shell_zsh "${shell_}"` ;;
     *) version_='invalid'
   esac
 
-  echo ${version_:-unknown}
+  echo "${version_:-unknown}"
   unset shell_ version_
 }
 
@@ -168,28 +168,24 @@ versions_shell_dash() {
 
 versions_shell_ksh() {
   versions_shell_=$1
+  versions_version_=''
 
-  # try a few different ways to figure out the version
-  versions_version_=`${versions_shell_} --version : 2>&1`
-  if [ $? -eq 0 ]; then
+  # Try a few different ways to figure out the version.
+  if versions_version_=`${versions_shell_} --version : 2>&1`; then
     versions_version_=`echo "${versions_version_}" \
       |sed 's/.*\([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\).*/\1/'`
-  else
-    versions_version_=''
   fi
-
   if [ -z "${versions_version_}" ]; then
     _versions_have_strings
-    versions_version_=`strings ${versions_shell_} 2>&1 \
+    versions_version_=`strings "${versions_shell_}" 2>&1 \
       |grep Version \
       |sed 's/^.*Version \(.*\)$/\1/;s/ s+ \$$//;s/ /-/g'`
   fi
-
   if [ -z "${versions_version_}" ]; then
-    versions_version_=`versions_shell_pdksh ${versions_shell_}`
+    versions_version_=`versions_shell_pdksh "${versions_shell_}"`
   fi
 
-  echo ${versions_version_}
+  echo "${versions_version_}"
   unset versions_shell_ versions_version_
 }
 
@@ -203,27 +199,27 @@ versions_shell_pdksh() {
 versions_shell_zsh() {
   versions_shell_=$1
 
-  # try a few different ways to figure out the version
+  # Try a few different ways to figure out the version.
   versions_version_=`echo 'echo ${ZSH_VERSION}' |${versions_shell_}`
 
   if [ -z "${versions_version_}" ]; then
     versions_version_=`${versions_shell_} --version 2>&1 |awk '{print $2}'`
   fi
 
-  echo ${versions_version_}
+  echo "${versions_version_}"
   unset versions_shell_ versions_version_
 }
 
 # Determine if the 'strings' binary installed.
 _versions_have_strings() {
   [ ${__versions_haveStrings} -ne ${ERROR} ] && return
-  eval strings /dev/null >/dev/null 2>&1
-  if [ $? -eq 0 ]; then
+  if eval strings /dev/null >/dev/null 2>&1; then
     __versions_haveStrings=${TRUE}
-  else
-    echo 'WARN: strings not installed. try installing binutils?' >&2
-    __versions_haveStrings=${FALSE}
+    return
   fi
+
+  echo 'WARN: strings not installed. try installing binutils?' >&2
+  __versions_haveStrings=${FALSE}
 }
 
 versions_main() {
@@ -235,7 +231,7 @@ versions_main() {
   echo "os: ${os_name} version: ${os_version}"
 
   for shell in ${VERSIONS_SHELLS}; do
-    shell_version=`versions_shellVersion ${shell}`
+    shell_version=`versions_shellVersion "${shell}"`
     echo "shell: ${shell} version: ${shell_version}"
   done
 }
