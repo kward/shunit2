@@ -11,8 +11,11 @@
 #
 # shUnit2 is a xUnit based unit test framework for Bourne shell scripts. It is
 # based on the popular JUnit unit testing framework for Java.
+#
+# Disable ShellCheck checks that aren't fully portable (POSIX != portable).
+# shellcheck disable=SC2006
 
-# Return if shunit2 already loaded.
+# Return if shUnit2 already loaded.
 [ -n "${SHUNIT_VERSION:-}" ] && exit 0
 SHUNIT_VERSION='2.1.7pre'
 
