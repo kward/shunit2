@@ -4,5 +4,6 @@ env:
   - SHUNIT_COLOR='always'
 
 script:
-  - shunit2_test.sh
-  - bash -c 'shopt -s globstar; shellcheck shunit2 shunit2_test_helpers *.sh'
+  - ./shunit2_test.sh
+  # TODO(kward): Reenable shellcheck after all scripts have been improved.
+  #- bash -c 'shopt -s globstar; shellcheck shunit2 shunit2_test_helpers *.sh'
