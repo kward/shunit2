@@ -135,8 +135,7 @@ _SHUNIT_LINENO_='eval __shunit_lineno=""; if [ "${1:-}" = "--lineno" ]; then [ -
 #   actual: string: actual value
 # Returns:
 #   integer: success (TRUE/FALSE/ERROR constant)
-assertEquals()
-{
+assertEquals() {
   ${_SHUNIT_LINENO_}
   if [ $# -lt 2 -o $# -gt 3 ]; then
     _shunit_error "assertEquals() requires two or three arguments; $# given"
@@ -174,8 +173,7 @@ _ASSERT_EQUALS_='eval assertEquals --lineno "${LINENO:-}"'
 #   actual: string: actual value
 # Returns:
 #   integer: success (TRUE/FALSE/ERROR constant)
-assertNotEquals()
-{
+assertNotEquals() {
   ${_SHUNIT_LINENO_}
   if [ $# -lt 2 -o $# -gt 3 ]; then
     _shunit_error "assertNotEquals() requires two or three arguments; $# given"
@@ -211,8 +209,7 @@ _ASSERT_NOT_EQUALS_='eval assertNotEquals --lineno "${LINENO:-}"'
 #   actual: string: actual value
 # Returns:
 #   integer: success (TRUE/FALSE/ERROR constant)
-assertNull()
-{
+assertNull() {
   ${_SHUNIT_LINENO_}
   if [ $# -lt 1 -o $# -gt 2 ]; then
     _shunit_error "assertNull() requires one or two arguments; $# given"
@@ -272,8 +269,7 @@ _ASSERT_NOT_NULL_='eval assertNotNull --lineno "${LINENO:-}"'
 #   actual: string: actual value
 # Returns:
 #   integer: success (TRUE/FALSE/ERROR constant)
-assertSame()
-{
+assertSame() {
   ${_SHUNIT_LINENO_}
   if [ $# -lt 2 -o $# -gt 3 ]; then
     _shunit_error "assertSame() requires two or three arguments; $# given"
@@ -302,8 +298,7 @@ _ASSERT_SAME_='eval assertSame --lineno "${LINENO:-}"'
 #   actual: string: actual value
 # Returns:
 #   integer: success (TRUE/FALSE/ERROR constant)
-assertNotSame()
-{
+assertNotSame() {
   ${_SHUNIT_LINENO_}
   if [ $# -lt 2 -o $# -gt 3 ]; then
     _shunit_error "assertNotSame() requires two or three arguments; $# given"
@@ -345,8 +340,7 @@ _ASSERT_NOT_SAME_='eval assertNotSame --lineno "${LINENO:-}"'
 #   condition: string: integer value or shell conditional statement
 # Returns:
 #   integer: success (TRUE/FALSE/ERROR constant)
-assertTrue()
-{
+assertTrue() {
   ${_SHUNIT_LINENO_}
   if [ $# -lt 1 -o $# -gt 2 ]; then
     _shunit_error "assertTrue() takes one or two arguments; $# given"
@@ -410,8 +404,7 @@ _ASSERT_TRUE_='eval assertTrue --lineno "${LINENO:-}"'
 #   condition: string: integer value or shell conditional statement
 # Returns:
 #   integer: success (TRUE/FALSE/ERROR constant)
-assertFalse()
-{
+assertFalse() {
   ${_SHUNIT_LINENO_}
   if [ $# -lt 1 -o $# -gt 2 ]; then
     _shunit_error "assertFalse() quires one or two arguments; $# given"
@@ -464,8 +457,7 @@ _ASSERT_FALSE_='eval assertFalse --lineno "${LINENO:-}"'
 #   message: string: failure message [optional]
 # Returns:
 #   integer: success (TRUE/FALSE/ERROR constant)
-fail()
-{
+fail() {
   ${_SHUNIT_LINENO_}
   if [ $# -gt 1 ]; then
     _shunit_error "fail() requires zero or one arguments; $# given"
@@ -494,8 +486,7 @@ _FAIL_='eval fail --lineno "${LINENO:-}"'
 #   actual: string: actual value
 # Returns:
 #   integer: success (TRUE/FALSE/ERROR constant)
-failNotEquals()
-{
+failNotEquals() {
   ${_SHUNIT_LINENO_}
   if [ $# -lt 2 -o $# -gt 3 ]; then
     _shunit_error "failNotEquals() requires one or two arguments; $# given"
@@ -558,8 +549,7 @@ _FAIL_SAME_='eval failSame --lineno "${LINENO:-}"'
 #   actual: string: actual value
 # Returns:
 #   integer: success (TRUE/FALSE/ERROR constant)
-failNotSame()
-{
+failNotSame() {
   ${_SHUNIT_LINENO_}
   if [ $# -lt 2 -o $# -gt 3 ]; then
     _shunit_error "failNotEquals() requires one or two arguments; $# given"
@@ -592,10 +582,7 @@ _FAIL_NOT_SAME_='eval failNotSame --lineno "${LINENO:-}"'
 #
 # Args:
 #   None
-startSkipping()
-{
-  __shunit_skip=${SHUNIT_TRUE}
-}
+startSkipping() { __shunit_skip=${SHUNIT_TRUE}; }
 
 # Resume the normal recording behavior of assert and fail calls.
 #
@@ -645,8 +632,7 @@ isSkipping()
 #
 # Args:
 #   function: string: name of a function to add to current unit test suite
-suite_addTest()
-{
+suite_addTest() {
   shunit_func_=${1:-}
 
   __shunit_suite="${__shunit_suite:+${__shunit_suite} }${shunit_func_}"
@@ -715,8 +701,7 @@ suite_addTest()
 #   None
 # Outputs:
 #   string: the temporary directory that was created
-_shunit_mktempDir()
-{
+_shunit_mktempDir() {
   # Try the standard `mktemp` function.
   ( exec mktemp -dqt shunit.XXXXXX 2>/dev/null ) && return
 
@@ -745,8 +730,7 @@ _shunit_mktempDir()
 #
 # Args:
 #   None
-_shunit_mktempFunc()
-{
+_shunit_mktempFunc() {
   for _shunit_func_ in oneTimeSetUp oneTimeTearDown setUp tearDown suite noexec
   do
     _shunit_file_="${__shunit_tmpDir}/${_shunit_func_}"
@@ -842,8 +826,7 @@ _shunit_configureColor() {
 #
 # Args:
 #   None
-_shunit_execSuite()
-{
+_shunit_execSuite() {
   for _shunit_test_ in ${__shunit_suite}; do
     __shunit_testSuccess=${SHUNIT_TRUE}
 
@@ -877,8 +860,7 @@ _shunit_execSuite()
 #   None
 # Output:
 #   string: the report of successful and failed tests, as well as totals.
-_shunit_generateReport()
-{
+_shunit_generateReport() {
   _shunit_ok_=${SHUNIT_TRUE}
 
   # If no exit code was provided one, determine an appropriate one.
@@ -924,8 +906,7 @@ _shunit_generateReport()
 #   None
 # Returns:
 #   boolean: whether the test should be skipped (TRUE/FALSE constant)
-_shunit_shouldSkip()
-{
+_shunit_shouldSkip() {
   [ ${__shunit_skip} -eq ${SHUNIT_FALSE} ] && return ${SHUNIT_FALSE}
   _shunit_assertSkip
 }
@@ -934,8 +915,7 @@ _shunit_shouldSkip()
 #
 # Args:
 #   None
-_shunit_assertPass()
-{
+_shunit_assertPass() {
   __shunit_assertsPassed=`expr ${__shunit_assertsPassed} + 1`
   __shunit_assertsTotal=`expr ${__shunit_assertsTotal} + 1`
 }
@@ -944,8 +924,7 @@ _shunit_assertPass()
 #
 # Args:
 #   message: string: failure message to provide user
-_shunit_assertFail()
-{
+_shunit_assertFail() {
   _shunit_msg_=$1
 
   __shunit_testSuccess=${SHUNIT_FALSE}
@@ -990,8 +969,7 @@ _shunit_prepForSourcing()
 #   s: string: to escape character in
 # Returns:
 #   string: with escaped character(s)
-_shunit_escapeCharInStr()
-{
+_shunit_escapeCharInStr() {
   [ -n "$2" ] || return  # no point in doing work on an empty string
 
   # Note: using shorter variable names to prevent conflicts with
@@ -1012,8 +990,7 @@ _shunit_escapeCharInStr()
 #   str: string: to escape characters in
 # Returns:
 #   string: with escaped character(s)
-_shunit_escapeCharactersInString()
-{
+_shunit_escapeCharactersInString() {
   [ -n "$1" ] || return  # no point in doing work on an empty string
 
   _shunit_str_=$1
@@ -1034,8 +1011,7 @@ _shunit_escapeCharactersInString()
 #   script: string: name of script to extract functions from
 # Returns:
 #   string: of function names
-_shunit_extractTestFunctions()
-{
+_shunit_extractTestFunctions() {
   _shunit_script_=$1
 
   # Extract the lines with test function names, strip of anything besides the
