@@ -10,8 +10,8 @@
 # Author: kate.ward@forestent.com (Kate Ward)
 # https://github.com/kward/shunit2
 #
-# Disable ShellCheck checks that aren't fully portable (POSIX != portable).
-# shellcheck disable=SC2006
+# Disable annoying ShellCheck checks.
+# shellcheck disable=SC1091,SC2006,SC2154
 
 # Treat unset variables as an error.
 set -u
@@ -22,18 +22,24 @@ die() {
 }
 
 BASE_DIR=`dirname "$0"`
-LIB_DIR='lib'
+LIB_DIR="${BASE_DIR}/lib"
 
-# Load libraries.
-. ${LIB_DIR}/shflags || die 'unable to load shflags library'
-. ${LIB_DIR}/shlib || die 'unable to load shlib library'
-. ${LIB_DIR}/versions || die 'unable to load versions library'
+### Load libraries.
+# shellcheck source=lib/shflags
+. "${LIB_DIR}/shflags" || die 'unable to load shflags library'
+# shellcheck source=lib/shlib
+. "${LIB_DIR}/shlib" || die 'unable to load shlib library'
+# shellcheck source=lib/versions
+. "${LIB_DIR}/versions" || die 'unable to load versions library'
 
-# Redefining BASE_DIR now that we have the shlib functions.
+# Redefining BASE_DIR now that we have the shlib functions. We need BASE_DIR so
+# that we can properly load things, even in the event that this script is called
+# from a different directory.
 BASE_DIR=`shlib_relToAbsPath "${BASE_DIR}"`
 
-# Load external flags.
-. ${BASE_DIR}/gen_test_results.flags
+### Load external flags.
+# shellcheck source=./gen_test_results.flags
+. "${BASE_DIR}/gen_test_results.flags"
 
 # Define flags.
 os_name=`versions_osName |sed 's/ /_/g'`
