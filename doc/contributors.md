@@ -5,7 +5,7 @@ contributed in some way or another to shunit2.
 - Bryan Larsen
 - [David Acacio](https://github.com/dacacioa)
 - Kevin Van Horn
-- Maciej Bliziński
+- [Maciej Bliziński](https://github.com/automatthias)
 - Mario Sparada
 - Mathias Goldau
 - Richard Jensen
