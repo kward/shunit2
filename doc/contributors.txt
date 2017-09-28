@@ -11,4 +11,5 @@ Mathias Goldau
 Richard Jensen
 Rob Holland
 Rocky Bernstein
+[rugk](https://github.com/rugk)
 wood4321 (of code.google.com)
