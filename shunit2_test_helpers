@@ -12,6 +12,8 @@
 #   shellcheck disable=SC2006
 # expr may be antiquated, but it is the only solution in some cases.
 #   shellcheck disable=SC2003
+# Commands are purposely escaped so they can be mocked outside shUnit2.
+#   shellcheck disable=SC1001,SC1012
 
 # Treat unset variables as an error when performing parameter expansion.
 set -u
