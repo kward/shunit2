@@ -3,11 +3,18 @@
 #
 # shunit2 unit test for assert functions.
 #
-# Copyright 2008 Kate Ward. All Rights Reserved.
+# Copyright 2008-2017 Kate Ward. All Rights Reserved.
 # Released under the Apache 2.0 license.
 #
 # Author: kate.ward@forestent.com (Kate Ward)
 # https://github.com/kward/shunit2
+#
+# Disable source following.
+#   shellcheck disable=SC1090,SC1091
+
+# These variables will be overridden by the test helpers.
+stdoutF="${TMPDIR:-/tmp}/STDOUT"
+stderrF="${TMPDIR:-/tmp}/STDERR"
 
 # Load test helpers.
 . ./shunit2_test_helpers
@@ -108,6 +115,7 @@ testAssertNotNull()
   th_assertTrueWithNoOutput 'not null, with single-quote' $? \
       "${stdoutF}" "${stderrF}"
 
+  # shellcheck disable=SC2016
   ( assertNotNull 'x$b' >"${stdoutF}" 2>"${stderrF}" )
   th_assertTrueWithNoOutput 'not null, with dollar' $? \
       "${stdoutF}" "${stderrF}"
@@ -184,5 +192,5 @@ oneTimeSetUp() {
 }
 
 # Load and run shunit2.
-[ -n "${ZSH_VERSION:-}" ] && SHUNIT_PARENT=$0
-. ${TH_SHUNIT}
+[ -n "${ZSH_VERSION:-}" ] && export SHUNIT_PARENT=$0
+. "${TH_SHUNIT}"
