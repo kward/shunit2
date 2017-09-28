@@ -9,7 +9,7 @@ script:
   # TODO(kward): Reenable shellcheck after all scripts have been improved.
   #- bash -c 'shopt -s globstar; shellcheck shunit2 shunit2_test_helpers *.sh'
   - shellcheck gen_test_results.sh shunit2
-  - shellcheck -s sh shunit_test_helpers
+  - shellcheck -s sh shunit2_test_helpers
 
 addons:
   apt:
