@@ -10,13 +10,12 @@
 # Author: kate.ward@forestent.com (Kate Ward)
 # https://github.com/kward/shunit2
 #
-### Disable annoying ShellCheck checks.
-## Source following.
-# shellcheck disable=SC1090,SC1091
-## FLAGS variables are dynamically created.
-# shellcheck disable=SC2154
-## Disagree with [ p ] && [ q ] vs [ p -a -q ] recommendation.
-# shellcheck disable=SC2166
+# Source following.
+#   shellcheck disable=SC1090,SC1091
+# FLAGS variables are dynamically created.
+#   shellcheck disable=SC2154
+# Disagree with [ p ] && [ q ] vs [ p -a -q ] recommendation.
+#   shellcheck disable=SC2166
 
 # Treat unset variables as an error.
 set -u
