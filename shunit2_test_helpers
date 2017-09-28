@@ -72,8 +72,10 @@ th_generateRandom() {
   tfgr_random=${th_RANDOM}
 
   while \[ "${tfgr_random}" = "${th_RANDOM}" ]; do
+    # shellcheck disable=SC2039
     if \[ -n "${RANDOM:-}" ]; then
       # $RANDOM works
+      # shellcheck disable=SC2039
       tfgr_random=${RANDOM}${RANDOM}${RANDOM}$$
     elif \[ -r '/dev/urandom' ]; then
       tfgr_random=`od -vAn -N4 -tu4 </dev/urandom |sed 's/^[^0-9]*//'`
