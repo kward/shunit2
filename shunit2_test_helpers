@@ -12,7 +12,7 @@
 set -u
 
 # Set shwordsplit for zsh.
-[ -n "${ZSH_VERSION:-}" ] && setopt shwordsplit
+\[ -n "${ZSH_VERSION:-}" ] && setopt shwordsplit
 
 #
 # Constants.
@@ -25,11 +25,11 @@ TH_SHUNIT=${SHUNIT_INC:-./shunit2}
 # non-empty value to enable debug output, or TRACE to enable trace
 # output.
 TRACE=${TRACE:+'th_trace '}
-[ -n "${TRACE}" ] && DEBUG=1
-[ -z "${TRACE}" ] && TRACE=':'
+\[ -n "${TRACE}" ] && DEBUG=1
+\[ -z "${TRACE}" ] && TRACE=':'
 
 DEBUG=${DEBUG:+'th_debug '}
-[ -z "${DEBUG}" ] && DEBUG=':'
+\[ -z "${DEBUG}" ] && DEBUG=':'
 
 #
 # Variables.
@@ -64,18 +64,18 @@ th_oneTimeSetUp() {
 th_generateRandom() {
   tfgr_random=${th_RANDOM}
 
-  while [ "${tfgr_random}" = "${th_RANDOM}" ]; do
-    if [ -n "${RANDOM:-}" ]; then
+  while \[ "${tfgr_random}" = "${th_RANDOM}" ]; do
+    if \[ -n "${RANDOM:-}" ]; then
       # $RANDOM works
       tfgr_random=${RANDOM}${RANDOM}${RANDOM}$$
-    elif [ -r '/dev/urandom' ]; then
+    elif \[ -r '/dev/urandom' ]; then
       tfgr_random=`od -vAn -N4 -tu4 </dev/urandom |sed 's/^[^0-9]*//'`
     else
       tfgr_date=`date '+%H%M%S'`
       tfgr_random=`expr ${tfgr_date} \* $$`
       unset tfgr_date
     fi
-    [ "${tfgr_random}" = "${th_RANDOM}" ] && sleep 1
+    \[ "${tfgr_random}" = "${th_RANDOM}" ] && sleep 1
   done
 
   th_RANDOM=${tfgr_random}
@@ -116,7 +116,7 @@ th_assertTrueWithNoOutput() {
   th_stderr_=$4
 
   assertTrue "${th_test_}; expected return value of zero" ${th_rtrn_}
-  [ ${th_rtrn_} -ne ${SHUNIT_TRUE} ] && cat "${th_stderr_}"
+  \[ ${th_rtrn_} -ne ${SHUNIT_TRUE} ] && \cat "${th_stderr_}"
   assertFalse "${th_test_}; expected no output to STDOUT" \
       "[ -s '${th_stdout_}' ]"
   assertFalse "${th_test_}; expected no output to STDERR" \
@@ -145,7 +145,7 @@ th_assertFalseWithOutput()
       "[ -s '${th_stdout_}' ]"
   assertFalse "${th_test_}; expected no output to STDERR" \
       "[ -s '${th_stderr_}' ]"
-  [ -s "${th_stdout_}" -a ! -s "${th_stderr_}" ] || \
+  \[ -s "${th_stdout_}" -a ! -s "${th_stderr_}" ] || \
       _th_showOutput ${SHUNIT_FALSE} "${th_stdout_}" "${th_stderr_}"
 
   unset th_test_ th_rtrn_ th_stdout_ th_stderr_
@@ -170,7 +170,7 @@ th_assertFalseWithError() {
       "[ -s '${th_stdout_}' ]"
   assertTrue "${th_test_}; expected output to STDERR" \
       "[ -s '${th_stderr_}' ]"
-  [ ! -s "${th_stdout_}" -a -s "${th_stderr_}" ] || \
+  \[ ! -s "${th_stdout_}" -a -s "${th_stderr_}" ] || \
       _th_showOutput ${SHUNIT_FALSE} "${th_stdout_}" "${th_stderr_}"
 
   unset th_test_ th_rtrn_ th_stdout_ th_stderr_
@@ -181,8 +181,8 @@ th_assertFalseWithError() {
 # they are either written to disk, or recognized as an error the file is empty.
 th_clearReturn() { cp /dev/null "${returnF}"; }
 th_queryReturn() {
-  if [ -s "${returnF}" ]; then
-    th_return=`cat "${returnF}"`
+  if \[ -s "${returnF}" ]; then
+    th_return=`\cat "${returnF}"`
   else
     th_return=${SHUNIT_ERROR}
   fi
@@ -196,16 +196,16 @@ _th_showOutput() {
   _th_stderr_=$3
 
   isSkipping
-  if [ $? -eq ${SHUNIT_FALSE} -a ${_th_return_} != ${SHUNIT_TRUE} ]; then
-    if [ -n "${_th_stdout_}" -a -s "${_th_stdout_}" ]; then
+  if \[ $? -eq ${SHUNIT_FALSE} -a ${_th_return_} != ${SHUNIT_TRUE} ]; then
+    if \[ -n "${_th_stdout_}" -a -s "${_th_stdout_}" ]; then
       echo '>>> STDOUT' >&2
-      cat "${_th_stdout_}" >&2
+      \cat "${_th_stdout_}" >&2
     fi
-    if [ -n "${_th_stderr_}" -a -s "${_th_stderr_}" ]; then
+    if \[ -n "${_th_stderr_}" -a -s "${_th_stderr_}" ]; then
       echo '>>> STDERR' >&2
-      cat "${_th_stderr_}" >&2
+      \cat "${_th_stderr_}" >&2
     fi
-    if [ -n "${_th_stdout_}" -o -n "${_th_stderr_}" ]; then
+    if \[ -n "${_th_stdout_}" -o -n "${_th_stderr_}" ]; then
       echo '<<< end output' >&2
     fi
   fi
