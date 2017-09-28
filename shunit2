@@ -37,7 +37,7 @@ case "${__SHUNIT_UNAME_S}" in
 esac
 
 __SHUNIT_CMD_ECHO_ESC='echo -e'
-[ "`echo -e test`" = '-e test' ] && __SHUNIT_CMD_ECHO_ESC='echo'
+\[ "`echo -e test`" = '-e test' ] && __SHUNIT_CMD_ECHO_ESC='echo'
 
 # Commands a user can override if needed.
 SHUNIT_CMD_EXPR=${SHUNIT_CMD_EXPR:-${__SHUNIT_CMD_EXPR}}
@@ -79,7 +79,7 @@ __shunit_constants=`set |grep '^__SHUNIT_' |cut -d= -f1`
 echo "${__shunit_constants}" |grep '^Binary file' >/dev/null && \
     __shunit_constants=`set |grep -a '^__SHUNIT_' |cut -d= -f1`
 for __shunit_const in ${__shunit_constants}; do
-  if [ -z "${ZSH_VERSION:-}" ]; then
+  if \[ -z "${ZSH_VERSION:-}" ]; then
     readonly ${__shunit_const}
   else
     case ${ZSH_VERSION} in
