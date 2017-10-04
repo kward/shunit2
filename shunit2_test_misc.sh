@@ -3,7 +3,7 @@
 #
 # shUnit2 unit tests of miscellaneous things
 #
-# Copyright 2008 Kate Ward. All Rights Reserved.
+# Copyright 2008-2017 Kate Ward. All Rights Reserved.
 # Released under the Apache 2.0 license.
 #
 # Author: kate.ward@forestent.com (Kate Ward)
