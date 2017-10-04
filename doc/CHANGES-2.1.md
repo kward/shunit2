@@ -4,6 +4,12 @@ Changes in shUnit2 2.1.X
 Changes with 2.1.7
 ------------------
 
+Issue #54. Shell commands prefixed with '\' so that they can be stubbed in tests.
+
+Issue #68. Ran all code through [ShellCheck](http://www.shellcheck.net/).
+
+Issue #60. Continuous integration tests now run with [Travis CI](https://travis-ci.org/kward/shunit2).
+
 Issue #56. Added color support. Color is enabled automatically when supported,
 but can be disabled by defining the SHUNIT_COLOR environment variable before
 sourcing shunit2. Accepted values are `always`, `auto` (the default), and
