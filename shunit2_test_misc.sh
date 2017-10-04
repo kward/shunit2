@@ -18,7 +18,6 @@
 #   shellcheck disable=SC1003
 
 # These variables will be overridden by the test helpers.
-expectedF="${TMPDIR:-/tmp}/expected"
 stdoutF="${TMPDIR:-/tmp}/STDOUT"
 stderrF="${TMPDIR:-/tmp}/STDERR"
 
@@ -79,7 +78,7 @@ testEscapeCharInStr() {
   assertEquals 'abc\\def' "`_shunit_escapeCharInStr '\' 'abc\def'`"
   assertEquals '\\def' "`_shunit_escapeCharInStr '\' '\def'`"
 
-  actual="`_shunit_escapeCharInStr '\"' ''`"
+  actual=`_shunit_escapeCharInStr '"' ''`
   assertEquals '' "${actual}"
   assertEquals 'abc\"' "`_shunit_escapeCharInStr '"' 'abc"'`"
   assertEquals 'abc\"def' "`_shunit_escapeCharInStr '"' 'abc"def'`"
@@ -158,7 +157,7 @@ EOF
 }
 
 setUp() {
-  for f in "${expectedF}" "${stdoutF}" "${stderrF}"; do
+  for f in "${stdoutF}" "${stderrF}"; do
     cp /dev/null "${f}"
   done
 
@@ -172,5 +171,6 @@ oneTimeSetUp() {
 }
 
 # Load and run shUnit2.
-[ -n "${ZSH_VERSION:-}" ] && export SHUNIT_PARENT=$0
+# shellcheck disable=SC2034
+[ -n "${ZSH_VERSION:-}" ] && SHUNIT_PARENT=$0
 . "${TH_SHUNIT}"
