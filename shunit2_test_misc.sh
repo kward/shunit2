@@ -8,6 +8,19 @@
 #
 # Author: kate.ward@forestent.com (Kate Ward)
 # https://github.com/kward/shunit2
+#
+### ShellCheck http://www.shellcheck.net/
+# $() are not fully portable (POSIX != portable).
+#   shellcheck disable=SC2006
+# Disable source following.
+#   shellcheck disable=SC1090,SC1091
+# Not wanting to escape single quotes.
+#   shellcheck disable=SC1003
+
+# These variables will be overridden by the test helpers.
+expectedF="${TMPDIR:-/tmp}/expected"
+stdoutF="${TMPDIR:-/tmp}/STDOUT"
+stderrF="${TMPDIR:-/tmp}/STDERR"
 
 # Load test helpers.
 . ./shunit2_test_helpers
@@ -29,7 +42,7 @@ testUnboundVariable() {
 #SHUNIT_COLOR='none'
 #. ${TH_SHUNIT}
 EOF
-  ( exec ${SHUNIT_SHELL:-sh} "${unittestF}" >"${stdoutF}" 2>"${stderrF}" )
+  ( exec "${SHUNIT_SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" )
   assertFalse 'expected a non-zero exit value' $?
   grep '^ASSERT:Unknown failure' "${stdoutF}" >/dev/null
   assertTrue 'assert message was not generated' $?
@@ -49,34 +62,36 @@ testIssue7() {
 ASSERT:Some message. expected:<1> but was:<2>
 EOF
   rtrn=$?
-  assertEquals ${SHUNIT_TRUE} ${rtrn}
-  [ ${rtrn} -ne ${SHUNIT_TRUE} ] && cat "${stderrF}" >&2
+  assertEquals "${SHUNIT_TRUE}" "${rtrn}"
+  [ "${rtrn}" -ne "${SHUNIT_TRUE}" ] && cat "${stderrF}" >&2
 }
 
 testPrepForSourcing() {
-  assertEquals '/abc' `_shunit_prepForSourcing '/abc'`
-  assertEquals './abc' `_shunit_prepForSourcing './abc'`
-  assertEquals './abc' `_shunit_prepForSourcing 'abc'`
+  assertEquals '/abc' "`_shunit_prepForSourcing '/abc'`"
+  assertEquals './abc' "`_shunit_prepForSourcing './abc'`"
+  assertEquals './abc' "`_shunit_prepForSourcing 'abc'`"
 }
 
 testEscapeCharInStr() {
-  actual=`_shunit_escapeCharInStr '\' ''`
+  actual="`_shunit_escapeCharInStr '\' ''`"
   assertEquals '' "${actual}"
-  assertEquals 'abc\\' `_shunit_escapeCharInStr '\' 'abc\'`
-  assertEquals 'abc\\def' `_shunit_escapeCharInStr '\' 'abc\def'`
-  assertEquals '\\def' `_shunit_escapeCharInStr '\' '\def'`
+  assertEquals 'abc\\' "`_shunit_escapeCharInStr '\' 'abc\'`"
+  assertEquals 'abc\\def' "`_shunit_escapeCharInStr '\' 'abc\def'`"
+  assertEquals '\\def' "`_shunit_escapeCharInStr '\' '\def'`"
 
-  actual=`_shunit_escapeCharInStr '"' ''`
+  actual="`_shunit_escapeCharInStr '\"' ''`"
   assertEquals '' "${actual}"
-  assertEquals 'abc\"' `_shunit_escapeCharInStr '"' 'abc"'`
-  assertEquals 'abc\"def' `_shunit_escapeCharInStr '"' 'abc"def'`
-  assertEquals '\"def' `_shunit_escapeCharInStr '"' '"def'`
+  assertEquals 'abc\"' "`_shunit_escapeCharInStr '"' 'abc"'`"
+  assertEquals 'abc\"def' "`_shunit_escapeCharInStr '"' 'abc"def'`"
+  assertEquals '\"def' "`_shunit_escapeCharInStr '"' '"def'`"
 
-  actual=`_shunit_escapeCharInStr '$' ''`
+  actual="`_shunit_escapeCharInStr '$' ''`"
   assertEquals '' "${actual}"
-  assertEquals 'abc\$' `_shunit_escapeCharInStr '$' 'abc$'`
-  assertEquals 'abc\$def' `_shunit_escapeCharInStr '$' 'abc$def'`
-  assertEquals '\$def' `_shunit_escapeCharInStr '$' '$def'`
+  assertEquals 'abc\$' "`_shunit_escapeCharInStr '$' 'abc$'`"
+  # shellcheck disable=2016
+  assertEquals 'abc\$def' "`_shunit_escapeCharInStr '$' 'abc$def'`"
+  # shellcheck disable=2016
+  assertEquals '\$def' "`_shunit_escapeCharInStr '$' '$def'`"
 
   # TODO(20170924:kward) fix or remove.
 #  actual=`_shunit_escapeCharInStr "'" ''`
@@ -100,7 +115,7 @@ testEscapeCharInStr() {
 
 testEscapeCharInStr_specialChars() {
   # Make sure our forward slash doesn't upset sed.
-  assertEquals '/' `_shunit_escapeCharInStr '\' '/'`
+  assertEquals '/' "`_shunit_escapeCharInStr '\' '/'`"
 
   # Some shells escape these differently.
   # TODO(20170924:kward) fix or remove.
@@ -143,19 +158,19 @@ EOF
 }
 
 setUp() {
-  for f in ${expectedF} ${stdoutF} ${stderrF}; do
-    cp /dev/null ${f}
+  for f in "${expectedF}" "${stdoutF}" "${stderrF}"; do
+    cp /dev/null "${f}"
   done
 
   # Reconfigure coloring as some tests override default behavior.
-  _shunit_configureColor ${SHUNIT_COLOR_DEFAULT}
+  _shunit_configureColor "${SHUNIT_COLOR_DEFAULT}"
 }
 
 oneTimeSetUp() {
-  SHUNIT_COLOR_DEFAULT=${SHUNIT_COLOR}
+  SHUNIT_COLOR_DEFAULT="${SHUNIT_COLOR}"
   th_oneTimeSetUp
 }
 
 # Load and run shUnit2.
-[ -n "${ZSH_VERSION:-}" ] && SHUNIT_PARENT=$0
-. ${TH_SHUNIT}
+[ -n "${ZSH_VERSION:-}" ] && export SHUNIT_PARENT=$0
+. "${TH_SHUNIT}"
