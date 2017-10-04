@@ -151,7 +151,6 @@ assertEquals() {
   ${_SHUNIT_LINENO_}
   if \[ $# -lt 2 -o $# -gt 3 ]; then
     _shunit_error "assertEquals() requires two or three arguments; $# given"
-    _shunit_error "1: ${1:+$1} 2: ${2:+$2} 3: ${3:+$3}${4:+ 4: $4}"
     return ${SHUNIT_ERROR}
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
@@ -782,8 +781,7 @@ EOF
 #
 # Args:
 #   name: string: name of the trap called (specified when trap defined)
-_shunit_cleanup()
-{
+_shunit_cleanup() {
   _shunit_name_=$1
 
   case ${_shunit_name_} in
@@ -791,7 +789,7 @@ _shunit_cleanup()
     INT) _shunit_signal_=2 ;;
     TERM) _shunit_signal_=15 ;;
     *)
-      _shunit_warn "unrecognized trap value (${_shunit_name_})"
+      _shunit_error "unrecognized trap value (${_shunit_name_})"
       _shunit_signal_=0
       ;;
   esac
