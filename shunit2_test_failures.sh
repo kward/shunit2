@@ -1,23 +1,25 @@
 #! /bin/sh
-# $Id$
 # vim:et:ft=sh:sts=2:sw=2
 #
-# Copyright 2008 Kate Ward. All Rights Reserved.
+# shUnit2 unit test for failure functions
+#
+# Copyright 2008-2017 Kate Ward. All Rights Reserved.
 # Released under the LGPL (GNU Lesser General Public License)
 #
 # Author: kate.ward@forestent.com (Kate Ward)
+# https://github.com/kward/shunit2
 #
-# shUnit2 unit test for failure functions
+# Disable source following.
+#   shellcheck disable=SC1090,SC1091
 
-# load common unit-test functions
+# These variables will be overridden by the test helpers.
+stdoutF="${TMPDIR:-/tmp}/STDOUT"
+stderrF="${TMPDIR:-/tmp}/STDERR"
+
+# Load test helpers.
 . ./shunit2_test_helpers
 
-#-----------------------------------------------------------------------------
-# suite tests
-#
-
-testFail()
-{
+testFail() {
   ( fail >"${stdoutF}" 2>"${stderrF}" )
   th_assertFalseWithOutput 'fail' $? "${stdoutF}" "${stderrF}"
 
@@ -28,8 +30,7 @@ testFail()
   th_assertFalseWithOutput 'too many arguments' $? "${stdoutF}" "${stderrF}"
 }
 
-testFailNotEquals()
-{
+testFailNotEquals() {
   ( failNotEquals 'x' 'x' >"${stdoutF}" 2>"${stderrF}" )
   th_assertFalseWithOutput 'same' $? "${stdoutF}" "${stderrF}"
 
@@ -49,8 +50,7 @@ testFailNotEquals()
   th_assertFalseWithError 'too many arguments' $? "${stdoutF}" "${stderrF}"
 }
 
-testFailSame()
-{
+testFailSame() {
   ( failSame 'x' 'x' >"${stdoutF}" 2>"${stderrF}" )
   th_assertFalseWithOutput 'same' $? "${stdoutF}" "${stderrF}"
 
@@ -70,17 +70,13 @@ testFailSame()
   th_assertFalseWithError 'too many arguments' $? "${stdoutF}" "${stderrF}"
 }
 
-#-----------------------------------------------------------------------------
-# suite functions
-#
-
-oneTimeSetUp()
-{
+oneTimeSetUp() {
   th_oneTimeSetUp
 
   MSG='This is a test message'
 }
 
-# load and run shUnit2
+# Load and run shUnit2.
+# shellcheck disable=SC2034
 [ -n "${ZSH_VERSION:-}" ] && SHUNIT_PARENT=$0
-. ${TH_SHUNIT}
+. "${TH_SHUNIT}"

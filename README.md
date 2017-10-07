@@ -48,7 +48,7 @@ Tested Shells
 See the appropriate Release Notes for this release (`doc/RELEASE_NOTES-X.X.X.txt`) for the list of actual versions tested.
 
 ### <a name="credits-contributors"></a> Credits / Contributors
-A list of contributors to shUnit2 can be found in the source archive in `doc/contributors.txt`. Many thanks go out to all those who have contributed to make this a better tool.
+A list of contributors to shUnit2 can be found in `doc/contributors.md`. Many thanks go out to all those who have contributed to make this a better tool.
 
 shUnit2 is the original product of many hours of work by Kate Ward, the primary author of the code. For related software, check out https://github.com/kward.
 

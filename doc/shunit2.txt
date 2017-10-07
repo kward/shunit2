@@ -51,9 +51,9 @@ See the appropriate Release Notes for this release
 Credits / Contributors
 ----------------------
 
-A list of contributors to shUnit2 can be found in the source archive in
-``doc/contributors.txt``. Many thanks go out to all those who have contributed
-to make this a better tool.
+A list of contributors to shUnit2 can be found in ``doc/contributors.md``.
+Many thanks go out to all those who have contributed to make this a better
+tool.
 
 shUnit2 is the original product of many hours of work by Kate Ward, the primary
 author of the code. For other products by her, look up log4sh_ or shFlags_, or
