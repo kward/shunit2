@@ -6,9 +6,6 @@ env:
 script:
   # Run shUnit2 unit tests.
   - ./shunit2_test.sh
-  # Run the source through ShellCheck (http://www.shellcheck.net).
-  - shellcheck gen_test_results.sh shunit2 shunit2_test_*.sh
-  - shellcheck -s sh shunit2_test_helpers
 
 os:
   - linux
@@ -19,3 +16,11 @@ addons:
     packages:
       - ksh
       - zsh
+
+matrix:
+  include:
+    - os: linux
+      script:
+        # Run the source through ShellCheck (http://www.shellcheck.net).
+        - shellcheck gen_test_results.sh shunit2 shunit2_test_*.sh
+        - shellcheck -s sh shunit2_test_helpers
