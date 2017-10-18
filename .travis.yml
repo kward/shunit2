@@ -4,8 +4,8 @@ env:
   - SHUNIT_COLOR='always'
 
 script:
-  # Run shUnit2 unit tests.
-  - ./shunit2_test.sh
+  # Execute the unit tests.
+  - ./test_runner
 
 os:
   - linux
@@ -22,5 +22,5 @@ matrix:
     - os: linux
       script:
         # Run the source through ShellCheck (http://www.shellcheck.net).
-        - shellcheck gen_test_results.sh shunit2 shunit2_test_*.sh
+        - shellcheck gen_test_report.sh shunit2 *_test.sh
         - shellcheck -s sh shunit2_test_helpers

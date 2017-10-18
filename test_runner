@@ -1,0 +1,145 @@
+#! /bin/sh
+# vim:et:ft=sh:sts=2:sw=2
+#
+# Unit test suite runner.
+#
+# Copyright 2008-2017 Kate Ward. All Rights Reserved.
+# Released under the Apache 2.0 license.
+#
+# Author: kate.ward@forestent.com (Kate Ward)
+# https://github.com/kward/shlib
+#
+# This script runs all the unit tests that can be found, and generates a nice
+# report of the tests.
+#
+### ShellCheck (http://www.shellcheck.net/)
+# Disable source following.
+#   shellcheck disable=SC1090,SC1091
+# expr may be antiquated, but it is the only solution in some cases.
+#   shellcheck disable=SC2003
+
+BASENAME=$(basename "$0")
+SHELLS="${SHELLS:-/bin/sh ash /bin/bash /bin/dash /bin/ksh /bin/pdksh /bin/zsh}"
+# shellcheck disable=SC2035
+TESTS=$(echo *_test.sh)
+
+runner_die() { [ $# -gt 0 ] && echo "$@" >&2; exit 1; }
+
+runner_usage() {
+  echo "usage: ${BASENAME} [-e key=val ...] [-s shell(s)] [-t test(s)]"
+}
+
+runner_warn() { echo "runner:WARN $*" >&2; }
+
+# Find versions library.
+for d in . ${LIB_DIR:-lib}; do
+  if [ -r "${d}/versions" ]; then
+    lib_dir="${d}"
+    break
+  fi
+done
+[ -n "${lib_dir}" ] || runner_die 'Unable to find versions library.'
+
+### Load libraries.
+. "${lib_dir}/versions" || runner_die 'Unable to load versions library.'
+
+env=''
+
+# Process command line flags.
+while getopts 'e:hs:t:' opt; do
+  case ${opt} in
+    e)  # set an environment variable
+      key=$(expr "${OPTARG}" : '\([^=]*\)=')
+      val=$(expr "${OPTARG}" : '[^=]*=\(.*\)')
+      # shellcheck disable=SC2166
+      if [ -z "${key}" -o -z "${val}" ]; then
+        runner_usage
+        exit 1
+      fi
+      eval "${key}='${val}'"
+      eval "export ${key}"
+      env="${env:+${env} }${key}"
+      ;;
+    h) runner_usage; exit 0 ;;  # help output
+    s) shells=${OPTARG} ;;  # list of shells to run
+    t) tests=${OPTARG} ;;  # list of tests to run
+    *) runner_usage; exit 1 ;;
+  esac
+done
+shift "$(expr ${OPTIND} - 1)"
+
+# Fill shells and/or tests.
+shells=${shells:-${SHELLS}}
+tests=${tests:-${TESTS}}
+
+# Error checking.
+if [ -z "${tests}" ]; then
+  th_error 'no tests found to run; exiting'
+  exit 1
+fi
+
+cat <<EOF
+#------------------------------------------------------------------------------
+# System data.
+#
+
+$ uname -mprsv
+$(uname -mprsv)
+
+OS Name: $(versions_osName)
+OS Version: $(versions_osVersion)
+
+### Test run info.
+shells: ${shells}
+tests: ${tests}
+EOF
+for key in ${env}; do
+  eval "echo \"${key}=\$${key}\""
+done
+
+# Run tests.
+for shell in ${shells}; do
+  echo
+
+  cat <<EOF
+
+#------------------------------------------------------------------------------
+# Running the test suite with ${shell}.
+#
+EOF
+
+  # Check for existence of shell.
+  shell_bin=${shell}
+  shell_name=''
+  shell_present=${FALSE}
+  case ${shell} in
+    ash)
+      shell_bin=$(which busybox)
+      [ $? -eq "${TRUE}" ] && shell_present="${TRUE}"
+      shell_bin="${shell_bin} ash"
+      shell_name=${shell}
+      ;;
+    *)
+      [ -x "${shell_bin}" ] && shell_present="${TRUE}"
+      shell_name=$(basename "${shell}")
+      ;;
+  esac
+  if [ "${shell_present}" -eq "${FALSE}" ]; then
+    runner_warn "unable to run tests with the ${shell_name} shell"
+    continue
+  fi
+
+  shell_version=$(versions_shellVersion "${shell}")
+
+  echo "shell name: ${shell_name}"
+  echo "shell version: ${shell_version}"
+
+  # Execute the tests.
+  for suite in ${tests}; do
+    # shellcheck disable=SC1117
+    suiteName=$(expr "${suite}" : "${TESTS_PREFIX}\(.*\).sh")
+    echo
+    echo "--- Executing the '${suiteName}' test suite. ---"
+    ( exec "${shell_bin}" "./${suite}" 2>&1; )
+  done
+done

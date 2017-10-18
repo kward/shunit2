@@ -38,9 +38,6 @@ LIB_DIR="${BASE_DIR}/lib"
 # from a different directory.
 BASE_DIR=$(shlib_relToAbsPath "${BASE_DIR}")
 
-### Load external flags.
-. "${BASE_DIR}/gen_test_results.flags"
-
 # Define flags.
 os_name=$(versions_osName |sed 's/ /_/g')
 os_version=$(versions_osVersion)
@@ -48,6 +45,7 @@ os_version=$(versions_osVersion)
 DEFINE_boolean force false 'force overwrite' f
 DEFINE_string output_dir "${TMPDIR}" 'output dir' d
 DEFINE_string output_file "${os_name}-${os_version}.txt" 'output file' o
+DEFINE_string runner 'test_runner' 'unit test runner' r
 DEFINE_boolean dry_run false "suppress logging to a file" n
 
 main() {
@@ -57,8 +55,6 @@ main() {
   output=$(shlib_relToAbsPath "${output}")
 
   # Checks.
-  [ -n "${FLAGS_suite:-}" ] || die 'suite flag missing'
-
   if [ "${FLAGS_dry_run}" -eq "${FLAGS_FALSE}" -a -f "${output}" ]; then
     if [ "${FLAGS_force}" -eq "${FLAGS_TRUE}" ]; then
       rm -f "${output}"
@@ -74,9 +70,9 @@ main() {
   # Run tests.
   (
     if [ "${FLAGS_dry_run}" -eq "${FLAGS_FALSE}" ]; then
-      "./${FLAGS_suite}" |tee "${output}"
+      "./${FLAGS_runner}" |tee "${output}"
     else
-      "./${FLAGS_suite}"
+      "./${FLAGS_runner}"
     fi
   )
 
