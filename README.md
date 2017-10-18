@@ -76,7 +76,9 @@ testEquality() {
 
 Running the unit test should give results similar to the following.
 
-```
+```console
+$ cd examples
+$ ./equality_test.sh
 testEquality
 
 Ran 1 test.
@@ -349,7 +351,7 @@ testAdding() {
   assertEquals \
       "the result of '${result}' was wrong" \
       3 "${result}"
-    
+
   # Disable non-generic tests.
   [ -z "${BASH_VERSION:-}" ] && startSkipping
 
@@ -370,7 +372,7 @@ oneTimeSetUp() {
 
 Running the above test under the __bash__ shell will result in the following output.
 
-```
+```console
 $ /bin/bash math_test.sh
 testAdding
 
@@ -381,7 +383,7 @@ OK
 
 But, running the test under any other Unix shell will result in the following output.
 
-```
+```console
 $ /bin/ksh math_test.sh
 testAdding
 
@@ -408,15 +410,21 @@ For compatibility with Zsh, there is one requirement that must be met -- the `sh
 
 1. In the unit-test script, add the following shell code snippet before sourcing the `shunit2` library.
 
-        setopt shwordsplit
+```sh
+setopt shwordsplit
+```
 
 1. When invoking __zsh__ from either the command-line or as a script with `#!`, add the `-y` parameter.
 
-        #! /bin/zsh -y
+```sh
+#! /bin/zsh -y
+```
 
 1. When invoking __zsh__ from the command-line, add `-o shwordsplit --` as parameters before the script name.
 
-        $ zsh -o shwordsplit -- some_script
+```console
+$ zsh -o shwordsplit -- some_script
+```
 
 [log4sh]: https://github.com/kward/log4sh
 [shflags]: https://github.com/kward/shflags
