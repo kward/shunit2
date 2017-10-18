@@ -1,10 +1,9 @@
 #! /bin/sh
 # file: examples/equality_test.sh
 
-testEquality()
-{
+testEquality() {
   assertEquals 1 1
 }
 
-# load shunit2
-. ../src/shunit2
+# Load and run shUnit2.
+. ../shunit2

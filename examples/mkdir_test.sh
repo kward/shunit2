@@ -12,12 +12,7 @@
 # example, we will test several aspects of the the mkdir command, but the
 # techniques could be used for any existing shell script.
 
-#-----------------------------------------------------------------------------
-# suite tests
-#
-
-testMissingDirectoryCreation()
-{
+testMissingDirectoryCreation() {
   ${mkdirCmd} "${testDir}" >${stdoutF} 2>${stderrF}
   rtrn=$?
   th_assertTrueWithNoOutput ${rtrn} "${stdoutF}" "${stderrF}"
@@ -25,12 +20,11 @@ testMissingDirectoryCreation()
   assertTrue 'directory missing' "[ -d '${testDir}' ]"
 }
 
-testExistingDirectoryCreationFails()
-{
-  # create a directory to test against
+testExistingDirectoryCreationFails() {
+  # Create a directory to test against.
   ${mkdirCmd} "${testDir}"
 
-  # test for expected failure while trying to create directory that exists
+  # Test for expected failure while trying to create directory that exists.
   ${mkdirCmd} "${testDir}" >${stdoutF} 2>${stderrF}
   rtrn=$?
   assertFalse 'expecting return code of 1 (false)' ${rtrn}
@@ -40,8 +34,7 @@ testExistingDirectoryCreationFails()
   assertTrue 'directory missing' "[ -d '${testDir}' ]"
 }
 
-testRecursiveDirectoryCreation()
-{
+testRecursiveDirectoryCreation() {
   testDir2="${testDir}/test2"
 
   ${mkdirCmd} -p "${testDir2}" >${stdoutF} 2>${stderrF}
@@ -52,12 +45,7 @@ testRecursiveDirectoryCreation()
   assertTrue 'second directory missing' "[ -d '${testDir2}' ]"
 }
 
-#-----------------------------------------------------------------------------
-# suite functions
-#
-
-th_assertTrueWithNoOutput()
-{
+th_assertTrueWithNoOutput() {
   th_return_=$1
   th_stdout_=$2
   th_stderr_=$3
@@ -68,8 +56,7 @@ th_assertTrueWithNoOutput()
   unset th_return_ th_stdout_ th_stderr_
 }
 
-oneTimeSetUp()
-{
+oneTimeSetUp() {
   outputDir="${SHUNIT_TMPDIR}/output"
   mkdir "${outputDir}"
   stdoutF="${outputDir}/stdout"
@@ -79,11 +66,10 @@ oneTimeSetUp()
   testDir="${SHUNIT_TMPDIR}/some_test_dir"
 }
 
-tearDown()
-{
+tearDown() {
   rm -fr "${testDir}"
 }
 
-# load and run shUnit2
+# Load and run shUnit2.
 [ -n "${ZSH_VERSION:-}" ] && SHUNIT_PARENT=$0
-. ../src/shunit2
+. ../shunit2
