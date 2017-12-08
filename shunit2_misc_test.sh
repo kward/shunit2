@@ -161,10 +161,10 @@ EOF
 testProtectedCommands() {
   protectedCommands='mkdir rm cat chmod'
   for c in $protectedCommands; do
-    grep "^[^#]*${c} " "${TH_SHUNIT}" | grep -qv '\\'"${c}"
+    grep "^[^#]*${c} " "${TH_SHUNIT}" | grep -qv "command ${c}"
     assertFalse "external call to ${c} not protected somewhere" $?
   done
-  grep '^[^#]*\\''\[' "${TH_SHUNIT}" | grep -qv '\\''\['
+  grep '^[^#][^ ] *\[' "${TH_SHUNIT}" | grep -qv 'command \['
   assertFalse "call to [ ... ] not protected somewhere" $?
 }
 
