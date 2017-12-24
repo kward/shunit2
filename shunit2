@@ -1101,7 +1101,7 @@ noexec 2>/dev/null || _shunit_fatal \
 # We must manually source the tests in standalone mode.
 if command [ "${__shunit_mode}" = "${__SHUNIT_MODE_STANDALONE}" ]; then
   # shellcheck disable=SC1090
-  . "`_shunit_prepForSourcing \"${__shunit_script}\"`"
+  command . "`_shunit_prepForSourcing \"${__shunit_script}\"`"
 fi
 
 # Configure default output coloring behavior.

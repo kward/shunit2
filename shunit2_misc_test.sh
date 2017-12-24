@@ -164,8 +164,10 @@ testProtectedCommands() {
     grep "^[^#]*${c} " "${TH_SHUNIT}" | grep -qv "command ${c}"
     assertFalse "external call to ${c} not protected somewhere" $?
   done
-  grep '^[^#][^ ] *\[' "${TH_SHUNIT}" | grep -qv 'command \['
+  grep '^[^#]*[^ ]  *\[' "${TH_SHUNIT}" | grep -qv 'command \['
   assertFalse "call to [ ... ] not protected somewhere" $?
+  grep '^[^#]*  *\.' "${TH_SHUNIT}" | grep -qv 'command \.'
+  assertFalse "call to . not protected somewhere" $?
 }
 
 setUp() {
