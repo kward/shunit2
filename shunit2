@@ -77,6 +77,9 @@ __SHUNIT_MODE_SOURCED='sourced'
 __SHUNIT_MODE_STANDALONE='standalone'
 __SHUNIT_PARENT=${SHUNIT_PARENT:-$0}
 
+# User provided test prefix -- define SHUNIT_TEST_PREFIX variable.
+__SHUNIT_TEST_PREFIX=${SHUNIT_TEST_PREFIX:-}
+
 # ANSI colors.
 __SHUNIT_ANSI_NONE='\033[0m'
 __SHUNIT_ANSI_RED='\033[1;31m'
@@ -872,20 +875,20 @@ _shunit_execSuite() {
   for _shunit_test_ in ${__shunit_suite}; do
     __shunit_testSuccess=${SHUNIT_TRUE}
 
-    # disable skipping
+    # Disable skipping.
     endSkipping
 
-    # execute the per-test setup function
+    # Execute the per-test setup function.
     setUp
 
-    # execute the test
-    echo "${_shunit_test_}"
+    # Execute the test.
+    echo "${__SHUNIT_TEST_PREFIX}${_shunit_test_}"
     eval "${_shunit_test_}"
 
-    # execute the per-test tear-down function
+    # Execute the per-test tear-down function.
     tearDown
 
-    # update stats
+    # Update stats.
     if \[ ${__shunit_testSuccess} -eq ${SHUNIT_TRUE} ]; then
       __shunit_testsPassed=`expr ${__shunit_testsPassed} + 1`
     else

@@ -51,6 +51,7 @@ EOF
   assertTrue 'failure message was not generated' $?
 }
 
+# assertEquals repeats message argument.
 # https://github.com/kward/shunit2/issues/7
 testIssue7() {
   # Disable coloring so 'ASSERT:' lines can be matched correctly.
@@ -62,9 +63,28 @@ ASSERT:Some message. expected:<1> but was:<2>
 EOF
   rtrn=$?
   assertEquals "${SHUNIT_TRUE}" "${rtrn}"
-  [ "${rtrn}" -ne "${SHUNIT_TRUE}" ] && cat "${stderrF}" >&2
+  [ "${rtrn}" -eq "${SHUNIT_TRUE}" ] || cat "${stderrF}" >&2
 }
 
+# Support prefixes on test output.
+# https://github.com/kward/shunit2/issues/29
+testIssue29() {
+  unittestF="${SHUNIT_TMPDIR}/unittest"
+  sed 's/^#//' >"${unittestF}" <<EOF
+## Support test prefixes.
+#test_assert() { assertTrue ${SHUNIT_TRUE}; }
+#SHUNIT_COLOR='none'
+#SHUNIT_TEST_PREFIX='--- '
+#. ${TH_SHUNIT}
+EOF
+  ( exec "${SHUNIT_SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" )
+  grep '^--- test_assert' "${stdoutF}" >/dev/null
+  rtrn=$?
+  assertEquals "${SHUNIT_TRUE}" "${rtrn}"
+  [ "${rtrn}" -eq "${SHUNIT_TRUE}" ] || cat "${stdoutF}" >&2
+}
+
+# shUnit2 should not exit with 0 when it has syntax errors.
 # https://github.com/kward/shunit2/issues/69
 testIssue69() {
   unittestF="${SHUNIT_TMPDIR}/unittest"
