@@ -76,7 +76,6 @@ testIssue69() {
 #test_assert() { ${assert}; }
 #SHUNIT_COLOR='none'
 #. ${TH_SHUNIT}
-}
 EOF
     ( exec "${SHUNIT_SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" )
     grep '^FAILED' "${stdoutF}" >/dev/null
