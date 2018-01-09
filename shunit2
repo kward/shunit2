@@ -54,9 +54,6 @@ __SHUNIT_CMD_ECHO_ESC='echo -e'
 # Commands a user can override if needed.
 SHUNIT_CMD_EXPR=${SHUNIT_CMD_EXPR:-${__SHUNIT_CMD_EXPR}}
 
-# Enable strict mode by default.
-SHUNIT_STRICT=${SHUNIT_STRICT:-${SHUNIT_TRUE}}
-
 # Enable color output. Options are 'never', 'always', or 'auto'.
 SHUNIT_COLOR=${SHUNIT_COLOR:-auto}
 
