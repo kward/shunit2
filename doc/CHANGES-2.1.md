@@ -1,5 +1,11 @@
 # shUnit2 2.1.x Changes
 
+## Changes with 2.1.8
+
+### Enhancements
+
+Issue #29. Add support for user defined prefix for test names. A prefix can be added by defining the `SHUNIT_TEST_PREFIX` variable.
+
 
 ## Changes with 2.1.7
 

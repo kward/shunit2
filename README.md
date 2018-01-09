@@ -281,6 +281,7 @@ There are several constants provided by shUnit2 as variables that might be of us
 | SHUNIT\_CMD\_EXPR | Override which `expr` command is used. By default `expr` is used, except on BSD systems where `gexpr` is used. |
 | SHUNIT\_COLOR     | Enable colorized output. Options are 'auto', 'always', or 'never', with 'auto' being the default. |
 | SHUNIT\_PARENT    | The filename of the shell script containing the tests. This is needed specifically for Zsh support. |
+| SHUNIT\_TEST\_PREFIX | Define this variable to add a prefix in front of each test name that is output in the test report. |
 
 ### <a name="error-handling"></a> Error handling
 
