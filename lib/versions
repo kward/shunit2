@@ -1,17 +1,20 @@
 #! /bin/sh
 # vim:et:ft=sh:sts=2:sw=2
 #
-# Versions
-# https://github.com/kward/shlib/blob/master/standalone/versions
+# Versions determines the versions of all installed shells.
 #
-# Copyright 2008-2016 Kate Ward. All Rights Reserved.
-# Released under the Apache License.
+# Copyright 2008-2017 Kate Ward. All Rights Reserved.
+# Released under the Apache 2.0 License.
 #
 # Author: kate.ward@forestent.com (Kate Ward)
+# https://github.com/kward/shlib
 #
 # This library provides reusable functions that determine actual names and
 # versions of installed shells and the OS. The library can also be run as a
 # script if set executable.
+#
+# Disable checks that aren't fully portable (POSIX != portable).
+# shellcheck disable=SC2006
 
 ARGV0=`basename "$0"`
 LSB_RELEASE='/etc/lsb-release'
@@ -79,14 +82,20 @@ versions_osVersion() {
       os_version_=`expr "${os_release_}" : '\([0-9]*\.[0-9]*\)-.*'`
       ;;
     Linux)
-      if [ -r "${LSB_RELEASE}" ]; then
+      if [ -r '/etc/os-release' ]; then
+          os_version_=`awk -F= '$1~/PRETTY_NAME/{print $2}' /etc/os-release \
+            |sed 's/"//g'`
+      elif [ -r '/etc/redhat-release' ]; then
+        os_version_=`cat /etc/redhat-release`
+      elif [ -r '/etc/SuSE-release' ]; then
+        os_version_=`head -n 1 /etc/SuSE-release`
+      elif [ -r "${LSB_RELEASE}" ]; then
         if grep -q 'DISTRIB_ID=Ubuntu' "${LSB_RELEASE}"; then
+          # shellcheck disable=SC2002
           os_version_=`cat "${LSB_RELEASE}" \
             |awk -F= '$1~/DISTRIB_DESCRIPTION/{print $2}' \
             |sed 's/"//g;s/ /-/g'`
         fi
-      elif [ -r '/etc/redhat-release' ]; then
-        os_version_=`cat /etc/redhat-release`
       fi
       ;;
     SunOS)
@@ -191,7 +200,7 @@ versions_shell_ksh() {
 
 versions_shell_pdksh() {
   _versions_have_strings
-  strings $1 2>&1 \
+  strings "$1" 2>&1 \
   |grep 'PD KSH' \
   |sed -e 's/.*PD KSH \(.*\)/\1/;s/ /-/g'
 }
@@ -200,6 +209,7 @@ versions_shell_zsh() {
   versions_shell_=$1
 
   # Try a few different ways to figure out the version.
+  # shellcheck disable=SC2016
   versions_version_=`echo 'echo ${ZSH_VERSION}' |${versions_shell_}`
 
   if [ -z "${versions_version_}" ]; then
