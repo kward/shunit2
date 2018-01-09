@@ -27,14 +27,16 @@ RUNNER_SHELLS='/bin/sh ash /bin/bash /bin/dash /bin/ksh /bin/pdksh /bin/zsh'
 RUNNER_TEST_SUFFIX='_test.sh'
 
 runner_warn() { echo "runner:WARN $*" >&2; }
+runner_error() { echo "runner:ERROR $*" >&2; }
 runner_fatal() { echo "runner:FATAL $*" >&2; exit 1; }
 
 runner_usage() {
   echo "usage: ${RUNNER_ARGV0} [-e key=val ...] [-s shell(s)] [-t test(s)]"
 }
 
-_runner_tests() { echo *${RUNNER_TEST_SUFFIX}; }
+_runner_tests() { echo ./*${RUNNER_TEST_SUFFIX} |sed 's#./##g'; }
 _runner_testName() {
+  # shellcheck disable=SC1117
   _runner_testName_=$(expr "${1:-}" : "\(.*\)${RUNNER_TEST_SUFFIX}")
   if [ -n "${_runner_testName_}" ]; then
     echo "${_runner_testName_}"
@@ -86,7 +88,7 @@ main() {
 
   # Error checking.
   if [ -z "${tests}" ]; then
-    th_error 'no tests found to run; exiting'
+    runner_error 'no tests found to run; exiting'
     exit 1
   fi
 
