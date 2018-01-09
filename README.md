@@ -268,11 +268,11 @@ There are several constants provided by shUnit2 as variables that might be of us
 
 | Constant        | Value |
 | --------------- | ----- |
-| SHUNIT\_VERSION | The version of shUnit2 you are running. |
 | SHUNIT\_TRUE    | Standard shell `true` value (the integer value 0). |
 | SHUNIT\_FALSE   | Standard shell `false` value (the integer value 1). |
 | SHUNIT\_ERROR   | The integer value 2. |
 | SHUNIT\_TMPDIR  | Path to temporary directory that will be automatically cleaned up upon exit of shUnit2. |
+| SHUNIT\_VERSION | The version of shUnit2 you are running. |
 
 *User defined*
 
