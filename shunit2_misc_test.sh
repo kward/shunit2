@@ -3,7 +3,7 @@
 #
 # shUnit2 unit tests of miscellaneous things
 #
-# Copyright 2008-2017 Kate Ward. All Rights Reserved.
+# Copyright 2008-2018 Kate Ward. All Rights Reserved.
 # Released under the Apache 2.0 license.
 #
 # Author: kate.ward@forestent.com (Kate Ward)
@@ -34,9 +34,9 @@ testUnboundVariable() {
 #
 #boom() { x=\$1; }  # This function goes boom if no parameters are passed!
 #test_boom() {
-#   assertEquals 1 1
-#   boom  # No parameter given
-#   assertEquals 0 \$?
+#  assertEquals 1 1
+#  boom  # No parameter given
+#  assertEquals 0 \$?
 #}
 #SHUNIT_COLOR='none'
 #. ${TH_SHUNIT}
@@ -63,6 +63,25 @@ EOF
   rtrn=$?
   assertEquals "${SHUNIT_TRUE}" "${rtrn}"
   [ "${rtrn}" -ne "${SHUNIT_TRUE}" ] && cat "${stderrF}" >&2
+}
+
+# https://github.com/kward/shunit2/issues/69
+testIssue69() {
+  unittestF="${SHUNIT_TMPDIR}/unittest"
+
+  for t in Equals NotEquals Null NotNull Same NotSame True False; do
+    assert="assert${t}"
+    sed 's/^#//' >"${unittestF}" <<EOF
+## Asserts with invalid argument counts should be counted as failures.
+#test_assert() { ${assert}; }
+#SHUNIT_COLOR='none'
+#. ${TH_SHUNIT}
+}
+EOF
+    ( exec "${SHUNIT_SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" )
+    grep '^FAILED' "${stdoutF}" >/dev/null
+    assertTrue "failure message for ${assert} was not generated" $?
+  done
 }
 
 testPrepForSourcing() {

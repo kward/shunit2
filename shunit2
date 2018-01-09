@@ -1,7 +1,7 @@
 #! /bin/sh
 # vim:et:ft=sh:sts=2:sw=2
 #
-# Copyright 2008-2017 Kate Ward. All Rights Reserved.
+# Copyright 2008-2018 Kate Ward. All Rights Reserved.
 # Released under the Apache 2.0 license.
 #
 # shUnit2 -- Unit testing framework for Unix shell scripts.
@@ -29,9 +29,16 @@ SHUNIT_FALSE=1
 SHUNIT_ERROR=2
 
 # Logging functions.
-_shunit_warn() { echo "shunit2:WARN $*" >&2; }
-_shunit_error() { echo "shunit2:ERROR $*" >&2; }
-_shunit_fatal() { echo "shunit2:FATAL $*" >&2; exit ${SHUNIT_ERROR}; }
+_shunit_warn() {
+  echo "${__shunit_ansi_yellow}shunit2:WARN${__shunit_ansi_none} $*" >&2
+}
+_shunit_error() {
+  echo "${__shunit_ansi_red}shunit2:ERROR${__shunit_ansi_none} $*" >&2
+}
+_shunit_fatal() {
+  echo "${__shunit_ansi_red}shunit2:FATAL${__shunit_ansi_none} $*" >&2
+  exit ${SHUNIT_ERROR}
+}
 
 # Determine some reasonable command defaults.
 __SHUNIT_UNAME_S=`uname -s`
@@ -151,6 +158,7 @@ assertEquals() {
   ${_SHUNIT_LINENO_}
   if \[ $# -lt 2 -o $# -gt 3 ]; then
     _shunit_error "assertEquals() requires two or three arguments; $# given"
+    _shunit_assertFail
     return ${SHUNIT_ERROR}
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
@@ -190,6 +198,7 @@ assertNotEquals() {
   ${_SHUNIT_LINENO_}
   if \[ $# -lt 2 -o $# -gt 3 ]; then
     _shunit_error "assertNotEquals() requires two or three arguments; $# given"
+    _shunit_assertFail
     return ${SHUNIT_ERROR}
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
@@ -228,6 +237,7 @@ assertNull() {
   ${_SHUNIT_LINENO_}
   if \[ $# -lt 1 -o $# -gt 2 ]; then
     _shunit_error "assertNull() requires one or two arguments; $# given"
+    _shunit_assertFail
     return ${SHUNIT_ERROR}
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
@@ -253,12 +263,12 @@ _ASSERT_NULL_='eval assertNull --lineno "${LINENO:-}"'
 #   actual: string: actual value
 # Returns:
 #   integer: success (TRUE/FALSE/ERROR constant)
-assertNotNull()
-{
+assertNotNull() {
   # shellcheck disable=SC2090
   ${_SHUNIT_LINENO_}
   if \[ $# -gt 2 ]; then  # allowing 0 arguments as $1 might actually be null
     _shunit_error "assertNotNull() requires one or two arguments; $# given"
+    _shunit_assertFail
     return ${SHUNIT_ERROR}
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
@@ -292,6 +302,7 @@ assertSame() {
   ${_SHUNIT_LINENO_}
   if \[ $# -lt 2 -o $# -gt 3 ]; then
     _shunit_error "assertSame() requires two or three arguments; $# given"
+    _shunit_assertFail
     return ${SHUNIT_ERROR}
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
@@ -323,6 +334,7 @@ assertNotSame() {
   ${_SHUNIT_LINENO_}
   if \[ $# -lt 2 -o $# -gt 3 ]; then
     _shunit_error "assertNotSame() requires two or three arguments; $# given"
+    _shunit_assertFail
     return ${SHUNIT_ERROR}
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
@@ -367,6 +379,7 @@ assertTrue() {
   ${_SHUNIT_LINENO_}
   if \[ $# -lt 1 -o $# -gt 2 ]; then
     _shunit_error "assertTrue() takes one or two arguments; $# given"
+    _shunit_assertFail
     return ${SHUNIT_ERROR}
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
@@ -433,6 +446,7 @@ assertFalse() {
   ${_SHUNIT_LINENO_}
   if \[ $# -lt 1 -o $# -gt 2 ]; then
     _shunit_error "assertFalse() quires one or two arguments; $# given"
+    _shunit_assertFail
     return ${SHUNIT_ERROR}
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
@@ -939,8 +953,7 @@ _shunit_generateReport() {
 #   None
 # Returns:
 #   boolean: whether the test should be skipped (TRUE/FALSE constant)
-_shunit_shouldSkip()
-{
+_shunit_shouldSkip() {
   \[ ${__shunit_skip} -eq ${SHUNIT_FALSE} ] && return ${SHUNIT_FALSE}
   _shunit_assertSkip
 }
@@ -959,23 +972,19 @@ _shunit_assertPass() {
 # Args:
 #   message: string: failure message to provide user
 _shunit_assertFail() {
-  _shunit_msg_=$1
-
   __shunit_testSuccess=${SHUNIT_FALSE}
   __shunit_assertsFailed=`expr "${__shunit_assertsFailed}" + 1`
   __shunit_assertsTotal=`expr "${__shunit_assertsTotal}" + 1`
-  ${__SHUNIT_CMD_ECHO_ESC} \
-      "${__shunit_ansi_red}ASSERT:${__shunit_ansi_none}${_shunit_msg_}"
 
-  unset _shunit_msg_
+  \[ $# -gt 0 ] && ${__SHUNIT_CMD_ECHO_ESC} \
+      "${__shunit_ansi_red}ASSERT:${__shunit_ansi_none}$*"
 }
 
 # Records a skipped test.
 #
 # Args:
 #   None
-_shunit_assertSkip()
-{
+_shunit_assertSkip() {
   __shunit_assertsSkipped=`expr "${__shunit_assertsSkipped}" + 1`
   __shunit_assertsTotal=`expr "${__shunit_assertsTotal}" + 1`
 }
@@ -986,8 +995,7 @@ _shunit_assertSkip()
 #   script: string: path to a script to source
 # Returns:
 #   string: filename prefixed with ./ (if necessary)
-_shunit_prepForSourcing()
-{
+_shunit_prepForSourcing() {
   _shunit_script_=$1
   case "${_shunit_script_}" in
     /*|./*) echo "${_shunit_script_}" ;;
@@ -1003,8 +1011,7 @@ _shunit_prepForSourcing()
 #   s: string: to escape character in
 # Returns:
 #   string: with escaped character(s)
-_shunit_escapeCharInStr()
-{
+_shunit_escapeCharInStr() {
   \[ -n "$2" ] || return  # No point in doing work on an empty string.
 
   # Note: using shorter variable names to prevent conflicts with
@@ -1026,8 +1033,7 @@ _shunit_escapeCharInStr()
 #   str: string: to escape characters in
 # Returns:
 #   string: with escaped character(s)
-_shunit_escapeCharactersInString()
-{
+_shunit_escapeCharactersInString() {
   \[ -n "$1" ] || return  # No point in doing work on an empty string.
 
   _shunit_str_=$1
