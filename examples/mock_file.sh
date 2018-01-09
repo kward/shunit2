@@ -36,16 +36,16 @@ PASSWD='/etc/passwd'
 
 # Read the root UID from the passwd filename provided as the first argument.
 root_uid_from_passed_filename() {
-	filename=$1
-	root_uid "${filename}"
-	unset filename
+  filename=$1
+  root_uid "${filename}"
+  unset filename
 }
 
 
 # Read the root UID from the passwd filename derived by call to the
 # passwd_filename() function.
 root_uid_from_derived_filename() {
-	root_uid "$(passwd_filename)"
+  root_uid "$(passwd_filename)"
 }
 
 passwd_filename() {
@@ -53,7 +53,7 @@ passwd_filename() {
     echo "${MOCK_PASSWD}"  # Mock file for testing.
     return
   fi
-	echo "${PASSWD}"
+  echo "${PASSWD}"
 }
 
 
