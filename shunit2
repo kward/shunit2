@@ -21,7 +21,7 @@
 
 # Return if shunit2 already loaded.
 \[ -n "${SHUNIT_VERSION:-}" ] && exit 0
-SHUNIT_VERSION='2.1.7'
+SHUNIT_VERSION='2.1.8pre'
 
 # Return values that scripts can use.
 SHUNIT_TRUE=0
