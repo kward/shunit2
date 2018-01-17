@@ -110,25 +110,24 @@ testPrepForSourcing() {
 }
 
 testEscapeCharInStr() {
-  actual="`_shunit_escapeCharInStr '\' ''`"
-  assertEquals '' "${actual}"
-  assertEquals 'abc\\' "`_shunit_escapeCharInStr '\' 'abc\'`"
-  assertEquals 'abc\\def' "`_shunit_escapeCharInStr '\' 'abc\def'`"
-  assertEquals '\\def' "`_shunit_escapeCharInStr '\' '\def'`"
-
-  actual=`_shunit_escapeCharInStr '"' ''`
-  assertEquals '' "${actual}"
-  assertEquals 'abc\"' "`_shunit_escapeCharInStr '"' 'abc"'`"
-  assertEquals 'abc\"def' "`_shunit_escapeCharInStr '"' 'abc"def'`"
-  assertEquals '\"def' "`_shunit_escapeCharInStr '"' '"def'`"
-
-  actual="`_shunit_escapeCharInStr '$' ''`"
-  assertEquals '' "${actual}"
-  assertEquals 'abc\$' "`_shunit_escapeCharInStr '$' 'abc$'`"
-  # shellcheck disable=2016
-  assertEquals 'abc\$def' "`_shunit_escapeCharInStr '$' 'abc$def'`"
-  # shellcheck disable=2016
-  assertEquals '\$def' "`_shunit_escapeCharInStr '$' '$def'`"
+  # shellcheck disable=SC2162
+  while read desc char str want; do
+    got=`_shunit_escapeCharInStr ''${char}'' ''${str}''`
+    assertEquals "${desc}" "${want}" "${got}"
+  done <<EOF
+backslash      '\' ''          ''
+backslash_pre  '\' '\def'      '\\def'
+backslash_mid  '\' 'abc\def'   'abc\\def'
+backslash_post '\' 'abc\'      'abc\\'
+quote          '"' ''          ''
+quote_pre      '"' '"def'      '\"def'
+quote_mid      '"' 'abc"def'   'abc\"def'
+quote_post     '"' 'abc"'      'abc\"'
+string         '$' ''          ''
+string_pre     '$' '\$def'     '\\\$def'
+string_mid     '$' 'abc\$def'  'abc\\\$def'
+string_post    '$' 'abc$'      'abc\\\$'
+EOF
 
   # TODO(20170924:kward) fix or remove.
 #  actual=`_shunit_escapeCharInStr "'" ''`
