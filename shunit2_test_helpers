@@ -27,7 +27,7 @@ set -u
 #
 
 # Path to shUnit2 library. Can be overridden by setting SHUNIT_INC.
-export TH_SHUNIT=${SHUNIT_INC:-./shunit2}
+TH_SHUNIT=${SHUNIT_INC:-./shunit2}; export TH_SHUNIT
 
 # Configure debugging. Set the DEBUG environment variable to any
 # non-empty value to enable debug output, or TRACE to enable trace
@@ -62,10 +62,11 @@ th_subtest() { echo " $*" >&2; }
 
 th_oneTimeSetUp() {
   # These files will be cleaned up automatically by shUnit2.
-  export stdoutF="${SHUNIT_TMPDIR}/stdout"
-  export stderrF="${SHUNIT_TMPDIR}/stderr"
-  export returnF="${SHUNIT_TMPDIR}/return"
-  export expectedF="${SHUNIT_TMPDIR}/expected"
+  stdoutF="${SHUNIT_TMPDIR}/stdout"
+  stderrF="${SHUNIT_TMPDIR}/stderr"
+  returnF="${SHUNIT_TMPDIR}/return"
+  expectedF="${SHUNIT_TMPDIR}/expected"
+  export stdoutF stderrF returnF expectedF
 }
 
 # Generate a random number.

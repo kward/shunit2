@@ -233,7 +233,7 @@ oneTimeSetUp() {
 }
 
 # Disable output coloring as it breaks the tests.
-export SHUNIT_COLOR='none'
+SHUNIT_COLOR='none'; export SHUNIT_COLOR
 
 # Load and run shUnit2.
 # shellcheck disable=SC2034
