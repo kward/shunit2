@@ -1019,7 +1019,6 @@ _shunit_escapeCharInStr() {
   _shunit_c_=$1
   _shunit_s_=$2
 
-
   # Escape the character.
   # shellcheck disable=SC1003,SC2086
   echo ''${_shunit_s_}'' |sed 's/\'${_shunit_c_}'/\\\'${_shunit_c_}'/g'
