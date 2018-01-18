@@ -110,12 +110,14 @@ testPrepForSourcing() {
 }
 
 testEscapeCharInStr() {
+  got="`_shunit_escapeCharInStr '\' ''`"
+  assertEquals 'backslash' '' "${got}"
+
   # shellcheck disable=SC2162
   while read desc char str want; do
-    got=`_shunit_escapeCharInStr ''${char}'' ''${str}''`
+    got=`_shunit_escapeCharInStr "${char}" "${str}"`
     assertEquals "${desc}" "${want}" "${got}"
   done <<EOF
-backslash      '\' ''          ''
 backslash_pre  '\' '\def'      '\\def'
 backslash_mid  '\' 'abc\def'   'abc\\def'
 backslash_post '\' 'abc\'      'abc\\'
