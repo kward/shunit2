@@ -17,6 +17,8 @@
 #   shellcheck disable=SC1090,SC1091
 # expr may be antiquated, but it is the only solution in some cases.
 #   shellcheck disable=SC2003
+# $() are not fully portable (POSIX != portable).
+#   shellcheck disable=SC2006
 
 # Return if test_runner already loaded.
 [ -z "${RUNNER_LOADED:-}" ] || return 0
