@@ -130,8 +130,8 @@ EOF
     shell_present=${FALSE}
     case ${shell} in
       ash)
-        shell_bin=`which busybox`
-        [ $? -eq "${TRUE}" ] && shell_present="${TRUE}"
+        shell_bin=`which busybox |grep -v '^no busybox'`
+        [ $? -eq "${TRUE}" -a -n "${shell_bin}" ] && shell_present="${TRUE}"
         shell_bin="${shell_bin} ash"
         shell_name=${shell}
         ;;
