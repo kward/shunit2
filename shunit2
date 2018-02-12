@@ -827,7 +827,7 @@ _shunit_cleanup() {
   unset _shunit_name_ _shunit_signal_
 }
 
-# configureOutput based on user preferences, e.g. color.
+# configureColor based on user color preference.
 #
 # Args:
 #   color: string: color mode (one of `always`, `auto`, or `none`).
