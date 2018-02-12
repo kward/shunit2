@@ -844,7 +844,7 @@ _shunit_configureColor() {
       fi
       ;;
     'none') ;;
-    *) _shunit_fatal "unrecognized color option '${SHUNIT_COLOR}'" ;;
+    *) _shunit_fatal "unrecognized color option '$1'" ;;
   esac
 
   case ${_shunit_color_} in
