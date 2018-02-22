@@ -290,11 +290,17 @@ Setup/Teardown
   If this function exists, it will be called before each test is run. It is
   useful to reset the environment before each test.
 
+  This function accepts one argument - name of the test that will be executed
+right after setUp().
+
 ``tearDown``
   This function can be be optionally overridden by the user in their test suite.
 
   If this function exists, it will be called after each test completes. It is
   useful to clean up the environment after each test.
+
+  This function accepts one argument - name of the test that has been executed
+right before this tearDown().
 
 Skipping
 --------

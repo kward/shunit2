@@ -598,11 +598,13 @@ It is useful to clean up the environment after all tests.</p>
 <dd><p class="first">This function can be be optionally overridden by the user in their test suite.</p>
 <p class="last">If this function exists, it will be called before each test is run. It is
 useful to reset the environment before each test.</p>
+<p>This function accepts one argument - name of the test that will be executed right after setUp().</p>
 </dd>
 <dt><tt class="docutils literal">tearDown</tt></dt>
 <dd><p class="first">This function can be be optionally overridden by the user in their test suite.</p>
 <p class="last">If this function exists, it will be called after each test completes. It is
 useful to clean up the environment after each test.</p>
+<p>This function accepts one argument - name of the test that has been executed right before this tearDown().</p>
 </dd>
 </dl>
 </div>
