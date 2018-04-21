@@ -545,6 +545,7 @@ failNotEquals() {
   shunit_expected_=$1
   shunit_actual_=$2
 
+  shunit_message_=${shunit_message_%% }
   _shunit_assertFail "${shunit_message_:+${shunit_message_} }expected:<${shunit_expected_}> but was:<${shunit_actual_}>"
 
   unset shunit_message_ shunit_expected_ shunit_actual_
@@ -577,6 +578,7 @@ failSame()
     shift
   fi
 
+  shunit_message_=${shunit_message_%% }
   _shunit_assertFail "${shunit_message_:+${shunit_message_} }expected not same"
 
   unset shunit_message_
