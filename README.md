@@ -130,7 +130,7 @@ Any string values passed should be properly quoted -- they should must be surrou
 
 Asserts that _expected_ and _actual_ are equal to one another. The _expected_ and _actual_ values can be either strings or integer values as both will be treated as strings. The _message_ is optional, and must be quoted.
 
-`assertNotEquals [message] expected actual`
+`assertNotEquals [message] unexpected actual`
 
 Asserts that _unexpected_ and _actual_ are not equal to one another. The _unexpected_ and _actual_ values can be either strings or integer values as both will be treaded as strings. The _message_ is optional, and must be quoted.
 
