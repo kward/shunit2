@@ -192,6 +192,19 @@ EOF
   assertEquals 'testABC test_def testG3 test4 test5' "${actual}"
 }
 
+# Test that certain external commands sometimes "stubbed" by users
+# are escaped. See Issue #54.
+testProtectedCommands() {
+  for c in mkdir rm cat chmod; do
+    grep "^[^#]*${c} " "${TH_SHUNIT}" | grep -qv "command ${c}"
+    assertFalse "external call to ${c} not protected somewhere" $?
+  done
+  grep '^[^#]*[^ ]  *\[' "${TH_SHUNIT}" | grep -qv 'command \['
+  assertFalse "call to [ ... ] not protected somewhere" $?
+  grep '^[^#]*  *\.' "${TH_SHUNIT}" | grep -qv 'command \.'
+  assertFalse "call to . not protected somewhere" $?
+}
+
 setUp() {
   for f in "${stdoutF}" "${stderrF}"; do
     cp /dev/null "${f}"
