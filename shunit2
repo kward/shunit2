@@ -601,7 +601,7 @@ failNotSame() {
   # shellcheck disable=SC2090
   ${_SHUNIT_LINENO_}
   if \[ $# -lt 2 -o $# -gt 3 ]; then
-    _shunit_error "failNotEquals() requires one or two arguments; $# given"
+    _shunit_error "failNotSame() requires one or two arguments; $# given"
     return ${SHUNIT_ERROR}
   fi
   _shunit_shouldSkip && return ${SHUNIT_TRUE}
