@@ -30,13 +30,16 @@ SHUNIT_ERROR=2
 
 # Logging functions.
 _shunit_warn() {
-  echo "${__shunit_ansi_yellow}shunit2:WARN${__shunit_ansi_none} $*" >&2
+  ${__SHUNIT_CMD_ECHO_ESC} \
+      "${__shunit_ansi_yellow}shunit2:WARN${__shunit_ansi_none} $*" >&2
 }
 _shunit_error() {
-  echo "${__shunit_ansi_red}shunit2:ERROR${__shunit_ansi_none} $*" >&2
+  ${__SHUNIT_CMD_ECHO_ESC} \
+      "${__shunit_ansi_red}shunit2:ERROR${__shunit_ansi_none} $*" >&2
 }
 _shunit_fatal() {
-  echo "${__shunit_ansi_red}shunit2:FATAL${__shunit_ansi_none} $*" >&2
+  ${__SHUNIT_CMD_ECHO_ESC} \
+      "${__shunit_ansi_red}shunit2:FATAL${__shunit_ansi_none} $*" >&2
   exit ${SHUNIT_ERROR}
 }
 
