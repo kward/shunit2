@@ -195,8 +195,7 @@ EOF
 # Test that certain external commands sometimes "stubbed" by users
 # are escaped. See Issue #54.
 testProtectedCommands() {
-  protectedCommands='mkdir rm cat chmod'
-  for c in $protectedCommands; do
+  for c in mkdir rm cat chmod; do
     grep "^[^#]*${c} " "${TH_SHUNIT}" | grep -qv "command ${c}"
     assertFalse "external call to ${c} not protected somewhere" $?
   done
