@@ -3,7 +3,7 @@
 #
 # shUnit2 unit tests of miscellaneous things
 #
-# Copyright 2008-2017 Kate Ward. All Rights Reserved.
+# Copyright 2008-2018 Kate Ward. All Rights Reserved.
 # Released under the Apache 2.0 license.
 #
 # Author: kate.ward@forestent.com (Kate Ward)
@@ -34,9 +34,9 @@ testUnboundVariable() {
 #
 #boom() { x=\$1; }  # This function goes boom if no parameters are passed!
 #test_boom() {
-#   assertEquals 1 1
-#   boom  # No parameter given
-#   assertEquals 0 \$?
+#  assertEquals 1 1
+#  boom  # No parameter given
+#  assertEquals 0 \$?
 #}
 #SHUNIT_COLOR='none'
 #. ${TH_SHUNIT}
@@ -51,6 +51,7 @@ EOF
   assertTrue 'failure message was not generated' $?
 }
 
+# assertEquals repeats message argument.
 # https://github.com/kward/shunit2/issues/7
 testIssue7() {
   # Disable coloring so 'ASSERT:' lines can be matched correctly.
@@ -62,7 +63,44 @@ ASSERT:Some message. expected:<1> but was:<2>
 EOF
   rtrn=$?
   assertEquals "${SHUNIT_TRUE}" "${rtrn}"
-  [ "${rtrn}" -ne "${SHUNIT_TRUE}" ] && cat "${stderrF}" >&2
+  [ "${rtrn}" -eq "${SHUNIT_TRUE}" ] || cat "${stderrF}" >&2
+}
+
+# Support prefixes on test output.
+# https://github.com/kward/shunit2/issues/29
+testIssue29() {
+  unittestF="${SHUNIT_TMPDIR}/unittest"
+  sed 's/^#//' >"${unittestF}" <<EOF
+## Support test prefixes.
+#test_assert() { assertTrue ${SHUNIT_TRUE}; }
+#SHUNIT_COLOR='none'
+#SHUNIT_TEST_PREFIX='--- '
+#. ${TH_SHUNIT}
+EOF
+  ( exec "${SHUNIT_SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" )
+  grep '^--- test_assert' "${stdoutF}" >/dev/null
+  rtrn=$?
+  assertEquals "${SHUNIT_TRUE}" "${rtrn}"
+  [ "${rtrn}" -eq "${SHUNIT_TRUE}" ] || cat "${stdoutF}" >&2
+}
+
+# shUnit2 should not exit with 0 when it has syntax errors.
+# https://github.com/kward/shunit2/issues/69
+testIssue69() {
+  unittestF="${SHUNIT_TMPDIR}/unittest"
+
+  for t in Equals NotEquals Null NotNull Same NotSame True False; do
+    assert="assert${t}"
+    sed 's/^#//' >"${unittestF}" <<EOF
+## Asserts with invalid argument counts should be counted as failures.
+#test_assert() { ${assert}; }
+#SHUNIT_COLOR='none'
+#. ${TH_SHUNIT}
+EOF
+    ( exec "${SHUNIT_SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" )
+    grep '^FAILED' "${stdoutF}" >/dev/null
+    assertTrue "failure message for ${assert} was not generated" $?
+  done
 }
 
 testPrepForSourcing() {
@@ -72,25 +110,23 @@ testPrepForSourcing() {
 }
 
 testEscapeCharInStr() {
-  actual="`_shunit_escapeCharInStr '\' ''`"
-  assertEquals '' "${actual}"
-  assertEquals 'abc\\' "`_shunit_escapeCharInStr '\' 'abc\'`"
-  assertEquals 'abc\\def' "`_shunit_escapeCharInStr '\' 'abc\def'`"
-  assertEquals '\\def' "`_shunit_escapeCharInStr '\' '\def'`"
-
-  actual=`_shunit_escapeCharInStr '"' ''`
-  assertEquals '' "${actual}"
-  assertEquals 'abc\"' "`_shunit_escapeCharInStr '"' 'abc"'`"
-  assertEquals 'abc\"def' "`_shunit_escapeCharInStr '"' 'abc"def'`"
-  assertEquals '\"def' "`_shunit_escapeCharInStr '"' '"def'`"
-
-  actual="`_shunit_escapeCharInStr '$' ''`"
-  assertEquals '' "${actual}"
-  assertEquals 'abc\$' "`_shunit_escapeCharInStr '$' 'abc$'`"
-  # shellcheck disable=2016
-  assertEquals 'abc\$def' "`_shunit_escapeCharInStr '$' 'abc$def'`"
-  # shellcheck disable=2016
-  assertEquals '\$def' "`_shunit_escapeCharInStr '$' '$def'`"
+  while read -r desc char str want; do
+    got=`_shunit_escapeCharInStr "${char}" "${str}"`
+    assertEquals "${desc}" "${want}" "${got}"
+  done <<'EOF'
+backslash      \ ''       ''
+backslash_pre  \ \def     \\def
+backslash_mid  \ abc\def  abc\\def
+backslash_post \ abc\     abc\\
+quote          " ''       ''
+quote_pre      " "def     \"def
+quote_mid      " abc"def  abc\"def
+quote_post     " abc"     abc\"
+string         $ ''       ''
+string_pre     $ $def     \$def
+string_mid     $ abc$def  abc\$def
+string_post    $ abc$     abc\$
+EOF
 
   # TODO(20170924:kward) fix or remove.
 #  actual=`_shunit_escapeCharInStr "'" ''`

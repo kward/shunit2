@@ -90,7 +90,7 @@ W00t! You've just run your first successful unit test. So, what just happened? Q
 
 * When shUnit2 is sourced, it will walk through any functions defined whose name starts with the string `test`, and add those to an internal list of tests to execute. Once a list of test functions to be run has been determined, shunit2 will go to work.
 * Before any tests are executed, shUnit2 again looks for a function, this time one named `oneTimeSetUp()`. If it exists, it will be run. This function is normally used to setup the environment for all tests to be run. Things like creating directories for output or setting environment variables are good to place here. Just so you know, you can also declare a corresponding function named `oneTimeTearDown()` function that does the same thing, but once all the tests have been completed. It is good for removing temporary directories, etc.
-* shUnit2 is now ready to run tests. Before doing so though, it again looks for another function that might be declared, one named `setUp()`. If the function exists, it will be run before each test. It is good for resetting the environment so that each test starts with a clean slate. At this stage, the first test is finally run. The success of the test is recorded for a report that will be generated later. After the test is run, shUnit2 looks for a final function that might be declared, one named `tearDown()`. If it exists, it will be run after each test. It is a good place for cleaning up after each test, maybe doing things like removing files that were created, or removing directories. This set of steps, `setUp() > test() > tearDown()`, is repeated for all of the available tests.
+* shUnit2 is now ready to run tests. Before doing so though, it again looks for another function that might be declared, one named `setUp()`. If the function exists, it will be run before each test. It is good for resetting the environment so that each test starts with a clean slate. **At this stage, the first test is finally run.** The success of the test is recorded for a report that will be generated later. After the test is run, shUnit2 looks for a final function that might be declared, one named `tearDown()`. If it exists, it will be run after each test. It is a good place for cleaning up after each test, maybe doing things like removing files that were created, or removing directories. This set of steps, `setUp() > test() > tearDown()`, is repeated for all of the available tests.
 * Once all the work is done, shUnit2 will generate the nice report you saw above. A summary of all the successes and failures will be given so that you know how well your code is doing.
 
 We should now try adding a test that fails. Change your unit test to look like this.
@@ -130,7 +130,7 @@ Any string values passed should be properly quoted -- they should must be surrou
 
 Asserts that _expected_ and _actual_ are equal to one another. The _expected_ and _actual_ values can be either strings or integer values as both will be treated as strings. The _message_ is optional, and must be quoted.
 
-`assertNotEquals [message] expected actual`
+`assertNotEquals [message] unexpected actual`
 
 Asserts that _unexpected_ and _actual_ are not equal to one another. The _unexpected_ and _actual_ values can be either strings or integer values as both will be treaded as strings. The _message_ is optional, and must be quoted.
 
@@ -268,17 +268,20 @@ There are several constants provided by shUnit2 as variables that might be of us
 
 | Constant        | Value |
 | --------------- | ----- |
-| SHUNIT\_VERSION | The version of shUnit2 you are running. |
 | SHUNIT\_TRUE    | Standard shell `true` value (the integer value 0). |
 | SHUNIT\_FALSE   | Standard shell `false` value (the integer value 1). |
 | SHUNIT\_ERROR   | The integer value 2. |
 | SHUNIT\_TMPDIR  | Path to temporary directory that will be automatically cleaned up upon exit of shUnit2. |
+| SHUNIT\_VERSION | The version of shUnit2 you are running. |
 
 *User defined*
 
-| Constant        | Value |
-| --------------- | ----- |
-| SHUNIT\_PARENT  | The filename of the shell script containing the tests. This is needed specifically for Zsh support. |
+| Constant          | Value |
+| ----------------- | ----- |
+| SHUNIT\_CMD\_EXPR | Override which `expr` command is used. By default `expr` is used, except on BSD systems where `gexpr` is used. |
+| SHUNIT\_COLOR     | Enable colorized output. Options are 'auto', 'always', or 'never', with 'auto' being the default. |
+| SHUNIT\_PARENT    | The filename of the shell script containing the tests. This is needed specifically for Zsh support. |
+| SHUNIT\_TEST\_PREFIX | Define this variable to add a prefix in front of each test name that is output in the test report. |
 
 ### <a name="error-handling"></a> Error handling
 
