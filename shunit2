@@ -883,13 +883,22 @@ _shunit_execSuite() {
 
     # Execute the per-test setup function.
     setUp
+    command [ $? -eq ${SHUNIT_TRUE} ] \
+        || _shunit_fatal "setup() returned non-zero return code."
 
     # Execute the test.
     echo "${__SHUNIT_TEST_PREFIX}${_shunit_test_}"
     eval "${_shunit_test_}"
+    if command [ $? -ne ${SHUNIT_TRUE} ]; then
+      _shunit_error "${_shunit_test_}() returned non-zero return code."
+      __shunit_testSuccess=${SHUNIT_ERROR}
+      _shunit_incFailedCount
+    fi
 
     # Execute the per-test tear-down function.
     tearDown
+    command [ $? -eq ${SHUNIT_TRUE} ] \
+        || _shunit_fatal "tearDown() returned non-zero return code."
 
     # Update stats.
     if command [ ${__shunit_testSuccess} -eq ${SHUNIT_TRUE} ]; then
@@ -924,21 +933,21 @@ _shunit_generateReport() {
     ${__SHUNIT_CMD_ECHO_ESC} "${_shunit_msg_} tests."
   fi
 
-  _shunit_failures_=''
-  _shunit_skipped_=''
-  command [ ${__shunit_assertsFailed} -gt 0 ] \
+  _shunit_failures_=0
+  _shunit_skipped_=0
+  command [ "${__shunit_assertsFailed}" -gt 0 ] \
       && _shunit_failures_="failures=${__shunit_assertsFailed}"
-  command [ ${__shunit_assertsSkipped} -gt 0 ] \
+  command [ "${__shunit_assertsSkipped}" -gt 0 ] \
       && _shunit_skipped_="skipped=${__shunit_assertsSkipped}"
 
   if command [ ${_shunit_ok_} -eq ${SHUNIT_TRUE} ]; then
     _shunit_msg_="${__shunit_ansi_green}OK${__shunit_ansi_none}"
-    command [ -n "${_shunit_skipped_}" ] \
+    command [ "${_shunit_skipped_}" -gt 0 ] \
         && _shunit_msg_="${_shunit_msg_} (${__shunit_ansi_yellow}${_shunit_skipped_}${__shunit_ansi_none})"
   else
     _shunit_msg_="${__shunit_ansi_red}FAILED${__shunit_ansi_none}"
     _shunit_msg_="${_shunit_msg_} (${__shunit_ansi_red}${_shunit_failures_}${__shunit_ansi_none}"
-    command [ -n "${_shunit_skipped_}" ] \
+    command [ "${_shunit_skipped_}" -gt 0 ] \
         && _shunit_msg_="${_shunit_msg_},${__shunit_ansi_yellow}${_shunit_skipped_}${__shunit_ansi_none}"
     _shunit_msg_="${_shunit_msg_})"
   fi
@@ -976,12 +985,21 @@ _shunit_assertPass() {
 #   message: string: failure message to provide user
 _shunit_assertFail() {
   __shunit_testSuccess=${SHUNIT_FALSE}
-  __shunit_assertsFailed=`expr "${__shunit_assertsFailed}" + 1`
-  __shunit_assertsTotal=`expr "${__shunit_assertsTotal}" + 1`
+  _shunit_incFailedCount
 
   \[ $# -gt 0 ] && ${__SHUNIT_CMD_ECHO_ESC} \
       "${__shunit_ansi_red}ASSERT:${__shunit_ansi_none}$*"
 }
+
+# Increment the count of failed asserts.
+#
+# Args:
+#   none
+_shunit_incFailedCount() {
+  __shunit_assertsFailed=`expr "${__shunit_assertsFailed}" + 1`
+  __shunit_assertsTotal=`expr "${__shunit_assertsTotal}" + 1`
+}
+
 
 # Records a skipped test.
 #
@@ -1119,6 +1137,8 @@ _shunit_configureColor "${SHUNIT_COLOR}"
 
 # Execute the oneTimeSetUp function (if it exists).
 oneTimeSetUp
+command [ $? -eq ${SHUNIT_TRUE} ] \
+    || _shunit_fatal "oneTimeSetUp() returned non-zero return code."
 
 # Execute the suite function defined in the parent test script.
 # DEPRECATED as of 2.1.0.
@@ -1133,8 +1153,15 @@ if command [ -z "${__shunit_suite}" ]; then
 fi
 unset shunit_func_ shunit_funcs_
 
+# Execute the suite of unit tests.
 _shunit_execSuite
+
+# Execute the oneTimeTearDown function (if it exists).
 oneTimeTearDown
+command [ $? -eq ${SHUNIT_TRUE} ] \
+    || _shunit_fatal "oneTimeTearDown() returned non-zero return code."
+
+# Generate a report summary.
 _shunit_generateReport
 
 # That's it folks.

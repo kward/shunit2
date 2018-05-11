@@ -103,6 +103,26 @@ EOF
   done
 }
 
+# Ensure a test failure is recorded for code containing syntax errors.
+# https://github.com/kward/shunit2/issues/84
+testIssue84() {
+  unittestF="${SHUNIT_TMPDIR}/unittest"
+  sed 's/^#//' >"${unittestF}" <<\EOF
+## Function with syntax error.
+#syntax_error() { ${!#3442} -334 a$@2[1]; }
+#test_syntax_error() {
+#  syntax_error
+#  assertTrue ${SHUNIT_TRUE}
+#}
+#SHUNIT_COLOR='none'
+#SHUNIT_TEST_PREFIX='--- '
+#. ${TH_SHUNIT}
+EOF
+  ( exec "${SHUNIT_SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" )
+  grep '^FAILED' "${stdoutF}" >/dev/null
+  assertTrue "failure message for ${assert} was not generated" $?
+}
+
 testPrepForSourcing() {
   assertEquals '/abc' "`_shunit_prepForSourcing '/abc'`"
   assertEquals './abc' "`_shunit_prepForSourcing './abc'`"
