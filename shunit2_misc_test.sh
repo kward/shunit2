@@ -103,6 +103,23 @@ EOF
   done
 }
 
+# Ensure that test fails if setup/teardown functions fail.
+testIssue77() {
+	unittestF="${SHUNIT_TMPDIR}/unittest"
+  for func in oneTimeSetUp setUp tearDown oneTimeTearDown; do
+    sed 's/^#//' >"${unittestF}" <<EOF
+## Environment failure should end test.
+#${func}() { return ${SHUNIT_FALSE}; }
+#test_true() { assertTrue ${SHUNIT_TRUE}; }
+#SHUNIT_COLOR='none'
+#. ${TH_SHUNIT}
+EOF
+    ( exec "${SHUNIT_SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" )
+    grep '^FAILED' "${stdoutF}" >/dev/null
+    assertTrue "failure of ${func}() did not end test" $?
+  done
+}
+
 # Ensure a test failure is recorded for code containing syntax errors.
 # https://github.com/kward/shunit2/issues/84
 testIssue84() {
