@@ -6,6 +6,15 @@
 
 Issue #29. Add support for user defined prefix for test names. A prefix can be added by defining the `SHUNIT_TEST_PREFIX` variable.
 
+Issue #78. Added an example for using suite tests.
+
+Run continuous integration additionally against Ubuntu Trusty.
+
+### Bug fixes
+
+Issue #84. Treat syntax errors in functions as test failures.
+
+Issue #77. Fail tests when the environment functions (e.g. `setup()` or `tearDown()`) fail.
 
 ## Changes with 2.1.7
 
