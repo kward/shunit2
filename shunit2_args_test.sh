@@ -3,10 +3,8 @@
 # shunit2 unit test for running subset(s) of tests based upon command line arguments.
 # Shows how non-default tests or a arbitrary subset of tests can be run.
 #
-
-# These variables will be overridden by the test helpers.
-stdoutF="${TMPDIR:-/tmp}/STDOUT"
-stderrF="${TMPDIR:-/tmp}/STDERR"
+# Disable source following.
+#   shellcheck disable=SC1090,SC1091
 
 # Load test helpers.
 . ./shunit2_test_helpers
