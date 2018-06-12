@@ -841,9 +841,9 @@ _shunit_configureColor() {
     'auto')
       ( exec tput >/dev/null 2>&1 )  # Check for existence of tput command.
       if command [ $? -lt 127 ]; then
-        _shunit_tput_=`tput colors`
+        _shunit_tput_=`tput colors 2>/dev/null`
         # shellcheck disable=SC2166,SC2181
-        command [ $? -eq 0 -a "${_shunit_tput_}" -ge 16 ] && _shunit_color_=${SHUNIT_TRUE}
+        command [ $? -eq 0 ] && [ "${_shunit_tput_}" -ge 16 ] && _shunit_color_=${SHUNIT_TRUE}
       fi
       ;;
     'none') ;;
