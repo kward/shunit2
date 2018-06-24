@@ -58,6 +58,8 @@ EOF
 testIssue7() {
   # Disable coloring so 'ASSERT:' lines can be matched correctly.
   _shunit_configureColor 'none'
+  # Disable difference alignment so 'ASSERT:' lines can be matched correctly.
+  _shunit_configureDiff 'none'
 
   # Ignoring errors with `|| :` as we only care about the message in this test.
   ( assertEquals 'Some message.' 1 2 >"${stdoutF}" 2>"${stderrF}" ) || :
@@ -164,6 +166,34 @@ EOF
     fail 'failure message was not generated'
   fi
 }
+
+testIssue89() {
+  tempdiff="${SHUNIT_TMPDIR}/difference.diff"
+  _shunit_configureColor none
+  # test new aligned difference
+  _shunit_configureDiff always
+  ( assertEquals "deadbeef" "deadbuff" >"${stdoutF}" 2>"${stderrF}" ) || :
+  diff -u "${stdoutF}" - >"${tempdiff}" 2>&1 <<EOF
+ASSERT:
+expected:<deadbeef>
+---------------^
+ but was:<deadbuff>
+EOF
+  rtrn=$?
+  [ "${rtrn}" -eq "${SHUNIT_TRUE}" ] || cat "${tempdiff}" >&2
+  rm "${tempdiff}"
+  # test does it breaks original diff implementation
+  _shunit_configureColor none
+  _shunit_configureDiff none
+  ( assertEquals "deadbeef" "deadbuff" >"${stdoutF}" 2>"${stderrF}" ) || :
+  diff -u "${stdoutF}" - >"${tempdiff}" 2>&1 <<EOF
+ASSERT:expected:<deadbeef> but was:<deadbuff>
+EOF
+  rtrn=$?
+  [ "${rtrn}" -eq "${SHUNIT_TRUE}" ] || cat "${tempdiff}" >&2
+  rm "${tempdiff}"
+}
+
 
 # Demonstrate that asserts are no longer executed in subshells.
 # https://github.com/kward/shunit2/issues/123

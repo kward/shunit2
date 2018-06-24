@@ -49,6 +49,8 @@ SHUNIT_CMD_TPUT=${SHUNIT_CMD_TPUT:-${__SHUNIT_CMD_TPUT}}
 
 # Enable color output. Options are 'auto', 'always', or 'never'.
 SHUNIT_COLOR=${SHUNIT_COLOR:-auto}
+# Enable difference alignment output. Options are 'auto', 'always', or 'never'.
+SHUNIT_DIFF_ALIGN=${SHUNIT_DIFF_ALIGN:-never}
 
 #
 # Internal constants.
@@ -647,6 +649,35 @@ fail() {
 # shellcheck disable=SC2016,SC2034
 _FAIL_='eval fail --lineno "${LINENO:-}"'
 
+_shunit_different() {
+    expected="$1"
+    actually="$2"
+    len1=${#expected}
+    len2=${#actually}
+    min_len=$len1
+    if ${__SHUNIT_BUILTIN} [ "$min_len" -gt "$len2" ]; then
+      min_len=$len2;
+    fi
+
+    i=1;
+    while ${__SHUNIT_BUILTIN} [ "$i" -le "$min_len" ];
+    do
+      charA=$(echo "$expected"|cut -c$i);
+      charB=$(echo "$actually"|cut -c$i);
+      if ${__SHUNIT_BUILTIN} [ "$charA" = "$charB" ]; then
+        printf "%c" "-";
+      else
+        printf "%c" "^";
+        break;
+      fi
+      i=$((i + 1));
+    done
+    if ${__SHUNIT_BUILTIN} [ "$i" -gt "$min_len" ]; then
+      printf "%c" "^";
+    fi
+
+}
+
 # Records a test failure, stating two values were not equal.
 #
 # Args:
@@ -675,9 +706,14 @@ failNotEquals() {
   shunit_actual_=$2
 
   shunit_message_=${shunit_message_%% }
+  if ${__SHUNIT_BUILTIN} [ ${__shunit_diff_align} -eq ${SHUNIT_TRUE} ]; then
+    diff_position_=$(_shunit_different "${shunit_expected_}" "${shunit_actual_})")
+    _shunit_assertFail "${shunit_message_:+${shunit_message_} }\\nexpected:<${shunit_expected_}>\\n----------${diff_position_}\\n but was:<${shunit_actual_}>"
+    return
+  fi
   _shunit_assertFail "${shunit_message_:+${shunit_message_} }expected:<${shunit_expected_}> but was:<${shunit_actual_}>"
 
-  unset shunit_message_ shunit_expected_ shunit_actual_
+  unset shunit_message_ shunit_expected_ shunit_actual_ diff_position_
   return ${SHUNIT_FALSE}
 }
 # shellcheck disable=SC2016,SC2034
@@ -1043,6 +1079,26 @@ _shunit_cleanup() {
   unset _shunit_name_ _shunit_signal_
 }
 
+# configureDiff difference alignment.
+#
+# Args:
+#   alignment: string: align state (one of `always`, `auto`, or `never`).
+_shunit_configureDiff() {
+  _shunit_diff_conf_=${SHUNIT_FALSE}
+  case $1 in
+    'always') _shunit_diff_conf_=${SHUNIT_TRUE} ;;
+    'auto')
+      if which cut|grep cut >/dev/null 2>&1; then
+        _shunit_diff_conf_=${SHUNIT_TRUE}
+      fi
+      ;;
+    'never'|'none') _shunit_diff_conf_=${SHUNIT_FALSE} ;;
+    *) _shunit_fatal "unrecognized difference alignment option '$1'" ;;
+  esac
+  __shunit_diff_align=${_shunit_diff_conf_}
+  unset _shunit_diff_conf_
+}
+
 # configureColor based on user color preference.
 #
 # Args:
@@ -1328,6 +1384,9 @@ fi
 
 # Configure default output coloring behavior.
 _shunit_configureColor "${SHUNIT_COLOR}"
+
+# Configure default difference alignment behavior.
+_shunit_configureDiff "${SHUNIT_DIFF_ALIGN}"
 
 # Execute the oneTimeSetUp function (if it exists).
 if ! oneTimeSetUp; then
