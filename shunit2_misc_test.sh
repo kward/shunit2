@@ -223,10 +223,29 @@ testExtractTestFunctions() {
 #func_with_test_vars() {
 #  testVariable=1234
 #}
+## Function with keyword but no parenthesis
+#function test6 { echo '6'; }
+## Function with keyword but no parenthesis, multi-line
+#function test7 {
+#  echo '7';
+#}
+## Function with no parenthesis, '{' on next line
+#function test8
+#{
+#  echo '8'
+#}
+## Function with hyphenated name
+#test-9() {
+#  echo '9';
+#}
+## Function without parenthesis or keyword
+#test_foobar { echo 'hello world'; }
+## Function with multiple function keywords
+#function function test_test_test() { echo 'lorem'; }
 EOF
 
   actual=`_shunit_extractTestFunctions "${f}"`
-  assertEquals 'testABC test_def testG3 test4 test5' "${actual}"
+  assertEquals 'testABC test_def testG3 test4 test5 test6 test7 test8 test-9' "${actual}"
 }
 
 # Test that certain external commands sometimes "stubbed" by users
