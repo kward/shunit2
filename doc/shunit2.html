@@ -507,6 +507,10 @@ quoted.</dd>
 <dd>This function is functionally equivalent to <tt class="docutils literal">assertEquals</tt>.</dd>
 <dt><tt class="docutils literal">assertNotSame [message] unexpected actual</tt></dt>
 <dd>This function is functionally equivalent to <tt class="docutils literal">assertNotEquals</tt>.</dd>
+<dt><tt class="docutils literal">assertContains [message] expected actual</tt></dt>
+<dd>Asserts that <em>expected</em> is a substring of <em>actual</em>. The <em>expected</em>
+and <em>actual</em> values can be either strings or integer values as both will be
+treated as strings. The <em>message</em> is optional, and must be quoted.</dd>
 <dt><tt class="docutils literal">assertNull [message] value</tt></dt>
 <dd>Asserts that <em>value</em> is <em>null</em>, or in shell terms, a zero-length string. The
 <em>value</em> must be a string as an integer value does not translate into a

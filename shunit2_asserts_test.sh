@@ -82,6 +82,44 @@ testAssertNotSame() {
   commonNotEqualsSame 'assertNotSame'
 }
 
+testAssertContains() {
+  ( assertContains 'x' 'yxy' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'contains' $? "${stdoutF}" "${stderrF}"
+
+  ( assertContains "${MSG}" 'x' 'yxy' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'contains, with msg' $? "${stdoutF}" "${stderrF}"
+
+  ( assertContains 'x' 'y' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithOutput 'not contains' $? "${stdoutF}" "${stderrF}"
+
+  ( assertContains '' '' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'null values' $? "${stdoutF}" "${stderrF}"
+
+  ( assertContains '' 'x' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'null expected' $? "${stdoutF}" "${stderrF}"
+
+  ( assertContains '[x]' 'yxy' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithOutput 'brackets not evaluated' $? "${stdoutF}" "${stderrF}"
+
+  ( assertContains 'x*' 'yxy' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithOutput 'wildcard not evaluated' $? "${stdoutF}" "${stderrF}"
+
+  ( assertContains '[x].*' 'y[x].*y' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'regex taken literally' $? "${stdoutF}" "${stderrF}"
+
+  ( assertContains "$(printf 'b\nc')" "$(printf 'a\nb\nc\nd')" >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'multi-line match' $? "${stdoutF}" "${stderrF}"
+
+  ( assertContains "$(printf 'c\nb')" "$(printf 'a\nb\nc\nd')" >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithOutput 'multi-line mismatch' $? "${stdoutF}" "${stderrF}"
+
+  ( assertContains arg1 >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithError 'too few arguments' $? "${stdoutF}" "${stderrF}"
+
+  ( assertContains arg1 arg2 arg3 arg4 >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithError 'too many arguments' $? "${stdoutF}" "${stderrF}"
+}
+
 testAssertNull() {
   ( assertNull '' >"${stdoutF}" 2>"${stderrF}" )
   th_assertTrueWithNoOutput 'null' $? "${stdoutF}" "${stderrF}"

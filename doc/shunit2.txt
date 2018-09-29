@@ -188,6 +188,11 @@ Asserts
 ``assertNotSame [message] unexpected actual``
   This function is functionally equivalent to ``assertNotEquals``.
 
+``assertContains [message] expected actual``
+  Asserts that *expected* is a substring of *actual*. The *expected* and
+  *actual* values can be either strings or integer values as  both will be
+  treated as strings. The *message* is optional, and must be quoted.
+
 ``assertNull [message] value``
   Asserts that *value* is *null*, or in shell terms, a zero-length string. The
   *value* must be a string as an integer value does not translate into a
