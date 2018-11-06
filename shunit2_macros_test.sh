@@ -37,6 +37,8 @@ testAssertEquals() {
   rtrn=$?
   assertTrue '_ASSERT_EQUALS_ w/ msg failure' ${rtrn}
   [ "${rtrn}" -ne "${SHUNIT_TRUE}" ] && cat "${stderrF}" >&2
+
+  return 0
 }
 
 testAssertNotEquals() {
@@ -54,6 +56,8 @@ testAssertNotEquals() {
   rtrn=$?
   assertTrue '_ASSERT_NOT_EQUALS_ w/ msg failure' ${rtrn}
   [ "${rtrn}" -ne "${SHUNIT_TRUE}" ] && cat "${stderrF}" >&2
+
+  return 0
 }
 
 testSame() {
@@ -71,6 +75,8 @@ testSame() {
   rtrn=$?
   assertTrue '_ASSERT_SAME_ w/ msg failure' ${rtrn}
   [ "${rtrn}" -ne "${SHUNIT_TRUE}" ] && cat "${stderrF}" >&2
+
+  return 0
 }
 
 testNotSame() {
@@ -88,6 +94,8 @@ testNotSame() {
   rtrn=$?
   assertTrue '_ASSERT_NOT_SAME_ w/ msg failure' ${rtrn}
   [ "${rtrn}" -ne "${SHUNIT_TRUE}" ] && cat "${stderrF}" >&2
+
+  return 0
 }
 
 testNull() {
@@ -105,6 +113,8 @@ testNull() {
   rtrn=$?
   assertTrue '_ASSERT_NULL_ w/ msg failure' ${rtrn}
   [ "${rtrn}" -ne "${SHUNIT_TRUE}" ] && cat "${stderrF}" >&2
+
+  return 0
 }
 
 testNotNull()
@@ -123,6 +133,8 @@ testNotNull()
   rtrn=$?
   assertTrue '_ASSERT_NOT_NULL_ w/ msg failure' ${rtrn}
   [ "${rtrn}" -ne "${SHUNIT_TRUE}" ] && cat "${stdoutF}" "${stderrF}" >&2
+
+  return 0
 }
 
 testAssertTrue() {
@@ -140,6 +152,8 @@ testAssertTrue() {
   rtrn=$?
   assertTrue '_ASSERT_TRUE_ w/ msg failure' ${rtrn}
   [ "${rtrn}" -ne "${SHUNIT_TRUE}" ] && cat "${stderrF}" >&2
+
+  return 0
 }
 
 testAssertFalse() {
@@ -157,6 +171,8 @@ testAssertFalse() {
   rtrn=$?
   assertTrue '_ASSERT_FALSE_ w/ msg failure' ${rtrn}
   [ "${rtrn}" -ne "${SHUNIT_TRUE}" ] && cat "${stderrF}" >&2
+
+  return 0
 }
 
 testFail() {
@@ -174,6 +190,8 @@ testFail() {
   rtrn=$?
   assertTrue '_FAIL_ w/ msg failure' ${rtrn}
   [ "${rtrn}" -ne "${SHUNIT_TRUE}" ] && cat "${stderrF}" >&2
+
+  return 0
 }
 
 testFailNotEquals()
@@ -192,6 +210,8 @@ testFailNotEquals()
   rtrn=$?
   assertTrue '_FAIL_NOT_EQUALS_ w/ msg failure' ${rtrn}
   [ "${rtrn}" -ne "${SHUNIT_TRUE}" ] && cat "${stderrF}" >&2
+
+  return 0
 }
 
 testFailSame() {
@@ -209,6 +229,8 @@ testFailSame() {
   rtrn=$?
   assertTrue '_FAIL_SAME_ w/ msg failure' ${rtrn}
   [ "${rtrn}" -ne "${SHUNIT_TRUE}" ] && cat "${stderrF}" >&2
+
+  return 0
 }
 
 testFailNotSame() {
@@ -226,6 +248,8 @@ testFailNotSame() {
   rtrn=$?
   assertTrue '_FAIL_NOT_SAME_ w/ msg failure' ${rtrn}
   [ "${rtrn}" -ne "${SHUNIT_TRUE}" ] && cat "${stderrF}" >&2
+
+  return 0
 }
 
 oneTimeSetUp() {
