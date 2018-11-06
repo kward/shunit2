@@ -82,6 +82,64 @@ testAssertNotSame() {
   commonNotEqualsSame 'assertNotSame'
 }
 
+testAssertContains() {
+  ( assertContains 'abcdef' 'abc' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'found' $? "${stdoutF}" "${stderrF}"
+
+  ( assertContains 'abcdef' 'bcd' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'found' $? "${stdoutF}" "${stderrF}"
+
+  ( assertContains 'abcdef' 'def' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'found' $? "${stdoutF}" "${stderrF}"
+
+  ( assertContains "${MSG}" 'abcdef' 'abc' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'found, with msg' $? "${stdoutF}" "${stderrF}"
+
+  ( assertContains 'abcdef' 'xyz' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithOutput 'not found' $? "${stdoutF}" "${stderrF}"
+
+  ( assertContains 'abcdef' 'zab' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithOutput 'not found' $? "${stdoutF}" "${stderrF}"
+
+  ( assertContains 'abcdef' 'efg' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithOutput 'not found' $? "${stdoutF}" "${stderrF}"
+
+  ( assertContains 'abcdef' 'acf' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithOutput 'not found' $? "${stdoutF}" "${stderrF}"
+
+  ( assertContains 'abcdef' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithError 'too few arguments' $? "${stdoutF}" "${stderrF}"
+
+  ( assertContains arg1 arg2 arg3 arg4 >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithError 'too many arguments' $? "${stdoutF}" "${stderrF}"
+}
+
+testAssertNotContains() {
+  ( assertNotContains 'abcdef' 'xyz' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'not found' $? "${stdoutF}" "${stderrF}"
+
+  ( assertNotContains 'abcdef' 'zab' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'not found' $? "${stdoutF}" "${stderrF}"
+
+  ( assertNotContains 'abcdef' 'efg' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'not found' $? "${stdoutF}" "${stderrF}"
+
+  ( assertNotContains 'abcdef' 'acf' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'not found' $? "${stdoutF}" "${stderrF}"
+
+  ( assertNotContains "${MSG}" 'abcdef' 'xyz' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'not found, with msg' $? "${stdoutF}" "${stderrF}"
+
+  ( assertNotContains 'abcdef' 'abc' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithOutput 'found' $? "${stdoutF}" "${stderrF}"
+
+  ( assertNotContains 'abcdef' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithError 'too few arguments' $? "${stdoutF}" "${stderrF}"
+
+  ( assertNotContains arg1 arg2 arg3 arg4 >"${stdoutF}" 2>"${stderrF}" )
+  th_assertFalseWithError 'too many arguments' $? "${stdoutF}" "${stderrF}"
+}
+
 testAssertNull() {
   ( assertNull '' >"${stdoutF}" 2>"${stderrF}" )
   th_assertTrueWithNoOutput 'null' $? "${stdoutF}" "${stderrF}"
