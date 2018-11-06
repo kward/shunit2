@@ -263,10 +263,11 @@ testProtectedCommands() {
 
 mock_tput() {
   if [ -z "${TERM}" ]; then
+    # shellcheck disable=SC2016
     echo 'tput: No value for $TERM and no -T specified'
     return 2
   fi
-  if [ $1 = 'colors' ]; then
+  if [ "$1" = 'colors' ]; then
     echo 256
     return 0
   fi
@@ -278,7 +279,7 @@ testColors() {
     SHUNIT_CMD_TPUT=${cmd}
     got=`_shunit_colors`
     want=${colors}
-    assertEquals ${got} ${want}
+    assertEquals "${got}" "${want}"
   done <<'EOF'
 missing missing_tput 16
 mock mock_tput 256
@@ -287,9 +288,9 @@ EOF
 
 testColorsWitoutTERM() {
   SHUNIT_CMD_TPUT='mock_tput'
-  got=`TERM= _shunit_colors`
+  got=`TERM='' _shunit_colors`
   want=16
-  assertEquals ${got} ${want}
+  assertEquals "${got}" "${want}"
 }
 
 setUp() {
@@ -300,6 +301,7 @@ setUp() {
   # Reconfigure coloring as some tests override default behavior.
   _shunit_configureColor "${SHUNIT_COLOR_DEFAULT}"
 
+  # shellcheck disable=SC2034,SC2153
   SHUNIT_CMD_TPUT=${__SHUNIT_CMD_TPUT}
 }
 
