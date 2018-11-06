@@ -228,6 +228,86 @@ assertNotEquals() {
 # shellcheck disable=SC2016,SC2034
 _ASSERT_NOT_EQUALS_='eval assertNotEquals --lineno "${LINENO:-}"'
 
+# Assert that a container contains a content.
+#
+# Args:
+#   message: string: failure message [optional]
+#   container: string: container to analyze
+#   content: string: content to find
+# Returns:
+#   integer: success (TRUE/FALSE/ERROR constant)
+assertContains() {
+  # shellcheck disable=SC2090
+  ${_SHUNIT_LINENO_}
+  if command [ $# -lt 2 -o $# -gt 3 ]; then
+    _shunit_error "assertContains() requires two or three arguments; $# given"
+    _shunit_assertFail
+    return ${SHUNIT_ERROR}
+  fi
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
+  shunit_message_=${__shunit_lineno}
+  if command [ $# -eq 3 ]; then
+    shunit_message_="${shunit_message_}$1"
+    shift
+  fi
+  shunit_container_=$1
+  shunit_content_=$2
+
+  shunit_return=${SHUNIT_TRUE}
+  if echo "$shunit_container_" | grep -F "$shunit_content_" > /dev/null; then
+    _shunit_assertPass
+  else
+    failNotFound "${shunit_message_}" "${shunit_content_}"
+    shunit_return=${SHUNIT_FALSE}
+  fi
+
+  unset shunit_message_ shunit_container_ shunit_content_
+  return ${shunit_return}
+}
+# shellcheck disable=SC2016,SC2034
+_ASSERT_CONTAINS_='eval assertContains --lineno "${LINENO:-}"'
+
+# Assert that a container does not contain a content.
+#
+# Args:
+#   message: string: failure message [optional]
+#   container: string: container to analyze
+#   content: string: content to look for
+# Returns:
+#   integer: success (TRUE/FALSE/ERROR constant)
+assertNotContains() {
+  # shellcheck disable=SC2090
+  ${_SHUNIT_LINENO_}
+  if command [ $# -lt 2 -o $# -gt 3 ]; then
+    _shunit_error "assertNotContains() requires two or three arguments; $# given"
+    _shunit_assertFail
+    return ${SHUNIT_ERROR}
+  fi
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
+  shunit_message_=${__shunit_lineno}
+  if command [ $# -eq 3 ]; then
+    shunit_message_="${shunit_message_}$1"
+    shift
+  fi
+  shunit_container_=$1
+  shunit_content_=$2
+
+  shunit_return=${SHUNIT_TRUE}
+  if echo "$shunit_container_" | grep -F "$shunit_content_" > /dev/null; then
+    failFound "${shunit_message_}" "$@"
+    shunit_return=${SHUNIT_FALSE}
+  else
+    _shunit_assertPass
+  fi
+
+  unset shunit_message_ shunit_container_ shunit_content_
+  return ${shunit_return}
+}
+# shellcheck disable=SC2016,SC2034
+_ASSERT_NOT_CONTAINS_='eval assertNotContains --lineno "${LINENO:-}"'
+
 # Assert that a value is null (i.e. an empty string)
 #
 # Args:
@@ -556,6 +636,70 @@ failNotEquals() {
 }
 # shellcheck disable=SC2016,SC2034
 _FAIL_NOT_EQUALS_='eval failNotEquals --lineno "${LINENO:-}"'
+
+# Records a test failure, stating a value was found.
+#
+# Args:
+#   message: string: failure message [optional]
+#   content: string: found value
+# Returns:
+#   integer: success (TRUE/FALSE/ERROR constant)
+failFound()
+{
+  # shellcheck disable=SC2090
+  ${_SHUNIT_LINENO_}
+  if command [ $# -lt 1 -o $# -gt 2 ]; then
+    _shunit_error "failFound() requires one or two arguments; $# given"
+    return ${SHUNIT_ERROR}
+  fi
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
+  shunit_message_=${__shunit_lineno}
+  if command [ $# -eq 2 ]; then
+    shunit_message_="${shunit_message_}$1"
+    shift
+  fi
+
+  shunit_message_=${shunit_message_%% }
+  _shunit_assertFail "${shunit_message_:+${shunit_message_} }Found"
+
+  unset shunit_message_
+  return ${SHUNIT_FALSE}
+}
+# shellcheck disable=SC2016,SC2034
+_FAIL_FOUND_='eval failFound --lineno "${LINENO:-}"'
+
+# Records a test failure, stating a content was not found.
+#
+# Args:
+#   message: string: failure message [optional]
+#   content: string: content not found
+# Returns:
+#   integer: success (TRUE/FALSE/ERROR constant)
+failNotFound() {
+  # shellcheck disable=SC2090
+  ${_SHUNIT_LINENO_}
+  if command [ $# -lt 1 -o $# -gt 2 ]; then
+    _shunit_error "failNotFound() requires one or two arguments; $# given"
+    return ${SHUNIT_ERROR}
+  fi
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
+  shunit_message_=${__shunit_lineno}
+  if command [ $# -eq 2 ]; then
+    shunit_message_="${shunit_message_}$1"
+    shift
+  fi
+  shunit_content_=$1
+
+  shunit_message_=${shunit_message_%% }
+  _shunit_assertFail "${shunit_message_:+${shunit_message_} }Not found:<${shunit_content_}>"
+
+  unset shunit_message_ shunit_content_
+  return ${SHUNIT_FALSE}
+}
+# shellcheck disable=SC2016,SC2034
+_FAIL_NOT_FOUND_='eval failNotFound --lineno "${LINENO:-}"'
 
 # Records a test failure, stating two values should have been the same.
 #
