@@ -42,18 +42,20 @@ _shunit_fatal() {
 }
 
 # Determine some reasonable command defaults.
+__SHUNIT_CMD_ECHO_ESC='echo -e'
+# shellcheck disable=SC2039
+command [ "`echo -e test`" = '-e test' ] && __SHUNIT_CMD_ECHO_ESC='echo'
+
 __SHUNIT_UNAME_S=`uname -s`
 case "${__SHUNIT_UNAME_S}" in
   BSD) __SHUNIT_CMD_EXPR='gexpr' ;;
   *) __SHUNIT_CMD_EXPR='expr' ;;
 esac
-
-__SHUNIT_CMD_ECHO_ESC='echo -e'
-# shellcheck disable=SC2039
-command [ "`echo -e test`" = '-e test' ] && __SHUNIT_CMD_ECHO_ESC='echo'
+__SHUNIT_CMD_TPUT='tput'
 
 # Commands a user can override if needed.
 SHUNIT_CMD_EXPR=${SHUNIT_CMD_EXPR:-${__SHUNIT_CMD_EXPR}}
+SHUNIT_CMD_TPUT=${SHUNIT_CMD_TPUT:-${__SHUNIT_CMD_TPUT}}
 
 # Enable color output. Options are 'never', 'always', or 'auto'.
 SHUNIT_COLOR=${SHUNIT_COLOR:-auto}
@@ -839,12 +841,7 @@ _shunit_configureColor() {
   case $1 in
     'always') _shunit_color_=${SHUNIT_TRUE} ;;
     'auto')
-      ( exec tput >/dev/null 2>&1 )  # Check for existence of tput command.
-      if command [ $? -lt 127 ]; then
-        _shunit_tput_=`tput -T "${TERM}" colors`
-        # shellcheck disable=SC2166,SC2181
-        command [ $? -eq 0 -a "${_shunit_tput_}" -ge 16 ] && _shunit_color_=${SHUNIT_TRUE}
-      fi
+      command [ "`_shunit_colors`" -ge 16 ] && _shunit_color_=${SHUNIT_TRUE}
       ;;
     'none') ;;
     *) _shunit_fatal "unrecognized color option '$1'" ;;
@@ -868,6 +865,17 @@ _shunit_configureColor() {
   esac
 
   unset _shunit_color_ _shunit_tput_
+}
+
+# colors returns the number of supported colors for the TERM.
+_shunit_colors() {
+  _shunit_tput_=`${SHUNIT_CMD_TPUT} colors 2>/dev/null`
+  if command [ $? -eq 0 ]; then
+    echo "${_shunit_tput_}"
+  else
+    echo 16
+  fi
+  unset _shunit_tput_
 }
 
 # The actual running of the tests happens here.
