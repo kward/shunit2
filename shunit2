@@ -644,8 +644,7 @@ _FAIL_NOT_EQUALS_='eval failNotEquals --lineno "${LINENO:-}"'
 #   content: string: found value
 # Returns:
 #   integer: success (TRUE/FALSE/ERROR constant)
-failFound()
-{
+failFound() {
   # shellcheck disable=SC2090
   ${_SHUNIT_LINENO_}
   if command [ $# -lt 1 -o $# -gt 2 ]; then
