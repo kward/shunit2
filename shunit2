@@ -42,18 +42,20 @@ _shunit_fatal() {
 }
 
 # Determine some reasonable command defaults.
+__SHUNIT_CMD_ECHO_ESC='echo -e'
+# shellcheck disable=SC2039
+command [ "`echo -e test`" = '-e test' ] && __SHUNIT_CMD_ECHO_ESC='echo'
+
 __SHUNIT_UNAME_S=`uname -s`
 case "${__SHUNIT_UNAME_S}" in
   BSD) __SHUNIT_CMD_EXPR='gexpr' ;;
   *) __SHUNIT_CMD_EXPR='expr' ;;
 esac
-
-__SHUNIT_CMD_ECHO_ESC='echo -e'
-# shellcheck disable=SC2039
-command [ "`echo -e test`" = '-e test' ] && __SHUNIT_CMD_ECHO_ESC='echo'
+__SHUNIT_CMD_TPUT='tput'
 
 # Commands a user can override if needed.
 SHUNIT_CMD_EXPR=${SHUNIT_CMD_EXPR:-${__SHUNIT_CMD_EXPR}}
+SHUNIT_CMD_TPUT=${SHUNIT_CMD_TPUT:-${__SHUNIT_CMD_TPUT}}
 
 # Enable color output. Options are 'never', 'always', or 'auto'.
 SHUNIT_COLOR=${SHUNIT_COLOR:-auto}
@@ -225,6 +227,86 @@ assertNotEquals() {
 }
 # shellcheck disable=SC2016,SC2034
 _ASSERT_NOT_EQUALS_='eval assertNotEquals --lineno "${LINENO:-}"'
+
+# Assert that a container contains a content.
+#
+# Args:
+#   message: string: failure message [optional]
+#   container: string: container to analyze
+#   content: string: content to find
+# Returns:
+#   integer: success (TRUE/FALSE/ERROR constant)
+assertContains() {
+  # shellcheck disable=SC2090
+  ${_SHUNIT_LINENO_}
+  if command [ $# -lt 2 -o $# -gt 3 ]; then
+    _shunit_error "assertContains() requires two or three arguments; $# given"
+    _shunit_assertFail
+    return ${SHUNIT_ERROR}
+  fi
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
+  shunit_message_=${__shunit_lineno}
+  if command [ $# -eq 3 ]; then
+    shunit_message_="${shunit_message_}$1"
+    shift
+  fi
+  shunit_container_=$1
+  shunit_content_=$2
+
+  shunit_return=${SHUNIT_TRUE}
+  if echo "$shunit_container_" | grep -F "$shunit_content_" > /dev/null; then
+    _shunit_assertPass
+  else
+    failNotFound "${shunit_message_}" "${shunit_content_}"
+    shunit_return=${SHUNIT_FALSE}
+  fi
+
+  unset shunit_message_ shunit_container_ shunit_content_
+  return ${shunit_return}
+}
+# shellcheck disable=SC2016,SC2034
+_ASSERT_CONTAINS_='eval assertContains --lineno "${LINENO:-}"'
+
+# Assert that a container does not contain a content.
+#
+# Args:
+#   message: string: failure message [optional]
+#   container: string: container to analyze
+#   content: string: content to look for
+# Returns:
+#   integer: success (TRUE/FALSE/ERROR constant)
+assertNotContains() {
+  # shellcheck disable=SC2090
+  ${_SHUNIT_LINENO_}
+  if command [ $# -lt 2 -o $# -gt 3 ]; then
+    _shunit_error "assertNotContains() requires two or three arguments; $# given"
+    _shunit_assertFail
+    return ${SHUNIT_ERROR}
+  fi
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
+  shunit_message_=${__shunit_lineno}
+  if command [ $# -eq 3 ]; then
+    shunit_message_="${shunit_message_}$1"
+    shift
+  fi
+  shunit_container_=$1
+  shunit_content_=$2
+
+  shunit_return=${SHUNIT_TRUE}
+  if echo "$shunit_container_" | grep -F "$shunit_content_" > /dev/null; then
+    failFound "${shunit_message_}" "${shunit_content_}"
+    shunit_return=${SHUNIT_FALSE}
+  else
+    _shunit_assertPass
+  fi
+
+  unset shunit_message_ shunit_container_ shunit_content_
+  return ${shunit_return}
+}
+# shellcheck disable=SC2016,SC2034
+_ASSERT_NOT_CONTAINS_='eval assertNotContains --lineno "${LINENO:-}"'
 
 # Assert that a value is null (i.e. an empty string)
 #
@@ -555,6 +637,70 @@ failNotEquals() {
 # shellcheck disable=SC2016,SC2034
 _FAIL_NOT_EQUALS_='eval failNotEquals --lineno "${LINENO:-}"'
 
+# Records a test failure, stating a value was found.
+#
+# Args:
+#   message: string: failure message [optional]
+#   content: string: found value
+# Returns:
+#   integer: success (TRUE/FALSE/ERROR constant)
+failFound()
+{
+  # shellcheck disable=SC2090
+  ${_SHUNIT_LINENO_}
+  if command [ $# -lt 1 -o $# -gt 2 ]; then
+    _shunit_error "failFound() requires one or two arguments; $# given"
+    return ${SHUNIT_ERROR}
+  fi
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
+  shunit_message_=${__shunit_lineno}
+  if command [ $# -eq 2 ]; then
+    shunit_message_="${shunit_message_}$1"
+    shift
+  fi
+
+  shunit_message_=${shunit_message_%% }
+  _shunit_assertFail "${shunit_message_:+${shunit_message_} }Found"
+
+  unset shunit_message_
+  return ${SHUNIT_FALSE}
+}
+# shellcheck disable=SC2016,SC2034
+_FAIL_FOUND_='eval failFound --lineno "${LINENO:-}"'
+
+# Records a test failure, stating a content was not found.
+#
+# Args:
+#   message: string: failure message [optional]
+#   content: string: content not found
+# Returns:
+#   integer: success (TRUE/FALSE/ERROR constant)
+failNotFound() {
+  # shellcheck disable=SC2090
+  ${_SHUNIT_LINENO_}
+  if command [ $# -lt 1 -o $# -gt 2 ]; then
+    _shunit_error "failNotFound() requires one or two arguments; $# given"
+    return ${SHUNIT_ERROR}
+  fi
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
+  shunit_message_=${__shunit_lineno}
+  if command [ $# -eq 2 ]; then
+    shunit_message_="${shunit_message_}$1"
+    shift
+  fi
+  shunit_content_=$1
+
+  shunit_message_=${shunit_message_%% }
+  _shunit_assertFail "${shunit_message_:+${shunit_message_} }Not found:<${shunit_content_}>"
+
+  unset shunit_message_ shunit_content_
+  return ${SHUNIT_FALSE}
+}
+# shellcheck disable=SC2016,SC2034
+_FAIL_NOT_FOUND_='eval failNotFound --lineno "${LINENO:-}"'
+
 # Records a test failure, stating two values should have been the same.
 #
 # Args:
@@ -839,12 +985,7 @@ _shunit_configureColor() {
   case $1 in
     'always') _shunit_color_=${SHUNIT_TRUE} ;;
     'auto')
-      ( exec tput >/dev/null 2>&1 )  # Check for existence of tput command.
-      if command [ $? -lt 127 ]; then
-        _shunit_tput_=`tput colors`
-        # shellcheck disable=SC2166,SC2181
-        command [ $? -eq 0 -a "${_shunit_tput_}" -ge 16 ] && _shunit_color_=${SHUNIT_TRUE}
-      fi
+      command [ "`_shunit_colors`" -ge 16 ] && _shunit_color_=${SHUNIT_TRUE}
       ;;
     'none') ;;
     *) _shunit_fatal "unrecognized color option '$1'" ;;
@@ -868,6 +1009,17 @@ _shunit_configureColor() {
   esac
 
   unset _shunit_color_ _shunit_tput_
+}
+
+# colors returns the number of supported colors for the TERM.
+_shunit_colors() {
+  _shunit_tput_=`${SHUNIT_CMD_TPUT} colors 2>/dev/null`
+  if command [ $? -eq 0 ]; then
+    echo "${_shunit_tput_}"
+  else
+    echo 16
+  fi
+  unset _shunit_tput_
 }
 
 # The actual running of the tests happens here.
@@ -933,22 +1085,15 @@ _shunit_generateReport() {
     ${__SHUNIT_CMD_ECHO_ESC} "${_shunit_msg_} tests."
   fi
 
-  _shunit_failures_=0
-  _shunit_skipped_=0
-  command [ "${__shunit_assertsFailed}" -gt 0 ] \
-      && _shunit_failures_="failures=${__shunit_assertsFailed}"
-  command [ "${__shunit_assertsSkipped}" -gt 0 ] \
-      && _shunit_skipped_="skipped=${__shunit_assertsSkipped}"
-
   if command [ ${_shunit_ok_} -eq ${SHUNIT_TRUE} ]; then
     _shunit_msg_="${__shunit_ansi_green}OK${__shunit_ansi_none}"
-    command [ "${_shunit_skipped_}" -gt 0 ] \
-        && _shunit_msg_="${_shunit_msg_} (${__shunit_ansi_yellow}${_shunit_skipped_}${__shunit_ansi_none})"
+    command [ "${__shunit_assertsSkipped}" -gt 0 ] \
+        && _shunit_msg_="${_shunit_msg_} (${__shunit_ansi_yellow}skipped=${__shunit_assertsSkipped}${__shunit_ansi_none})"
   else
     _shunit_msg_="${__shunit_ansi_red}FAILED${__shunit_ansi_none}"
-    _shunit_msg_="${_shunit_msg_} (${__shunit_ansi_red}${_shunit_failures_}${__shunit_ansi_none}"
-    command [ "${_shunit_skipped_}" -gt 0 ] \
-        && _shunit_msg_="${_shunit_msg_},${__shunit_ansi_yellow}${_shunit_skipped_}${__shunit_ansi_none}"
+    _shunit_msg_="${_shunit_msg_} (${__shunit_ansi_red}failures=${__shunit_assertsFailed}${__shunit_ansi_none}"
+    command [ "${__shunit_assertsSkipped}" -gt 0 ] \
+        && _shunit_msg_="${_shunit_msg_},${__shunit_ansi_yellow}skipped=${__shunit_assertsSkipped}${__shunit_ansi_none}"
     _shunit_msg_="${_shunit_msg_})"
   fi
 
@@ -956,7 +1101,7 @@ _shunit_generateReport() {
   ${__SHUNIT_CMD_ECHO_ESC} "${_shunit_msg_}"
   __shunit_reportGenerated=${SHUNIT_TRUE}
 
-  unset _shunit_failures_ _shunit_msg_ _shunit_ok_ _shunit_skipped_
+  unset _shunit_msg_ _shunit_ok_
 }
 
 # Test for whether a function should be skipped.
@@ -1079,10 +1224,10 @@ _shunit_extractTestFunctions() {
 
   # Extract the lines with test function names, strip of anything besides the
   # function name, and output everything on a single line.
-  _shunit_regex_='^[ 	]*(function )*test[A-Za-z0-9_]* *\(\)'
+  _shunit_regex_='^\s*((function test[A-Za-z0-9_-]*)|(test[A-Za-z0-9_-]* *\(\)))'
   # shellcheck disable=SC2196
   egrep "${_shunit_regex_}" "${_shunit_script_}" \
-  |sed 's/^[^A-Za-z0-9_]*//;s/^function //;s/\([A-Za-z0-9_]*\).*/\1/g' \
+  |sed 's/^[^A-Za-z0-9_-]*//;s/^function //;s/\([A-Za-z0-9_-]*\).*/\1/g' \
   |xargs
 
   unset _shunit_regex_ _shunit_script_

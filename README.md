@@ -143,6 +143,14 @@ This function is functionally equivalent to `assertEquals`.
 
 This function is functionally equivalent to `assertNotEquals`.
 
+`assertContains [message] container content`
+
+Asserts that _container_ contains _content_. The _container_ and _content_ values can be either strings or integer values as both will be treated as strings. The _message_ is optional, and must be quoted.
+
+`assertNotContains [message] container content`
+
+Asserts that _container_ does not contain _content_. The _container_ and _content_ values can be either strings or integer values as both will be treaded as strings. The _message_ is optional, and must be quoted.
+
 `assertNull [message] value`
 
 Asserts that _value_ is _null_, or in shell terms, a zero-length string. The _value_ must be a string as an integer value does not translate into a zero-length string. The _message_ is optional, and must be quoted.
@@ -202,6 +210,18 @@ _Note: no actual comparison of expected and actual is done._
 Fails the test immediately, reporting that the _expected_ and _actual_ values are not the same. The _message_ is optional, and must be quoted.
 
 _Note: no actual comparison of expected and actual is done._
+
+`failFound [message] content`
+
+Fails the test immediately, reporting that the _content_ was found. The _message_ is optional, and must be quoted.
+
+_Note: no actual search of content is done._
+
+`failNotFound [message] content`
+
+Fails the test immediately, reporting that the _content_ was not found. The _message_ is optional, and must be quoted.
+
+_Note: no actual search of content is done._
 
 ### <a name="setup-teardown"></a> Setup/Teardown
 

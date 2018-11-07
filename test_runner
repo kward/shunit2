@@ -27,6 +27,8 @@ RUNNER_LOADED=0
 RUNNER_ARGV0=`basename "$0"`
 RUNNER_SHELLS='/bin/sh ash /bin/bash /bin/dash /bin/ksh /bin/pdksh /bin/zsh'
 RUNNER_TEST_SUFFIX='_test.sh'
+RUNNER_TRUE=0
+RUNNER_FALSE=1
 
 runner_warn() { echo "runner:WARN $*" >&2; }
 runner_error() { echo "runner:ERROR $*" >&2; }
@@ -114,6 +116,7 @@ for key in ${env}; do
 done
 
 # Run tests.
+runner_passing_=${RUNNER_TRUE}
 for shell in ${shells}; do
   echo
 
@@ -131,6 +134,7 @@ EOF
     case ${shell} in
       ash)
         shell_bin=`which busybox |grep -v '^no busybox'`
+        # shellcheck disable=SC2166
         [ $? -eq "${TRUE}" -a -n "${shell_bin}" ] && shell_present="${TRUE}"
         shell_bin="${shell_bin} ash"
         shell_name=${shell}
@@ -157,8 +161,11 @@ EOF
       # ${shell_bin} needs word splitting.
       #   shellcheck disable=SC2086
       ( exec ${shell_bin} "./${t}" 2>&1; )
+      test "${runner_passing_}" -eq ${RUNNER_TRUE} -a $? -eq ${RUNNER_TRUE}
+      runner_passing_=$?
     done
   done
+  return ${runner_passing_}
 }
 
 # Execute main() if this is run in standalone mode (i.e. not from a unit test).
