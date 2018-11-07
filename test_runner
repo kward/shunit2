@@ -3,7 +3,7 @@
 #
 # Unit test suite runner.
 #
-# Copyright 2008-2017 Kate Ward. All Rights Reserved.
+# Copyright 2008-2018 Kate Ward. All Rights Reserved.
 # Released under the Apache 2.0 license.
 #
 # Author: kate.ward@forestent.com (Kate Ward)
@@ -27,8 +27,8 @@ RUNNER_LOADED=0
 RUNNER_ARGV0=`basename "$0"`
 RUNNER_SHELLS='/bin/sh ash /bin/bash /bin/dash /bin/ksh /bin/pdksh /bin/zsh'
 RUNNER_TEST_SUFFIX='_test.sh'
-RUNNER_TRUE=0
-RUNNER_FALSE=1
+true; RUNNER_TRUE=$?
+false; RUNNER_FALSE=$?
 
 runner_warn() { echo "runner:WARN $*" >&2; }
 runner_error() { echo "runner:ERROR $*" >&2; }
@@ -130,21 +130,20 @@ EOF
     # Check for existence of shell.
     shell_bin=${shell}
     shell_name=''
-    shell_present=${FALSE}
+    shell_present=${RUNNER_FALSE}
     case ${shell} in
       ash)
-        shell_bin=`which busybox |grep -v '^no busybox'`
-        # shellcheck disable=SC2166
-        [ $? -eq "${TRUE}" -a -n "${shell_bin}" ] && shell_present="${TRUE}"
-        shell_bin="${shell_bin} ash"
+        shell_bin=`command -v busybox`
+        [ $? -eq "${RUNNER_TRUE}" ] && shell_present="${RUNNER_TRUE}"
+        shell_bin="${shell_bin:+${shell_bin} }ash"
         shell_name=${shell}
         ;;
       *)
-        [ -x "${shell_bin}" ] && shell_present="${TRUE}"
+        [ -x "${shell_bin}" ] && shell_present="${RUNNER_TRUE}"
         shell_name=`basename "${shell}"`
         ;;
     esac
-    if [ "${shell_present}" -eq "${FALSE}" ]; then
+    if [ "${shell_present}" -eq "${RUNNER_FALSE}" ]; then
       runner_warn "unable to run tests with the ${shell_name} shell"
       continue
     fi
