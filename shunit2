@@ -219,7 +219,7 @@ assertNotEquals() {
   if command [ "${shunit_expected_}" != "${shunit_actual_}" ]; then
     _shunit_assertPass
   else
-    failSame "${shunit_message_}" "$*"
+    failSame "${shunit_message_}" "$@"
     shunit_return=${SHUNIT_FALSE}
   fi
 
