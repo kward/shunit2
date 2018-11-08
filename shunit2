@@ -218,7 +218,7 @@ assertNotEquals() {
   if command [ "${shunit_expected_}" != "${shunit_actual_}" ]; then
     _shunit_assertPass
   else
-    failSame "${shunit_message_}" "$@"
+    failSame "${shunit_message_}" "$*"
     shunit_return=${SHUNIT_FALSE}
   fi
 
@@ -1071,7 +1071,7 @@ _shunit_execSuite() {
 _shunit_generateReport() {
   _shunit_ok_=${SHUNIT_TRUE}
 
-  # If no exit code was provided one, determine an appropriate one.
+  # If no exit code was provided, determine an appropriate one.
   command [ "${__shunit_testsFailed}" -gt 0 \
       -o ${__shunit_testSuccess} -eq ${SHUNIT_FALSE} ] \
           && _shunit_ok_=${SHUNIT_FALSE}
