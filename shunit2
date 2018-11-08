@@ -80,7 +80,8 @@ __SHUNIT_MODE_SOURCED='sourced'
 __SHUNIT_MODE_STANDALONE='standalone'
 __SHUNIT_PARENT=${SHUNIT_PARENT:-$0}
 
-# User provided test prefix -- define SHUNIT_TEST_PREFIX variable.
+# User provided test prefix to display in front of the name of the test being
+# executed. Define by setting the SHUNIT_TEST_PREFIX variable.
 __SHUNIT_TEST_PREFIX=${SHUNIT_TEST_PREFIX:-}
 
 # ANSI colors.
@@ -218,7 +219,7 @@ assertNotEquals() {
   if command [ "${shunit_expected_}" != "${shunit_actual_}" ]; then
     _shunit_assertPass
   else
-    failSame "${shunit_message_}" "$@"
+    failSame "${shunit_message_}" "$*"
     shunit_return=${SHUNIT_FALSE}
   fi
 
@@ -644,8 +645,7 @@ _FAIL_NOT_EQUALS_='eval failNotEquals --lineno "${LINENO:-}"'
 #   content: string: found value
 # Returns:
 #   integer: success (TRUE/FALSE/ERROR constant)
-failFound()
-{
+failFound() {
   # shellcheck disable=SC2090
   ${_SHUNIT_LINENO_}
   if command [ $# -lt 1 -o $# -gt 2 ]; then
@@ -1072,7 +1072,7 @@ _shunit_execSuite() {
 _shunit_generateReport() {
   _shunit_ok_=${SHUNIT_TRUE}
 
-  # If no exit code was provided one, determine an appropriate one.
+  # If no exit code was provided, determine an appropriate one.
   command [ "${__shunit_testsFailed}" -gt 0 \
       -o ${__shunit_testSuccess} -eq ${SHUNIT_FALSE} ] \
           && _shunit_ok_=${SHUNIT_FALSE}
