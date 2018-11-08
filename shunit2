@@ -1302,7 +1302,7 @@ else
   suite
 fi
 
-# If no tests specified defined, dynamically build a list of functions.
+# If no tests or suite specified, dynamically build a list of functions.
 if command [ -z "${__shunit_suite}" ]; then
   shunit_funcs_=`_shunit_extractTestFunctions "${__shunit_script}"`
   for shunit_func_ in ${shunit_funcs_}; do
