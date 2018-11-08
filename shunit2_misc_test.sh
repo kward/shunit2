@@ -41,7 +41,7 @@ testUnboundVariable() {
 #SHUNIT_COLOR='none'
 #. ${TH_SHUNIT}
 EOF
-  ( exec "${SHUNIT_SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" )
+  ( exec "${SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" )
   assertFalse 'expected a non-zero exit value' $?
   grep '^ASSERT:Unknown failure' "${stdoutF}" >/dev/null
   assertTrue 'assert message was not generated' $?
@@ -77,7 +77,7 @@ testIssue29() {
 #SHUNIT_TEST_PREFIX='--- '
 #. ${TH_SHUNIT}
 EOF
-  ( exec "${SHUNIT_SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" )
+  ( exec "${SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" )
   grep '^--- test_assert' "${stdoutF}" >/dev/null
   rtrn=$?
   assertEquals "${SHUNIT_TRUE}" "${rtrn}"
@@ -97,7 +97,7 @@ testIssue69() {
 #SHUNIT_COLOR='none'
 #. ${TH_SHUNIT}
 EOF
-    ( exec "${SHUNIT_SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" )
+    ( exec "${SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" )
     grep '^FAILED' "${stdoutF}" >/dev/null
     assertTrue "failure message for ${assert} was not generated" $?
   done
@@ -105,7 +105,7 @@ EOF
 
 # Ensure that test fails if setup/teardown functions fail.
 testIssue77() {
-	unittestF="${SHUNIT_TMPDIR}/unittest"
+  unittestF="${SHUNIT_TMPDIR}/unittest"
   for func in oneTimeSetUp setUp tearDown oneTimeTearDown; do
     sed 's/^#//' >"${unittestF}" <<EOF
 ## Environment failure should end test.
@@ -114,7 +114,7 @@ testIssue77() {
 #SHUNIT_COLOR='none'
 #. ${TH_SHUNIT}
 EOF
-    ( exec "${SHUNIT_SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" )
+    ( exec "${SHELL:-sh}" "${unittestF}" ) >"${stdoutF}" 2>"${stderrF}"
     grep '^FAILED' "${stdoutF}" >/dev/null
     assertTrue "failure of ${func}() did not end test" $?
   done
@@ -135,7 +135,7 @@ testIssue84() {
 #SHUNIT_TEST_PREFIX='--- '
 #. ${TH_SHUNIT}
 EOF
-  ( exec "${SHUNIT_SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" )
+  ( exec "${SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" )
   grep '^FAILED' "${stdoutF}" >/dev/null
   assertTrue "failure message for ${assert} was not generated" $?
 }

@@ -80,7 +80,8 @@ __SHUNIT_MODE_SOURCED='sourced'
 __SHUNIT_MODE_STANDALONE='standalone'
 __SHUNIT_PARENT=${SHUNIT_PARENT:-$0}
 
-# User provided test prefix -- define SHUNIT_TEST_PREFIX variable.
+# User provided test prefix to display in front of the name of the test being
+# executed. Define by setting the SHUNIT_TEST_PREFIX variable.
 __SHUNIT_TEST_PREFIX=${SHUNIT_TEST_PREFIX:-}
 
 # ANSI colors.
