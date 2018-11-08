@@ -1238,7 +1238,7 @@ _shunit_extractTestFunctions() {
 #
 
 # Determine the operating mode.
-if command [ $# -eq 0 -o "${1:-}" == '--' ]; then
+if command [ $# -eq 0 -o "${1:-}" = '--' ]; then
   __shunit_script=${__SHUNIT_PARENT}
   __shunit_mode=${__SHUNIT_MODE_SOURCED}
 else
