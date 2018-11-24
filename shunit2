@@ -987,6 +987,7 @@ _shunit_configureColor() {
     'auto')
       command [ "`_shunit_colors`" -ge 16 ] && _shunit_color_=${SHUNIT_TRUE}
       ;;
+    'never') ;;
     'none') ;;
     *) _shunit_fatal "unrecognized color option '$1'" ;;
   esac
