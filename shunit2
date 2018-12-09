@@ -985,7 +985,7 @@ _shunit_configureColor() {
   case $1 in
     'always') _shunit_color_=${SHUNIT_TRUE} ;;
     'auto')
-      command [ "`_shunit_colors`" -ge 16 ] && _shunit_color_=${SHUNIT_TRUE}
+      command [ "`_shunit_colors`" -ge 8 ] && _shunit_color_=${SHUNIT_TRUE}
       ;;
     'none') ;;
     *) _shunit_fatal "unrecognized color option '$1'" ;;
