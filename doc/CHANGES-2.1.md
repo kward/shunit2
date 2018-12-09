@@ -14,6 +14,9 @@ Issue #78. Added an example for using suite tests.
 
 Run continuous integration additionally against Ubuntu Trusty.
 
+Removed the `gen_test_report.sh` script as the Travis CI output can be used
+instead. Reports were used before Travis CI was used.
+
 ### Fixed
 
 Issue #84. Treat syntax errors in functions as test failures.
@@ -255,5 +258,7 @@ and the skip will be recorded.
 The report output format was changed to include the percentage for each test
 result, rather than just those successful.
 
+
+[travis_ci]: https://travis-ci.org/kward/shunit2
 
 .. vim:fileencoding=latin1:ft=text:spell:tw=80
