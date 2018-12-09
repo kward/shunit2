@@ -1,6 +1,10 @@
 # shUnit2
 
-shUnit2 is a [xUnit](http://en.wikipedia.org/wiki/XUnit) unit test framework for Bourne based shell scripts, and it is designed to work in a similar manner to [JUnit](http://www.junit.org), [PyUnit](http://pyunit.sourceforge.net), etc.. If you have ever had the desire to write a unit test for a shell script, shUnit2 can do the job.
+shUnit2 is a [xUnit](http://en.wikipedia.org/wiki/XUnit) unit test framework for
+Bourne based shell scripts, and it is designed to work in a similar manner to
+[JUnit](http://www.junit.org), [PyUnit](http://pyunit.sourceforge.net), etc.. If
+you have ever had the desire to write a unit test for a shell script, shUnit2
+can do the job.
 
 [![Travis CI](https://img.shields.io/travis/kward/shunit2.svg)](https://travis-ci.org/kward/shunit2)
 
@@ -26,18 +30,24 @@ shUnit2 is a [xUnit](http://en.wikipedia.org/wiki/XUnit) unit test framework for
   * [Zsh](#zsh)
 
 ---
+
 ## <a name="introduction"></a> Introduction
+
 shUnit2 was originally developed to provide a consistent testing solution for [log4sh][log4sh], a shell based logging framework similar to [log4j](http://logging.apache.org). During the development of that product, a repeated problem of having things work just fine under one shell (`/bin/bash` on Linux to be specific), and then not working under another shell (`/bin/sh` on Solaris) kept coming up. Although several simple tests were run, they were not adequate and did not catch some corner cases. The decision was finally made to write a proper unit test framework after multiple brown-bag releases were made. _Research was done to look for an existing product that met the testing requirements, but no adequate product was found._
 
-Tested Operating Systems (varies over time)
+### Tested software
 
-* Cygwin
-* FreeBSD (user supported)
-* Linux (Gentoo, Ubuntu)
-* Mac OS X
-* Solaris 8, 9, 10 (inc. OpenSolaris)
+**Tested Operating Systems** (varies over time)
 
-Tested Shells
+OS                                  | Support   | Verified
+----------------------------------- | --------- | --------
+Ubuntu Linux (14.04.05 LTS)         | Travis CI | continuous
+macOS High Sierra (10.13.3)         | Travis CI | continuous
+FreeBSD                             | user      | unknown
+Solaris 8, 9, 10 (inc. OpenSolaris) | user      | unknown
+Cygwin                              | user      | unknown
+
+**Tested Shells**
 
 * Bourne Shell (__sh__)
 * BASH - GNU Bourne Again SHell (__bash__)
@@ -49,16 +59,19 @@ Tested Shells
 See the appropriate Release Notes for this release (`doc/RELEASE_NOTES-X.X.X.txt`) for the list of actual versions tested.
 
 ### <a name="credits-contributors"></a> Credits / Contributors
+
 A list of contributors to shUnit2 can be found in `doc/contributors.md`. Many thanks go out to all those who have contributed to make this a better tool.
 
 shUnit2 is the original product of many hours of work by Kate Ward, the primary author of the code. For related software, check out https://github.com/kward.
 
 ### <a name="feedback"></a> Feedback
+
 Feedback is most certainly welcome for this document. Send your additions, comments and criticisms to the shunit2-users@google.com mailing list.
 
 ---
 
 ## <a name="quickstart"></a> Quickstart
+
 This section will give a very quick start to running unit tests with shUnit2. More information is located in later sections.
 
 Here is a quick sample script to show how easy it is to write a unit test in shell. _Note: the script as it stands expects that you are running it from the "examples" directory._
