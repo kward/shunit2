@@ -1,6 +1,5 @@
 # shUnit2 2.1.x Changes
 
-
 ## Changes with 2.1.8
 
 ### New
@@ -260,5 +259,3 @@ result, rather than just those successful.
 
 
 [travis_ci]: https://travis-ci.org/kward/shunit2
-
-.. vim:fileencoding=latin1:ft=text:spell:tw=80
