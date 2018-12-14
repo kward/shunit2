@@ -630,7 +630,12 @@ failNotEquals() {
   shunit_actual_=$2
 
   shunit_message_=${shunit_message_%% }
-  _shunit_assertFail "${shunit_message_:+${shunit_message_} }expected:<${shunit_expected_}> but was:<${shunit_actual_}>"
+  if command [ $(echo "${shunit_expected_}" | wc -l) -gt 10 ] || command [ $(echo "${shunit_actual_}" | wc -l) -gt 10 ]; then
+      diff_output_=$(diff <(echo "${shunit_expected_}") <(echo "${shunit_actual_}"))
+      _shunit_assertFail "${shunit_message_:+${shunit_message_} }diff:<${diff_output_}>"
+  else
+      _shunit_assertFail "${shunit_message_:+${shunit_message_} }expected:<${shunit_expected_}> but was:<${shunit_actual_}>"
+  fi
 
   unset shunit_message_ shunit_expected_ shunit_actual_
   return ${SHUNIT_FALSE}
