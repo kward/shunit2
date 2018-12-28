@@ -67,7 +67,9 @@ if command [ -n "${ZSH_VERSION:-}" ]; then
     _shunit_fatal 'zsh shwordsplit option is required for proper operation'
   fi
   if command [ -z "${SHUNIT_PARENT:-}" ]; then
-    SHUNIT_PARENT="$(setopt POSIX_ARGZERO; echo "$0")"
+    SHUNIT_PARENT="$(setopt POSIX_ARGZERO; echo "$0")" || _shunit_fatal \
+      "zsh does not pass \$0 through properly. please declare \
+\"SHUNIT_PARENT=\$0\" before calling shUnit2"
   fi
 fi
 
