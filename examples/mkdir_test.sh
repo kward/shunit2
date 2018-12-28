@@ -71,5 +71,4 @@ tearDown() {
 }
 
 # Load and run shUnit2.
-[ -n "${ZSH_VERSION:-}" ] && SHUNIT_PARENT=$0
 . ../shunit2

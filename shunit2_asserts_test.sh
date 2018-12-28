@@ -250,6 +250,4 @@ oneTimeSetUp() {
 }
 
 # Load and run shunit2.
-# shellcheck disable=SC2034
-[ -n "${ZSH_VERSION:-}" ] && SHUNIT_PARENT=$0
 . "${TH_SHUNIT}"

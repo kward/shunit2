@@ -260,6 +260,4 @@ oneTimeSetUp() {
 SHUNIT_COLOR='none'; export SHUNIT_COLOR
 
 # Load and run shUnit2.
-# shellcheck disable=SC2034
-[ -n "${ZSH_VERSION:-}" ] && SHUNIT_PARENT="$0"
 . "${TH_SHUNIT}"
