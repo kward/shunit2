@@ -256,7 +256,7 @@ assertContains() {
   shunit_content_=$2
 
   shunit_return=${SHUNIT_TRUE}
-  if echo "$shunit_container_" | grep -F "$shunit_content_" > /dev/null; then
+  if echo "$shunit_container_" | grep -F -- "$shunit_content_" > /dev/null; then
     _shunit_assertPass
   else
     failNotFound "${shunit_message_}" "${shunit_content_}"
@@ -296,7 +296,7 @@ assertNotContains() {
   shunit_content_=$2
 
   shunit_return=${SHUNIT_TRUE}
-  if echo "$shunit_container_" | grep -F "$shunit_content_" > /dev/null; then
+  if echo "$shunit_container_" | grep -F -- "$shunit_content_" > /dev/null; then
     failFound "${shunit_message_}" "${shunit_content_}"
     shunit_return=${SHUNIT_FALSE}
   else
