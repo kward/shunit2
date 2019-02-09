@@ -26,6 +26,7 @@ can do the job.
   * [Error Handling](#error-handling)
   * [Including Line Numbers in Asserts (Macros)](#including-line-numbers-in-asserts-macros)
   * [Test Skipping](#test-skipping)
+  * [Running specific tests from the command line](#cmd-line-args)
 * [Appendix](#appendix)
   * [Getting help](#getting-help)
   * [Zsh](#zsh)
@@ -574,6 +575,26 @@ Skipping can be controlled with the following functions: `startSkipping()`,
 enabled until the end of the current test function call, after which skipping is
 disabled.
 
+### <a name="cmd-line-args"></a> Running specific tests from the command line.
+
+When running a test script, you may override the default set of tests, or the suite-specified set of tests, by providing additional arguments on the command line.  Each additional argument after the `--` marker is assumed to be the name of a test function to be run in the order specified.  e.g.
+
+```console
+test-script.sh -- testOne testTwo otherFunction
+```
+
+or
+
+```console
+shunit2 test-script.sh testOne testTwo otherFunction
+```
+
+In either case, three functions will be run as tests, `testOne`, `testTwo`, and `otherFunction`.  Note that the function `otherFunction` would not normally be run by `shunit2` as part of the implicit collection of tests as it's function name does not match the test function name pattern `test*`.
+
+If a specified test function does not exist, `shunit2` will still attempt to run that function and thereby cause a failure which `shunit2` will catch and mark as a failed test.  All other tests will run normally.
+
+The specification of tests does not affect how `shunit2` looks for and executes the setup and tear down functions, which will still run as expected.
+
 ---
 
 ## <a name="appendix"></a> Appendix
@@ -593,23 +614,23 @@ For compatibility with Zsh, there is one requirement that must be met -- the
 1. In the unit-test script, add the following shell code snippet before sourcing
    the `shunit2` library.
 
-```sh
-setopt shwordsplit
-```
+   ```sh
+   setopt shwordsplit
+   ```
 
 2. When invoking __zsh__ from either the command-line or as a script with `#!`,
    add the `-y` parameter.
 
-```sh
-#! /bin/zsh -y
-```
+    ```sh
+    #! /bin/zsh -y
+    ```
 
 3. When invoking __zsh__ from the command-line, add `-o shwordsplit --` as
    parameters before the script name.
 
-```console
-$ zsh -o shwordsplit -- some_script
-```
+   ```console
+   $ zsh -o shwordsplit -- some_script
+   ```
 
 [log4sh]: https://github.com/kward/log4sh
 [shflags]: https://github.com/kward/shflags

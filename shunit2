@@ -1254,7 +1254,7 @@ _shunit_extractTestFunctions() {
 #
 
 # Determine the operating mode.
-if command [ $# -eq 0 ]; then
+if command [ $# -eq 0 -o "${1:-}" = '--' ]; then
   __shunit_script=${__SHUNIT_PARENT}
   __shunit_mode=${__SHUNIT_MODE_SOURCED}
 else
@@ -1301,11 +1301,24 @@ oneTimeSetUp
 command [ $? -eq ${SHUNIT_TRUE} ] \
     || _shunit_fatal "oneTimeSetUp() returned non-zero return code."
 
-# Execute the suite function defined in the parent test script.
-# DEPRECATED as of 2.1.0.
-suite
+# Command line selected tests or suite selected tests
+if command [ "$#" -ge 2 ]; then
+  # Argument $1 is either the filename of tests or '--'; either way, skip it.
+  shift
+  # Remaining arguments ($2 .. $#) are assumed to be test function names.
+  # Interate through all remaining args in "$@" in a POSIX (likely portable) way.
+  # Helpful tip: https://unix.stackexchange.com/questions/314032/how-to-use-arguments-like-1-2-in-a-for-loop
+  for _shunit_arg_ do
+    suite_addTest "${_shunit_arg_}"
+  done
+  unset _shunit_arg_
+else
+  # Execute the suite function defined in the parent test script.
+  # DEPRECATED as of 2.1.0.
+  suite
+fi
 
-# If no suite function was defined, dynamically build a list of functions.
+# If no tests or suite specified, dynamically build a list of functions.
 if command [ -z "${__shunit_suite}" ]; then
   shunit_funcs_=`_shunit_extractTestFunctions "${__shunit_script}"`
   for shunit_func_ in ${shunit_funcs_}; do
