@@ -118,6 +118,7 @@ __shunit_reportGenerated=${SHUNIT_FALSE}  # Is report generated.
 __shunit_script=''  # Filename of unittest script (standalone mode).
 __shunit_skip=${SHUNIT_FALSE}  # Is skipping enabled.
 __shunit_suite=''  # Suite of tests to execute.
+__shunit_clean=${SHUNIT_FALSE}  # _shunit_cleanup() was already called.
 
 # ANSI colors (populated by _shunit_configureColor()).
 __shunit_ansi_none=''
@@ -219,7 +220,7 @@ assertNotEquals() {
   if command [ "${shunit_expected_}" != "${shunit_actual_}" ]; then
     _shunit_assertPass
   else
-    failSame "${shunit_message_}" "$@"
+    failSame "${shunit_message_}" "${shunit_expected_}" "${shunit_actual_}"
     shunit_return=${SHUNIT_FALSE}
   fi
 
@@ -256,7 +257,7 @@ assertContains() {
   shunit_content_=$2
 
   shunit_return=${SHUNIT_TRUE}
-  if echo "$shunit_container_" | grep -F "$shunit_content_" > /dev/null; then
+  if echo "$shunit_container_" | grep -F -- "$shunit_content_" > /dev/null; then
     _shunit_assertPass
   else
     failNotFound "${shunit_message_}" "${shunit_content_}"
@@ -296,7 +297,7 @@ assertNotContains() {
   shunit_content_=$2
 
   shunit_return=${SHUNIT_TRUE}
-  if echo "$shunit_container_" | grep -F "$shunit_content_" > /dev/null; then
+  if echo "$shunit_container_" | grep -F -- "$shunit_content_" > /dev/null; then
     failFound "${shunit_message_}" "${shunit_content_}"
     shunit_return=${SHUNIT_FALSE}
   else
@@ -529,7 +530,7 @@ assertFalse() {
   # shellcheck disable=SC2090
   ${_SHUNIT_LINENO_}
   if command [ $# -lt 1 -o $# -gt 2 ]; then
-    _shunit_error "assertFalse() quires one or two arguments; $# given"
+    _shunit_error "assertFalse() requires one or two arguments; $# given"
     _shunit_assertFail
     return ${SHUNIT_ERROR}
   fi
@@ -947,28 +948,40 @@ EOF
 _shunit_cleanup() {
   _shunit_name_=$1
 
-  case ${_shunit_name_} in
-    EXIT) _shunit_signal_=0 ;;
-    INT) _shunit_signal_=2 ;;
-    TERM) _shunit_signal_=15 ;;
+  case "${_shunit_name_}" in
+    EXIT) ;;
+    INT) _shunit_signal_=130 ;;  # 2+128
+    TERM) _shunit_signal_=143 ;;  # 15+128
     *)
       _shunit_error "unrecognized trap value (${_shunit_name_})"
       _shunit_signal_=0
       ;;
   esac
-
-  # Do our work.
-  command rm -fr "${__shunit_tmpDir}"
-
-  # Exit for all non-EXIT signals.
   if command [ "${_shunit_name_}" != 'EXIT' ]; then
     _shunit_warn "trapped and now handling the (${_shunit_name_}) signal"
-    # Disable EXIT trap.
-    trap 0
-    # Add 128 to signal and exit.
-    exit "`expr "${_shunit_signal_}" + 128`"
-  elif command [ ${__shunit_reportGenerated} -eq ${SHUNIT_FALSE} ] ; then
-    _shunit_assertFail 'Unknown failure encountered running a test'
+  fi
+
+  # Do our work.
+  if command [ ${__shunit_clean} -eq ${SHUNIT_FALSE} ]; then
+    # Ensure tear downs are only called once.
+    __shunit_clean=${SHUNIT_TRUE}
+
+    tearDown
+    command [ $? -eq ${SHUNIT_TRUE} ] \
+        || _shunit_warn "tearDown() returned non-zero return code."
+    oneTimeTearDown
+    command [ $? -eq ${SHUNIT_TRUE} ] \
+        || _shunit_warn "oneTimeTearDown() returned non-zero return code."
+
+    command rm -fr "${__shunit_tmpDir}"
+  fi
+
+  if command [ "${_shunit_name_}" != 'EXIT' ]; then
+    # Handle all non-EXIT signals.
+    trap - 0  # Disable EXIT trap.
+    exit ${_shunit_signal_}
+  elif command [ ${__shunit_reportGenerated} -eq ${SHUNIT_FALSE} ]; then
+    _shunit_assertFail 'unknown failure encountered running a test'
     _shunit_generateReport
     exit ${SHUNIT_ERROR}
   fi
@@ -985,7 +998,7 @@ _shunit_configureColor() {
   case $1 in
     'always') _shunit_color_=${SHUNIT_TRUE} ;;
     'auto')
-      command [ "`_shunit_colors`" -ge 16 ] && _shunit_color_=${SHUNIT_TRUE}
+      command [ "`_shunit_colors`" -ge 8 ] && _shunit_color_=${SHUNIT_TRUE}
       ;;
     'none') ;;
     *) _shunit_fatal "unrecognized color option '$1'" ;;
@@ -1070,6 +1083,8 @@ _shunit_execSuite() {
 # Output:
 #   string: the report of successful and failed tests, as well as totals.
 _shunit_generateReport() {
+  command [ "${__shunit_reportGenerated}" -eq ${SHUNIT_TRUE} ] && return
+
   _shunit_ok_=${SHUNIT_TRUE}
 
   # If no exit code was provided, determine an appropriate one.

@@ -92,6 +92,9 @@ testAssertContains() {
   ( assertContains 'abcdef' 'def' >"${stdoutF}" 2>"${stderrF}" )
   th_assertTrueWithNoOutput 'found' $? "${stdoutF}" "${stderrF}"
 
+  ( assertContains 'abc -Xabc def' '-Xabc' >"${stdoutF}" 2>"${stderrF}" )
+  th_assertTrueWithNoOutput 'content starts with "-"' $? "${stdoutF}" "${stderrF}"
+
   ( assertContains "${MSG}" 'abcdef' 'abc' >"${stdoutF}" 2>"${stderrF}" )
   th_assertTrueWithNoOutput 'found, with msg' $? "${stdoutF}" "${stderrF}"
 

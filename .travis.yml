@@ -22,7 +22,7 @@ matrix:
     - os: linux
       script:
         # Run the source through ShellCheck (http://www.shellcheck.net).
-        - shellcheck gen_test_report.sh shunit2 *_test.sh
+        - shellcheck shunit2 *_test.sh
         - shellcheck -s sh shunit2_test_helpers
     - os: linux
       # Support Ubuntu Trusty through Apr 2019.

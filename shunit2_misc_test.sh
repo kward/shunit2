@@ -43,7 +43,7 @@ testUnboundVariable() {
 EOF
   ( exec "${SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" )
   assertFalse 'expected a non-zero exit value' $?
-  grep '^ASSERT:Unknown failure' "${stdoutF}" >/dev/null
+  grep '^ASSERT:unknown failure' "${stdoutF}" >/dev/null
   assertTrue 'assert message was not generated' $?
   grep '^Ran [0-9]* test' "${stdoutF}" >/dev/null
   assertTrue 'test count message was not generated' $?

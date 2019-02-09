@@ -1,8 +1,12 @@
 #!/bin/sh
 # vim:et:ft=sh:sts=2:sw=2
 #
-# Copyright 2008 Kate Ward. All Rights Reserved.
-# Released under the LGPL (GNU Lesser General Public License)
+# Copyright 2008-2019 Kate Ward. All Rights Reserved.
+# Released under the Apache 2.0 license.
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# shUnit2 -- Unit testing framework for Unix shell scripts.
+# https://github.com/kward/shunit2
 #
 # Author: kate.ward@forestent.com (Kate Ward)
 #
