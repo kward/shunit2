@@ -1,13 +1,16 @@
 #! /bin/sh
 # vim:et:ft=sh:sts=2:sw=2
 #
-# shUnit2 unit test for failure functions
+# Copyright 2008-2019 Kate Ward. All Rights Reserved.
+# Released under the Apache 2.0 license.
+# http://www.apache.org/licenses/LICENSE-2.0
 #
-# Copyright 2008-2017 Kate Ward. All Rights Reserved.
-# Released under the LGPL (GNU Lesser General Public License)
+# shUnit2 -- Unit testing framework for Unix shell scripts.
+# https://github.com/kward/shunit2
 #
 # Author: kate.ward@forestent.com (Kate Ward)
-# https://github.com/kward/shunit2
+#
+# shUnit2 unit test for failure functions
 #
 # Disable source following.
 #   shellcheck disable=SC1090,SC1091
