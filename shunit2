@@ -959,11 +959,11 @@ _shunit_cleanup() {
   esac
   if command [ "${_shunit_name_}" != 'EXIT' ]; then
     _shunit_warn "trapped and now handling the (${_shunit_name_}) signal"
-    _shunit_assertFail "recording trapped ${_shunit_name_} signal as a failure"
   fi
 
   # Do our work.
   if command [ ${__shunit_clean} -eq ${SHUNIT_FALSE} ]; then
+    # Ensure tear downs are only called once.
     __shunit_clean=${SHUNIT_TRUE}
 
     tearDown
@@ -976,15 +976,15 @@ _shunit_cleanup() {
     command rm -fr "${__shunit_tmpDir}"
   fi
 
-  # Handle all non-EXIT signals.
   if command [ "${_shunit_name_}" != 'EXIT' ]; then
+    # Handle all non-EXIT signals.
     trap - 0  # Disable EXIT trap.
     exit ${_shunit_signal_}
+  elif command [ ${__shunit_reportGenerated} -eq ${SHUNIT_FALSE} ]; then
+    _shunit_assertFail 'unknown failure encountered running a test'
+    _shunit_generateReport
+    exit ${SHUNIT_ERROR}
   fi
-
-  # Handle EXIT signal.
-  _shunit_generateReport
-  exit ${SHUNIT_ERROR}
 
   unset _shunit_name_ _shunit_signal_
 }
