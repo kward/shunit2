@@ -531,7 +531,7 @@ assertFalse() {
   # shellcheck disable=SC2090
   ${_SHUNIT_LINENO_}
   if command [ $# -lt 1 -o $# -gt 2 ]; then
-    _shunit_error "assertFalse() quires one or two arguments; $# given"
+    _shunit_error "assertFalse() requires one or two arguments; $# given"
     _shunit_assertFail
     return ${SHUNIT_ERROR}
   fi
