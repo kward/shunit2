@@ -118,6 +118,7 @@ __shunit_reportGenerated=${SHUNIT_FALSE}  # Is report generated.
 __shunit_script=''  # Filename of unittest script (standalone mode).
 __shunit_skip=${SHUNIT_FALSE}  # Is skipping enabled.
 __shunit_suite=''  # Suite of tests to execute.
+__shunit_clean=${SHUNIT_FALSE}  # _shunit_cleanup() was already called.
 
 # ANSI colors (populated by _shunit_configureColor()).
 __shunit_ansi_none=''
@@ -947,31 +948,45 @@ EOF
 _shunit_cleanup() {
   _shunit_name_=$1
 
-  case ${_shunit_name_} in
-    EXIT) _shunit_signal_=0 ;;
-    INT) _shunit_signal_=2 ;;
-    TERM) _shunit_signal_=15 ;;
+  case "${_shunit_name_}" in
+    EXIT) ;;
+    INT) _shunit_signal_=130 ;;  # 2+128
+    TERM) _shunit_signal_=143 ;;  # 15+128
     *)
       _shunit_error "unrecognized trap value (${_shunit_name_})"
       _shunit_signal_=0
       ;;
   esac
-
-  # Do our work.
-  command rm -fr "${__shunit_tmpDir}"
-
-  # Exit for all non-EXIT signals.
   if command [ "${_shunit_name_}" != 'EXIT' ]; then
     _shunit_warn "trapped and now handling the (${_shunit_name_}) signal"
-    # Disable EXIT trap.
-    trap 0
-    # Add 128 to signal and exit.
-    exit "`expr "${_shunit_signal_}" + 128`"
-  elif command [ ${__shunit_reportGenerated} -eq ${SHUNIT_FALSE} ] ; then
-    _shunit_assertFail 'Unknown failure encountered running a test'
-    _shunit_generateReport
-    exit ${SHUNIT_ERROR}
+    _shunit_assertFail "recording trapped ${_shunit_name_} signal as a failure"
   fi
+
+  # Do our work.
+  if command [ ${__shunit_clean} -eq ${SHUNIT_FALSE} ]; then
+    __shunit_clean=${SHUNIT_TRUE}
+
+    tearDown
+    command [ $? -eq ${SHUNIT_TRUE} ] \
+        || _shunit_warn "tearDown() returned non-zero return code."
+    oneTimeTearDown
+    command [ $? -eq ${SHUNIT_TRUE} ] \
+        || _shunit_warn "oneTimeTearDown() returned non-zero return code."
+
+    command rm -fr "${__shunit_tmpDir}"
+  fi
+
+  # Handle all non-EXIT signals.
+  if command [ "${_shunit_name_}" != 'EXIT' ]; then
+    trap - 0  # Disable EXIT trap.
+    exit ${_shunit_signal_}
+  fi
+
+  # Handle EXIT signal.
+  if command [ ${__shunit_reportGenerated} -eq ${SHUNIT_FALSE} ]; then
+    _shunit_generateReport
+  fi
+  exit ${SHUNIT_ERROR}
 
   unset _shunit_name_ _shunit_signal_
 }
