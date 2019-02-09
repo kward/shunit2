@@ -983,9 +983,7 @@ _shunit_cleanup() {
   fi
 
   # Handle EXIT signal.
-  if command [ ${__shunit_reportGenerated} -eq ${SHUNIT_FALSE} ]; then
-    _shunit_generateReport
-  fi
+  _shunit_generateReport
   exit ${SHUNIT_ERROR}
 
   unset _shunit_name_ _shunit_signal_
@@ -1085,6 +1083,8 @@ _shunit_execSuite() {
 # Output:
 #   string: the report of successful and failed tests, as well as totals.
 _shunit_generateReport() {
+  command [ "${__shunit_reportGenerated}" -eq ${SHUNIT_TRUE} ] && return
+
   _shunit_ok_=${SHUNIT_TRUE}
 
   # If no exit code was provided, determine an appropriate one.
