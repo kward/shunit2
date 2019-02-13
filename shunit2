@@ -966,14 +966,6 @@ _shunit_cleanup() {
   if command [ ${__shunit_clean} -eq ${SHUNIT_FALSE} ]; then
     # Ensure tear downs are only called once.
     __shunit_clean=${SHUNIT_TRUE}
-
-    tearDown
-    command [ $? -eq ${SHUNIT_TRUE} ] \
-        || _shunit_warn "tearDown() returned non-zero return code."
-    oneTimeTearDown
-    command [ $? -eq ${SHUNIT_TRUE} ] \
-        || _shunit_warn "oneTimeTearDown() returned non-zero return code."
-
     command rm -fr "${__shunit_tmpDir}"
   fi
 
