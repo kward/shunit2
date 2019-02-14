@@ -376,22 +376,22 @@ testTooManyArguments() {
 }
 
 testAssertFileExists() {
-  ( assertFileExists $TH_EXISTING_FILE >"${stdoutF}" 2>"${stderrF}" )
+  ( assertFileExists "$TH_EXISTING_FILE" >"${stdoutF}" 2>"${stderrF}" )
   th_assertTrueWithNoOutput 'file exists' $? "${stdoutF}" "${stderrF}"
 
-  ( assertFileExists "${MSG}" $TH_EXISTING_FILE >"${stdoutF}" 2>"${stderrF}" )
+  ( assertFileExists "${MSG}" "$TH_EXISTING_FILE" >"${stdoutF}" 2>"${stderrF}" )
   th_assertTrueWithNoOutput 'file exists, with msg' $? "${stdoutF}" "${stderrF}"
 
-  ( assertFileExists $TH_NON_EXISTING_FILE >"${stdoutF}" 2>"${stderrF}" )
+  ( assertFileExists "$TH_NON_EXISTING_FILE"  >"${stdoutF}" 2>"${stderrF}" )
   th_assertFalseWithOutput 'file does not exist' $? "${stdoutF}" "${stderrF}"
 
-  ( assertFileExists "${MSG}" $TH_NON_EXISTING_FILE >"${stdoutF}" 2>"${stderrF}" )
+  ( assertFileExists "${MSG}" "$TH_NON_EXISTING_FILE"  >"${stdoutF}" 2>"${stderrF}" )
   th_assertFalseWithOutput 'file does not exist, with msg' $? "${stdoutF}" "${stderrF}"
 
-  ( assertFileExists $TH_EXISTING_DIRECTORY >"${stdoutF}" 2>"${stderrF}" )
+  ( assertFileExists "$TH_EXISTING_DIRECTORY"  >"${stdoutF}" 2>"${stderrF}" )
   th_assertFalseWithOutput 'directory exists' $? "${stdoutF}" "${stderrF}"
 
-  ( assertFileExists "${MSG}" $TH_EXISTING_DIRECTORY >"${stdoutF}" 2>"${stderrF}" )
+  ( assertFileExists "${MSG}" "$TH_EXISTING_DIRECTORY"  >"${stdoutF}" 2>"${stderrF}" )
   th_assertFalseWithOutput 'directory exists, with msg' $? "${stdoutF}" "${stderrF}"
 
   ( assertFileExists >"${stdoutF}" 2>"${stderrF}" )
@@ -402,22 +402,22 @@ testAssertFileExists() {
 }
 
 testAssertFileDoesNotExist() {
-  ( assertFileDoesNotExist $TH_NON_EXISTING_FILE >"${stdoutF}" 2>"${stderrF}" )
+  ( assertFileDoesNotExist "$TH_NON_EXISTING_FILE"  >"${stdoutF}" 2>"${stderrF}" )
   th_assertTrueWithNoOutput 'file does not exist' $? "${stdoutF}" "${stderrF}"
 
-  ( assertFileDoesNotExist "${MSG}" $TH_NON_EXISTING_FILE >"${stdoutF}" 2>"${stderrF}" )
+  ( assertFileDoesNotExist "${MSG}" "$TH_NON_EXISTING_FILE"  >"${stdoutF}" 2>"${stderrF}" )
   th_assertTrueWithNoOutput 'file does not exist, with msg' $? "${stdoutF}" "${stderrF}"
 
-  ( assertFileDoesNotExist $TH_EXISTING_FILE >"${stdoutF}" 2>"${stderrF}" )
+  ( assertFileDoesNotExist "$TH_EXISTING_FILE" >"${stdoutF}" 2>"${stderrF}" )
   th_assertFalseWithOutput 'file exists' $? "${stdoutF}" "${stderrF}"
 
-  ( assertFileDoesNotExist "${MSG}" $TH_EXISTING_FILE >"${stdoutF}" 2>"${stderrF}" )
+  ( assertFileDoesNotExist "${MSG}" "$TH_EXISTING_FILE" >"${stdoutF}" 2>"${stderrF}" )
   th_assertFalseWithOutput 'file exists, with msg' $? "${stdoutF}" "${stderrF}"
 
-  ( assertFileDoesNotExist $TH_EXISTING_DIRECTORY >"${stdoutF}" 2>"${stderrF}" )
+  ( assertFileDoesNotExist "$TH_EXISTING_DIRECTORY"  >"${stdoutF}" 2>"${stderrF}" )
   th_assertTrueWithNoOutput 'directory exists' $? "${stdoutF}" "${stderrF}"
 
-  ( assertFileDoesNotExist "${MSG}" $TH_EXISTING_DIRECTORY >"${stdoutF}" 2>"${stderrF}" )
+  ( assertFileDoesNotExist "${MSG}" "$TH_EXISTING_DIRECTORY"  >"${stdoutF}" 2>"${stderrF}" )
   th_assertTrueWithNoOutput 'directory exists, with msg' $? "${stdoutF}" "${stderrF}"
 
   ( assertFileDoesNotExist >"${stdoutF}" 2>"${stderrF}" )
@@ -428,22 +428,22 @@ testAssertFileDoesNotExist() {
 }
 
 testAssertDirectoryExists() {
-  ( assertDirectoryExists $TH_EXISTING_DIRECTORY >"${stdoutF}" 2>"${stderrF}" )
+  ( assertDirectoryExists "$TH_EXISTING_DIRECTORY"  >"${stdoutF}" 2>"${stderrF}" )
   th_assertTrueWithNoOutput 'directory exists' $? "${stdoutF}" "${stderrF}"
 
-  ( assertDirectoryExists "${MSG}" $TH_EXISTING_DIRECTORY >"${stdoutF}" 2>"${stderrF}" )
+  ( assertDirectoryExists "${MSG}" "$TH_EXISTING_DIRECTORY"  >"${stdoutF}" 2>"${stderrF}" )
   th_assertTrueWithNoOutput 'directory exists, with msg' $? "${stdoutF}" "${stderrF}"
 
-  ( assertDirectoryExists $TH_NON_EXISTING_DIRECTORY >"${stdoutF}" 2>"${stderrF}" )
+  ( assertDirectoryExists "$TH_NON_EXISTING_DIRECTORY"  >"${stdoutF}" 2>"${stderrF}" )
   th_assertFalseWithOutput 'directory does not exist' $? "${stdoutF}" "${stderrF}"
 
-  ( assertDirectoryExists "${MSG}" $TH_NON_EXISTING_DIRECTORY >"${stdoutF}" 2>"${stderrF}" )
+  ( assertDirectoryExists "${MSG}" "$TH_NON_EXISTING_DIRECTORY"  >"${stdoutF}" 2>"${stderrF}" )
   th_assertFalseWithOutput 'directory does not exist, with msg' $? "${stdoutF}" "${stderrF}"
 
-  ( assertDirectoryExists $TH_EXISTING_FILE >"${stdoutF}" 2>"${stderrF}" )
+  ( assertDirectoryExists "$TH_EXISTING_FILE" >"${stdoutF}" 2>"${stderrF}" )
   th_assertFalseWithOutput 'file exists' $? "${stdoutF}" "${stderrF}"
 
-  ( assertDirectoryExists "${MSG}" $TH_EXISTING_FILE >"${stdoutF}" 2>"${stderrF}" )
+  ( assertDirectoryExists "${MSG}" "$TH_EXISTING_FILE" >"${stdoutF}" 2>"${stderrF}" )
   th_assertFalseWithOutput 'file exists, with msg' $? "${stdoutF}" "${stderrF}"
 
   ( assertDirectoryExists >"${stdoutF}" 2>"${stderrF}" )
@@ -454,22 +454,22 @@ testAssertDirectoryExists() {
 }
 
 testAssertDirectoryDoesNotExist() {
-  ( assertDirectoryDoesNotExist $TH_NON_EXISTING_DIRECTORY >"${stdoutF}" 2>"${stderrF}" )
+  ( assertDirectoryDoesNotExist "$TH_NON_EXISTING_DIRECTORY"  >"${stdoutF}" 2>"${stderrF}" )
   th_assertTrueWithNoOutput 'directory does not exist' $? "${stdoutF}" "${stderrF}"
 
-  ( assertDirectoryDoesNotExist "${MSG}" $TH_NON_EXISTING_DIRECTORY >"${stdoutF}" 2>"${stderrF}" )
+  ( assertDirectoryDoesNotExist "${MSG}" "$TH_NON_EXISTING_DIRECTORY"  >"${stdoutF}" 2>"${stderrF}" )
   th_assertTrueWithNoOutput 'directory does not exist, with msg' $? "${stdoutF}" "${stderrF}"
 
-  ( assertDirectoryDoesNotExist $TH_EXISTING_DIRECTORY >"${stdoutF}" 2>"${stderrF}" )
+  ( assertDirectoryDoesNotExist "$TH_EXISTING_DIRECTORY"  >"${stdoutF}" 2>"${stderrF}" )
   th_assertFalseWithOutput 'directory exists' $? "${stdoutF}" "${stderrF}"
 
-  ( assertDirectoryDoesNotExist "${MSG}" $TH_EXISTING_DIRECTORY >"${stdoutF}" 2>"${stderrF}" )
+  ( assertDirectoryDoesNotExist "${MSG}" "$TH_EXISTING_DIRECTORY"  >"${stdoutF}" 2>"${stderrF}" )
   th_assertFalseWithOutput 'directory exists, with msg' $? "${stdoutF}" "${stderrF}"
 
-  ( assertDirectoryDoesNotExist $TH_EXISTING_FILE >"${stdoutF}" 2>"${stderrF}" )
+  ( assertDirectoryDoesNotExist "$TH_EXISTING_FILE" >"${stdoutF}" 2>"${stderrF}" )
   th_assertTrueWithNoOutput 'file exists' $? "${stdoutF}" "${stderrF}"
 
-  ( assertDirectoryDoesNotExist "${MSG}" $TH_EXISTING_FILE >"${stdoutF}" 2>"${stderrF}" )
+  ( assertDirectoryDoesNotExist "${MSG}" "$TH_EXISTING_FILE" >"${stdoutF}" 2>"${stderrF}" )
   th_assertTrueWithNoOutput 'file exists, with msg' $? "${stdoutF}" "${stderrF}"
 
   ( assertDirectoryDoesNotExist >"${stdoutF}" 2>"${stderrF}" )
