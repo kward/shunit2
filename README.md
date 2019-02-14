@@ -240,6 +240,28 @@ Asserts that _value_ is _not null_, or in shell terms, a non-empty string. The
 _value_ may be a string or an integer as the later will be parsed as a non-empty
 string value. The _message_ is optional, and must be quoted.
 
+    assertFileExists [message] file_path
+
+Asserts that _file_path_ is a regular file (tested with `-f`). The _file_path_
+must be a string. The _message_ is optional, and must be quoted.
+
+    assertFileDoesNotExist [message] file_path
+
+Asserts that _file_path_ is not a regular file (tested with `-f`). The
+_file_path_ must be a string. The _message_ is optional, and must be quoted.
+
+    assertDirectoryExists [message] directory_path
+
+Asserts that _directory_path_ is a regular directory (tested with `-d`). The
+_directory_path_ must be a string. The _message_ is optional, and must be
+quoted.
+
+    assertDirectoryDoesNotExist [message] directory_path
+
+Asserts that _directory_path_ is not a regular directory (tested with `-d`).
+The _directory_path_ must be a string. The _message_ is optional, and must be
+quoted.
+
     assertTrue [message] condition
 
 Asserts that a given shell test _condition_ is _true_. The condition can be as

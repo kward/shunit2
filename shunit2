@@ -608,6 +608,170 @@ assertFalse() {
 # shellcheck disable=SC2016,SC2034
 _ASSERT_FALSE_='eval assertFalse --lineno "${LINENO:-}"'
 
+# Assert that a file exists.
+#
+# Args:
+#   message: string: failure message [optional]
+#   file: string: path of the file
+# Returns:
+#   integer: success (TRUE/FALSE/ERROR constant)
+assertFileExists() {
+  # shellcheck disable=SC2090
+  ${_SHUNIT_LINENO_}
+  if command [ $# -lt 1 -o $# -gt 2 ]; then
+    _shunit_error "assertFileExists() requires one or two arguments; $# given"
+    _shunit_assertFail
+    return ${SHUNIT_ERROR}
+  fi
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
+  shunit_message_=${__shunit_lineno}
+  if command [ $# -eq 2 ]; then
+    shunit_custom_message_=$1
+    shunit_file_=$2
+    shunit_message_="${shunit_message_}$shunit_custom_message_"
+  else
+    shunit_file_=$1
+    shunit_message_="${shunit_message_}The file '$shunit_file_' does not exist"
+  fi
+
+  shunit_return=${SHUNIT_TRUE}
+  if command [ -f "$shunit_file_" ]; then
+    _shunit_assertPass
+  else
+    fail "${shunit_message_}"
+    shunit_return=${SHUNIT_FALSE}
+  fi
+
+  unset shunit_message_ shunit_file_
+  return ${shunit_return}
+}
+# shellcheck disable=SC2016,SC2034
+_ASSERT_FILE_EXISTS_='eval assertFileExists --lineno "${LINENO:-}"'
+
+# Assert that a file does not exist.
+#
+# Args:
+#   message: string: failure message [optional]
+#   file: string: path of the file
+# Returns:
+#   integer: success (TRUE/FALSE/ERROR constant)
+assertFileDoesNotExist() {
+  # shellcheck disable=SC2090
+  ${_SHUNIT_LINENO_}
+  if command [ $# -lt 1 -o $# -gt 2 ]; then
+    _shunit_error "assertFileDoesNotExists() requires one or two arguments; $# given"
+    _shunit_assertFail
+    return ${SHUNIT_ERROR}
+  fi
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
+  shunit_message_=${__shunit_lineno}
+  if command [ $# -eq 2 ]; then
+    shunit_custom_message_=$1
+    shunit_file_=$2
+    shunit_message_="${shunit_message_}$shunit_custom_message_"
+  else
+    shunit_file_=$1
+    shunit_message_="${shunit_message_}The file '$shunit_file_' does exist"
+  fi
+
+  shunit_return=${SHUNIT_TRUE}
+  if command [ -f "$shunit_file_" ]; then
+    fail "${shunit_message_}"
+    shunit_return=${SHUNIT_FALSE}
+  else
+    _shunit_assertPass
+  fi
+
+  unset shunit_message_ shunit_file_
+  return ${shunit_return}
+}
+# shellcheck disable=SC2016,SC2034
+_ASSERT_FILE_DOES_NOT_EXIST_='eval assertFileDoesNotExists --lineno "${LINENO:-}"'
+
+# Assert that a directory exists.
+#
+# Args:
+#   message: string: failure message [optional]
+#   directory: string: path of the directory
+# Returns:
+#   integer: success (TRUE/FALSE/ERROR constant)
+assertDirectoryExists() {
+  # shellcheck disable=SC2090
+  ${_SHUNIT_LINENO_}
+  if command [ $# -lt 1 -o $# -gt 2 ]; then
+    _shunit_error "assertDirectoryExists() requires one or two arguments; $# given"
+    _shunit_assertFail
+    return ${SHUNIT_ERROR}
+  fi
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
+  shunit_message_=${__shunit_lineno}
+  if command [ $# -eq 2 ]; then
+    shunit_custom_message_=$1
+    shunit_directory_=$2
+    shunit_message_="${shunit_message_}$shunit_custom_message_"
+  else
+    shunit_directory_=$1
+    shunit_message_="${shunit_message_}The directory '$shunit_directory_' does not exist"
+  fi
+
+  shunit_return=${SHUNIT_TRUE}
+  if command [ -d "$shunit_directory_" ]; then
+    _shunit_assertPass
+  else
+    fail "${shunit_message_}"
+    shunit_return=${SHUNIT_FALSE}
+  fi
+
+  unset shunit_message_ shunit_directory_
+  return ${shunit_return}
+}
+# shellcheck disable=SC2016,SC2034
+_ASSERT_DIRECTORY_EXISTS_='eval assertDirectoryExists --lineno "${LINENO:-}"'
+
+# Assert that a directory does not exist.
+#
+# Args:
+#   message: string: failure message [optional]
+#   directory: string: path of the directory
+# Returns:
+#   integer: success (TRUE/FALSE/ERROR constant)
+assertDirectoryDoesNotExist() {
+  # shellcheck disable=SC2090
+  ${_SHUNIT_LINENO_}
+  if command [ $# -lt 1 -o $# -gt 2 ]; then
+    _shunit_error "assertDirectoryDoesNotExist() requires one or two arguments; $# given"
+    _shunit_assertFail
+    return ${SHUNIT_ERROR}
+  fi
+  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+
+  shunit_message_=${__shunit_lineno}
+  if command [ $# -eq 2 ]; then
+    shunit_custom_message_=$1
+    shunit_directory_=$2
+    shunit_message_="${shunit_message_}$shunit_custom_message_"
+  else
+    shunit_directory_=$1
+    shunit_message_="${shunit_message_}The directory '$shunit_directory_' does exist"
+  fi
+
+  shunit_return=${SHUNIT_TRUE}
+  if command [ -d "$shunit_directory_" ]; then
+    fail "${shunit_message_}"
+    shunit_return=${SHUNIT_FALSE}
+  else
+    _shunit_assertPass
+  fi
+
+  unset shunit_message_ shunit_directory_
+  return ${shunit_return}
+}
+# shellcheck disable=SC2016,SC2034
+_ASSERT_DIRECTORY_DOES_NOT_EXIST_='eval assertDirectoryDoesNotExist --lineno "${LINENO:-}"'
+
 #-----------------------------------------------------------------------------
 # Failure functions.
 #
