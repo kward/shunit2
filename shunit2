@@ -630,14 +630,16 @@ failNotEquals() {
   shunit_actual_=$2
 
   shunit_message_=${shunit_message_%% }
-  if command [ $(echo "${shunit_expected_}" | wc -l) -gt 10 ] || command [ $(echo "${shunit_actual_}" | wc -l) -gt 10 ]; then
-      diff_output_=$(diff <(echo "${shunit_expected_}") <(echo "${shunit_actual_}"))
-      _shunit_assertFail "${shunit_message_:+${shunit_message_} }diff:<${diff_output_}>"
+  if command [ "$(echo "${shunit_expected_}" | wc -l)" -gt 10 ] \
+    || command [ "$(echo "${shunit_actual_}" | wc -l)" -gt 10 ];
+    then
+      shunit_diff_=$(diff <(echo "${shunit_expected_}") <(echo "${shunit_actual_}"))
+      _shunit_assertFail "${shunit_message_:+${shunit_message_} }diff:<${shunit_diff_}>"
   else
       _shunit_assertFail "${shunit_message_:+${shunit_message_} }expected:<${shunit_expected_}> but was:<${shunit_actual_}>"
   fi
 
-  unset shunit_message_ shunit_expected_ shunit_actual_
+  unset shunit_message_ shunit_expected_ shunit_actual_ shunit_diff_
   return ${SHUNIT_FALSE}
 }
 # shellcheck disable=SC2016,SC2034
