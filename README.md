@@ -62,9 +62,9 @@ Cygwin                              | user      | unknown
 
 * Bourne Shell (__sh__)
 * BASH - GNU Bourne Again SHell (__bash__)
-* DASH (__dash__)
-* Korn Shell (__ksh__)
-* pdksh - Public Domain Korn Shell (__pdksh__)
+* DASH - Debian Almquist Shell (__dash__)
+* Korn Shell - AT&T version of the Korn shell (__ksh__)
+* mksh - MirBSD Korn Shell (__mksh__)
 * zsh - Zsh (__zsh__) (since 2.1.2) _please see the Zsh shell errata for more information_
 
 See the appropriate Release Notes for this release
@@ -479,7 +479,7 @@ Notes:
 
 1. Line numbers are not supported in all shells. If a shell does not support
    them, no errors will be thrown. Supported shells include: __bash__ (>=3.0),
-   __ksh__, __pdksh__, and __zsh__.
+   __ksh__, __mksh__, and __zsh__.
 
 ### <a name="test-skipping"></a> Test Skipping
 
