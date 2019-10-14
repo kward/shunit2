@@ -106,7 +106,7 @@ testEquality() {
 }
 
 # Load shUnit2.
-. ./shunit2
+. ../shunit2
 ```
 
 Running the unit test should give results similar to the following.
@@ -168,7 +168,7 @@ testPartyLikeItIs1999() {
 }
 
 # Load shUnit2.
-. ./shunit2
+. ../shunit2
 ```
 
 So, what did you get? I guess it told you that this isn't 1999. Bummer, eh?
@@ -183,6 +183,15 @@ ton more examples, take a look at the tests provided with [log4sh][log4sh] or
 [shFlags][shflags]. Both provide excellent examples of more advanced usage.
 shUnit2 was after all written to meet the unit testing need that
 [log4sh][log4sh] had.
+
+If you are using distribution packaged shUnit2 which is accessible from
+`/usr/bin/shunit2` such as Debian, you can load shUnit2 without specifying its
+path.  So the last 2 lines in the above can be replaced by:
+
+```sh
+# Load shUnit2.
+. shunit2
+```
 
 ---
 
@@ -460,7 +469,7 @@ testLineNo() {
 }
 
 # Load shUnit2.
-. ./shunit2
+. ../shunit2
 ```
 
 Notes:
@@ -540,7 +549,7 @@ oneTimeSetUp() {
 }
 
 # Load and run shUnit2.
-. ./shunit2
+. ../shunit2
 ```
 
 Running the above test under the __bash__ shell will result in the following
