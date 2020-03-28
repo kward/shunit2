@@ -19,7 +19,7 @@
 #   shellcheck disable=SC2003
 
 # Return if shunit2 already loaded.
-command [ -n "${SHUNIT_VERSION:-}" ] && exit 0
+(command [ -n "${SHUNIT_VERSION:-}" ]) && exit 0
 SHUNIT_VERSION='2.1.8pre'
 
 # Return values that scripts can use.
@@ -45,7 +45,7 @@ _shunit_fatal() {
 # Determine some reasonable command defaults.
 __SHUNIT_CMD_ECHO_ESC='echo -e'
 # shellcheck disable=SC2039
-command [ "`echo -e test`" = '-e test' ] && __SHUNIT_CMD_ECHO_ESC='echo'
+(command [ "`echo -e test`" = '-e test' ]) && __SHUNIT_CMD_ECHO_ESC='echo'
 
 __SHUNIT_UNAME_S=`uname -s`
 case "${__SHUNIT_UNAME_S}" in
