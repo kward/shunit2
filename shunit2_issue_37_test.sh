@@ -31,16 +31,12 @@
 # Enable the -e shell option.
 set -e
 
-# These variables will be overridden by the test helpers.
-stdoutF="${TMPDIR:-/tmp}/STDOUT"
-stderrF="${TMPDIR:-/tmp}/STDERR"
-
 # Load test helpers.
 . ./shunit2_test_helpers
 
 testIssue37() {
-	assertTrue ${SHUNIT_TRUE}
-	assertFalse ${SHUNIT_FALSE}
+	assertTrue 0
+	assertFalse 1
 }
 
 oneTimeSetUp() {
