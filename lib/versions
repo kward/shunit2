@@ -18,7 +18,7 @@
 
 ARGV0=`basename "$0"`
 LSB_RELEASE='/etc/lsb-release'
-VERSIONS_SHELLS='ash /bin/bash /bin/dash /bin/ksh /bin/mksh /bin/pdksh /bin/zsh /bin/sh /usr/xpg4/bin/sh /sbin/sh'
+VERSIONS_SHELLS='ash /bin/bash /bin/dash /bin/ksh /bin/mksh /bin/pdksh /bin/zsh /usr/xpg4/bin/sh /bin/sh /sbin/sh'
 
 true; TRUE=$?
 false; FALSE=$?
@@ -205,6 +205,7 @@ versions_shell_ksh() {
     versions_version_=''
   fi
   if [ -z "${versions_version_}" ]; then
+    # shellcheck disable=SC2016
     versions_version_=`${versions_shell_} -c 'echo ${KSH_VERSION}'`
   fi
   if [ -z "${versions_version_}" ]; then
