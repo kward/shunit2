@@ -948,13 +948,13 @@ EOF
 _shunit_cleanup() {
   _shunit_name_=$1
 
+  _shunit_signal_=0
   case "${_shunit_name_}" in
     EXIT) ;;
     INT) _shunit_signal_=130 ;;  # 2+128
     TERM) _shunit_signal_=143 ;;  # 15+128
     *)
       _shunit_error "unrecognized trap value (${_shunit_name_})"
-      _shunit_signal_=0
       ;;
   esac
   if (command [ "${_shunit_name_}" != 'EXIT' ]); then
