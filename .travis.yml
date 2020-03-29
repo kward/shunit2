@@ -27,3 +27,10 @@ matrix:
     - os: linux
       # Support Ubuntu Trusty through Apr 2019.
       dist: trusty
+
+branches:
+  only:
+  - master
+  - 2.1.x
+  # Tags, e.g. v.2.1.8.
+  - /^v\d+\.\d+(\.\d+)?(-\S*)?$/
