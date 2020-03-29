@@ -3,7 +3,7 @@
 #
 # Versions determines the versions of all installed shells.
 #
-# Copyright 2008-2018 Kate Ward. All Rights Reserved.
+# Copyright 2008-2020 Kate Ward. All Rights Reserved.
 # Released under the Apache 2.0 License.
 #
 # Author: kate.ward@forestent.com (Kate Ward)
@@ -18,7 +18,7 @@
 
 ARGV0=`basename "$0"`
 LSB_RELEASE='/etc/lsb-release'
-VERSIONS_SHELLS='ash /bin/bash /bin/dash /bin/ksh /bin/pdksh /bin/zsh /bin/sh /usr/xpg4/bin/sh /sbin/sh'
+VERSIONS_SHELLS='ash /bin/bash /bin/dash /bin/ksh /bin/mksh /bin/pdksh /bin/zsh /bin/sh /usr/xpg4/bin/sh /sbin/sh'
 
 true; TRUE=$?
 false; FALSE=$?
@@ -50,6 +50,7 @@ versions_osName() {
         10.12|10.12.[0-9]*) os_name_='macOS Sierra' ;;
         10.13|10.13.[0-9]*) os_name_='macOS High Sierra' ;;
         10.14|10.14.[0-9]*) os_name_='macOS Mojave' ;;
+        10.15|10.15.[0-9]*) os_name_='macOS Catalina' ;;
         *) os_name_='macOS' ;;
       esac
       ;;
@@ -134,10 +135,11 @@ versions_shellVersion() {
 
   version_=''
   case ${shell_} in
-    /sbin/sh) ;; # SunOS
-    /usr/xpg4/bin/sh)
-      version_=`versions_shell_xpg4 "${shell_}"`
-      ;; # SunOS
+    # SunOS shells.
+    /sbin/sh) ;;
+    /usr/xpg4/bin/sh) version_=`versions_shell_xpg4 "${shell_}"` ;;
+
+    # Generic shell.
     */sh)
       # This could be one of any number of shells. Try until one fits.
       version_=''
@@ -148,16 +150,22 @@ versions_shellVersion() {
       [ -z "${version_}" ] && version_=`versions_shell_xpg4 "${shell_}"`
       [ -z "${version_}" ] && version_=`versions_shell_zsh "${shell_}"`
       ;;
+
+    # Specific shells.
     ash) version_=`versions_shell_ash "${shell_}"` ;;
+    # bash - Bourne Again SHell (https://www.gnu.org/software/bash/)
     */bash) version_=`versions_shell_bash "${shell_}"` ;;
-    */dash)
-      # Assuming Ubuntu Linux until somebody comes up with a better test. The
-      # following test will return an empty string if dash is not installed.
-      version_=`versions_shell_dash`
-      ;;
+    */dash) version_=`versions_shell_dash` ;;
+    # ksh - KornShell (http://www.kornshell.com/)
     */ksh) version_=`versions_shell_ksh "${shell_}"` ;;
+    # mksh - MirBSD Korn Shell (http://www.mirbsd.org/mksh.htm)
+    */mksh) version_=`versions_shell_ksh "${shell_}"` ;;
+    # pdksh - Public Domain Korn Shell (http://web.cs.mun.ca/~michael/pdksh/)
     */pdksh) version_=`versions_shell_pdksh "${shell_}"` ;;
+    # zsh (https://www.zsh.org/)
     */zsh) version_=`versions_shell_zsh "${shell_}"` ;;
+
+    # Unrecognized shell.
     *) version_='invalid'
   esac
 
@@ -174,6 +182,8 @@ versions_shell_bash() {
   $1 --version : 2>&1 |grep 'GNU bash' |sed 's/.*version \([^ ]*\).*/\1/'
 }
 
+# Assuming Ubuntu Linux until somebody comes up with a better test. The
+# following test will return an empty string if dash is not installed.
 versions_shell_dash() {
   eval dpkg >/dev/null 2>&1
   [ $? -eq 127 ] && return  # Return if dpkg not found.
@@ -195,6 +205,9 @@ versions_shell_ksh() {
     versions_version_=''
   fi
   if [ -z "${versions_version_}" ]; then
+    versions_version_=`${versions_shell_} -c 'echo ${KSH_VERSION}'`
+  fi
+  if [ -z "${versions_version_}" ]; then
     _versions_have_strings
     versions_version_=`strings "${versions_shell_}" 2>&1 \
       |grep Version \
@@ -208,6 +221,14 @@ versions_shell_ksh() {
   unset versions_shell_ versions_version_
 }
 
+# mksh - MirBSD Korn Shell (http://www.mirbsd.org/mksh.htm)
+# mksh is a successor to pdksh (Public Domain Korn Shell).
+versions_shell_mksh() {
+  versions_shell_ksh
+}
+
+# pdksh - Public Domain Korn Shell
+# pdksh is an obsolete shell, which was replaced by mksh (among others).
 versions_shell_pdksh() {
   _versions_have_strings
   strings "$1" 2>&1 \
