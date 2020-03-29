@@ -7,6 +7,8 @@
 Issue #37. shUnit2 now works properly for tests that have the `-e` shell option
 enabled.
 
+Issue #129. assertFalse '' now returns ${SHUNIT_TRUE}.
+
 ## Changes with 2.1.8
 
 ### New
