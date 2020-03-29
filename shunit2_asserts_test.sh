@@ -211,7 +211,7 @@ testAssertTrue() {
   th_assertFalseWithOutput 'false condition' $? "${stdoutF}" "${stderrF}"
 
   ( assertTrue '' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithOutput 'null' $? "${stdoutF}" "${stderrF}"
+  th_assertFalseWithOutput 'null condition' $? "${stdoutF}" "${stderrF}"
 
   ( assertTrue >"${stdoutF}" 2>"${stderrF}" )
   th_assertFalseWithError 'too few arguments' $? "${stdoutF}" "${stderrF}"
@@ -237,7 +237,7 @@ testAssertFalse() {
   th_assertFalseWithOutput 'true condition' $? "${stdoutF}" "${stderrF}"
 
   ( assertFalse '' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithOutput 'true condition' $? "${stdoutF}" "${stderrF}"
+  th_assertTrueWithNoOutput 'null condition' $? "${stdoutF}" "${stderrF}"
 
   ( assertFalse >"${stdoutF}" 2>"${stderrF}" )
   th_assertFalseWithError 'too few arguments' $? "${stdoutF}" "${stderrF}"

@@ -480,17 +480,16 @@ assertTrue() {
 
   # See if condition is an integer, i.e. a return value.
   shunit_return=${SHUNIT_TRUE}
-  shunit_match_=`expr "${shunit_condition_}" : '\([0-9]*\)'`
   if (command [ -z "${shunit_condition_}" ]); then
     # Null condition.
     shunit_return=${SHUNIT_FALSE}
-  elif (command [ -n "${shunit_match_}" -a "${shunit_condition_}" = "${shunit_match_}" ])
+  elif (expr \( "${shunit_condition_}" + '0' \) '=' "${shunit_condition_}" >/dev/null 2>&1)
   then
     # Possible return value. Treating 0 as true, and non-zero as false.
     (command [ "${shunit_condition_}" -ne 0 ]) && shunit_return=${SHUNIT_FALSE}
   else
     # Hopefully... a condition.
-    ( eval "${shunit_condition_}" ) >/dev/null 2>&1
+    (eval "${shunit_condition_}" >/dev/null 2>&1)
     (command [ $? -ne 0 ]) && shunit_return=${SHUNIT_FALSE}
   fi
 
@@ -501,7 +500,7 @@ assertTrue() {
     _shunit_assertFail "${shunit_message_}"
   fi
 
-  unset shunit_message_ shunit_condition_ shunit_match_
+  unset shunit_message_ shunit_condition_
   return ${shunit_return}
 }
 # shellcheck disable=SC2016,SC2034
@@ -546,18 +545,17 @@ assertFalse() {
   shunit_condition_=$1
 
   # See if condition is an integer, i.e. a return value.
-  shunit_match_=`expr "${shunit_condition_}" : '\([0-9]*\)'`
   shunit_return=${SHUNIT_TRUE}
   if (command [ -z "${shunit_condition_}" ]); then
     # Null condition.
-    shunit_return=${SHUNIT_FALSE}
-  elif (command [ -n "${shunit_match_}" -a "${shunit_condition_}" = "${shunit_match_}" ])
+    shunit_return=${SHUNIT_TRUE}
+  elif (expr \( "${shunit_condition_}" + '0' \) '=' "${shunit_condition_}" >/dev/null 2>&1)
   then
     # Possible return value. Treating 0 as true, and non-zero as false.
     (command [ "${shunit_condition_}" -eq 0 ]) && shunit_return=${SHUNIT_FALSE}
   else
     # Hopefully... a condition.
-    ( eval "${shunit_condition_}" ) >/dev/null 2>&1
+    (eval "${shunit_condition_}" >/dev/null 2>&1)
     (command [ $? -eq 0 ]) && shunit_return=${SHUNIT_FALSE}
   fi
 
@@ -568,7 +566,7 @@ assertFalse() {
     _shunit_assertFail "${shunit_message_}"
   fi
 
-  unset shunit_message_ shunit_condition_ shunit_match_
+  unset shunit_message_ shunit_condition_
   return "${shunit_return}"
 }
 # shellcheck disable=SC2016,SC2034
