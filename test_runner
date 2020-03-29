@@ -25,7 +25,7 @@
 RUNNER_LOADED=0
 
 RUNNER_ARGV0=`basename "$0"`
-RUNNER_SHELLS='/bin/sh ash /bin/bash /bin/dash /bin/ksh /bin/pdksh /bin/zsh'
+RUNNER_SHELLS='/bin/sh ash /bin/bash /bin/dash /bin/ksh /bin/mksh /bin/zsh'
 RUNNER_TEST_SUFFIX='_test.sh'
 true; RUNNER_TRUE=$?
 false; RUNNER_FALSE=$?
