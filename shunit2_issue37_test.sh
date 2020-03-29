@@ -1,13 +1,16 @@
 #! /bin/sh
 #
 # shunit2 unit test for issue #37.
-# assertTrue does not work with "set -e"
 #
 # Copyright 2008-2020 Kate Ward. All Rights Reserved.
 # Released under the Apache 2.0 license.
 #
 # Author: kate.ward@forestent.com (Kate Ward)
 # https://github.com/kward/shunit2
+#
+# According to https://github.com/kward/shunit2/issues/37
+#
+#   assertTrue does not work with "set -e"
 #
 # According to the bash man page, when the `-e` option is used on `set`, the
 # shell will…
@@ -19,8 +22,14 @@
 #   being inverted via !. A trap on ERR, if set, is executed before the shell
 #   exits.
 #
+# This test is fully stand-alone so that the full loading and execution of
+# shUnit2 can be evaluated under the `-e` option.
+#
 # Disable source following.
 #  shellcheck disable=SC1090,SC1091
+
+# Enable the -e shell option.
+set -e
 
 # These variables will be overridden by the test helpers.
 stdoutF="${TMPDIR:-/tmp}/STDOUT"
@@ -29,20 +38,13 @@ stderrF="${TMPDIR:-/tmp}/STDERR"
 # Load test helpers.
 . ./shunit2_test_helpers
 
-# Enable the -e shell option.
-set -e
-
 testIssue37() {
-	echo 'abc'
-	assertTrue 0
-	echo 'def'
+	assertTrue ${SHUNIT_TRUE}
+	assertFalse ${SHUNIT_FALSE}
 }
 
 oneTimeSetUp() {
-	echo 'oneTimeSetup'
   th_oneTimeSetUp
-
-  MSG='This is a test message'
 }
 
 # Load and run shunit2.

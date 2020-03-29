@@ -1,5 +1,12 @@
 # shUnit2 2.1.x Changes
 
+## Changes with 2.1.9
+
+### Fixed
+
+Issue #37. shUnit2 now works properly for tests that have the `-e` shell option
+enabled.
+
 ## Changes with 2.1.8
 
 ### New
