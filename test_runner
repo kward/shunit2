@@ -159,7 +159,7 @@ EOF
       echo "--- Executing the '`_runner_testName "${t}"`' test suite. ---"
       # ${shell_bin} needs word splitting.
       #   shellcheck disable=SC2086
-      ( exec ${shell_bin} "./${t}" 2>&1; )
+      ( SHELL="${shell_bin}" exec ${shell_bin} "./${t}" 2>&1; )
       test "${runner_passing_}" -eq ${RUNNER_TRUE} -a $? -eq ${RUNNER_TRUE}
       runner_passing_=$?
     done
