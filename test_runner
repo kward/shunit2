@@ -38,7 +38,7 @@ runner_usage() {
   echo "usage: ${RUNNER_ARGV0} [-e key=val ...] [-s shell(s)] [-t test(s)]"
 }
 
-_runner_tests() { echo ./*${RUNNER_TEST_SUFFIX} |sed 's#./##g'; }
+_runner_tests() { echo ./*${RUNNER_TEST_SUFFIX} |sed 's#\./##g'; }
 _runner_testName() {
   # shellcheck disable=SC1117
   _runner_testName_=`expr "${1:-}" : "\(.*\)${RUNNER_TEST_SUFFIX}"`
