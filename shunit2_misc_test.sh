@@ -27,20 +27,7 @@ stderrF="${TMPDIR:-/tmp}/STDERR"
 # Note: the test script is prefixed with '#' chars so that shUnit2 does not
 # incorrectly interpret the embedded functions as real functions.
 testUnboundVariable() {
-  unittestF="${SHUNIT_TMPDIR}/unittest"
-  sed 's/^#//' >"${unittestF}" <<EOF
-## Treat unset variables as an error when performing parameter expansion.
-#set -u
-#
-#boom() { x=\$1; }  # This function goes boom if no parameters are passed!
-#test_boom() {
-#  assertEquals 1 1
-#  boom  # No parameter given
-#  assertEquals 0 \$?
-#}
-#SHUNIT_COLOR='none'
-#. ${TH_SHUNIT}
-EOF
+  unittestF="tests/data/testUnboundVariable.sh"
   ( exec "${SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" )
   assertFalse 'expected a non-zero exit value' $?
   grep '^ASSERT:unknown failure' "${stdoutF}" >/dev/null
@@ -69,14 +56,7 @@ EOF
 # Support prefixes on test output.
 # https://github.com/kward/shunit2/issues/29
 testIssue29() {
-  unittestF="${SHUNIT_TMPDIR}/unittest"
-  sed 's/^#//' >"${unittestF}" <<EOF
-## Support test prefixes.
-#test_assert() { assertTrue ${SHUNIT_TRUE}; }
-#SHUNIT_COLOR='none'
-#SHUNIT_TEST_PREFIX='--- '
-#. ${TH_SHUNIT}
-EOF
+  unittestF="tests/data/testIssue29.sh"
   ( exec "${SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" )
   grep '^--- test_assert' "${stdoutF}" >/dev/null
   rtrn=$?
@@ -123,21 +103,10 @@ EOF
 # Ensure a test failure is recorded for code containing syntax errors.
 # https://github.com/kward/shunit2/issues/84
 testIssue84() {
-  unittestF="${SHUNIT_TMPDIR}/unittest"
-  sed 's/^#//' >"${unittestF}" <<\EOF
-## Function with syntax error.
-#syntax_error() { ${!#3442} -334 a$@2[1]; }
-#test_syntax_error() {
-#  syntax_error
-#  assertTrue ${SHUNIT_TRUE}
-#}
-#SHUNIT_COLOR='none'
-#SHUNIT_TEST_PREFIX='--- '
-#. ${TH_SHUNIT}
-EOF
+  unittestF=tests/data/testIssue84.sh
   ( exec "${SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" )
   grep '^FAILED' "${stdoutF}" >/dev/null
-  assertTrue "failure message for ${assert} was not generated" $?
+  assertTrue "failure message for syntax error was not generated" $?
 }
 
 testPrepForSourcing() {
