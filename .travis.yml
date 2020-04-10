@@ -7,26 +7,27 @@ script:
   # Execute the unit tests.
   - ./test_runner
 
-os:
-  - linux
-  - osx
-
 addons:
   apt:
     packages:
       - ksh
+      - mksh
       - zsh
 
 matrix:
   include:
     - os: linux
+      dist: bionic  # Support Ubuntu Bionic 18.04 through at least Apr 2023.
+    - os: linux
+      dist: xenial  # Support Ubuntu Xenial 16.04 through at least Apr 2021.
+    - os: linux
+      dist: trusty  # Support Ubuntu Trusty 14.04 through at least Apr 2019.
+    - os: osx
+    - os: linux
       script:
         # Run the source through ShellCheck (http://www.shellcheck.net).
         - shellcheck shunit2 *_test.sh
         - shellcheck -s sh shunit2_test_helpers
-    - os: linux
-      # Support Ubuntu Trusty through Apr 2019.
-      dist: trusty
 
 branches:
   only:
