@@ -41,14 +41,18 @@ testUnboundVariable() {
 #SHUNIT_COLOR='none'
 #. ${TH_SHUNIT}
 EOF
-  ( exec "${SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" )
-  assertFalse 'expected a non-zero exit value' $?
-  grep '^ASSERT:unknown failure' "${stdoutF}" >/dev/null
-  assertTrue 'assert message was not generated' $?
-  grep '^Ran [0-9]* test' "${stdoutF}" >/dev/null
-  assertTrue 'test count message was not generated' $?
-  grep '^FAILED' "${stdoutF}" >/dev/null
-  assertTrue 'failure message was not generated' $?
+  if ( exec "${SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" ); then
+    fail 'expected a non-zero exit value'
+  fi
+  if ! grep '^ASSERT:unknown failure' "${stdoutF}" >/dev/null; then
+    fail 'assert message was not generated'
+  fi
+  if ! grep '^Ran [0-9]* test' "${stdoutF}" >/dev/null; then
+    fail 'test count message was not generated'
+  fi
+  if ! grep '^FAILED' "${stdoutF}" >/dev/null; then
+    fail 'failure message was not generated'
+  fi
 }
 
 # assertEquals repeats message argument.
@@ -136,8 +140,9 @@ testIssue84() {
 #. ${TH_SHUNIT}
 EOF
   ( exec "${SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" )
-  grep '^FAILED' "${stdoutF}" >/dev/null
-  assertTrue "failure message for ${assert} was not generated" $?
+  if ! grep '^FAILED' "${stdoutF}" >/dev/null; then
+    fail 'failure message was not generated'
+  fi
 }
 
 testPrepForSourcing() {
