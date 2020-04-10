@@ -92,7 +92,7 @@ commonNotEqualsSame() {
     th_assertTrueWithNoOutput "${desc}" $? "${stdoutF}" "${stderrF}"
   else
     fail "${desc}: unexpected failure"
-    th_showOutput ${SHUNIT_FALSE} "${stdoutF}" "${stderrF}"
+    th_showOutput "${SHUNIT_FALSE}" "${stdoutF}" "${stderrF}"
   fi
 
   desc='not_same_with_msg'
@@ -100,7 +100,7 @@ commonNotEqualsSame() {
     th_assertTrueWithNoOutput "${desc}" $? "${stdoutF}" "${stderrF}"
   else
     fail "${desc}: unexpected failure"
-    th_showOutput ${SHUNIT_FALSE} "${stdoutF}" "${stderrF}"
+    th_showOutput "${SHUNIT_FALSE}" "${stdoutF}" "${stderrF}"
   fi
 
   # These should fail.
@@ -108,7 +108,7 @@ commonNotEqualsSame() {
   desc='same'
   if (${fn} 'x' 'x' >"${stdoutF}" 2>"${stderrF}"); then
     fail "${desc}: expected a failure"
-    th_showOutput ${SHUNIT_FALSE} "${stdoutF}" "${stderrF}"
+    th_showOutput "${SHUNIT_FALSE}" "${stdoutF}" "${stderrF}"
   else
     th_assertFalseWithOutput "${desc}" $? "${stdoutF}" "${stderrF}"
   fi
@@ -116,7 +116,7 @@ commonNotEqualsSame() {
   desc='unequal_null_values'
   if (${fn} '' '' >"${stdoutF}" 2>"${stderrF}"); then
     fail "${desc}: expected a failure"
-    th_showOutput ${SHUNIT_FALSE} "${stdoutF}" "${stderrF}"
+    th_showOutput "${SHUNIT_FALSE}" "${stdoutF}" "${stderrF}"
   else
     th_assertFalseWithOutput "${desc}" $? "${stdoutF}" "${stderrF}"
   fi
@@ -126,7 +126,7 @@ commonNotEqualsSame() {
   desc='too_few_arguments'
   if (${fn} arg1 >"${stdoutF}" 2>"${stderrF}"); then
     fail "${desc}: expected a failure"
-    th_showOutput ${SHUNIT_FALSE} "${stdoutF}" "${stderrF}"
+    th_showOutput "${SHUNIT_FALSE}" "${stdoutF}" "${stderrF}"
   else
     th_assertFalseWithError "${desc}" $? "${stdoutF}" "${stderrF}"
   fi
@@ -134,7 +134,7 @@ commonNotEqualsSame() {
   desc='too_many_arguments'
   if (${fn} arg1 arg2 arg3 arg4 >"${stdoutF}" 2>"${stderrF}"); then
     fail "${desc}: expected a failure"
-    th_showOutput ${SHUNIT_FALSE} "${stdoutF}" "${stderrF}"
+    th_showOutput "${SHUNIT_FALSE}" "${stdoutF}" "${stderrF}"
   else
     th_assertFalseWithError "${desc}" $? "${stdoutF}" "${stderrF}"
   fi
