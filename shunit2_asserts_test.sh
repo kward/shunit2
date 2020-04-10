@@ -9,6 +9,9 @@
 # Author: kate.ward@forestent.com (Kate Ward)
 # https://github.com/kward/shunit2
 #
+# In this file, all assert calls under test must be wrapped in () so they do not
+# influce the metrics of the test itself.
+#
 # Disable source following.
 #   shellcheck disable=SC1090,SC1091
 
@@ -22,48 +25,119 @@ stderrF="${TMPDIR:-/tmp}/STDERR"
 commonEqualsSame() {
   fn=$1
 
-  ( ${fn} 'x' 'x' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertTrueWithNoOutput 'equal' $? "${stdoutF}" "${stderrF}"
+  # These should succeed.
 
-  ( ${fn} "${MSG}" 'x' 'x' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertTrueWithNoOutput 'equal; with msg' $? "${stdoutF}" "${stderrF}"
+  desc='equal'
+  if (${fn} 'x' 'x' >"${stdoutF}" 2>"${stderrF}"); then
+    th_assertTrueWithNoOutput "${desc}" $? "${stdoutF}" "${stderrF}"
+  else
+    fail "${desc}: unexpected failure"
+  fi
 
-  ( ${fn} 'abc def' 'abc def' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertTrueWithNoOutput 'equal with spaces' $? "${stdoutF}" "${stderrF}"
+  desc='equal_with_msg'
+  if (${fn} "${MSG}" 'x' 'x' >"${stdoutF}" 2>"${stderrF}"); then
+    th_assertTrueWithNoOutput "${desc}" $? "${stdoutF}" "${stderrF}"
+  else
+    fail "${desc}: unexpected failure"
+  fi
 
-  ( ${fn} 'x' 'y' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithOutput 'not equal' $? "${stdoutF}" "${stderrF}"
+  desc='equal_with_spaces'
+  if (${fn} 'abc def' 'abc def' >"${stdoutF}" 2>"${stderrF}"); then
+    th_assertTrueWithNoOutput "${desc}" $? "${stdoutF}" "${stderrF}"
+  else
+    fail "${desc}: unexpected failure"
+  fi
 
-  ( ${fn} '' '' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertTrueWithNoOutput 'null values' $? "${stdoutF}" "${stderrF}"
+  desc='equal_null_values'
+  if (${fn} '' '' >"${stdoutF}" 2>"${stderrF}"); then
+    th_assertTrueWithNoOutput "${desc}" $? "${stdoutF}" "${stderrF}"
+  else
+    fail "${desc}: unexpected failure"
+  fi
 
-  ( ${fn} arg1 >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithError 'too few arguments' $? "${stdoutF}" "${stderrF}"
+  # These should fail.
 
-  ( ${fn} arg1 arg2 arg3 arg4 >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithError 'too many arguments' $? "${stdoutF}" "${stderrF}"
+  desc='not_equal'
+  if (${fn} 'x' 'y' >"${stdoutF}" 2>"${stderrF}"); then
+    fail "${desc}: expected a failure"
+  else
+    th_assertFalseWithOutput "${desc}" $? "${stdoutF}" "${stderrF}"
+  fi
+
+  # These should generate an error.
+
+  desc='too_few_arguments'
+  if (${fn} arg1 >"${stdoutF}" 2>"${stderrF}"); then
+    fail "${desc}: expected a failure"
+  else
+    th_assertFalseWithError "${desc}" $? "${stdoutF}" "${stderrF}"
+  fi
+
+  desc='too_many_arguments'
+  if (${fn} arg1 arg2 arg3 arg4 >"${stdoutF}" 2>"${stderrF}"); then
+    fail "${desc}: expected a failure"
+  else
+    th_assertFalseWithError 'too many arguments' $? "${stdoutF}" "${stderrF}"
+  fi
+
 }
 
 commonNotEqualsSame() {
   fn=$1
 
-  ( ${fn} 'x' 'y' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertTrueWithNoOutput 'not same' $? "${stdoutF}" "${stderrF}"
+  # These should succeed.
 
-  ( ${fn} "${MSG}" 'x' 'y' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertTrueWithNoOutput 'not same, with msg' $? "${stdoutF}" "${stderrF}"
+  desc='not_same'
+  if (${fn} 'x' 'y' >"${stdoutF}" 2>"${stderrF}"); then
+    th_assertTrueWithNoOutput "${desc}" $? "${stdoutF}" "${stderrF}"
+  else
+    fail "${desc}: unexpected failure"
+    th_showOutput ${SHUNIT_FALSE} "${stdoutF}" "${stderrF}"
+  fi
 
-  ( ${fn} 'x' 'x' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithOutput 'same' $? "${stdoutF}" "${stderrF}"
+  desc='not_same_with_msg'
+  if (${fn} "${MSG}" 'x' 'y' >"${stdoutF}" 2>"${stderrF}"); then
+    th_assertTrueWithNoOutput "${desc}" $? "${stdoutF}" "${stderrF}"
+  else
+    fail "${desc}: unexpected failure"
+    th_showOutput ${SHUNIT_FALSE} "${stdoutF}" "${stderrF}"
+  fi
 
-  ( ${fn} '' '' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithOutput 'null values' $? "${stdoutF}" "${stderrF}"
+  # These should fail.
 
-  ( ${fn} arg1 >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithError 'too few arguments' $? "${stdoutF}" "${stderrF}"
+  desc='same'
+  if (${fn} 'x' 'x' >"${stdoutF}" 2>"${stderrF}"); then
+    fail "${desc}: expected a failure"
+    th_showOutput ${SHUNIT_FALSE} "${stdoutF}" "${stderrF}"
+  else
+    th_assertFalseWithOutput "${desc}" $? "${stdoutF}" "${stderrF}"
+  fi
 
-  ( ${fn} arg1 arg2 arg3 arg4 >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithError 'too many arguments' $? "${stdoutF}" "${stderrF}"
+  desc='unequal_null_values'
+  if (${fn} '' '' >"${stdoutF}" 2>"${stderrF}"); then
+    fail "${desc}: expected a failure"
+    th_showOutput ${SHUNIT_FALSE} "${stdoutF}" "${stderrF}"
+  else
+    th_assertFalseWithOutput "${desc}" $? "${stdoutF}" "${stderrF}"
+  fi
+
+  # These should generate an error.
+
+  desc='too_few_arguments'
+  if (${fn} arg1 >"${stdoutF}" 2>"${stderrF}"); then
+    fail "${desc}: expected a failure"
+    th_showOutput ${SHUNIT_FALSE} "${stdoutF}" "${stderrF}"
+  else
+    th_assertFalseWithError "${desc}" $? "${stdoutF}" "${stderrF}"
+  fi
+
+  desc='too_many_arguments'
+  if (${fn} arg1 arg2 arg3 arg4 >"${stdoutF}" 2>"${stderrF}"); then
+    fail "${desc}: expected a failure"
+    th_showOutput ${SHUNIT_FALSE} "${stdoutF}" "${stderrF}"
+  else
+    th_assertFalseWithError "${desc}" $? "${stdoutF}" "${stderrF}"
+  fi
 }
 
 testAssertEquals() {

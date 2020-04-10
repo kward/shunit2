@@ -45,7 +45,9 @@ _shunit_fatal() {
 # Determine some reasonable command defaults.
 __SHUNIT_CMD_ECHO_ESC='echo -e'
 # shellcheck disable=SC2039
-(command [ "`echo -e test`" = '-e test' ]) && __SHUNIT_CMD_ECHO_ESC='echo'
+if command [ "`echo -e test`" = '-e test' ]; then
+  __SHUNIT_CMD_ECHO_ESC='echo'
+fi
 
 __SHUNIT_UNAME_S=`uname -s`
 case "${__SHUNIT_UNAME_S}" in
@@ -167,7 +169,7 @@ assertEquals() {
     _shunit_assertFail
     return ${SHUNIT_ERROR}
   fi
-  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+  if _shunit_shouldSkip; then return ${SHUNIT_TRUE}; fi
 
   shunit_message_=${__shunit_lineno}
   if (command [ $# -eq 3 ]); then
@@ -207,7 +209,7 @@ assertNotEquals() {
     _shunit_assertFail
     return ${SHUNIT_ERROR}
   fi
-  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+  if _shunit_shouldSkip; then return ${SHUNIT_TRUE}; fi
 
   shunit_message_=${__shunit_lineno}
   if (command [ $# -eq 3 ]); then
@@ -247,7 +249,7 @@ assertContains() {
     _shunit_assertFail
     return ${SHUNIT_ERROR}
   fi
-  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+  if _shunit_shouldSkip; then return ${SHUNIT_TRUE}; fi
 
   shunit_message_=${__shunit_lineno}
   if (command [ $# -eq 3 ]); then
@@ -287,7 +289,7 @@ assertNotContains() {
     _shunit_assertFail
     return ${SHUNIT_ERROR}
   fi
-  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+  if _shunit_shouldSkip; then return ${SHUNIT_TRUE}; fi
 
   shunit_message_=${__shunit_lineno}
   if (command [ $# -eq 3 ]); then
@@ -326,7 +328,7 @@ assertNull() {
     _shunit_assertFail
     return ${SHUNIT_ERROR}
   fi
-  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+  if _shunit_shouldSkip; then return ${SHUNIT_TRUE}; fi
 
   shunit_message_=${__shunit_lineno}
   if (command [ $# -eq 2 ]); then
@@ -358,7 +360,7 @@ assertNotNull() {
     _shunit_assertFail
     return ${SHUNIT_ERROR}
   fi
-  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+  if _shunit_shouldSkip; then return ${SHUNIT_TRUE}; fi
 
   shunit_message_=${__shunit_lineno}
   if (command [ $# -eq 2 ]); then
@@ -392,7 +394,7 @@ assertSame() {
     _shunit_assertFail
     return ${SHUNIT_ERROR}
   fi
-  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+  if _shunit_shouldSkip; then return ${SHUNIT_TRUE}; fi
 
   shunit_message_=${__shunit_lineno}
   if (command [ $# -eq 3 ]); then
@@ -424,7 +426,7 @@ assertNotSame() {
     _shunit_assertFail
     return ${SHUNIT_ERROR}
   fi
-  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+  if _shunit_shouldSkip; then return ${SHUNIT_TRUE}; fi
 
   shunit_message_=${__shunit_lineno}
   if (command [ $# -eq 3 ]); then
@@ -469,7 +471,7 @@ assertTrue() {
     _shunit_assertFail
     return ${SHUNIT_ERROR}
   fi
-  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+  if _shunit_shouldSkip; then return ${SHUNIT_TRUE}; fi
 
   shunit_message_=${__shunit_lineno}
   if (command [ $# -eq 2 ]); then
@@ -486,11 +488,14 @@ assertTrue() {
   elif (expr \( "${shunit_condition_}" + '0' \) '=' "${shunit_condition_}" >/dev/null 2>&1)
   then
     # Possible return value. Treating 0 as true, and non-zero as false.
-    (command [ "${shunit_condition_}" -ne 0 ]) && shunit_return=${SHUNIT_FALSE}
+    if command [ "${shunit_condition_}" -ne 0 ]; then
+      shunit_return=${SHUNIT_FALSE}
+    fi
   else
     # Hopefully... a condition.
-    (eval "${shunit_condition_}" >/dev/null 2>&1)
-    (command [ $? -ne 0 ]) && shunit_return=${SHUNIT_FALSE}
+    if ! eval "${shunit_condition_}" >/dev/null 2>&1; then
+      shunit_return=${SHUNIT_FALSE}
+    fi
   fi
 
   # Record the test.
@@ -535,7 +540,7 @@ assertFalse() {
     _shunit_assertFail
     return ${SHUNIT_ERROR}
   fi
-  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+  if _shunit_shouldSkip; then return ${SHUNIT_TRUE}; fi
 
   shunit_message_=${__shunit_lineno}
   if (command [ $# -eq 2 ]); then
@@ -549,14 +554,16 @@ assertFalse() {
   if (command [ -z "${shunit_condition_}" ]); then
     # Null condition.
     shunit_return=${SHUNIT_TRUE}
-  elif (expr \( "${shunit_condition_}" + '0' \) '=' "${shunit_condition_}" >/dev/null 2>&1)
-  then
+  elif (expr \( "${shunit_condition_}" + '0' \) '=' "${shunit_condition_}" >/dev/null 2>&1); then
     # Possible return value. Treating 0 as true, and non-zero as false.
-    (command [ "${shunit_condition_}" -eq 0 ]) && shunit_return=${SHUNIT_FALSE}
+    if command [ "${shunit_condition_}" -eq 0 ]; then
+      shunit_return=${SHUNIT_FALSE}
+    fi
   else
     # Hopefully... a condition.
-    (eval "${shunit_condition_}" >/dev/null 2>&1)
-    (command [ $? -eq 0 ]) && shunit_return=${SHUNIT_FALSE}
+    if eval ${shunit_condition_} >/dev/null 2>&1; then
+      shunit_return=${SHUNIT_FALSE}
+    fi
   fi
 
   # Record the test.
@@ -589,7 +596,7 @@ fail() {
     _shunit_error "fail() requires zero or one arguments; $# given"
     return ${SHUNIT_ERROR}
   fi
-  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+  if _shunit_shouldSkip; then return ${SHUNIT_TRUE}; fi
 
   shunit_message_=${__shunit_lineno}
   if (command [ $# -eq 1 ]); then
@@ -620,7 +627,7 @@ failNotEquals() {
     _shunit_error "failNotEquals() requires one or two arguments; $# given"
     return ${SHUNIT_ERROR}
   fi
-  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+  if _shunit_shouldSkip; then return ${SHUNIT_TRUE}; fi
 
   shunit_message_=${__shunit_lineno}
   if (command [ $# -eq 3 ]); then
@@ -653,7 +660,7 @@ failFound() {
     _shunit_error "failFound() requires one or two arguments; $# given"
     return ${SHUNIT_ERROR}
   fi
-  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+  if _shunit_shouldSkip; then return ${SHUNIT_TRUE}; fi
 
   shunit_message_=${__shunit_lineno}
   if (command [ $# -eq 2 ]); then
@@ -684,7 +691,7 @@ failNotFound() {
     _shunit_error "failNotFound() requires one or two arguments; $# given"
     return ${SHUNIT_ERROR}
   fi
-  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+  if _shunit_shouldSkip; then return ${SHUNIT_TRUE}; fi
 
   shunit_message_=${__shunit_lineno}
   if (command [ $# -eq 2 ]); then
@@ -710,15 +717,14 @@ _FAIL_NOT_FOUND_='eval failNotFound --lineno "${LINENO:-}"'
 #   actual: string: actual value
 # Returns:
 #   integer: success (TRUE/FALSE/ERROR constant)
-failSame()
-{
+failSame() {
   # shellcheck disable=SC2090
   ${_SHUNIT_LINENO_}
   if (command [ $# -lt 2 -o $# -gt 3 ]); then
     _shunit_error "failSame() requires two or three arguments; $# given"
     return ${SHUNIT_ERROR}
   fi
-  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+  if _shunit_shouldSkip; then return ${SHUNIT_TRUE}; fi
 
   shunit_message_=${__shunit_lineno}
   if (command [ $# -eq 3 ]); then
@@ -752,7 +758,7 @@ failNotSame() {
     _shunit_error "failNotSame() requires one or two arguments; $# given"
     return ${SHUNIT_ERROR}
   fi
-  _shunit_shouldSkip && return ${SHUNIT_TRUE}
+  if _shunit_shouldSkip; then return ${SHUNIT_TRUE}; fi
 
   shunit_message_=${__shunit_lineno}
   if (command [ $# -eq 3 ]); then
@@ -1044,19 +1050,22 @@ _shunit_execSuite() {
     endSkipping
 
     # Execute the per-test setup function.
-    setUp || _shunit_fatal "setup() returned non-zero return code."
+    if ! setUp; then
+      _shunit_fatal "setup() returned non-zero return code."
+    fi
 
     # Execute the test.
     echo "${__SHUNIT_TEST_PREFIX}${_shunit_test_}"
-    eval "${_shunit_test_}"
-    if (command [ $? -ne ${SHUNIT_TRUE} ]); then
+    if ! ${_shunit_test_}; then
       _shunit_error "${_shunit_test_}() returned non-zero return code."
       __shunit_testSuccess=${SHUNIT_ERROR}
       _shunit_incFailedCount
     fi
 
     # Execute the per-test tear-down function.
-    tearDown || _shunit_fatal "tearDown() returned non-zero return code."
+    if ! tearDown; then
+      _shunit_fatal "tearDown() returned non-zero return code."
+    fi
 
     # Update stats.
     if (command [ ${__shunit_testSuccess} -eq ${SHUNIT_TRUE} ]); then
@@ -1119,7 +1128,9 @@ _shunit_generateReport() {
 # Returns:
 #   boolean: whether the test should be skipped (TRUE/FALSE constant)
 _shunit_shouldSkip() {
-  (command [ ${__shunit_skip} -eq ${SHUNIT_FALSE} ]) && return ${SHUNIT_FALSE}
+  if test ${__shunit_skip} -eq ${SHUNIT_FALSE}; then
+    return ${SHUNIT_FALSE}
+  fi
   _shunit_assertSkip
 }
 
@@ -1140,8 +1151,9 @@ _shunit_assertFail() {
   __shunit_testSuccess=${SHUNIT_FALSE}
   _shunit_incFailedCount
 
-  \[ $# -gt 0 ] && ${__SHUNIT_CMD_ECHO_ESC} \
-      "${__shunit_ansi_red}ASSERT:${__shunit_ansi_none}$*"
+  if command [ $# -gt 0 ]; then 
+    ${__SHUNIT_CMD_ECHO_ESC} "${__shunit_ansi_red}ASSERT:${__shunit_ansi_none}$*"
+  fi
 }
 
 # Increment the count of failed asserts.
@@ -1153,7 +1165,6 @@ _shunit_incFailedCount() {
   __shunit_assertsTotal=`expr "${__shunit_assertsTotal}" + 1`
 }
 
-
 # Records a skipped test.
 #
 # Args:
@@ -1161,6 +1172,15 @@ _shunit_incFailedCount() {
 _shunit_assertSkip() {
   __shunit_assertsSkipped=`expr "${__shunit_assertsSkipped}" + 1`
   __shunit_assertsTotal=`expr "${__shunit_assertsTotal}" + 1`
+}
+
+_shunit_metrics() {
+  echo "< \
+total: ${__shunit_assertsTotal} \
+passed: ${__shunit_assertsPassed} \
+failed: ${__shunit_assertsFailed} \
+skipped: ${__shunit_assertsSkipped} \
+>"
 }
 
 # Prepare a script filename for sourcing.
