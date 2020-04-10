@@ -1,0 +1,24 @@
+#!/bin/sh
+#
+# Git hook to run ShellCheck.
+#
+# ShellCheck <https://www.shellcheck.net/>
+
+# Treat unset variables as an error when performing parameter expansion.
+set -u
+
+if ! command -v shellcheck >/dev/null; then
+  echo 'unable to locate shellcheck' >&2
+  return 0
+fi
+
+for f in $(git diff --cached --name-only); do
+  cmd=':'
+  case "${f}" in
+    shflags|shflags_test_helpers) cmd="shellcheck -s sh ${f}" ;;
+    *.sh) cmd="shellcheck ${f}" ;;
+  esac
+  if ! ${cmd}; then
+    echo "shellcheck error for '${f}'" >&2
+  fi
+done
