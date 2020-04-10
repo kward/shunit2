@@ -35,8 +35,8 @@ set -e
 . ./shunit2_test_helpers
 
 testIssue37() {
-	assertTrue 0
-	assertFalse 1
+  assertTrue 0
+  assertFalse 1
 }
 
 oneTimeSetUp() {
