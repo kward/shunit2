@@ -15,8 +15,8 @@ fi
 for f in $(git diff --cached --name-only); do
   cmd=':'
   case "${f}" in
-    shflags|shflags_test_helpers) cmd="shellcheck -s sh ${f}" ;;
-    *.sh) cmd="shellcheck ${f}" ;;
+    shunit2_test_helpers) cmd="shellcheck -s sh ${f}" ;;
+    shunit2|*.sh) cmd="shellcheck ${f}" ;;
   esac
   if ! ${cmd}; then
     echo "shellcheck error for '${f}'" >&2
