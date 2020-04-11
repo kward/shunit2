@@ -133,6 +133,7 @@ th_assertTrueWithNoOutput() {
   assertEquals "${th_test_}: expected return value of true" "${SHUNIT_TRUE}" "${th_rtrn_}"
   assertFalse "${th_test_}: expected no output to STDOUT" "[ -s '${th_stdout_}' ]"
   assertFalse "${th_test_}: expected no output to STDERR" "[ -s '${th_stderr_}' ]"
+  # shellcheck disable=SC2166
   if [ -s "${th_stdout_}" -o -s "${th_stderr_}" ]; then
     _th_showOutput "${SHUNIT_FALSE}" "${th_stdout_}" "${th_stderr_}"
   fi
@@ -158,6 +159,7 @@ th_assertFalseWithOutput()
   assertNotEquals "${th_test_}: expected non-true return value" "${SHUNIT_TRUE}" "${th_rtrn_}"
   assertTrue "${th_test_}: expected output to STDOUT" "[ -s '${th_stdout_}' ]"
   assertFalse "${th_test_}: expected no output to STDERR" "[ -s '${th_stderr_}' ]"
+  # shellcheck disable=SC2166
   if ! [ -s "${th_stdout_}" -a ! -s "${th_stderr_}" ]; then
     _th_showOutput "${SHUNIT_FALSE}" "${th_stdout_}" "${th_stderr_}"
   fi
@@ -182,6 +184,7 @@ th_assertFalseWithError() {
   assertFalse "${th_test_}: expected non-zero return value" "${th_rtrn_}"
   assertFalse "${th_test_}: expected no output to STDOUT" "[ -s '${th_stdout_}' ]"
   assertTrue "${th_test_}: expected output to STDERR" "[ -s '${th_stderr_}' ]"
+  # shellcheck disable=SC2166
   if ! [ ! -s "${th_stdout_}" -a -s "${th_stderr_}" ]; then
     _th_showOutput "${SHUNIT_FALSE}" "${th_stdout_}" "${th_stderr_}"
   fi
