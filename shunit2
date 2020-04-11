@@ -178,7 +178,9 @@ assertEquals() {
     _shunit_assertFail
     return ${SHUNIT_ERROR}
   fi
-  if _shunit_shouldSkip; then return ${SHUNIT_TRUE}; fi
+  if _shunit_shouldSkip; then
+    return ${SHUNIT_TRUE}
+  fi
 
   shunit_message_=${__shunit_lineno}
   if ${__SHUNIT_BUILTIN} [ $# -eq 3 ]; then
@@ -218,7 +220,9 @@ assertNotEquals() {
     _shunit_assertFail
     return ${SHUNIT_ERROR}
   fi
-  if _shunit_shouldSkip; then return ${SHUNIT_TRUE}; fi
+  if _shunit_shouldSkip; then
+    return ${SHUNIT_TRUE}
+  fi
 
   shunit_message_=${__shunit_lineno}
   if ${__SHUNIT_BUILTIN} [ $# -eq 3 ]; then
@@ -258,7 +262,9 @@ assertContains() {
     _shunit_assertFail
     return ${SHUNIT_ERROR}
   fi
-  if _shunit_shouldSkip; then return ${SHUNIT_TRUE}; fi
+  if _shunit_shouldSkip; then
+    return ${SHUNIT_TRUE}
+  fi
 
   shunit_message_=${__shunit_lineno}
   if ${__SHUNIT_BUILTIN} [ $# -eq 3 ]; then
@@ -267,9 +273,8 @@ assertContains() {
   fi
   shunit_container_=$1
   shunit_content_=$2
-
   shunit_return=${SHUNIT_TRUE}
-  if echo "$shunit_container_" | grep -F -- "$shunit_content_" > /dev/null; then
+  if echo "${shunit_container_}" |grep -F -- "${shunit_content_}" >/dev/null; then
     _shunit_assertPass
   else
     failNotFound "${shunit_message_}" "${shunit_content_}"
@@ -298,7 +303,9 @@ assertNotContains() {
     _shunit_assertFail
     return ${SHUNIT_ERROR}
   fi
-  if _shunit_shouldSkip; then return ${SHUNIT_TRUE}; fi
+  if _shunit_shouldSkip; then
+    return ${SHUNIT_TRUE}
+  fi
 
   shunit_message_=${__shunit_lineno}
   if ${__SHUNIT_BUILTIN} [ $# -eq 3 ]; then
@@ -337,7 +344,9 @@ assertNull() {
     _shunit_assertFail
     return ${SHUNIT_ERROR}
   fi
-  if _shunit_shouldSkip; then return ${SHUNIT_TRUE}; fi
+  if _shunit_shouldSkip; then
+    return ${SHUNIT_TRUE}
+  fi
 
   shunit_message_=${__shunit_lineno}
   if ${__SHUNIT_BUILTIN} [ $# -eq 2 ]; then
@@ -369,7 +378,9 @@ assertNotNull() {
     _shunit_assertFail
     return ${SHUNIT_ERROR}
   fi
-  if _shunit_shouldSkip; then return ${SHUNIT_TRUE}; fi
+  if _shunit_shouldSkip; then
+    return ${SHUNIT_TRUE}
+  fi
 
   shunit_message_=${__shunit_lineno}
   if ${__SHUNIT_BUILTIN} [ $# -eq 2 ]; then
@@ -403,7 +414,9 @@ assertSame() {
     _shunit_assertFail
     return ${SHUNIT_ERROR}
   fi
-  if _shunit_shouldSkip; then return ${SHUNIT_TRUE}; fi
+  if _shunit_shouldSkip; then
+    return ${SHUNIT_TRUE}
+  fi
 
   shunit_message_=${__shunit_lineno}
   if ${__SHUNIT_BUILTIN} [ $# -eq 3 ]; then
@@ -435,7 +448,9 @@ assertNotSame() {
     _shunit_assertFail
     return ${SHUNIT_ERROR}
   fi
-  if _shunit_shouldSkip; then return ${SHUNIT_TRUE}; fi
+  if _shunit_shouldSkip; then
+    return ${SHUNIT_TRUE}
+  fi
 
   shunit_message_=${__shunit_lineno}
   if ${__SHUNIT_BUILTIN} [ $# -eq 3 ]; then
@@ -480,7 +495,9 @@ assertTrue() {
     _shunit_assertFail
     return ${SHUNIT_ERROR}
   fi
-  if _shunit_shouldSkip; then return ${SHUNIT_TRUE}; fi
+  if _shunit_shouldSkip; then
+    return ${SHUNIT_TRUE}
+  fi
 
   shunit_message_=${__shunit_lineno}
   if ${__SHUNIT_BUILTIN} [ $# -eq 2 ]; then
@@ -549,7 +566,9 @@ assertFalse() {
     _shunit_assertFail
     return ${SHUNIT_ERROR}
   fi
-  if _shunit_shouldSkip; then return ${SHUNIT_TRUE}; fi
+  if _shunit_shouldSkip; then
+    return ${SHUNIT_TRUE}
+  fi
 
   shunit_message_=${__shunit_lineno}
   if ${__SHUNIT_BUILTIN} [ $# -eq 2 ]; then
@@ -606,7 +625,9 @@ fail() {
     _shunit_error "fail() requires zero or one arguments; $# given"
     return ${SHUNIT_ERROR}
   fi
-  if _shunit_shouldSkip; then return ${SHUNIT_TRUE}; fi
+  if _shunit_shouldSkip; then
+    return ${SHUNIT_TRUE}
+  fi
 
   shunit_message_=${__shunit_lineno}
   if ${__SHUNIT_BUILTIN} [ $# -eq 1 ]; then
@@ -637,7 +658,9 @@ failNotEquals() {
     _shunit_error "failNotEquals() requires one or two arguments; $# given"
     return ${SHUNIT_ERROR}
   fi
-  if _shunit_shouldSkip; then return ${SHUNIT_TRUE}; fi
+  if _shunit_shouldSkip; then
+    return ${SHUNIT_TRUE}
+  fi
 
   shunit_message_=${__shunit_lineno}
   if ${__SHUNIT_BUILTIN} [ $# -eq 3 ]; then
@@ -670,7 +693,9 @@ failFound() {
     _shunit_error "failFound() requires one or two arguments; $# given"
     return ${SHUNIT_ERROR}
   fi
-  if _shunit_shouldSkip; then return ${SHUNIT_TRUE}; fi
+  if _shunit_shouldSkip; then
+    return ${SHUNIT_TRUE}
+  fi
 
   shunit_message_=${__shunit_lineno}
   if ${__SHUNIT_BUILTIN} [ $# -eq 2 ]; then
@@ -701,7 +726,9 @@ failNotFound() {
     _shunit_error "failNotFound() requires one or two arguments; $# given"
     return ${SHUNIT_ERROR}
   fi
-  if _shunit_shouldSkip; then return ${SHUNIT_TRUE}; fi
+  if _shunit_shouldSkip; then
+    return ${SHUNIT_TRUE}
+  fi
 
   shunit_message_=${__shunit_lineno}
   if ${__SHUNIT_BUILTIN} [ $# -eq 2 ]; then
@@ -734,7 +761,9 @@ failSame() {
     _shunit_error "failSame() requires two or three arguments; $# given"
     return ${SHUNIT_ERROR}
   fi
-  if _shunit_shouldSkip; then return ${SHUNIT_TRUE}; fi
+  if _shunit_shouldSkip; then
+    return ${SHUNIT_TRUE}
+  fi
 
   shunit_message_=${__shunit_lineno}
   if ${__SHUNIT_BUILTIN} [ $# -eq 3 ]; then
@@ -768,7 +797,9 @@ failNotSame() {
     _shunit_error "failNotSame() requires one or two arguments; $# given"
     return ${SHUNIT_ERROR}
   fi
-  if _shunit_shouldSkip; then return ${SHUNIT_TRUE}; fi
+  if _shunit_shouldSkip; then
+    return ${SHUNIT_TRUE}
+  fi
 
   shunit_message_=${__shunit_lineno}
   if ${__SHUNIT_BUILTIN} [ $# -eq 3 ]; then
