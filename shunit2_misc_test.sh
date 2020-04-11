@@ -91,8 +91,9 @@ EOF
 # Test that certain external commands sometimes "stubbed" by users are escaped.
 testIssue54() {
   for c in mkdir rm cat chmod sed; do
-    grep "^[^#]*${c} " "${TH_SHUNIT}" | grep -qv "command ${c}"
-    assertFalse "external call to ${c} not protected somewhere" $?
+    if grep "^[^#]*${c} " "${TH_SHUNIT}" | grep -qv "command ${c}"; then
+      fail "external call to ${c} not protected somewhere"
+    fi
   done
   # shellcheck disable=2016
   if grep '^[^#]*[^ ]  *\[' "${TH_SHUNIT}" | grep -qv '${__SHUNIT_BUILTIN} \['; then
