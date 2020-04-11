@@ -16,11 +16,13 @@ addons:
 
 matrix:
   include:
+#    - os: linux
+#      dist: bionic  # Support Ubuntu Bionic 18.04 through at least Apr 2023.
+#    - os: linux
+#      dist: xenial  # Support Ubuntu Xenial 16.04 through at least Apr 2021.
     - os: linux
       dist: bionic  # Support Ubuntu Bionic 18.04 through at least Apr 2023.
-    - os: linux
       dist: xenial  # Support Ubuntu Xenial 16.04 through at least Apr 2021.
-    - os: linux
       dist: trusty  # Support Ubuntu Trusty 14.04 through at least Apr 2019.
     - os: osx
     - os: linux
