@@ -13,7 +13,8 @@ run() {
 }
 
 die() {
-  echo 'error: hook did not succeed' >&2
+  hook=$1
+  echo "${hook} hook did not succeed" >&2
   exit 1
 }
 
@@ -25,10 +26,8 @@ basename=$(basename "$0")
 
 for f in $(cd ${githooks} && echo *); do
   case "${f}" in
-    pre-commit.*)
-      # Called by "git commit" with no arguments.
-      [ "${basename}" = 'pre-commit' ] || continue
-      run pre-commit "${githooks}/${f}" || die
+    ${basename}.*)
+      run ${basename} "${githooks}/${f}" || die "${f}"
       ;;
   esac
 done

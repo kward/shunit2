@@ -7,18 +7,30 @@
 # Treat unset variables as an error when performing parameter expansion.
 set -u
 
+TRUE=0
+FALSE=1
+
+die() {
+  echo "$@" >&2
+  exit 1
+}
+
 if ! command -v shellcheck >/dev/null; then
   echo 'unable to locate shellcheck' >&2
   return 0
 fi
 
+success=${TRUE}
 for f in $(git diff --cached --name-only); do
   cmd=':'
   case "${f}" in
-    shunit2_test_helpers) cmd="shellcheck -s sh ${f}" ;;
-    shunit2|*.sh) cmd="shellcheck ${f}" ;;
+    shflags|shflags_test_helpers) cmd="shellcheck -s sh ${f}" ;;
+    *.sh) cmd="shellcheck ${f}" ;;
   esac
   if ! ${cmd}; then
+    success=${FALSE}
     echo "shellcheck error for '${f}'" >&2
   fi
 done
+
+exit ${success}
