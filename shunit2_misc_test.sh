@@ -3,7 +3,7 @@
 #
 # shUnit2 unit tests of miscellaneous things
 #
-# Copyright 2008-2018 Kate Ward. All Rights Reserved.
+# Copyright 2008-2020 Kate Ward. All Rights Reserved.
 # Released under the Apache 2.0 license.
 #
 # Author: kate.ward@forestent.com (Kate Ward)
@@ -86,6 +86,22 @@ EOF
   rtrn=$?
   assertEquals "${SHUNIT_TRUE}" "${rtrn}"
   [ "${rtrn}" -eq "${SHUNIT_TRUE}" ] || cat "${stdoutF}" >&2
+}
+
+# Test that certain external commands sometimes "stubbed" by users are escaped.
+testIssue54() {
+  for c in mkdir rm cat chmod sed; do
+    grep "^[^#]*${c} " "${TH_SHUNIT}" | grep -qv "command ${c}"
+    assertFalse "external call to ${c} not protected somewhere" $?
+  done
+  # shellcheck disable=2016
+  if grep '^[^#]*[^ ]  *\[' "${TH_SHUNIT}" | grep -qv '${__SHUNIT_BUILTIN} \['; then
+    fail 'call to [ not protected somewhere'
+  fi
+  # shellcheck disable=2016
+  if grep '^[^#]*  *\.' "${TH_SHUNIT}" | grep -qv '${__SHUNIT_BUILTIN} \.'; then
+    fail 'call to . not protected somewhere'
+  fi
 }
 
 # shUnit2 should not exit with 0 when it has syntax errors.
@@ -253,16 +269,22 @@ EOF
   assertEquals 'testABC test_def testG3 test4 test5 test6 test7 test8 test-9' "${actual}"
 }
 
-# Test that certain external commands sometimes "stubbed" by users are escaped.
-testIssue54() {
-  for c in mkdir rm cat chmod sed; do
-    grep "^[^#]*${c} " "${TH_SHUNIT}" | grep -qv "command ${c}"
-    assertFalse "external call to ${c} not protected somewhere" $?
-  done
-  grep '^[^#]*[^ ]  *\[' "${TH_SHUNIT}" | grep -qv 'command \['
-  assertFalse "call to [ ... ] not protected somewhere" $?
-  grep '^[^#]*  *\.' "${TH_SHUNIT}" | grep -qv 'command \.'
-  assertFalse "call to . not protected somewhere" $?
+testColors() {
+  while read -r desc cmd colors; do
+    SHUNIT_CMD_TPUT=${cmd}
+    want=${colors} got=`_shunit_colors`
+    assertEquals "${got}" "${want}"
+  done <<'EOF'
+missing missing_tput 16
+mock    mock_tput    256
+EOF
+}
+
+testColorsWitoutTERM() {
+  SHUNIT_CMD_TPUT='mock_tput'
+  got=`TERM='' _shunit_colors`
+  want=16
+  assertEquals "${got}" "${want}"
 }
 
 mock_tput() {
@@ -276,25 +298,6 @@ mock_tput() {
     return 0
   fi
   return 1
-}
-
-testColors() {
-  while read -r desc cmd colors; do
-    SHUNIT_CMD_TPUT=${cmd}
-    got=`_shunit_colors`
-    want=${colors}
-    assertEquals "${got}" "${want}"
-  done <<'EOF'
-missing missing_tput 16
-mock mock_tput 256
-EOF
-}
-
-testColorsWitoutTERM() {
-  SHUNIT_CMD_TPUT='mock_tput'
-  got=`TERM='' _shunit_colors`
-  want=16
-  assertEquals "${got}" "${want}"
 }
 
 setUp() {

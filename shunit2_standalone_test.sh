@@ -3,7 +3,7 @@
 #
 # shUnit2 unit test for standalone operation.
 #
-# Copyright 2010-2017 Kate Ward. All Rights Reserved.
+# Copyright 2010-2020 Kate Ward. All Rights Reserved.
 # Released under the Apache 2.0 license.
 #
 # Author: kate.ward@forestent.com (Kate Ward)
@@ -32,7 +32,7 @@ main() {
   ${TH_SHUNIT} "${ARGV0}"
 }
 
-# Are we running as a standalone?
-if [ "${ARGV0}" = 'shunit2_test_standalone.sh' ]; then
-  if [ $# -gt 0 ]; then main "$@"; else main; fi
+# Run main() if are running as a standalone script.
+if [ "${ARGV0}" = 'shunit2_standalone_test.sh' ]; then
+	main "$@"
 fi

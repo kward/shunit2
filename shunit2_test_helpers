@@ -2,7 +2,7 @@
 #
 # shUnit2 unit test common functions
 #
-# Copyright 2008 Kate Ward. All Rights Reserved.
+# Copyright 2008-2020 Kate Ward. All Rights Reserved.
 # Released under the Apache 2.0 license.
 #
 # Author: kate.ward@forestent.com (Kate Ward)
@@ -15,6 +15,9 @@
 #   shellcheck disable=SC2003
 # $() are not fully portable (POSIX != portable).
 #   shellcheck disable=SC2006
+
+# Exit immediately if a simple command exits with a non-zero status.
+set -e
 
 # Treat unset variables as an error when performing parameter expansion.
 set -u
@@ -50,12 +53,12 @@ th_RANDOM=0
 #
 
 # Logging functions.
-th_trace() { echo "${MY_NAME}:TRACE $*" >&2; }
-th_debug() { echo "${MY_NAME}:DEBUG $*" >&2; }
-th_info() { echo "${MY_NAME}:INFO $*" >&2; }
-th_warn() { echo "${MY_NAME}:WARN $*" >&2; }
-th_error() { echo "${MY_NAME}:ERROR $*" >&2; }
-th_fatal() { echo "${MY_NAME}:FATAL $*" >&2; }
+th_trace() { echo "test:TRACE $*" >&2; }
+th_debug() { echo "test:DEBUG $*" >&2; }
+th_info()  { echo "test:INFO $*" >&2; }
+th_warn()  { echo "test:WARN $*" >&2; }
+th_error() { echo "test:ERROR $*" >&2; }
+th_fatal() { echo "test:FATAL $*" >&2; }
 
 # Output subtest name.
 th_subtest() { echo " $*" >&2; }
@@ -209,11 +212,13 @@ _th_showOutput() {
   _th_stderr_=$3
 
   if [ "${_th_return_}" -ne "${SHUNIT_TRUE}" ]; then
+    # shellcheck disable=SC2166
     if [ -n "${_th_stdout_}" -a -s "${_th_stdout_}" ]; then
       echo '>>> STDOUT' >&2
       cat "${_th_stdout_}" >&2
       echo '<<< STDOUT' >&2
     fi
+    # shellcheck disable=SC2166
     if [ -n "${_th_stderr_}" -a -s "${_th_stderr_}" ]; then
       echo '>>> STDERR' >&2
       cat "${_th_stderr_}" >&2
@@ -222,6 +227,17 @@ _th_showOutput() {
   fi
 
   unset _th_return_ _th_stdout_ _th_stderr_
+}
+
+# th_isLinenoWorking returns true if the LINENO shell variable works properly.
+th_isLinenoWorking() {
+  # shellcheck disable=SC2016
+  ln='eval echo "${LINENO:-}"'
+  case ${ln} in
+    [0-9]*) return "${SHUNIT_TRUE}" ;;
+    -[0-9]*) return "${SHUNIT_FALSE}" ;; # The dash shell produces negative values.
+  esac
+  return "${SHUNIT_FALSE}"
 }
 
 #
