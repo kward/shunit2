@@ -377,8 +377,6 @@ testTooManyArguments() {
 
 oneTimeSetUp() {
   th_oneTimeSetUp
-
-  MSG='This is a test message'
 }
 
 # showTestOutput for the most recently run test.
