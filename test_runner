@@ -12,6 +12,20 @@
 # This script runs all the unit tests that can be found, and generates a nice
 # report of the tests.
 #
+### Sample usage:
+#
+# Run all tests for all shells.
+# $ ./test_runner
+#
+# Run all tests for single shell.
+# $ ./test_runner -s /bin/bash
+#
+# Run single test for all shells.
+# $ ./test_runner -t shunit_asserts_test.sh
+#
+# Run single test for single shell.
+# $ ./test_runner -s /bin/bash -t shunit_asserts_test.sh
+#
 ### ShellCheck (http://www.shellcheck.net/)
 # Disable source following.
 #   shellcheck disable=SC1090,SC1091
