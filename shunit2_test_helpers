@@ -208,13 +208,15 @@ th_queryReturn() {
 # Providing external and internal calls to the showOutput helper function.
 th_showOutput() { _th_showOutput "$@"; }
 _th_showOutput() {
-  if isSkipping; then return; fi
+  if isSkipping; then
+    return
+  fi
 
-  _th_return_=$1
-  _th_stdout_=$2
-  _th_stderr_=$3
+  _th_return_="${1:-${returnF}}"
+  _th_stdout_="${2:-${stdoutF}}"
+  _th_stderr_="${3:-${stderrF}}"
 
-  if [ "${_th_return_}" -ne "${SHUNIT_TRUE}" ]; then
+  if [ "${_th_return_}" != "${SHUNIT_TRUE}" ]; then
     # shellcheck disable=SC2166
     if [ -n "${_th_stdout_}" -a -s "${_th_stdout_}" ]; then
       echo '>>> STDOUT' >&2
