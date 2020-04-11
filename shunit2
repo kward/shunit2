@@ -110,7 +110,10 @@ for __shunit_const in ${__shunit_constants}; do
   else
     case ${ZSH_VERSION} in
       [123].*) readonly "${__shunit_const}" ;;
-      *) readonly -g "${__shunit_const}"  # Declare readonly constants globally.
+      *)
+        # Declare readonly constants globally.
+        # shellcheck disable=SC2039
+        readonly -g "${__shunit_const}"
     esac
   fi
 done
@@ -567,6 +570,7 @@ assertFalse() {
     fi
   else
     # Hopefully... a condition.
+    # shellcheck disable=SC2086
     if eval ${shunit_condition_} >/dev/null 2>&1; then
       shunit_return=${SHUNIT_FALSE}
     fi
@@ -1065,6 +1069,7 @@ _shunit_execSuite() {
 
     # Execute the test.
     echo "${__SHUNIT_TEST_PREFIX}${_shunit_test_}"
+    # shellcheck disable=SC2086
     if ! eval ${_shunit_test_}; then
       _shunit_error "${_shunit_test_}() returned non-zero return code."
       __shunit_testSuccess=${SHUNIT_ERROR}
