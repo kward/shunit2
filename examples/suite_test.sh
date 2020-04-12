@@ -1,9 +1,8 @@
 #!/bin/sh
 # file: examples/suite_test.sh
 #
-# This test demonstrates the use of suites. Note: the suite functionality is
-# deprecated as of v2.1.0, and will be removed in a future major release.
-
+# This test demonstrates the use of suites.
+#
 # suite is a special function called by shUnit2 to setup a suite of tests. It
 # enables a developer to call a set of functions that contain tests without
 # needing to rename the functions to start with "test".
