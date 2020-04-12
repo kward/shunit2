@@ -332,6 +332,8 @@ EOF
   fi
 }
 
+
+
 FUNCTIONS='
 assertEquals assertNotEquals
 assertSame assertNotSame
@@ -342,11 +344,9 @@ assertTrue assertFalse
 
 testTooFewArguments() {
   for fn in ${FUNCTIONS}; do
+    # These functions support zero arguments.
     case "${fn}" in
-      assertNotNull)
-        # There is no test for too few arguments as $1 might actually be null.
-        continue
-        ;;
+      assertNotNull) continue ;;
     esac
 
     desc="${fn}"
