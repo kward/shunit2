@@ -22,6 +22,11 @@ fi
 
 success=${TRUE}
 for f in $(git diff --cached --name-only); do
+  # Check for file deletion.
+  if [ ! -r "${f}" ]; then
+    continue
+  fi
+
   cmd=':'
   case "${f}" in
     shflags|shflags_test_helpers) cmd="shellcheck -s sh ${f}" ;;
