@@ -704,7 +704,7 @@ failFound() {
   fi
 
   shunit_message_=${shunit_message_%% }
-  _shunit_assertFail "${shunit_message_:+${shunit_message_} }Found"
+  _shunit_assertFail "${shunit_message_:+${shunit_message_} }found"
 
   unset shunit_message_
   return ${SHUNIT_FALSE}
@@ -738,7 +738,7 @@ failNotFound() {
   shunit_content_=$1
 
   shunit_message_=${shunit_message_%% }
-  _shunit_assertFail "${shunit_message_:+${shunit_message_} }Not found:<${shunit_content_}>"
+  _shunit_assertFail "${shunit_message_:+${shunit_message_} }not found:<${shunit_content_}>"
 
   unset shunit_message_ shunit_content_
   return ${SHUNIT_FALSE}
