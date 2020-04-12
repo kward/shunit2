@@ -10,7 +10,7 @@
 #
 # Author: kate.ward@forestent.com (Kate Ward)
 #
-# shUnit2 unit test for failure functions
+# shUnit2 unit test for failure functions. These functions do not test values
 #
 # Disable source following.
 #   shellcheck disable=SC1090,SC1091
@@ -23,60 +23,114 @@ stderrF="${TMPDIR:-/tmp}/STDERR"
 . ./shunit2_test_helpers
 
 testFail() {
-  ( fail >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithOutput 'fail' $? "${stdoutF}" "${stderrF}"
+  # Test without a message.
+  desc='fail_without_message'
+  if ( fail >"${stdoutF}" 2>"${stderrF}" ); then
+    fail "${desc}: expected a failure"
+    th_showOutput
+  else
+    th_assertFalseWithOutput "${desc}" $? "${stdoutF}" "${stderrF}"
+  fi
 
-  ( fail "${MSG}" >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithOutput 'fail with msg' $? "${stdoutF}" "${stderrF}"
-
-  ( fail arg1 >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithOutput 'too many arguments' $? "${stdoutF}" "${stderrF}"
+  # Test with a message.
+  desc='fail_with_message'
+  if ( fail 'some message' >"${stdoutF}" 2>"${stderrF}" ); then
+    fail "${desc}: expected a failure"
+    th_showOutput
+  else
+    th_assertFalseWithOutput "${desc}" $? "${stdoutF}" "${stderrF}"
+  fi
 }
 
-testFailNotEquals() {
-  ( failNotEquals 'x' 'x' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithOutput 'same' $? "${stdoutF}" "${stderrF}"
+# FN_TESTS hold all the functions to be tested.
+# shellcheck disable=SC2006
+FN_TESTS=`
+# fn num_args pattern
+cat <<EOF
+fail          1
+failNotEquals 3 but was:
+failFound     2 found$
+failNotFound  2 not found:
+failSame      3 not same
+failNotSame   3 but was:
+EOF
+`
 
-  ( failNotEquals "${MSG}" 'x' 'x' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithOutput 'same with msg' $? "${stdoutF}" "${stderrF}"
+testFailsWithArgs() {
+  echo "${FN_TESTS}" |\
+  while read -r fn num_args pattern; do
+    case "${fn}" in
+      fail) continue ;;
+    esac
 
-  ( failNotEquals 'x' 'y' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithOutput 'not same' $? "${stdoutF}" "${stderrF}"
+    # Test without a message.
+    desc="${fn}_without_message"
+    if ( ${fn} arg1 arg2 >"${stdoutF}" 2>"${stderrF}" ); then
+      fail "${desc}: expected a failure"
+      th_showOutput
+    else
+      th_assertFalseWithOutput "${desc}" $? "${stdoutF}" "${stderrF}"
+    fi
 
-  ( failNotEquals '' '' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithOutput 'null values' $? "${stdoutF}" "${stderrF}"
+    # Test with a message.
+    arg1='' arg2=''
+    case ${num_args} in
+      1) ;;
+      2) arg1='arg1' ;;
+      3) arg1='arg1' arg2='arg2' ;;
+    esac
 
-  ( failNotEquals >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithError 'too few arguments' $? "${stdoutF}" "${stderrF}"
-
-  ( failNotEquals arg1 arg2 arg3 arg4 >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithError 'too many arguments' $? "${stdoutF}" "${stderrF}"
+    desc="${fn}_with_message"
+    if ( ${fn} 'some message' ${arg1} ${arg2} >"${stdoutF}" 2>"${stderrF}" ); then
+      fail "${desc}: expected a failure"
+      th_showOutput
+    else
+      th_assertFalseWithOutput "${desc}" $? "${stdoutF}" "${stderrF}"
+      if ! grep -- "${pattern}" "${stdoutF}" >/dev/null; then
+        fail "${desc}: incorrect message to STDOUT"
+        th_showOutput
+      fi
+    fi
+  done
 }
 
-testFailSame() {
-  ( failSame 'x' 'x' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithOutput 'same' $? "${stdoutF}" "${stderrF}"
+testTooFewArguments() {
+  echo "${FN_TESTS}" \
+  |while read -r fn num_args pattern; do
+    # Skip functions that support a single message argument.
+    if [ "${num_args}" -eq 1 ]; then
+      continue
+    fi
 
-  ( failSame "${MSG}" 'x' 'x' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithOutput 'same with msg' $? "${stdoutF}" "${stderrF}"
+    desc="${fn}"
+    if (${fn} >"${stdoutF}" 2>"${stderrF}"); then
+      fail "${desc}: expected a failure"
+      _showTestOutput
+    else
+      got=$? want=${SHUNIT_ERROR}
+      assertEquals "${desc}: incorrect return code" "${got}" "${want}"
+      th_assertFalseWithError "${desc}" "${got}" "${stdoutF}" "${stderrF}"
+    fi
+  done
+}
 
-  ( failSame 'x' 'y' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithOutput 'not same' $? "${stdoutF}" "${stderrF}"
-
-  ( failSame '' '' >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithOutput 'null values' $? "${stdoutF}" "${stderrF}"
-
-  ( failSame >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithError 'too few arguments' $? "${stdoutF}" "${stderrF}"
-
-  ( failSame arg1 arg2 arg3 arg4 >"${stdoutF}" 2>"${stderrF}" )
-  th_assertFalseWithError 'too many arguments' $? "${stdoutF}" "${stderrF}"
+testTooManyArguments() {
+  echo "${FN_TESTS}" \
+  |while read -r fn num_args pattern; do
+    desc="${fn}"
+    if (${fn} arg1 arg2 arg3 arg4 >"${stdoutF}" 2>"${stderrF}"); then
+      fail "${desc}: expected a failure"
+      _showTestOutput
+    else
+      got=$? want=${SHUNIT_ERROR}
+      assertEquals "${desc}: incorrect return code" "${got}" "${want}"
+      th_assertFalseWithError "${desc}" "${got}" "${stdoutF}" "${stderrF}"
+    fi
+  done
 }
 
 oneTimeSetUp() {
   th_oneTimeSetUp
-
-  MSG='This is a test message'
 }
 
 # Load and run shUnit2.
