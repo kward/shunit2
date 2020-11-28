@@ -629,21 +629,21 @@ assertFileExists() {
   if command [ $# -eq 2 ]; then
     shunit_custom_message_=$1
     shunit_file_=$2
-    shunit_message_="${shunit_message_}$shunit_custom_message_"
+    shunit_message_="${shunit_message_}${shunit_custom_message_}"
   else
     shunit_file_=$1
-    shunit_message_="${shunit_message_}The file '$shunit_file_' does not exist"
+    shunit_message_="${shunit_message_}The file '${shunit_file_}' does not exist"
   fi
 
   shunit_return=${SHUNIT_TRUE}
-  if command [ -f "$shunit_file_" ]; then
+  if command [ -f "${shunit_file_}" ]; then
     _shunit_assertPass
   else
     fail "${shunit_message_}"
     shunit_return=${SHUNIT_FALSE}
   fi
 
-  unset shunit_message_ shunit_file_
+  unset shunit_message_ shunit_file_ shunit_custom_message_
   return ${shunit_return}
 }
 # shellcheck disable=SC2016,SC2034
@@ -670,21 +670,21 @@ assertFileDoesNotExist() {
   if command [ $# -eq 2 ]; then
     shunit_custom_message_=$1
     shunit_file_=$2
-    shunit_message_="${shunit_message_}$shunit_custom_message_"
+    shunit_message_="${shunit_message_}${shunit_custom_message_}"
   else
     shunit_file_=$1
-    shunit_message_="${shunit_message_}The file '$shunit_file_' does exist"
+    shunit_message_="${shunit_message_}The file '${shunit_file_}' does exist"
   fi
 
   shunit_return=${SHUNIT_TRUE}
-  if command [ -f "$shunit_file_" ]; then
+  if command [ -f "${shunit_file_}" ]; then
     fail "${shunit_message_}"
     shunit_return=${SHUNIT_FALSE}
   else
     _shunit_assertPass
   fi
 
-  unset shunit_message_ shunit_file_
+  unset shunit_message_ shunit_file_ shunit_custom_message_
   return ${shunit_return}
 }
 # shellcheck disable=SC2016,SC2034
@@ -711,21 +711,21 @@ assertDirectoryExists() {
   if command [ $# -eq 2 ]; then
     shunit_custom_message_=$1
     shunit_directory_=$2
-    shunit_message_="${shunit_message_}$shunit_custom_message_"
+    shunit_message_="${shunit_message_}${shunit_custom_message_}"
   else
     shunit_directory_=$1
-    shunit_message_="${shunit_message_}The directory '$shunit_directory_' does not exist"
+    shunit_message_="${shunit_message_}The directory '${shunit_directory_}' does not exist"
   fi
 
   shunit_return=${SHUNIT_TRUE}
-  if command [ -d "$shunit_directory_" ]; then
+  if command [ -d "${shunit_directory_}" ]; then
     _shunit_assertPass
   else
     fail "${shunit_message_}"
     shunit_return=${SHUNIT_FALSE}
   fi
 
-  unset shunit_message_ shunit_directory_
+  unset shunit_message_ shunit_directory_ shunit_custom_message_
   return ${shunit_return}
 }
 # shellcheck disable=SC2016,SC2034
@@ -752,21 +752,21 @@ assertDirectoryDoesNotExist() {
   if command [ $# -eq 2 ]; then
     shunit_custom_message_=$1
     shunit_directory_=$2
-    shunit_message_="${shunit_message_}$shunit_custom_message_"
+    shunit_message_="${shunit_message_}${shunit_custom_message_}"
   else
     shunit_directory_=$1
-    shunit_message_="${shunit_message_}The directory '$shunit_directory_' does exist"
+    shunit_message_="${shunit_message_}The directory '${shunit_directory_}' does exist"
   fi
 
   shunit_return=${SHUNIT_TRUE}
-  if command [ -d "$shunit_directory_" ]; then
+  if command [ -d "${shunit_directory_}" ]; then
     fail "${shunit_message_}"
     shunit_return=${SHUNIT_FALSE}
   else
     _shunit_assertPass
   fi
 
-  unset shunit_message_ shunit_directory_
+  unset shunit_message_ shunit_directory_ shunit_custom_message_
   return ${shunit_return}
 }
 # shellcheck disable=SC2016,SC2034

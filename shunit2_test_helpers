@@ -245,13 +245,6 @@ th_isLinenoWorking() {
   return "${SHUNIT_FALSE}"
 }
 
-# Constants used to test file and directory assertions
-TH_EXISTING_DIRECTORY=$(exec 2>/dev/null;cd -- "$(dirname "$0")" || exit; unset PWD; /usr/bin/pwd || /bin/pwd || pwd)
-TH_EXISTING_FILE="${TH_EXISTING_DIRECTORY}/$0"
-TH_NON_EXISTING_FILE="$TH_EXISTING_DIRECTORY/non-existing-file"
-TH_NON_EXISTING_DIRECTORY="$TH_EXISTING_DIRECTORY/non-existing-directory"
-export TH_EXISTING_DIRECTORY TH_EXISTING_FILE TH_NON_EXISTING_FILE TH_NON_EXISTING_DIRECTORY
-
 #
 # Main.
 #

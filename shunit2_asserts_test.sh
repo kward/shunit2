@@ -481,6 +481,19 @@ testAssertDirectoryDoesNotExist() {
 
 oneTimeSetUp() {
   th_oneTimeSetUp
+
+  _shunit_tmpDir_="${TMPDIR:-/tmp}/shunit.$(date +%s)"
+  rm -rf "${_shunit_tmpDir_}"
+  mkdir "${_shunit_tmpDir_}"
+  TH_EXISTING_DIRECTORY="${_shunit_tmpDir_}/this_directory_exists"
+  TH_EXISTING_FILE="${_shunit_tmpDir_}/this_file_exists"
+  TH_NON_EXISTING_FILE="${_shunit_tmpDir_}/this_directory_does_not_exist"
+  TH_NON_EXISTING_DIRECTORY="${_shunit_tmpDir_}/this_file_does_not_exist"
+  mkdir "${TH_EXISTING_DIRECTORY}"
+  touch "${TH_EXISTING_FILE}"
+
+  MSG='This is a test message'
+
 }
 
 # showTestOutput for the most recently run test.
