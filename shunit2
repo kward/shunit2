@@ -353,7 +353,9 @@ assertNull() {
     shunit_message_="${shunit_message_}$1"
     shift
   fi
-  assertTrue "${shunit_message_}" "[ -z '$1' ]"
+  
+  test -z "${1:-}"
+  assertTrue "${shunit_message_}" $?
   shunit_return=$?
 
   unset shunit_message_
@@ -387,14 +389,16 @@ assertNotNull() {
     shunit_message_="${shunit_message_}$1"
     shift
   fi
-  shunit_actual_=`_shunit_escapeCharactersInString "${1:-}"`
-  test -n "${shunit_actual_}"
+
+ # No need for quoting to detect a non-null string.
+  test -n "${1:-}"
   assertTrue "${shunit_message_}" $?
   shunit_return=$?
 
-  unset shunit_actual_ shunit_message_
+  unset shunit_message_
   return ${shunit_return}
 }
+
 # shellcheck disable=SC2016,SC2034
 _ASSERT_NOT_NULL_='eval assertNotNull --lineno "${LINENO:-}"'
 
@@ -1249,53 +1253,6 @@ _shunit_prepForSourcing() {
     *) echo "./${_shunit_script_}" ;;
   esac
   unset _shunit_script_
-}
-
-# Escape a character in a string.
-#
-# Args:
-#   c: string: unescaped character
-#   s: string: to escape character in
-# Returns:
-#   string: with escaped character(s)
-_shunit_escapeCharInStr() {
-  if ${__SHUNIT_BUILTIN} [ -z "$2" ]; then
-    return  # No point in doing work on an empty string.
-  fi
-
-  # Note: using shorter variable names to prevent conflicts with
-  # _shunit_escapeCharactersInString().
-  _shunit_c_=$1
-  _shunit_s_=$2
-
-  # Escape the character.
-  # shellcheck disable=SC1003,SC2086
-  echo ''${_shunit_s_}'' |command sed 's/\'${_shunit_c_}'/\\\'${_shunit_c_}'/g'
-
-  unset _shunit_c_ _shunit_s_
-}
-
-# Escape a character in a string.
-#
-# Args:
-#   str: string: to escape characters in
-# Returns:
-#   string: with escaped character(s)
-_shunit_escapeCharactersInString() {
-  if ${__SHUNIT_BUILTIN} [ -z "$1" ]; then
-    return  # No point in doing work on an empty string.
-  fi
-
-  _shunit_str_=$1
-
-  # Note: using longer variable names to prevent conflicts with
-  # _shunit_escapeCharInStr().
-  for _shunit_char_ in '"' '$' "'" '`'; do
-    _shunit_str_=`_shunit_escapeCharInStr "${_shunit_char_}" "${_shunit_str_}"`
-  done
-
-  echo "${_shunit_str_}"
-  unset _shunit_char_ _shunit_str_
 }
 
 # Extract list of functions to run tests against.
