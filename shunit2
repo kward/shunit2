@@ -339,7 +339,8 @@ _ASSERT_NOT_CONTAINS_='eval assertNotContains --lineno "${LINENO:-}"'
 assertNull() {
   # shellcheck disable=SC2090
   ${_SHUNIT_LINENO_}
-  if ${__SHUNIT_BUILTIN} [ $# -lt 1 -o $# -gt 2 ]; then
+  if ${__SHUNIT_BUILTIN} [ $# -gt 2 ]; then
+    # Allowing 0 arguments as $1 might actually be null.
     _shunit_error "assertNull() requires one or two arguments; $# given"
     _shunit_assertFail
     return ${SHUNIT_ERROR}
@@ -350,7 +351,7 @@ assertNull() {
 
   shunit_message_=${__shunit_lineno}
   if ${__SHUNIT_BUILTIN} [ $# -eq 2 ]; then
-    shunit_message_="${shunit_message_}$1"
+    shunit_message_="${shunit_message_}${1:-}"
     shift
   fi
   
@@ -386,7 +387,7 @@ assertNotNull() {
 
   shunit_message_=${__shunit_lineno}
   if ${__SHUNIT_BUILTIN} [ $# -eq 2 ]; then
-    shunit_message_="${shunit_message_}$1"
+    shunit_message_="${shunit_message_}${1:-}"
     shift
   fi
 
