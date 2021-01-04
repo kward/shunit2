@@ -1104,7 +1104,6 @@ _shunit_execSuite() {
     if ! eval ${_shunit_test_}; then
       _shunit_error "${_shunit_test_}() returned non-zero return code."
       __shunit_testSuccess=${SHUNIT_ERROR}
-      _shunit_incFailedCount
     fi
 
     # Execute the per-test tear-down function.
