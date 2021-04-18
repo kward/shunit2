@@ -3,7 +3,6 @@
 
 root = true
 
-# Unix-style newlines with a newline ending every file.
 [*]
 charset = utf-8
 end_of_line = lf
