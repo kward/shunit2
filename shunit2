@@ -643,6 +643,35 @@ fail() {
 # shellcheck disable=SC2016,SC2034
 _FAIL_='eval fail --lineno "${LINENO:-}"'
 
+__different(){
+    expected="$1"
+    actually="$2"
+    len1=${#expected}
+    len2=${#actually}
+    min_len=$len1
+    if [ "$min_len" -gt "$len2" ]; then
+      min_len=$len2;
+    fi
+
+    i=1;
+    while [ "$i" -le "$min_len" ];
+    do
+      charA=$(echo "$expected"|cut -c$i);
+      charB=$(echo "$actually"|cut -c$i);
+      if [ "$charA" = "$charB" ]; then
+        printf "-";
+      else
+        printf "^";
+        break;
+      fi
+      i=$((i + 1));
+    done
+    if [ $i -gt "$min_len" ]; then
+      printf "^";
+    fi
+
+}
+
 # Records a test failure, stating two values were not equal.
 #
 # Args:
@@ -671,7 +700,8 @@ failNotEquals() {
   shunit_actual_=$2
 
   shunit_message_=${shunit_message_%% }
-  _shunit_assertFail "${shunit_message_:+${shunit_message_} }expected:<${shunit_expected_}> but was:<${shunit_actual_}>"
+  different=$(__different "${shunit_expected_}" "${shunit_actual_})")
+  _shunit_assertFail "${shunit_message_:+${shunit_message_} }\\nexpected:<${shunit_expected_}>\\n----------${different}\\nbut was :<${shunit_actual_}>"
 
   unset shunit_message_ shunit_expected_ shunit_actual_
   return ${SHUNIT_FALSE}
