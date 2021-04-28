@@ -199,7 +199,23 @@ EOF
   fi
 }
 
+
 testAssertNull() {
+    while read -r desc value; do
+    if (assertNull "${value}" >"${stdoutF}" 2>"${stderrF}"); then
+      fail "${desc}: unexpected failure"
+      _showTestOutput
+    else
+      th_assertFalseWithOutput "${desc}" $? "${stdoutF}" "${stderrF}"
+    fi
+  done <<'EOF'
+x_alone          x
+x_double quote_b x"b
+x_single_quote_b x'b
+x_dollar_b       x$b
+x_backtick_b     x`b
+EOF
+
   desc='null_without_message'
   if (assertNull '' >"${stdoutF}" 2>"${stderrF}"); then
     th_assertTrueWithNoOutput "${desc}" $? "${stdoutF}" "${stderrF}"
@@ -226,7 +242,7 @@ testAssertNull() {
 }
 
 testAssertNotNull() {
-  while read -r desc value; do
+    while read -r desc value; do
     if (assertNotNull "${value}" >"${stdoutF}" 2>"${stderrF}"); then
       th_assertTrueWithNoOutput "${desc}" $? "${stdoutF}" "${stderrF}"
     else
@@ -240,7 +256,7 @@ x_single_quote_b x'b
 x_dollar_b       x$b
 x_backtick_b     x`b
 EOF
-
+    
   desc='not_null_with_message'
   if (assertNotNull 'some message' 'x' >"${stdoutF}" 2>"${stderrF}"); then
     th_assertTrueWithNoOutput "${desc}" $? "${stdoutF}" "${stderrF}"
@@ -346,6 +362,7 @@ testTooFewArguments() {
   for fn in ${FUNCTIONS}; do
     # These functions support zero arguments.
     case "${fn}" in
+      assertNull) continue ;;
       assertNotNull) continue ;;
     esac
 
