@@ -257,7 +257,7 @@ another value can be done this way.
 Testing for the ability to read a file can also be done. This particular test
 will fail.
 
-    assertTrue 'test failed' "[ -r /some/non-existant/file' ]"`
+    assertTrue 'test failed' "[ -r /some/non-existant/file ]"
 
 As the expressions are standard shell __test__ expressions, it is possible to
 string multiple expressions together with `-a` and `-o` in the standard fashion.
