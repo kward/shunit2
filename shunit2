@@ -1270,7 +1270,7 @@ _shunit_escapeCharInStr() {
 
   # Escape the character.
   # shellcheck disable=SC1003,SC2086
-  echo ''${_shunit_s_}'' |command sed 's/\'${_shunit_c_}'/\\\'${_shunit_c_}'/g'
+  echo ''${_shunit_s_}'' |command sed 's/'${_shunit_c_}'/\\\'${_shunit_c_}'/g'
 
   unset _shunit_c_ _shunit_s_
 }
