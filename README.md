@@ -6,7 +6,7 @@ Bourne based shell scripts, and it is designed to work in a similar manner to
 you have ever had the desire to write a unit test for a shell script, shUnit2
 can do the job.
 
-[![Travis CI](https://img.shields.io/travis/kward/shunit2.svg)](https://travis-ci.org/kward/shunit2)
+[![Travis CI](https://api.travis-ci.com/kward/shunit2.svg)](https://app.travis-ci.com/github/kward/shunit2)
 
 ## Table of Contents
 
