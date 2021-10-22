@@ -6,7 +6,7 @@ Bourne based shell scripts, and it is designed to work in a similar manner to
 you have ever had the desire to write a unit test for a shell script, shUnit2
 can do the job.
 
-[![Travis CI](https://img.shields.io/travis/kward/shunit2.svg)](https://travis-ci.org/kward/shunit2)
+[![Travis CI](https://api.travis-ci.com/kward/shunit2.svg)](https://app.travis-ci.com/github/kward/shunit2)
 
 ## Table of Contents
 
@@ -106,7 +106,7 @@ testEquality() {
 }
 
 # Load shUnit2.
-. ./shunit2
+. ../shunit2
 ```
 
 Running the unit test should give results similar to the following.
@@ -168,7 +168,7 @@ testPartyLikeItIs1999() {
 }
 
 # Load shUnit2.
-. ./shunit2
+. ../shunit2
 ```
 
 So, what did you get? I guess it told you that this isn't 1999. Bummer, eh?
@@ -190,7 +190,7 @@ shUnit2 was after all written to meet the unit testing need that
 
 ### <a name="general-info"></a> General Info
 
-Any string values passed should be properly quoted -- they should must be
+Any string values passed should be properly quoted -- they should be
 surrounded by single-quote (`'`) or double-quote (`"`) characters -- so that the
 shell will properly parse them.
 
@@ -206,7 +206,7 @@ treated as strings. The _message_ is optional, and must be quoted.
 
 Asserts that _unexpected_ and _actual_ are not equal to one another. The
 _unexpected_ and _actual_ values can be either strings or integer values as both
-will be treaded as strings. The _message_ is optional, and must be quoted.
+will be treated as strings. The _message_ is optional, and must be quoted.
 
     assertSame [message] expected actual
 
@@ -225,7 +225,7 @@ strings. The _message_ is optional, and must be quoted.
     assertNotContains [message] container content
 
 Asserts that _container_ does not contain _content_. The _container_ and
-_content_ values can be either strings or integer values as both will be treaded
+_content_ values can be either strings or integer values as both will be treated
 as strings. The _message_ is optional, and must be quoted.
 
     assertNull [message] value
@@ -237,7 +237,7 @@ length string. The _message_ is optional, and must be quoted.
     assertNotNull [message] value
 
 Asserts that _value_ is _not null_, or in shell terms, a non-empty string. The
-_value_ may be a string or an integer as the later will be parsed as a non-empty
+_value_ may be a string or an integer as the latter will be parsed as a non-empty
 string value. The _message_ is optional, and must be quoted.
 
     assertTrue [message] condition
@@ -332,28 +332,28 @@ _Note: no actual search of content is done._
 
     oneTimeSetUp
 
-This function can be be optionally overridden by the user in their test suite.
+This function can be optionally overridden by the user in their test suite.
 
 If this function exists, it will be called once before any tests are run. It is
 useful to prepare a common environment for all tests.
 
     oneTimeTearDown
 
-This function can be be optionally overridden by the user in their test suite.
+This function can be optionally overridden by the user in their test suite.
 
 If this function exists, it will be called once after all tests are completed.
 It is useful to clean up the environment after all tests.
 
     setUp
 
-This function can be be optionally overridden by the user in their test suite.
+This function can be optionally overridden by the user in their test suite.
 
 If this function exists, it will be called before each test is run. It is useful
 to reset the environment before each test.
 
     tearDown
 
-This function can be be optionally overridden by the user in their test suite.
+This function can be optionally overridden by the user in their test suite.
 
 If this function exists, it will be called after each test completes. It is
 useful to clean up the environment after each test.
@@ -460,7 +460,7 @@ testLineNo() {
 }
 
 # Load shUnit2.
-. ./shunit2
+. ../shunit2
 ```
 
 Notes:

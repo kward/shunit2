@@ -38,20 +38,13 @@ fi
 
 # Determine some reasonable command defaults.
 __SHUNIT_CMD_ECHO_ESC='echo -e'
-# shellcheck disable=SC2039
+# shellcheck disable=SC2039,SC3037
 if ${__SHUNIT_BUILTIN} [ "`echo -e test`" = '-e test' ]; then
   __SHUNIT_CMD_ECHO_ESC='echo'
 fi
 
-__SHUNIT_UNAME_S=`uname -s`
-case "${__SHUNIT_UNAME_S}" in
-  BSD) __SHUNIT_CMD_EXPR='gexpr' ;;
-  *) __SHUNIT_CMD_EXPR='expr' ;;
-esac
-__SHUNIT_CMD_TPUT='tput'
-
 # Commands a user can override if needed.
-SHUNIT_CMD_EXPR=${SHUNIT_CMD_EXPR:-${__SHUNIT_CMD_EXPR}}
+__SHUNIT_CMD_TPUT='tput'
 SHUNIT_CMD_TPUT=${SHUNIT_CMD_TPUT:-${__SHUNIT_CMD_TPUT}}
 
 # Enable color output. Options are 'never', 'always', or 'auto'.
@@ -112,7 +105,7 @@ for __shunit_const in ${__shunit_constants}; do
       [123].*) readonly "${__shunit_const}" ;;
       *)
         # Declare readonly constants globally.
-        # shellcheck disable=SC2039
+        # shellcheck disable=SC2039,SC3045
         readonly -g "${__shunit_const}"
     esac
   fi
@@ -951,7 +944,7 @@ _shunit_mktempDir() {
   fi
 
   # The standard `mktemp` didn't work. Use our own.
-  # shellcheck disable=SC2039
+  # shellcheck disable=SC2039,SC3028
   if ${__SHUNIT_BUILTIN} [ -r '/dev/urandom' -a -x '/usr/bin/od' ]; then
     _shunit_random_=`/usr/bin/od -vAn -N4 -tx4 </dev/urandom |command sed 's/^[^0-9a-f]*//'`
   elif ${__SHUNIT_BUILTIN} [ -n "${RANDOM:-}" ]; then
@@ -1056,6 +1049,7 @@ _shunit_configureColor() {
     *) _shunit_fatal "unrecognized color option '$1'" ;;
   esac
 
+  # shellcheck disable=SC2254
   case ${_shunit_color_} in
     ${SHUNIT_TRUE})
       __shunit_ansi_none=${__SHUNIT_ANSI_NONE}
@@ -1108,7 +1102,6 @@ _shunit_execSuite() {
     if ! eval ${_shunit_test_}; then
       _shunit_error "${_shunit_test_}() returned non-zero return code."
       __shunit_testSuccess=${SHUNIT_ERROR}
-      _shunit_incFailedCount
     fi
 
     # Execute the per-test tear-down function.
