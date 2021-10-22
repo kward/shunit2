@@ -322,7 +322,7 @@ assertNotContains() {
 # shellcheck disable=SC2016,SC2034
 _ASSERT_NOT_CONTAINS_='eval assertNotContains --lineno "${LINENO:-}"'
 
-# Assert that a value is null (i.e. an empty string)
+# Assert that a value is null (i.e. an empty string).
 #
 # Args:
 #   message: string: failure message [optional]
@@ -332,7 +332,8 @@ _ASSERT_NOT_CONTAINS_='eval assertNotContains --lineno "${LINENO:-}"'
 assertNull() {
   # shellcheck disable=SC2090
   ${_SHUNIT_LINENO_}
-  if ${__SHUNIT_BUILTIN} [ $# -lt 1 -o $# -gt 2 ]; then
+  if ${__SHUNIT_BUILTIN} [ $# -gt 2 ]; then
+    # Allowing 0 arguments as $1 might actually be null.
     _shunit_error "assertNull() requires one or two arguments; $# given"
     _shunit_assertFail
     return ${SHUNIT_ERROR}
@@ -347,7 +348,7 @@ assertNull() {
     shift
   fi
   
-  test -z "${1:-}"
+  ${__SHUNIT_BUILTIN} test -z "${1:-}"
   assertTrue "${shunit_message_}" $?
   shunit_return=$?
 
@@ -357,7 +358,7 @@ assertNull() {
 # shellcheck disable=SC2016,SC2034
 _ASSERT_NULL_='eval assertNull --lineno "${LINENO:-}"'
 
-# Assert that a value is not null (i.e. a non-empty string)
+# Assert that a value is not null (i.e. a non-empty string).
 #
 # Args:
 #   message: string: failure message [optional]
@@ -383,15 +384,13 @@ assertNotNull() {
     shift
   fi
 
- # No need for quoting to detect a non-null string.
-  test -n "${1:-}"
+  ${__SHUNIT_BUILTIN} test -n "${1:-}"
   assertTrue "${shunit_message_}" $?
   shunit_return=$?
 
   unset shunit_message_
   return ${shunit_return}
 }
-
 # shellcheck disable=SC2016,SC2034
 _ASSERT_NOT_NULL_='eval assertNotNull --lineno "${LINENO:-}"'
 

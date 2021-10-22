@@ -61,7 +61,8 @@ testIssue7() {
   # Disable coloring so 'ASSERT:' lines can be matched correctly.
   _shunit_configureColor 'none'
 
-  ( assertEquals 'Some message.' 1 2 >"${stdoutF}" 2>"${stderrF}" )
+  # Ignoring errors with `|| :` as we only care about the message in this test.
+  ( assertEquals 'Some message.' 1 2 >"${stdoutF}" 2>"${stderrF}" ) || :
   diff "${stdoutF}" - >/dev/null <<EOF
 ASSERT:Some message. expected:<1> but was:<2>
 EOF
@@ -110,7 +111,8 @@ testIssue54() {
 testIssue69() {
   unittestF="${SHUNIT_TMPDIR}/unittest"
 
-  for t in Equals NotEquals Null NotNull Same NotSame True False; do
+  # Note: assertNull not tested as zero arguments == null, which is valid.
+  for t in Equals NotEquals NotNull Same NotSame True False; do
     assert="assert${t}"
     sed 's/^#//' >"${unittestF}" <<EOF
 ## Asserts with invalid argument counts should be counted as failures.
@@ -118,7 +120,8 @@ testIssue69() {
 #SHUNIT_COLOR='none'
 #. ${TH_SHUNIT}
 EOF
-    ( exec "${SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" )
+    # Ignoring errors with `|| :` as we only care about `FAILED` in the output.
+    ( exec "${SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" ) || :
     grep '^FAILED' "${stdoutF}" >/dev/null
     assertTrue "failure message for ${assert} was not generated" $?
   done
@@ -135,7 +138,8 @@ testIssue77() {
 #SHUNIT_COLOR='none'
 #. ${TH_SHUNIT}
 EOF
-    ( exec "${SHELL:-sh}" "${unittestF}" ) >"${stdoutF}" 2>"${stderrF}"
+    # Ignoring errors with `|| :` as we only care about `FAILED` in the output.
+    ( exec "${SHELL:-sh}" "${unittestF}" ) >"${stdoutF}" 2>"${stderrF}" || :
     grep '^FAILED' "${stdoutF}" >/dev/null
     assertTrue "failure of ${func}() did not end test" $?
   done
@@ -156,7 +160,8 @@ testIssue84() {
 #SHUNIT_TEST_PREFIX='--- '
 #. ${TH_SHUNIT}
 EOF
-  ( exec "${SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" )
+  # Ignoring errors with `|| :` as we only care about `FAILED` in the output.
+  ( exec "${SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" ) || :
   if ! grep '^FAILED' "${stdoutF}" >/dev/null; then
     fail 'failure message was not generated'
   fi
@@ -166,55 +171,6 @@ testPrepForSourcing() {
   assertEquals '/abc' "`_shunit_prepForSourcing '/abc'`"
   assertEquals './abc' "`_shunit_prepForSourcing './abc'`"
   assertEquals './abc' "`_shunit_prepForSourcing 'abc'`"
-}
-
-testEscapeCharInStr() {
-  while read -r desc char str want; do
-    got=`_shunit_escapeCharInStr "${char}" "${str}"`
-    assertEquals "${desc}" "${want}" "${got}"
-  done <<'EOF'
-backslash      \ ''       ''
-backslash_pre  \ \def     \\def
-backslash_mid  \ abc\def  abc\\def
-backslash_post \ abc\     abc\\
-quote          " ''       ''
-quote_pre      " "def     \"def
-quote_mid      " abc"def  abc\"def
-quote_post     " abc"     abc\"
-string         $ ''       ''
-string_pre     $ $def     \$def
-string_mid     $ abc$def  abc\$def
-string_post    $ abc$     abc\$
-EOF
-
-  # TODO(20170924:kward) fix or remove.
-#  actual=`_shunit_escapeCharInStr "'" ''`
-#  assertEquals '' "${actual}"
-#  assertEquals "abc\\'" `_shunit_escapeCharInStr "'" "abc'"`
-#  assertEquals "abc\\'def" `_shunit_escapeCharInStr "'" "abc'def"`
-#  assertEquals "\\'def" `_shunit_escapeCharInStr "'" "'def"`
-
-#  # Must put the backtick in a variable so the shell doesn't misinterpret it
-#  # while inside a backticked sequence (e.g. `echo '`'` would fail).
-#  backtick='`'
-#  actual=`_shunit_escapeCharInStr ${backtick} ''`
-#  assertEquals '' "${actual}"
-#  assertEquals '\`abc' \
-#      `_shunit_escapeCharInStr "${backtick}" ${backtick}'abc'`
-#  assertEquals 'abc\`' \
-#      `_shunit_escapeCharInStr "${backtick}" 'abc'${backtick}`
-#  assertEquals 'abc\`def' \
-#      `_shunit_escapeCharInStr "${backtick}" 'abc'${backtick}'def'`
-}
-
-testEscapeCharInStr_specialChars() {
-  # Make sure our forward slash doesn't upset sed.
-  assertEquals '/' "`_shunit_escapeCharInStr '\' '/'`"
-
-  # Some shells escape these differently.
-  # TODO(20170924:kward) fix or remove.
-  #assertEquals '\\a' `_shunit_escapeCharInStr '\' '\a'`
-  #assertEquals '\\b' `_shunit_escapeCharInStr '\' '\b'`
 }
 
 # Test the various ways of declaring functions.
@@ -271,13 +227,14 @@ EOF
 }
 
 testColors() {
-  while read -r desc cmd colors; do
+  while read -r cmd colors desc; do
     SHUNIT_CMD_TPUT=${cmd}
     want=${colors} got=`_shunit_colors`
-    assertEquals "${got}" "${want}"
+    assertEquals "${desc}: incorrect number of colors;" \
+        "${got}" "${want}"
   done <<'EOF'
-missing missing_tput 16
-mock    mock_tput    256
+missing_tput 16  missing tput command
+mock_tput    256 mock tput command
 EOF
 }
 

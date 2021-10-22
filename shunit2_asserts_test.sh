@@ -200,6 +200,21 @@ EOF
 }
 
 testAssertNull() {
+  while read -r desc value; do
+    if (assertNull "${value}" >"${stdoutF}" 2>"${stderrF}"); then
+      fail "${desc}: unexpected failure"
+      _showTestOutput
+    else
+      th_assertFalseWithOutput "${desc}" $? "${stdoutF}" "${stderrF}"
+    fi
+  done <<'EOF'
+x_alone          x
+x_double_quote_a x"a
+x_single_quote_a x'a
+x_dollar_a       x$a
+x_backtick_a     x`a
+EOF
+
   desc='null_without_message'
   if (assertNull '' >"${stdoutF}" 2>"${stderrF}"); then
     th_assertTrueWithNoOutput "${desc}" $? "${stdoutF}" "${stderrF}"
@@ -332,8 +347,6 @@ EOF
   fi
 }
 
-
-
 FUNCTIONS='
 assertEquals assertNotEquals
 assertSame assertNotSame
@@ -346,6 +359,7 @@ testTooFewArguments() {
   for fn in ${FUNCTIONS}; do
     # These functions support zero arguments.
     case "${fn}" in
+      assertNull) continue ;;
       assertNotNull) continue ;;
     esac
 
