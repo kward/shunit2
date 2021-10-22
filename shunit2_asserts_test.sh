@@ -235,7 +235,7 @@ testAssertNotNull() {
     fi
   done <<'EOF'
 x_alone          x
-x_double quote_b x"b
+x_double_quote_b x"b
 x_single_quote_b x'b
 x_dollar_b       x$b
 x_backtick_b     x`b
