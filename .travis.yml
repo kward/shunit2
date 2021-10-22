@@ -16,7 +16,7 @@ addons:
 
 matrix:
   include:
-    # Ubuntu (https://en.wikipedia.org/wiki/Ubuntu).
+    ### Ubuntu (https://en.wikipedia.org/wiki/Ubuntu).
     - os: linux
       # Support Ubuntu Focal 20.04 through at least Apr 2025.
       dist: focal
@@ -30,11 +30,12 @@ matrix:
       # Support Ubuntu Trusty 14.04 through at least Apr 2019.
       dist: trusty
 
-    # Other OSes.
-    - os: freebsd
+    ### Other OSes.
+    # [2021-10-22 kward] Disable FreeBSD builds until they actually work.
+    #- os: freebsd
     - os: osx
 
-    # Run the source through ShellCheck (http://www.shellcheck.net).
+    ### Run the source through ShellCheck (http://www.shellcheck.net).
     - os: linux
       script:
         - shellcheck shunit2 *_test.sh
