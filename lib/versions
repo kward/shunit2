@@ -51,6 +51,8 @@ versions_osName() {
         10.13|10.13.[0-9]*) os_name_='macOS High Sierra' ;;
         10.14|10.14.[0-9]*) os_name_='macOS Mojave' ;;
         10.15|10.15.[0-9]*) os_name_='macOS Catalina' ;;
+        11.*) os_name_='macOS Big Sur' ;;
+        12.*) os_name_='macOS Monterey' ;;
         *) os_name_='macOS' ;;
       esac
       ;;
