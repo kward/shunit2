@@ -1268,7 +1268,7 @@ _shunit_escapeCharInStr() {
   unset _shunit_c_ _shunit_s_
 }
 
-# Escape a character in a string.
+# Escape characters in a string.
 #
 # Args:
 #   str: string: to escape characters in
