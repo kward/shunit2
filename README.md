@@ -106,7 +106,7 @@ testEquality() {
 }
 
 # Load shUnit2.
-. ./shunit2
+. ../shunit2
 ```
 
 Running the unit test should give results similar to the following.
@@ -168,7 +168,7 @@ testPartyLikeItIs1999() {
 }
 
 # Load shUnit2.
-. ./shunit2
+. ../shunit2
 ```
 
 So, what did you get? I guess it told you that this isn't 1999. Bummer, eh?
@@ -460,7 +460,7 @@ testLineNo() {
 }
 
 # Load shUnit2.
-. ./shunit2
+. ../shunit2
 ```
 
 Notes:
