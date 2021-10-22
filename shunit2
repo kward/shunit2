@@ -43,15 +43,8 @@ if ${__SHUNIT_BUILTIN} [ "`echo -e test`" = '-e test' ]; then
   __SHUNIT_CMD_ECHO_ESC='echo'
 fi
 
-__SHUNIT_UNAME_S=`uname -s`
-case "${__SHUNIT_UNAME_S}" in
-  BSD) __SHUNIT_CMD_EXPR='gexpr' ;;
-  *) __SHUNIT_CMD_EXPR='expr' ;;
-esac
-__SHUNIT_CMD_TPUT='tput'
-
 # Commands a user can override if needed.
-SHUNIT_CMD_EXPR=${SHUNIT_CMD_EXPR:-${__SHUNIT_CMD_EXPR}}
+__SHUNIT_CMD_TPUT='tput'
 SHUNIT_CMD_TPUT=${SHUNIT_CMD_TPUT:-${__SHUNIT_CMD_TPUT}}
 
 # Enable color output. Options are 'never', 'always', or 'auto'.
