@@ -32,12 +32,15 @@ testSkipping() {
   fi
 
   startSkipping
-  isSkipping; was_skipping_started=$?
-  endSkipping
-  isSkipping; was_skipping_ended=$?
+  was_skipping_started=${SHUNIT_FALSE}
+  if isSkipping; then was_skipping_started=${SHUNIT_TRUE}; fi
 
-  assertEquals "skipping wasn't started" ${was_skipping_started} "${SHUNIT_TRUE}"
-  assertNotEquals "skipping wasn't ended" ${was_skipping_ended} "${SHUNIT_TRUE}"
+  endSkipping
+  was_skipping_ended=${SHUNIT_FALSE}
+  if isSkipping; then was_skipping_ended=${SHUNIT_TRUE}; fi
+
+  assertEquals "skipping wasn't started" "${was_skipping_started}" "${SHUNIT_TRUE}"
+  assertNotEquals "skipping wasn't ended" "${was_skipping_ended}" "${SHUNIT_TRUE}"
   return 0
 }
 
