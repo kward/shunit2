@@ -47,7 +47,7 @@ fi
 __SHUNIT_CMD_TPUT='tput'
 SHUNIT_CMD_TPUT=${SHUNIT_CMD_TPUT:-${__SHUNIT_CMD_TPUT}}
 
-# Enable color output. Options are 'never', 'always', or 'auto'.
+# Enable color output. Options are 'auto', 'always', or 'none'.
 SHUNIT_COLOR=${SHUNIT_COLOR:-auto}
 
 # Logging functions.
