@@ -1093,9 +1093,9 @@ _shunit_execSuite() {
     # Disable skipping.
     endSkipping
 
-    # Execute the per-test setup function.
+    # Execute the per-test setUp() function.
     if ! setUp; then
-      _shunit_fatal "setup() returned non-zero return code."
+      _shunit_fatal "setUp() returned non-zero return code."
     fi
 
     # Execute the test.
@@ -1106,7 +1106,7 @@ _shunit_execSuite() {
       __shunit_testSuccess=${SHUNIT_ERROR}
     fi
 
-    # Execute the per-test tear-down function.
+    # Execute the per-test tearDown() function.
     if ! tearDown; then
       _shunit_fatal "tearDown() returned non-zero return code."
     fi
@@ -1296,7 +1296,7 @@ if ! command mkdir "${SHUNIT_TMPDIR}"; then
   _shunit_fatal "error creating SHUNIT_TMPDIR '${SHUNIT_TMPDIR}'"
 fi
 
-# Setup traps to clean up after ourselves.
+# Configure traps to clean up after ourselves.
 trap '_shunit_cleanup EXIT' 0
 trap '_shunit_cleanup INT' 2
 trap '_shunit_cleanup TERM' 15
