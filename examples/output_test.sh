@@ -17,11 +17,11 @@ testGenerateOutput() {
   [ ${rtrn} -eq 0 ] || showOutput
 
   # This test will pass because the grepped output matches.
-  grep -q 'STDOUT' "${stdoutF}"
+  grep 'STDOUT' "${stdoutF}" >/dev/null
   assertTrue 'STDOUT message missing' $?
 
   # This test will fail because the grepped output doesn't match.
-  grep -q 'ST[andar]DERR[or]' "${stderrF}"
+  grep 'ST[andar]DERR[or]' "${stderrF}" >/dev/null
   assertTrue 'STDERR message missing' $?
 
   return 0
