@@ -1173,7 +1173,7 @@ _shunit_generateReport() {
 # Returns:
 #   boolean: whether the test should be skipped (TRUE/FALSE constant)
 _shunit_shouldSkip() {
-  if test ${__shunit_skip} -eq ${SHUNIT_FALSE}; then
+  if ${__SHUNIT_BUILTIN} test ${__shunit_skip} -eq ${SHUNIT_FALSE}; then
     return ${SHUNIT_FALSE}
   fi
   _shunit_assertSkip
