@@ -822,8 +822,11 @@ _FAIL_NOT_SAME_='eval failNotSame --lineno "${LINENO:-}"'
 # the total of asserts and fails will not be altered.
 #
 # Args:
-#   None
-startSkipping() { __shunit_skip=${SHUNIT_TRUE}; }
+#   message: string: message to provide to user [optional]
+startSkipping() {
+  if ${__SHUNIT_BUILTIN} [ $# -gt 0 ]; then _shunit_warn "[skipping] $*"; fi
+  __shunit_skip=${SHUNIT_TRUE}
+}
 
 # Resume the normal recording behavior of assert and fail calls.
 #
