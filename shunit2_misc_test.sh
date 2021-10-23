@@ -167,6 +167,20 @@ EOF
   fi
 }
 
+# Demonstrate that asserts are no longer executed in subshells.
+# https://github.com/kward/shunit2/issues/123
+#
+# NOTE: this test only works if the `${BASH_SUBSHELL}` variable is present.
+testIssue123() {
+  if [ -z "${BASH_SUBSHELL:-}" ]; then
+    # shellcheck disable=SC2016
+    th_warn 'The ${BASH_SUBSHELL} variable is unavailable in this shell. Skipping.'
+    startSkipping
+  fi
+  # shellcheck disable=SC2016
+  assertTrue 'not in subshell' '[[ ${BASH_SUBSHELL} -eq 0 ]]'
+}
+
 testPrepForSourcing() {
   assertEquals '/abc' "`_shunit_prepForSourcing '/abc'`"
   assertEquals './abc' "`_shunit_prepForSourcing './abc'`"
