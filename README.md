@@ -62,9 +62,9 @@ Cygwin                              | user      | unknown
 
 * Bourne Shell (__sh__)
 * BASH - GNU Bourne Again SHell (__bash__)
-* DASH (__dash__)
-* Korn Shell (__ksh__)
-* pdksh - Public Domain Korn Shell (__pdksh__)
+* DASH - Debian Almquist Shell (__dash__)
+* Korn Shell - AT&T version of the Korn shell (__ksh__)
+* mksh - MirBSD Korn Shell (__mksh__)
 * zsh - Zsh (__zsh__) (since 2.1.2) _please see the Zsh shell errata for more information_
 
 See the appropriate Release Notes for this release
@@ -183,6 +183,15 @@ ton more examples, take a look at the tests provided with [log4sh][log4sh] or
 [shFlags][shflags]. Both provide excellent examples of more advanced usage.
 shUnit2 was after all written to meet the unit testing need that
 [log4sh][log4sh] had.
+
+If you are using distribution packaged shUnit2 which is accessible from
+`/usr/bin/shunit2` such as Debian, you can load shUnit2 without specifying its
+path.  So the last 2 lines in the above can be replaced by:
+
+```sh
+# Load shUnit2.
+. shunit2
+```
 
 ---
 
@@ -477,7 +486,7 @@ Notes:
 
 1. Line numbers are not supported in all shells. If a shell does not support
    them, no errors will be thrown. Supported shells include: __bash__ (>=3.0),
-   __ksh__, __pdksh__, and __zsh__.
+   __ksh__, __mksh__, and __zsh__.
 
 ### <a name="test-skipping"></a> Test Skipping
 
@@ -538,7 +547,7 @@ oneTimeSetUp() {
 }
 
 # Load and run shUnit2.
-. ./shunit2
+. ../shunit2
 ```
 
 Running the above test under the __bash__ shell will result in the following
