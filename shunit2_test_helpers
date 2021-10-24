@@ -234,17 +234,6 @@ _th_showOutput() {
   unset _th_return_ _th_stdout_ _th_stderr_
 }
 
-# th_isLinenoWorking returns true if the LINENO shell variable works properly.
-th_isLinenoWorking() {
-  # shellcheck disable=SC2016
-  ln='eval echo "${LINENO:-}"'
-  case ${ln} in
-    [0-9]*) return "${SHUNIT_TRUE}" ;;
-    -[0-9]*) return "${SHUNIT_FALSE}" ;; # The dash shell produces negative values.
-  esac
-  return "${SHUNIT_FALSE}"
-}
-
 #
 # Main.
 #

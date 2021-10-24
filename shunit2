@@ -149,7 +149,7 @@ __shunit_assertsSkipped=0
 #
 
 # shellcheck disable=SC2016,SC2089
-_SHUNIT_LINENO_='eval __shunit_lineno=""; if ${__SHUNIT_BUILTIN} [ "${1:-}" = "--lineno" ]; then if ${__SHUNIT_BUILTIN} [ -n "$2" ]; then __shunit_lineno="[$2] "; fi; shift 2; fi'
+_SHUNIT_LINENO_='eval __shunit_lineno=""; if ${__SHUNIT_BUILTIN} [ "${1:-}" = "--lineno" ] && ${__SHUNIT_BUILTIN} [ -n "${2:-}" ]; then __shunit_lineno="[${2}]"; shift 2; fi;'
 
 #-----------------------------------------------------------------------------
 # Assertion functions.
