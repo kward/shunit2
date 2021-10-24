@@ -38,11 +38,9 @@ fi
 
 # Determine some reasonable command defaults.
 __SHUNIT_CMD_ECHO_ESC='echo -e'
-if ! (${__SHUNIT_CMD_ECHO_ESC} >/dev/null 2>&1); then
-  # shellcheck disable=SC2039,SC3037
-  if ${__SHUNIT_BUILTIN} [ "`echo -e test`" = '-e test' ]; then
-    __SHUNIT_CMD_ECHO_ESC='echo'
-  fi
+# shellcheck disable=SC2039,SC3037
+if ${__SHUNIT_BUILTIN} [ "`echo -e test`" = '-e test' ]; then
+  __SHUNIT_CMD_ECHO_ESC='echo'
 fi
 
 # Commands a user can override if needed.
