@@ -3,7 +3,7 @@
 #
 # shUnit2 unit test for failure functions. These functions do not test values.
 #
-# Copyright 2008-2019 Kate Ward. All Rights Reserved.
+# Copyright 2008-2021 Kate Ward. All Rights Reserved.
 # Released under the Apache 2.0 license.
 # http://www.apache.org/licenses/LICENSE-2.0
 #

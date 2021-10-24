@@ -5,6 +5,7 @@
 #
 # Copyright 2008-2021 Kate Ward. All Rights Reserved.
 # Released under the Apache 2.0 license.
+# http://www.apache.org/licenses/LICENSE-2.0
 #
 # Author: kate.ward@forestent.com (Kate Ward)
 # https://github.com/kward/shunit2
