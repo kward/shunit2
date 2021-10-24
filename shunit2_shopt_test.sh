@@ -57,7 +57,7 @@ oneTimeSetUp() {
 # isShoptWorking returns true if the `shopt` shell command is available.
 # NOTE: `shopt` is not defined as part of the POSIX standard.
 isShoptWorking() {
-  # shellcheck disable=SC3044
+  # shellcheck disable=SC2039,SC3044
   ( shopt >/dev/null 2>&1 );
 }
 
