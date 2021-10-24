@@ -11,6 +11,8 @@
 #
 # Allow usage of legacy backticked `...` notation instead of $(...).
 #  shellcheck disable=SC2006
+# Disable source following.
+#   shellcheck disable=SC1090,SC1091
 
 # These variables will be overridden by the test helpers.
 stdoutF="${TMPDIR:-/tmp}/STDOUT"

@@ -1,4 +1,9 @@
 # ShellCheck (https://www.shellcheck.net/)
+#
+# This file is supported as of shellcheck v0.7.0.
+#
+# TODO(kward): Remove equivalent references in `*_test.sh` from file once
+#   Travis CI upgrades its shellcheck version.
 
 # Disable source following.
 disable=SC1090,SC1091

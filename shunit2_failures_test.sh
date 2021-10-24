@@ -7,10 +7,11 @@
 # Released under the Apache 2.0 license.
 # http://www.apache.org/licenses/LICENSE-2.0
 #
-# shUnit2 -- Unit testing framework for Unix shell scripts.
+# Author: kate.ward@forestent.com (Kate Ward)
 # https://github.com/kward/shunit2
 #
-# Author: kate.ward@forestent.com (Kate Ward)
+# Disable source following.
+#   shellcheck disable=SC1090,SC1091
 
 # These variables will be overridden by the test helpers.
 stdoutF="${TMPDIR:-/tmp}/STDOUT"

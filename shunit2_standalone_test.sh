@@ -12,6 +12,9 @@
 # This unit test is purely to test that calling shunit2 directly, while passing
 # the name of a unit test script, works. When run, this script determines if it
 # is running as a standalone program, and calls main() if it is.
+#
+# Disable source following.
+#   shellcheck disable=SC1090,SC1091
 
 ARGV0=$(basename "$0")
 

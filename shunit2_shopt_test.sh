@@ -8,6 +8,9 @@
 #
 # Author: kate.ward@forestent.com (Kate Ward)
 # https://github.com/kward/shunit2
+#
+# Disable source following.
+#   shellcheck disable=SC1090,SC1091
 
 # Load test helpers.
 . ./shunit2_test_helpers

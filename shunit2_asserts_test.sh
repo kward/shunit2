@@ -5,12 +5,16 @@
 #
 # Copyright 2008-2017 Kate Ward. All Rights Reserved.
 # Released under the Apache 2.0 license.
+# http://www.apache.org/licenses/LICENSE-2.0
 #
 # Author: kate.ward@forestent.com (Kate Ward)
 # https://github.com/kward/shunit2
 #
 # In this file, all assert calls under test must be wrapped in () so they do not
 # influence the metrics of the test itself.
+#
+# Disable source following.
+#   shellcheck disable=SC1090,SC1091
 
 # These variables will be overridden by the test helpers.
 stdoutF="${TMPDIR:-/tmp}/STDOUT"
