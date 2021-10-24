@@ -698,11 +698,12 @@ failFound() {
     shunit_message_="${shunit_message_}$1"
     shift
   fi
+  shunit_content_=$1
 
   shunit_message_=${shunit_message_%% }
-  _shunit_assertFail "${shunit_message_:+${shunit_message_} }found"
+  _shunit_assertFail "${shunit_message_:+${shunit_message_} }found:<${shunit_content_}>"
 
-  unset shunit_message_
+  unset shunit_message_ shunit_content_
   return ${SHUNIT_FALSE}
 }
 # shellcheck disable=SC2016,SC2034
