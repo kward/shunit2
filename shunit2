@@ -13,10 +13,10 @@
 # shUnit2 is a xUnit based unit test framework for Bourne shell scripts. It is
 # based on the popular JUnit unit testing framework for Java.
 #
-# $() are not fully portable (POSIX != portable).
-#   shellcheck disable=SC2006
-# expr may be antiquated, but it is the only solution in some cases.
+# `expr` may be antiquated, but it is the only solution in some cases.
 #   shellcheck disable=SC2003
+# Allow usage of legacy backticked `...` notation instead of $(...).
+#  shellcheck disable=SC2006
 
 # Return if shunit2 already loaded.
 if test -n "${SHUNIT_VERSION:-}"; then

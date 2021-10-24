@@ -1,6 +1,8 @@
 #! /bin/sh
 # vim:et:ft=sh:sts=2:sw=2
 #
+# shUnit2 unit test for failure functions. These functions do not test values.
+#
 # Copyright 2008-2019 Kate Ward. All Rights Reserved.
 # Released under the Apache 2.0 license.
 # http://www.apache.org/licenses/LICENSE-2.0
@@ -9,11 +11,6 @@
 # https://github.com/kward/shunit2
 #
 # Author: kate.ward@forestent.com (Kate Ward)
-#
-# shUnit2 unit test for failure functions. These functions do not test values
-#
-# Disable source following.
-#   shellcheck disable=SC1090,SC1091
 
 # These variables will be overridden by the test helpers.
 stdoutF="${TMPDIR:-/tmp}/STDOUT"

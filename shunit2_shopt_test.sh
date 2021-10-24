@@ -1,21 +1,13 @@
 #! /bin/sh
 # vim:et:ft=sh:sts=2:sw=2
 #
-# shUnit2 unit tests for general commands.
+# shUnit2 unit tests for `shopt` support.
 #
 # Copyright 2008-2021 Kate Ward. All Rights Reserved.
 # Released under the Apache 2.0 license.
 #
 # Author: kate.ward@forestent.com (Kate Ward)
 # https://github.com/kward/shunit2
-#
-### ShellCheck http://www.shellcheck.net/
-# $() are not fully portable (POSIX != portable).
-#   shellcheck disable=SC2006
-# Disable source following.
-#   shellcheck disable=SC1090,SC1091
-# Not wanting to escape single quotes.
-#   shellcheck disable=SC1003
 
 # Load test helpers.
 . ./shunit2_test_helpers

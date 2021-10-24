@@ -3,9 +3,6 @@
 # shunit2 unit test for running subset(s) of tests based upon command line
 # arguments. Also shows how non-default tests or a arbitrary subset of tests
 # can be run.
-#
-# Disable source following.
-#   shellcheck disable=SC1090,SC1091
 
 # Load test helpers.
 . ./shunit2_test_helpers

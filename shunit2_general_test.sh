@@ -8,14 +8,6 @@
 #
 # Author: kate.ward@forestent.com (Kate Ward)
 # https://github.com/kward/shunit2
-#
-### ShellCheck http://www.shellcheck.net/
-# $() are not fully portable (POSIX != portable).
-#   shellcheck disable=SC2006
-# Disable source following.
-#   shellcheck disable=SC1090,SC1091
-# Not wanting to escape single quotes.
-#   shellcheck disable=SC1003
 
 # These variables will be overridden by the test helpers.
 stdoutF="${TMPDIR:-/tmp}/STDOUT"

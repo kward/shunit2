@@ -8,12 +8,6 @@
 #
 # Author: kate.ward@forestent.com (Kate Ward)
 # https://github.com/kward/shunit2
-#
-### ShellCheck http://www.shellcheck.net/
-# Disable source following.
-#   shellcheck disable=SC1090,SC1091
-# Presence of LINENO variable is checked.
-#   shellcheck disable=SC2039
 
 # These variables will be overridden by the test helpers.
 stdoutF="${TMPDIR:-/tmp}/STDOUT"

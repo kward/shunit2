@@ -1,0 +1,4 @@
+# ShellCheck (https://www.shellcheck.net/)
+
+# Disable source following.
+disable=SC1090,SC1091
