@@ -49,7 +49,7 @@ FN_TESTS=`
 cat <<EOF
 fail          1
 failNotEquals 3 but was:
-failFound     2 found$
+failFound     2 found:
 failNotFound  2 not found:
 failSame      3 not same
 failNotSame   3 but was:
