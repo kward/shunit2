@@ -1373,5 +1373,5 @@ _shunit_generateReport
 
 # That's it folks.
 if ! ${__SHUNIT_BUILTIN} [ "${__shunit_testsFailed}" -eq 0 ]; then
-  return ${SHUNIT_FALSE}
+  exit ${SHUNIT_FALSE}
 fi
