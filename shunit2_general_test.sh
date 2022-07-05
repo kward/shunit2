@@ -20,57 +20,57 @@ stderrF="${TMPDIR:-/tmp}/STDERR"
 # Load test helpers.
 . ./shunit2_test_helpers
 
-testSkipping() {
-  # We shouldn't be skipping to start.
-  if isSkipping; then
-    th_error 'skipping *should not be* enabled'
+testAssertsSkipping() {
+  # We shouldn't be assert skipping to start.
+  if isSkippingAsserts; then
+    th_error 'assert skipping *should not be* enabled'
     return
   fi
 
-  startSkipping
+  startSkippingAsserts
   was_skipping_started=${SHUNIT_FALSE}
-  if isSkipping; then was_skipping_started=${SHUNIT_TRUE}; fi
+  if isSkippingAsserts; then was_skipping_started=${SHUNIT_TRUE}; fi
 
-  endSkipping
+  endSkippingAsserts
   was_skipping_ended=${SHUNIT_FALSE}
-  if isSkipping; then was_skipping_ended=${SHUNIT_TRUE}; fi
+  if isSkippingAsserts; then was_skipping_ended=${SHUNIT_TRUE}; fi
 
-  assertEquals "skipping wasn't started" "${was_skipping_started}" "${SHUNIT_TRUE}"
-  assertNotEquals "skipping wasn't ended" "${was_skipping_ended}" "${SHUNIT_TRUE}"
+  assertEquals "assert skipping wasn't started" "${was_skipping_started}" "${SHUNIT_TRUE}"
+  assertNotEquals "assert skipping wasn't ended" "${was_skipping_ended}" "${SHUNIT_TRUE}"
   return 0
 }
 
-testStartSkippingWithMessage() {
+testStartSkippingAssertsWithMessage() {
   unittestF="${SHUNIT_TMPDIR}/unittest"
   sed 's/^#//' >"${unittestF}" <<\EOF
 ## Start skipping with a message.
 #testSkipping() {
-#  startSkipping 'SKIP-a-Dee-Doo-Dah'
+#  startSkippingAsserts 'SKIP-a-Dee-Doo-Dah'
 #}
 #SHUNIT_COLOR='none'
 #. ${TH_SHUNIT}
 EOF
   # Ignoring errors with `|| :` as we only care about `FAILED` in the output.
   ( exec "${SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" ) || :
-  if ! grep '\[skipping\] SKIP-a-Dee-Doo-Dah' "${stderrF}" >/dev/null; then
+  if ! grep '\[skipping asserts\] SKIP-a-Dee-Doo-Dah' "${stderrF}" >/dev/null; then
     fail 'skipping message was not generated'
   fi
   return 0
 }
 
-testStartSkippingWithoutMessage() {
+testStartSkippingAssertsWithoutMessage() {
   unittestF="${SHUNIT_TMPDIR}/unittest"
   sed 's/^#//' >"${unittestF}" <<\EOF
 ## Start skipping with a message.
 #testSkipping() {
-#  startSkipping
+#  startSkippingAsserts
 #}
 #SHUNIT_COLOR='none'
 #. ${TH_SHUNIT}
 EOF
   # Ignoring errors with `|| :` as we only care about `FAILED` in the output.
   ( exec "${SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" ) || :
-  if grep '\[skipping\]' "${stderrF}" >/dev/null; then
+  if grep '\[skipping asserts\]' "${stderrF}" >/dev/null; then
     fail 'skipping message was unexpectedly generated'
   fi
   return 0

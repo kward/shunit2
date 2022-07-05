@@ -369,21 +369,31 @@ useful to clean up the environment after each test.
 
 ### <a name="skipping"></a> Skipping
 
-    startSkipping
+#### Skipping tests
+
+TBA
+
+#### Skipping assertions
+
+    startSkippingAsserts
 
 This function forces the remaining _assert_ and _fail_ functions to be
 "skipped", i.e. they will have no effect. Each function skipped will be recorded
 so that the total of asserts and fails will not be altered.
 
-    endSkipping
+    endSkippingAsserts
 
 This function returns calls to the _assert_ and _fail_ functions to their
 default behavior, i.e. they will be called.
 
-    isSkipping
+    isSkippingAsserts
 
-This function returns the current state of skipping. It can be compared against
+This function returns the current state of assert skipping. It can be compared against
 `${SHUNIT_TRUE}` or `${SHUNIT_FALSE}` if desired.
+
+**Note:** These functions were called `startSkipping`, `endSkipping`, and `isSkipping`
+earlier. Those old functions are still available and they work as before, but they will
+print out a warning that they are deprecated.
 
 ### <a name="suites"></a> Suites
 
@@ -533,7 +543,7 @@ testAdding() {
       3 "${result}"
 
   # Disable non-generic tests.
-  [ -z "${BASH_VERSION:-}" ] && startSkipping
+  [ -z "${BASH_VERSION:-}" ] && startSkippingAsserts
 
   result=`add_bash 1 2`
   assertEquals \
@@ -571,15 +581,15 @@ testAdding
 
 Ran 1 test.
 
-OK (skipped=1)
+OK (skipped asserts=1)
 ```
 
 As you can see, the total number of tests has not changed, but the report
-indicates that some tests were skipped.
+indicates that some asserts were skipped.
 
-Skipping can be controlled with the following functions: `startSkipping()`,
-`endSkipping()`, and `isSkipping()`. Once skipping is enabled, it will remain
-enabled until the end of the current test function call, after which skipping is
+Skipping assert checks can be controlled with the following functions: `startSkippingAsserts()`,
+`endSkippingAsserts()`, and `isSkippingAsserts()`. Once skipping is enabled, it will remain
+enabled until the end of the current test function call, after which assert skipping is
 disabled.
 
 ### <a name="cmd-line-args"></a> Running specific tests from the command line.

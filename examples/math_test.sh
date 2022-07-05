@@ -8,7 +8,7 @@ testAdding() {
       3 "${result}"
 
   # Disable non-generic tests.
-  [ -z "${BASH_VERSION:-}" ] && startSkipping
+  [ -z "${BASH_VERSION:-}" ] && startSkippingAsserts
 
   result=`add_bash 1 2`
   assertEquals \

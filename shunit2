@@ -78,7 +78,7 @@ __shunit_lineno=''  # Line number of executed test.
 __shunit_mode=${__SHUNIT_MODE_SOURCED}  # Operating mode.
 __shunit_reportGenerated=${SHUNIT_FALSE}  # Is report generated.
 __shunit_script=''  # Filename of unittest script (standalone mode).
-__shunit_skip=${SHUNIT_FALSE}  # Is skipping enabled.
+__shunit_skip_asserts=${SHUNIT_FALSE}  # Is assert skipping enabled.
 __shunit_suite=''  # Suite of tests to execute.
 __shunit_clean=${SHUNIT_FALSE}  # _shunit_cleanup() was already called.
 
@@ -827,21 +827,29 @@ _FAIL_NOT_SAME_='eval failNotSame --lineno "${LINENO:-}"'
 # Force remaining assert and fail functions to be "skipped".
 #
 # This function forces the remaining assert and fail functions to be "skipped",
-# i.e. they will have no effect. Each function skipped will be recorded so that
-# the total of asserts and fails will not be altered.
+# i.e. they will have no effect. Each skipped assert and fail function will be
+# recorded so that the total of asserts and fails will not be altered.
 #
 # Args:
 #   message: string: message to provide to user [optional]
+startSkippingAsserts() {
+  if ${__SHUNIT_BUILTIN} [ $# -gt 0 ]; then _shunit_warn "[skipping asserts] $*"; fi
+  __shunit_skip_asserts=${SHUNIT_TRUE}
+}
 startSkipping() {
-  if ${__SHUNIT_BUILTIN} [ $# -gt 0 ]; then _shunit_warn "[skipping] $*"; fi
-  __shunit_skip=${SHUNIT_TRUE}
+  _shunit_warn "startSkipping is deprecated. Use startSkippingAsserts instead."
+  startSkippingAsserts "$@"
 }
 
 # Resume the normal recording behavior of assert and fail calls.
 #
 # Args:
 #   None
-endSkipping() { __shunit_skip=${SHUNIT_FALSE}; }
+endSkippingAsserts() { __shunit_skip_asserts=${SHUNIT_FALSE}; }
+endSkipping() {
+  _shunit_warn "endSkipping is deprecated. Use endSkippingAsserts instead."
+  endSkippingAsserts
+}
 
 # Returns the state of assert and fail call skipping.
 #
@@ -849,7 +857,12 @@ endSkipping() { __shunit_skip=${SHUNIT_FALSE}; }
 #   None
 # Returns:
 #   boolean: (TRUE/FALSE constant)
-isSkipping() { return ${__shunit_skip}; }
+isSkippingAsserts() { return ${__shunit_skip_asserts}; }
+isSkipping() {
+  _shunit_warn "isSkipping is deprecated. Use isSkippingAsserts instead."
+  # shellcheck disable=SC2046
+  return `isSkippingAsserts`
+}
 
 #-----------------------------------------------------------------------------
 # Suite functions.
@@ -1099,8 +1112,8 @@ _shunit_execSuite() {
   for _shunit_test_ in ${__shunit_suite}; do
     __shunit_testSuccess=${SHUNIT_TRUE}
 
-    # Disable skipping.
-    endSkipping
+    # Disable skipping asserts.
+    endSkippingAsserts
 
     # Execute the per-test setUp() function.
     if ! setUp; then
@@ -1160,13 +1173,13 @@ _shunit_generateReport() {
   if ${__SHUNIT_BUILTIN} [ ${_shunit_ok_} -eq ${SHUNIT_TRUE} ]; then
     _shunit_msg_="${__shunit_ansi_green}OK${__shunit_ansi_none}"
     if ${__SHUNIT_BUILTIN} [ "${__shunit_assertsSkipped}" -gt 0 ]; then
-      _shunit_msg_="${_shunit_msg_} (${__shunit_ansi_yellow}skipped=${__shunit_assertsSkipped}${__shunit_ansi_none})"
+      _shunit_msg_="${_shunit_msg_} (${__shunit_ansi_yellow}skipped asserts=${__shunit_assertsSkipped}${__shunit_ansi_none})"
     fi
   else
     _shunit_msg_="${__shunit_ansi_red}FAILED${__shunit_ansi_none}"
     _shunit_msg_="${_shunit_msg_} (${__shunit_ansi_red}failures=${__shunit_assertsFailed}${__shunit_ansi_none}"
     if ${__SHUNIT_BUILTIN} [ "${__shunit_assertsSkipped}" -gt 0 ]; then
-      _shunit_msg_="${_shunit_msg_},${__shunit_ansi_yellow}skipped=${__shunit_assertsSkipped}${__shunit_ansi_none}"
+      _shunit_msg_="${_shunit_msg_},${__shunit_ansi_yellow}skipped asserts=${__shunit_assertsSkipped}${__shunit_ansi_none}"
     fi
     _shunit_msg_="${_shunit_msg_})"
   fi
@@ -1185,7 +1198,7 @@ _shunit_generateReport() {
 # Returns:
 #   boolean: whether the test should be skipped (TRUE/FALSE constant)
 _shunit_shouldSkip() {
-  if ${__SHUNIT_BUILTIN} test ${__shunit_skip} -eq ${SHUNIT_FALSE}; then
+  if ${__SHUNIT_BUILTIN} test ${__shunit_skip_asserts} -eq ${SHUNIT_FALSE}; then
     return ${SHUNIT_FALSE}
   fi
   _shunit_assertSkip

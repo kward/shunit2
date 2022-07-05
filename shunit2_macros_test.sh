@@ -21,7 +21,7 @@ stderrF="${TMPDIR:-/tmp}/STDERR"
 . ./shunit2_test_helpers
 
 testAssertEquals() {
-  isLinenoWorking || startSkipping
+  isLinenoWorking || startSkippingAsserts
 
   ( ${_ASSERT_EQUALS_} 'x' 'y' >"${stdoutF}" 2>"${stderrF}" )
   if ! wasAssertGenerated; then
@@ -37,7 +37,7 @@ testAssertEquals() {
 }
 
 testAssertNotEquals() {
-  isLinenoWorking || startSkipping
+  isLinenoWorking || startSkippingAsserts
 
   ( ${_ASSERT_NOT_EQUALS_} 'x' 'x' >"${stdoutF}" 2>"${stderrF}" )
   if ! wasAssertGenerated; then
@@ -53,7 +53,7 @@ testAssertNotEquals() {
 }
 
 testSame() {
-  isLinenoWorking || startSkipping
+  isLinenoWorking || startSkippingAsserts
 
   ( ${_ASSERT_SAME_} 'x' 'y' >"${stdoutF}" 2>"${stderrF}" )
   if ! wasAssertGenerated; then
@@ -69,7 +69,7 @@ testSame() {
 }
 
 testNotSame() {
-  isLinenoWorking || startSkipping
+  isLinenoWorking || startSkippingAsserts
 
   ( ${_ASSERT_NOT_SAME_} 'x' 'x' >"${stdoutF}" 2>"${stderrF}" )
   if ! wasAssertGenerated; then
@@ -85,7 +85,7 @@ testNotSame() {
 }
 
 testNull() {
-  isLinenoWorking || startSkipping
+  isLinenoWorking || startSkippingAsserts
 
   ( ${_ASSERT_NULL_} 'x' >"${stdoutF}" 2>"${stderrF}" )
   if ! wasAssertGenerated; then
@@ -101,7 +101,7 @@ testNull() {
 }
 
 testNotNull() {
-  isLinenoWorking || startSkipping
+  isLinenoWorking || startSkippingAsserts
 
   ( ${_ASSERT_NOT_NULL_} '' >"${stdoutF}" 2>"${stderrF}" )
   if ! wasAssertGenerated; then
@@ -117,7 +117,7 @@ testNotNull() {
 }
 
 testAssertTrue() {
-  isLinenoWorking || startSkipping
+  isLinenoWorking || startSkippingAsserts
 
   ( ${_ASSERT_TRUE_} "${SHUNIT_FALSE}" >"${stdoutF}" 2>"${stderrF}" )
   if ! wasAssertGenerated; then
@@ -133,7 +133,7 @@ testAssertTrue() {
 }
 
 testAssertFalse() {
-  isLinenoWorking || startSkipping
+  isLinenoWorking || startSkippingAsserts
 
   ( ${_ASSERT_FALSE_} "${SHUNIT_TRUE}" >"${stdoutF}" 2>"${stderrF}" )
   if ! wasAssertGenerated; then
@@ -149,7 +149,7 @@ testAssertFalse() {
 }
 
 testFail() {
-  isLinenoWorking || startSkipping
+  isLinenoWorking || startSkippingAsserts
 
   ( ${_FAIL_} >"${stdoutF}" 2>"${stderrF}" )
   if ! wasAssertGenerated; then
@@ -165,7 +165,7 @@ testFail() {
 }
 
 testFailNotEquals() {
-  isLinenoWorking || startSkipping
+  isLinenoWorking || startSkippingAsserts
 
   ( ${_FAIL_NOT_EQUALS_} 'x' 'y' >"${stdoutF}" 2>"${stderrF}" )
   if ! wasAssertGenerated; then
@@ -181,7 +181,7 @@ testFailNotEquals() {
 }
 
 testFailSame() {
-  isLinenoWorking || startSkipping
+  isLinenoWorking || startSkippingAsserts
 
   ( ${_FAIL_SAME_} 'x' 'x' >"${stdoutF}" 2>"${stderrF}" )
   if ! wasAssertGenerated; then
@@ -197,7 +197,7 @@ testFailSame() {
 }
 
 testFailNotSame() {
-  isLinenoWorking || startSkipping
+  isLinenoWorking || startSkippingAsserts
 
   ( ${_FAIL_NOT_SAME_} 'x' 'y' >"${stdoutF}" 2>"${stderrF}" )
   if ! wasAssertGenerated; then
