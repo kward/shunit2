@@ -369,31 +369,41 @@ useful to clean up the environment after each test.
 
 ### <a name="skipping"></a> Skipping
 
-#### Skipping tests
+To "skip" a test completely, call function
 
-TBA
+    skipTest
 
-#### Skipping assertions
+in the very beginning of the test case. It **must** be called as first thing in
+a test that one wishes to skip. The function will force all _assert_ and _fail_
+functions to be ignored completely in that test. The number of skipped asserts
+and fails *will not* be recorded, instead a skipped test counter is increased by one.
+Should this function be called after any asserts, an error will be printed out
+and the test will fail.
+
+To "skip" only certain assert and fail functions, one should call function
 
     startSkippingAsserts
 
-This function forces the remaining _assert_ and _fail_ functions to be
-"skipped", i.e. they will have no effect. Each function skipped will be recorded
+This function forces the _assert_ and _fail_ functions after the function call to be
+"skipped", i.e. they will have no effect. Each skipped check function will be recorded
 so that the total of asserts and fails will not be altered.
+
+To end assert and fail function skipping, call function
 
     endSkippingAsserts
 
 This function returns calls to the _assert_ and _fail_ functions to their
 default behavior, i.e. they will be called.
 
+The current state of assert skipping can be checked using function
+
     isSkippingAsserts
 
-This function returns the current state of assert skipping. It can be compared against
-`${SHUNIT_TRUE}` or `${SHUNIT_FALSE}` if desired.
+It can be compared against `${SHUNIT_TRUE}` or `${SHUNIT_FALSE}` if desired.
 
-**Note:** These functions were called `startSkipping`, `endSkipping`, and `isSkipping`
-earlier. Those old functions are still available and they work as before, but they will
-print out a warning that they are deprecated.
+**Note:** Those `*SkippingAsserts` functions were previously called `startSkipping`,
+`endSkipping`, and `isSkipping`, respectively. The old functions are still available
+and they work as before, but they will print out a warning that they are deprecated.
 
 ### <a name="suites"></a> Suites
 
@@ -506,8 +516,8 @@ but maintain the total test count.
 
 Probably the easiest example would be shell code that is meant to run under the
 __bash__ shell, but the unit test is running under the Bourne shell. There are
-things that just won't work. The following test code demonstrates two sample
-functions, one that will be run under any shell, and the another that will run
+things that just won't work. The following test code demonstrates three sample
+functions, one that will be run under any shell, and the two others that will run
 only under the __bash__ shell.
 
 _**Example** -- math include_
@@ -527,9 +537,19 @@ add_bash() {
 
   echo $(($1 + $2))
 }
+
+subtract_bash()
+{
+  num_a=$1
+  num_b=$2
+
+  echo $(($1 - $2))
+}
 ```
 
-And here is a corresponding unit test that correctly skips the `add_bash()` function when the unit test is not running under the __bash__ shell.
+And here is corresponding unit tests that correctly skips the `add_bash()`
+and `subtract_bash()` functions when the unit test is not running under
+the __bash__ shell.
 
 _**Example** -- math unit test_
 ```sh
@@ -551,6 +571,21 @@ testAdding() {
       3 "${result}"
 }
 
+testBashFunctions() {
+  # Disable non-generic tests.
+  [ -z "${BASH_VERSION:-}" ] && skipTest "Works only in bash shell"
+
+  result=`add_bash 1 2`
+  assertEquals \
+      "the result of '${result}' was wrong" \
+      3 "${result}"
+
+  result=`subtract_bash 2 1`
+  assertEquals \
+      "the result of '${result}' was wrong" \
+      1 "${result}"
+}
+
 oneTimeSetUp() {
   # Load include to test.
   . ./math.inc
@@ -566,8 +601,9 @@ output.
 ```console
 $ /bin/bash math_test.sh
 testAdding
+testBashFunctions
 
-Ran 1 test.
+Ran 2 tests.
 
 OK
 ```
@@ -578,19 +614,27 @@ output.
 ```console
 $ /bin/ksh math_test.sh
 testAdding
+testBashFunctions
+shunit2:WARN [skipping test] Works only in bash shell
 
-Ran 1 test.
+Ran 2 tests.
 
-OK (skipped asserts=1)
+OK (skipped tests=1,skipped asserts=1)
 ```
 
 As you can see, the total number of tests has not changed, but the report
-indicates that some asserts were skipped.
+indicates that some tests and asserts were skipped. Also, a warning is printed out to stderr
+when running the test in a shell other than bash for the bash-only test case to indicate that
+the test is skipped.
 
 Skipping assert checks can be controlled with the following functions: `startSkippingAsserts()`,
 `endSkippingAsserts()`, and `isSkippingAsserts()`. Once skipping is enabled, it will remain
 enabled until the end of the current test function call, after which assert skipping is
 disabled.
+
+Should the test be skipped completely, it can be done using the `skipTest` function. It will
+affect only the test case in question, and it does not increment the counters for the asserts
+(total, passed, failed, or skipped).
 
 ### <a name="cmd-line-args"></a> Running specific tests from the command line.
 

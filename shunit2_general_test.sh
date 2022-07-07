@@ -50,7 +50,7 @@ testStartSkippingAssertsWithMessage() {
 #SHUNIT_COLOR='none'
 #. ${TH_SHUNIT}
 EOF
-  # Ignoring errors with `|| :` as we only care about `FAILED` in the output.
+  # Ignoring errors with `|| :` as we only care about `skipping asserts` in stderr.
   ( exec "${SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" ) || :
   if ! grep '\[skipping asserts\] SKIP-a-Dee-Doo-Dah' "${stderrF}" >/dev/null; then
     fail 'skipping message was not generated'
@@ -68,10 +68,78 @@ testStartSkippingAssertsWithoutMessage() {
 #SHUNIT_COLOR='none'
 #. ${TH_SHUNIT}
 EOF
-  # Ignoring errors with `|| :` as we only care about `FAILED` in the output.
+  # Ignoring errors with `|| :` as we only care about `skipping asserts` in stderr.
   ( exec "${SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" ) || :
   if grep '\[skipping asserts\]' "${stderrF}" >/dev/null; then
     fail 'skipping message was unexpectedly generated'
+  fi
+  return 0
+}
+
+testSkippingTests() {
+  unittestF="${SHUNIT_TMPDIR}/unittest"
+  sed 's/^#//' >"${unittestF}" <<\EOF
+## Start skipping with a message.
+#testSkipping() {
+#  skipTest "Example of test skipping"
+#  assertFalse "TRUE should be FALSE?" "${SHUNIT_TRUE}"
+#  assertTrue "FALSE should be TRUE?" "${SHUNIT_FALSE}"
+#}
+#SHUNIT_COLOR='none'
+#. ${TH_SHUNIT}
+EOF
+  # Ignoring errors with `|| :` as we only care about `skipping tests` in stderr
+  ( exec "${SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" ) || :
+  if ! grep '\[skipping test\]' "${stderrF}" >/dev/null; then
+    fail 'skipping test message was not generated'
+  fi
+  return 0
+}
+
+testSkippingTestsWithAssertSkippingEnabledBeforeSkipTest() {
+  unittestF="${SHUNIT_TMPDIR}/unittest"
+  sed 's/^#//' >"${unittestF}" <<\EOF
+## Start skipping with a message.
+#testSkipping() {
+#  startSkippingAsserts
+#  skipTest "Example of test skipping"
+#  assertFalse "TRUE should be FALSE?" "${SHUNIT_TRUE}"
+#  assertTrue "FALSE should be TRUE?" "${SHUNIT_FALSE}"
+#}
+#SHUNIT_COLOR='none'
+#. ${TH_SHUNIT}
+EOF
+  # Ignoring errors with `|| :` as we only care about `` in stderr.
+  ( exec "${SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" ) || :
+  if ! grep 'skipTest function MUST be called as the first thing in the test function!' "${stderrF}" >/dev/null; then
+    fail 'skipping test error message was not generated'
+  fi
+  if ! grep 'FAILED' "${stdoutF}" >/dev/null; then
+    fail 'test should have failed'
+  fi
+  return 0
+}
+
+testSkippingTestsWithAssertBeforeSkipTest() {
+  unittestF="${SHUNIT_TMPDIR}/unittest"
+  sed 's/^#//' >"${unittestF}" <<\EOF
+## Start skipping with a message.
+#testSkipping() {
+#  assertTrue "TRUE-TRUE" "${SHUNIT_TRUE}"
+#  skipTest "Example of test skipping"
+#  assertFalse "TRUE should be FALSE?" "${SHUNIT_TRUE}"
+#  assertTrue "FALSE should be TRUE?" "${SHUNIT_FALSE}"
+#}
+#SHUNIT_COLOR='none'
+#. ${TH_SHUNIT}
+EOF
+  # Ignoring errors with `|| :` as we only care about `` in stderr.
+  ( exec "${SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" ) || :
+  if ! grep 'skipTest function MUST be called as the first thing in the test function!' "${stderrF}" >/dev/null; then
+    fail 'skipping test error message was not generated'
+  fi
+  if ! grep 'FAILED' "${stdoutF}" >/dev/null; then
+    fail 'test should have failed'
   fi
   return 0
 }

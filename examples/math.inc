@@ -15,3 +15,11 @@ add_bash()
 
   echo $(($1 + $2))
 }
+
+subtract_bash()
+{
+  num_a=$1
+  num_b=$2
+
+  echo $(($1 - $2))
+}
