@@ -1,0 +1,5 @@
+{
+  "name": "shUnit2",
+  "description": "xUnit unit test framework for Bourne based shell scripts",
+  "scripts": [ "shunit2" ]
+}
