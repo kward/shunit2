@@ -3,7 +3,7 @@
 #
 # shUnit2 unit tests of miscellaneous things
 #
-# Copyright 2008-2021 Kate Ward. All Rights Reserved.
+# Copyright 2008-2023 Kate Ward. All Rights Reserved.
 # Released under the Apache 2.0 license.
 # http://www.apache.org/licenses/LICENSE-2.0
 #
@@ -267,6 +267,31 @@ mock_tput() {
     return 0
   fi
   return 1
+}
+
+# Note: the test script is prefixed with '#' chars so that shUnit2 does not
+# incorrectly interpret the embedded functions as real functions.
+testPipefail() {
+  unittestF="${SHUNIT_TMPDIR}/unittest"
+  sed 's/^#//' >"${unittestF}" <<EOF
+## Test that using 'set -o pipefail' does not break shunit2.
+#set -o pipefail
+#
+#pipefail() { true; }  # shunit2 should remain happy with this simple test.
+#test_pipefail() {
+#  assertEquals 1 1
+#  pipefail
+#  assertEquals 0 \$?
+#}
+#SHUNIT_COLOR='none'
+#. ${TH_SHUNIT}
+EOF
+  if ! ( exec "${SHELL:-sh}" "${unittestF}" >"${stdoutF}" 2>"${stderrF}" ); then
+    fail 'expected a zero exit value'
+  fi
+  if ! grep '^Ran [0-9]* test' "${stdoutF}" >/dev/null; then
+    fail 'test count message was not generated'
+  fi
 }
 
 setUp() {
