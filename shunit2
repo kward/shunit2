@@ -81,6 +81,13 @@ __shunit_script=''  # Filename of unittest script (standalone mode).
 __shunit_skip=${SHUNIT_FALSE}  # Is skipping enabled.
 __shunit_suite=''  # Suite of tests to execute.
 __shunit_clean=${SHUNIT_FALSE}  # _shunit_cleanup() was already called.
+__shunit_suiteName=''  # Text name of current test suite.
+__shunit_xmlSuiteName=''  # XML-ready text name of current test suite.
+
+# JUnit XML variables.
+__shunit_junitXmlOutputFile=''  # File to use for JUnit XML output in addition to stdout.
+__shunit_junitXmlTestCases=''  # Test cases info in the JUnit XML format for output
+__shunit_junitXmlCurrentTestCaseErrors=''  # Current test case error info in the JUnit XML format for output
 
 # ANSI colors (populated by _shunit_configureColor()).
 __shunit_ansi_none=''
@@ -100,6 +107,7 @@ __shunit_assertsTotal=0
 __shunit_assertsPassed=0
 __shunit_assertsFailed=0
 __shunit_assertsSkipped=0
+__shunit_assertsCurrentTest=0
 
 #
 # Internal functions.
@@ -317,7 +325,7 @@ assertNotContains() {
   shunit_content_=$2
 
   shunit_return=${SHUNIT_TRUE}
-  if echo "$shunit_container_" | grep -F -- "$shunit_content_" > /dev/null; then
+  if echo "$shunit_container_" |grep -F -- "$shunit_content_" > /dev/null; then
     failFound "${shunit_message_}" "${shunit_content_}"
     shunit_return=${SHUNIT_FALSE}
   else
@@ -355,7 +363,7 @@ assertNull() {
     shunit_message_="${shunit_message_}$1"
     shift
   fi
-  
+
   ${__SHUNIT_BUILTIN} test -z "${1:-}"
   assertTrue "${shunit_message_}" $?
   shunit_return=$?
@@ -883,7 +891,7 @@ suite_addTest() {
   shunit_func_=${1:-}
 
   __shunit_suite="${__shunit_suite:+${__shunit_suite} }${shunit_func_}"
-  __shunit_testsTotal=`expr ${__shunit_testsTotal} + 1`
+  __shunit_testsTotal=`expr "${__shunit_testsTotal}" + 1`
 
   unset shunit_func_
 }
@@ -1099,6 +1107,10 @@ _shunit_execSuite() {
   for _shunit_test_ in ${__shunit_suite}; do
     __shunit_testSuccess=${SHUNIT_TRUE}
 
+    # Reset per-test info
+    __shunit_assertsCurrentTest=0
+    __shunit_junitXmlCurrentTestCaseErrors=''
+
     # Disable skipping.
     endSkipping
 
@@ -1120,11 +1132,20 @@ _shunit_execSuite() {
       _shunit_fatal "tearDown() returned non-zero return code."
     fi
 
+    # Store current test case info in JUnit XML.
+    __shunit_junitXmlTestCases="${__shunit_junitXmlTestCases}
+  <testcase
+    classname=\"${__shunit_xmlSuiteName}\"
+    name=\"${_shunit_test_}\"
+    assertions=\"${__shunit_assertsCurrentTest}\"
+  >${__shunit_junitXmlCurrentTestCaseErrors}
+  </testcase>"
+
     # Update stats.
     if ${__SHUNIT_BUILTIN} [ ${__shunit_testSuccess} -eq ${SHUNIT_TRUE} ]; then
-      __shunit_testsPassed=`expr ${__shunit_testsPassed} + 1`
+      __shunit_testsPassed=`expr "${__shunit_testsPassed}" + 1`
     else
-      __shunit_testsFailed=`expr ${__shunit_testsFailed} + 1`
+      __shunit_testsFailed=`expr "${__shunit_testsFailed}" + 1`
     fi
   done
 
@@ -1155,6 +1176,19 @@ _shunit_generateReport() {
     ${__SHUNIT_CMD_ECHO_ESC} "${_shunit_msg_} test."
   else
     ${__SHUNIT_CMD_ECHO_ESC} "${_shunit_msg_} tests."
+  fi
+
+  if ${__SHUNIT_BUILTIN} [ -n "${__shunit_junitXmlOutputFile}" ]; then
+    echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<testsuite
+  failures=\"${__shunit_testsFailed}\"
+  name=\"${__shunit_xmlSuiteName}\"
+  tests=\"${__shunit_testsTotal}\"
+  assertions=\"${__shunit_assertsTotal}\"
+>${__shunit_junitXmlTestCases}
+</testsuite>" > "${__shunit_junitXmlOutputFile}"
+    echo
+    echo "JUnit XML file ${__shunit_junitXmlOutputFile} was saved."
   fi
 
   if ${__SHUNIT_BUILTIN} [ ${_shunit_ok_} -eq ${SHUNIT_TRUE} ]; then
@@ -1196,8 +1230,9 @@ _shunit_shouldSkip() {
 # Args:
 #   None
 _shunit_assertPass() {
-  __shunit_assertsPassed=`expr ${__shunit_assertsPassed} + 1`
-  __shunit_assertsTotal=`expr ${__shunit_assertsTotal} + 1`
+  __shunit_assertsPassed=`expr "${__shunit_assertsPassed}" + 1`
+  __shunit_assertsTotal=`expr "${__shunit_assertsTotal}" + 1`
+  __shunit_assertsCurrentTest=`expr "${__shunit_assertsCurrentTest}" + 1`
 }
 
 # Records a test failure.
@@ -1208,9 +1243,19 @@ _shunit_assertFail() {
   __shunit_testSuccess=${SHUNIT_FALSE}
   _shunit_incFailedCount
 
+  _shunit_xml_message_="`_shunit_escapeXmlData "$@"`"
+
+  __shunit_junitXmlCurrentTestCaseErrors="${__shunit_junitXmlCurrentTestCaseErrors}
+    <failure
+      type=\"shunit.assertFail\"
+      message=\"${_shunit_xml_message_}\"
+    />"
+
   if ${__SHUNIT_BUILTIN} [ $# -gt 0 ]; then
     ${__SHUNIT_CMD_ECHO_ESC} "${__shunit_ansi_red}ASSERT:${__shunit_ansi_none}$*"
   fi
+
+  unset _shunit_xml_message_
 }
 
 # Increment the count of failed asserts.
@@ -1220,6 +1265,7 @@ _shunit_assertFail() {
 _shunit_incFailedCount() {
   __shunit_assertsFailed=`expr "${__shunit_assertsFailed}" + 1`
   __shunit_assertsTotal=`expr "${__shunit_assertsTotal}" + 1`
+  __shunit_assertsCurrentTest=`expr "${__shunit_assertsCurrentTest}" + 1`
 }
 
 # Records a skipped test.
@@ -1229,6 +1275,7 @@ _shunit_incFailedCount() {
 _shunit_assertSkip() {
   __shunit_assertsSkipped=`expr "${__shunit_assertsSkipped}" + 1`
   __shunit_assertsTotal=`expr "${__shunit_assertsTotal}" + 1`
+  __shunit_assertsCurrentTest=`expr "${__shunit_assertsCurrentTest}" + 1`
 }
 
 # Dump the current test metrics.
@@ -1277,6 +1324,20 @@ _shunit_extractTestFunctions() {
   |xargs
 
   unset _shunit_regex_ _shunit_script_
+}
+
+# Escape XML data.
+#
+# Args:
+#   data: string: data to escape
+# Returns:
+#   string: escaped data
+_shunit_escapeXmlData() {
+  # Required XML characters to escape are described here:
+  # http://www.w3.org/TR/REC-xml/#syntax
+  # https://www.liquid-technologies.com/Reference/Glossary/XML_EscapingData.html
+  echo "$*" \
+  |command sed 's/&/\&amp;/g;s/</\&lt;/g;s/>/\&gt;/g;s/"/\&quot;/g'";s/'/\&apos;/g"
 }
 
 #------------------------------------------------------------------------------
@@ -1338,11 +1399,29 @@ fi
 if ${__SHUNIT_BUILTIN} [ "$#" -ge 2 ]; then
   # Argument $1 is either the filename of tests or '--'; either way, skip it.
   shift
-  # Remaining arguments ($2 .. $#) are assumed to be test function names.
+  # Remaining arguments ($2 .. $#) are assumed to be:
+  #   - test function names.
+  #   - configuration options, that is started with the `--` prefix.
   # Interate through all remaining args in "$@" in a POSIX (likely portable) way.
   # Helpful tip: https://unix.stackexchange.com/questions/314032/how-to-use-arguments-like-1-2-in-a-for-loop
   for _shunit_arg_ do
-    suite_addTest "${_shunit_arg_}"
+    case "${_shunit_arg_}" in
+      --output-junit-xml=*)
+        # It is a request for JUnit XML output.
+        __shunit_junitXmlOutputFile="${_shunit_arg_#--output-junit-xml=}"
+        ;;
+      --suite-name=*)
+        # It is a request for a custom suite name.
+        __shunit_suiteName="${_shunit_arg_#--suite-name=}"
+        ;;
+      --*)
+        _shunit_fatal "unrecognized option \"${_shunit_arg_}\""
+        ;;
+      *)
+        # It is the test name, process it in a usual way.
+        suite_addTest "${_shunit_arg_}"
+        ;;
+    esac
   done
   unset _shunit_arg_
 else
@@ -1359,6 +1438,14 @@ if ${__SHUNIT_BUILTIN} [ -z "${__shunit_suite}" ]; then
   done
 fi
 unset shunit_func_ shunit_funcs_
+
+# If suite name is not defined, dynamically generate it from the script name.
+if ${__SHUNIT_BUILTIN} [ -z "${__shunit_suiteName}" ]; then
+  __shunit_suiteName="${__shunit_script##*/}"
+fi
+
+# Prepare the suite name for XML output.
+__shunit_xmlSuiteName="`_shunit_escapeXmlData "${__shunit_suiteName}"`"
 
 # Execute the suite of unit tests.
 _shunit_execSuite
