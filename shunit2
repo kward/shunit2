@@ -1279,6 +1279,49 @@ _shunit_extractTestFunctions() {
   unset _shunit_regex_ _shunit_script_
 }
 
+
+arg_parse() {
+    local opt optarg 
+
+    while getopts i:x:-: opt; do
+        # OPTARG を = の位置で分割して opt と optarg に代入
+        optarg="$OPTARG"
+        [[ "$opt" = - ]] &&
+            opt="-${OPTARG%%=*}" &&
+            optarg="${OPTARG/${OPTARG%%=*}/}" &&
+            optarg="${optarg#=}"
+        if [[ -z "$optarg" ]]; then
+            echo "ARG PARSE ERROR" >&2
+            exit -1
+        fi
+
+        case "-$opt" in
+            -i|--include)
+                __shunit_include_pattern="$optarg"
+                ;;
+            -x|--exclude)
+                __shunit_exclude_pattern="$optarg"
+                ;;
+            --)
+                break
+                ;;
+            -\?)
+                exit 1
+                ;;
+            --*)
+                echo "$0: illegal option -- ${opt##-}" >&2
+                exit 1
+                ;;
+        esac
+    done
+    shift $((OPTIND - 1))
+    __shunit_arg_shift_for_option=$((OPTIND - 1))
+}
+
+arg_parse $@
+shift ${__shunit_arg_shift_for_option}
+
+
 #------------------------------------------------------------------------------
 # Main.
 #
@@ -1355,6 +1398,15 @@ fi
 if ${__SHUNIT_BUILTIN} [ -z "${__shunit_suite}" ]; then
   shunit_funcs_=`_shunit_extractTestFunctions "${__shunit_script}"`
   for shunit_func_ in ${shunit_funcs_}; do
+    if  [[ ! -z "$__shunit_include_pattern" ]] \
+        && ( ! grep -E "^${__shunit_include_pattern}$" <<<"$shunit_func_" >/dev/null ); then
+      continue
+    fi
+
+    if [[ ! -z "$__shunit_exclude_pattern" ]] \
+        && ( grep -E "^${__shunit_exclude_pattern}$" <<<"$shunit_func_" >/dev/null ); then
+      continue
+    fi
     suite_addTest "${shunit_func_}"
   done
 fi
