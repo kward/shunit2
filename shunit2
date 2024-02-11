@@ -1259,7 +1259,7 @@ _shunit_prepForSourcing() {
   unset _shunit_script_
 }
 
-# Extract list of functions to run tests against.
+# Extract list of functions to run tests against for a single script
 #
 # Args:
 #   script: string: name of script to extract functions from
@@ -1276,6 +1276,46 @@ _shunit_extractTestFunctions() {
   |xargs
 
   unset _shunit_regex_ _shunit_script_
+}
+
+# Identify all files sourced from a single test script.
+#
+# Args:
+#   script: path of script to check for inclusions
+#
+# Returns:
+#   string of included script paths
+_shunit_sourcesForFile() {
+  grep '^\. ' "$1" | \
+    while read shunit_dot_ shunit_file_; do
+      eval echo "${shunit_file_}"
+    done | grep -v "/shunit2$" | sort -u 
+}
+
+# Recursively identify all files sourced from a test script.
+#
+# Args:
+#   script: path of script to check for inclusions
+#
+# Returns:
+#   string of included script paths
+_shunit_allTestScripts() {
+  for shunit_script_ in `_shunit_sourcesForFile "$1"`; do
+    echo "${shunit_script_}"
+    _shunit_allTestScripts "${shunit_script_}"
+  done
+}
+
+# Extract list of functions to run tests against.
+#
+# Args:
+#   script: string: name of root script to extract functions from
+# Returns:
+#   string: of function names
+_shunit_extractAllTestFunctions() {
+  for shunit_script_ in `_shunit_allTestScripts "$1"`; do
+    _shunit_extractTestFunctions "${shunit_script_}"
+  done
 }
 
 #------------------------------------------------------------------------------
@@ -1352,7 +1392,7 @@ fi
 
 # If no tests or suite specified, dynamically build a list of functions.
 if ${__SHUNIT_BUILTIN} [ -z "${__shunit_suite}" ]; then
-  shunit_funcs_=`_shunit_extractTestFunctions "${__shunit_script}"`
+  shunit_funcs_=`_shunit_extractAllTestFunctions "${__shunit_script}"`
   for shunit_func_ in ${shunit_funcs_}; do
     suite_addTest "${shunit_func_}"
   done
