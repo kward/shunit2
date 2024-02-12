@@ -90,7 +90,7 @@ global public variable           | `flags_variable`
 global private variable          | `__flags_variable`
 global macro                     | `_FLAGS_SOME_MACRO_`
 public function                  | `flags_function`
-public function, local variable  | ``flags_variable_`
+public function, local variable  | `flags_variable_`
 private function                 | `_flags_function`
 private function, local variable | `_flags_variable_`
 
