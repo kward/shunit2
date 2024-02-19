@@ -80,7 +80,6 @@ __shunit_reportGenerated=${SHUNIT_FALSE}  # Is report generated.
 __shunit_script=''  # Filename of unittest script (standalone mode).
 __shunit_skip=${SHUNIT_FALSE}  # Is skipping enabled.
 __shunit_suite=''  # Suite of tests to execute.
-__shunit_clean=${SHUNIT_FALSE}  # _shunit_cleanup() was already called.
 
 # ANSI colors (populated by _shunit_configureColor()).
 __shunit_ansi_none=''
@@ -1014,21 +1013,16 @@ _shunit_cleanup() {
       _shunit_error "unrecognized trap value (${_shunit_name_})"
       ;;
   esac
+
   if ${__SHUNIT_BUILTIN} [ "${_shunit_name_}" != 'EXIT' ]; then
     _shunit_warn "trapped and now handling the (${_shunit_name_}) signal"
-  fi
-
-  # Do our work.
-  if ${__SHUNIT_BUILTIN} [ ${__shunit_clean} -eq ${SHUNIT_FALSE} ]; then
     # Ensure tear downs are only called once.
-    __shunit_clean=${SHUNIT_TRUE}
-
     tearDown || _shunit_warn 'tearDown() returned non-zero return code.'
     oneTimeTearDown || \
         _shunit_warn 'oneTimeTearDown() returned non-zero return code.'
-
-    command rm -fr "${__shunit_tmpDir}"
   fi
+
+  command rm -fr "${__shunit_tmpDir}"
 
   if ${__SHUNIT_BUILTIN} [ "${_shunit_name_}" != 'EXIT' ]; then
     # Handle all non-EXIT signals.
