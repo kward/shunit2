@@ -207,7 +207,7 @@ th_queryReturn() {
 # Providing external and internal calls to the showOutput helper function.
 th_showOutput() { _th_showOutput "$@"; }
 _th_showOutput() {
-  if isSkipping; then
+  if isSkippingAsserts; then
     return
   fi
 

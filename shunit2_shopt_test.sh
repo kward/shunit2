@@ -20,7 +20,7 @@
 SHOPT_CMD='shopt'
 
 testNullglob() {
-  isShoptWorking || startSkipping
+  isShoptWorking || startSkippingAsserts
 
   nullglob=$(${SHOPT_CMD} nullglob |cut -f2)
 

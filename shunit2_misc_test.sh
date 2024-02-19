@@ -172,7 +172,7 @@ EOF
 testIssue123() {
   if [ -z "${BASH_SUBSHELL:-}" ]; then
     # shellcheck disable=SC2016
-    startSkipping 'The ${BASH_SUBSHELL} variable is unavailable in this shell.'
+    startSkippingAsserts 'The ${BASH_SUBSHELL} variable is unavailable in this shell.'
   fi
   # shellcheck disable=SC2016
   assertTrue 'not in subshell' '[[ ${BASH_SUBSHELL} -eq 0 ]]'

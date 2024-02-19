@@ -78,7 +78,8 @@ __shunit_lineno=''  # Line number of executed test.
 __shunit_mode=${__SHUNIT_MODE_SOURCED}  # Operating mode.
 __shunit_reportGenerated=${SHUNIT_FALSE}  # Is report generated.
 __shunit_script=''  # Filename of unittest script (standalone mode).
-__shunit_skip=${SHUNIT_FALSE}  # Is skipping enabled.
+__shunit_skip_test=${SHUNIT_FALSE} # Is test skipping enabled
+__shunit_skip_asserts=${SHUNIT_FALSE}  # Is assert skipping enabled.
 __shunit_suite=''  # Suite of tests to execute.
 __shunit_clean=${SHUNIT_FALSE}  # _shunit_cleanup() was already called.
 
@@ -93,12 +94,17 @@ __shunit_ansi_cyan=''
 __shunit_testSuccess=${SHUNIT_TRUE}
 __shunit_testsTotal=0
 __shunit_testsPassed=0
+__shunit_testsSkipped=0
 __shunit_testsFailed=0
 
 # Counts of asserts.
+__shunit_assertsTotalInTest=0
 __shunit_assertsTotal=0
+__shunit_assertsPassedInTest=0
 __shunit_assertsPassed=0
+__shunit_assertsFailedInTest=0
 __shunit_assertsFailed=0
+__shunit_assertsSkippedInTest=0
 __shunit_assertsSkipped=0
 
 #
@@ -824,24 +830,67 @@ _FAIL_NOT_SAME_='eval failNotSame --lineno "${LINENO:-}"'
 # Skipping functions.
 #
 
+# Force the following test functions to be "skipped".
+#
+# This function will "mark" the following test cases to be "skipped", i.e.
+# they will not be executed. Instead, they are indicated as skipped tests
+# and the number of the skipped tests will be recorded in the final report.
+skipTest() {
+  # The assert skipping must be disabled when calling this function
+  if isSkippingAsserts; then
+    endSkippingAsserts
+    _shunit_error "skipTest function MUST be called as the first thing in the test function!"
+    return ${SHUNIT_FALSE}
+  fi
+  # The no assert calls should be made before calling this function
+  _shunit_skip_test_counter=${__shunit_assertsTotalInTest}
+  _shunit_skip_test_counter=`expr "${_shunit_skip_test_counter}" + "${__shunit_assertsPassedInTest}"`
+  _shunit_skip_test_counter=`expr "${_shunit_skip_test_counter}" + "${__shunit_assertsFailedInTest}"`
+  _shunit_skip_test_counter=`expr "${_shunit_skip_test_counter}" + "${__shunit_assertsSkippedInTest}"`
+  if ${__SHUNIT_BUILTIN} [ "${_shunit_skip_test_counter}" -gt 0 ]; then
+    _shunit_error "skipTest function MUST be called as the first thing in the test function!"
+    return ${SHUNIT_FALSE}
+  fi
+  unset _shunit_skip_test_counter
+  __shunit_skip_test=${SHUNIT_TRUE}
+  _shunit_skip_test_message="[skipping test] $*"
+  if ${__SHUNIT_BUILTIN} [ $# -eq 0 ]; then _shunit_skip_test_message="[skipping test]"; fi
+  _shunit_warn "${_shunit_skip_test_message}"
+  unset _shunit_skip_test_message
+  return ${SHUNIT_TRUE}
+}
+
+# Resume the normal execution of test cases
+_shunit_endSkippingTest() {
+  __shunit_skip_test=${SHUNIT_FALSE}
+}
+
 # Force remaining assert and fail functions to be "skipped".
 #
 # This function forces the remaining assert and fail functions to be "skipped",
-# i.e. they will have no effect. Each function skipped will be recorded so that
-# the total of asserts and fails will not be altered.
+# i.e. they will have no effect. Each skipped assert and fail function will be
+# recorded so that the total of asserts and fails will not be altered.
 #
 # Args:
 #   message: string: message to provide to user [optional]
+startSkippingAsserts() {
+  if ${__SHUNIT_BUILTIN} [ $# -gt 0 ]; then _shunit_warn "[skipping asserts] $*"; fi
+  __shunit_skip_asserts=${SHUNIT_TRUE}
+}
 startSkipping() {
-  if ${__SHUNIT_BUILTIN} [ $# -gt 0 ]; then _shunit_warn "[skipping] $*"; fi
-  __shunit_skip=${SHUNIT_TRUE}
+  _shunit_warn "startSkipping is deprecated. Use startSkippingAsserts instead."
+  startSkippingAsserts "$@"
 }
 
 # Resume the normal recording behavior of assert and fail calls.
 #
 # Args:
 #   None
-endSkipping() { __shunit_skip=${SHUNIT_FALSE}; }
+endSkippingAsserts() { __shunit_skip_asserts=${SHUNIT_FALSE}; }
+endSkipping() {
+  _shunit_warn "endSkipping is deprecated. Use endSkippingAsserts instead."
+  endSkippingAsserts
+}
 
 # Returns the state of assert and fail call skipping.
 #
@@ -849,7 +898,12 @@ endSkipping() { __shunit_skip=${SHUNIT_FALSE}; }
 #   None
 # Returns:
 #   boolean: (TRUE/FALSE constant)
-isSkipping() { return ${__shunit_skip}; }
+isSkippingAsserts() { return ${__shunit_skip_asserts}; }
+isSkipping() {
+  _shunit_warn "isSkipping is deprecated. Use isSkippingAsserts instead."
+  # shellcheck disable=SC2046
+  return `isSkippingAsserts`
+}
 
 #-----------------------------------------------------------------------------
 # Suite functions.
@@ -1099,8 +1153,15 @@ _shunit_execSuite() {
   for _shunit_test_ in ${__shunit_suite}; do
     __shunit_testSuccess=${SHUNIT_TRUE}
 
-    # Disable skipping.
-    endSkipping
+    # Disable skipping
+    endSkippingAsserts
+    _shunit_endSkippingTest
+
+    # Reset the counters
+    __shunit_assertsTotalInTest=0
+    __shunit_assertsPassedInTest=0
+    __shunit_assertsFailedInTest=0
+    __shunit_assertsSkippedInTest=0
 
     # Execute the per-test setUp() function.
     if ! setUp; then
@@ -1121,7 +1182,9 @@ _shunit_execSuite() {
     fi
 
     # Update stats.
-    if ${__SHUNIT_BUILTIN} [ ${__shunit_testSuccess} -eq ${SHUNIT_TRUE} ]; then
+    if ${__SHUNIT_BUILTIN} [ ${__shunit_skip_test} -eq ${SHUNIT_TRUE} ]; then
+      __shunit_testsSkipped=`expr ${__shunit_testsSkipped} + 1`
+    elif ${__SHUNIT_BUILTIN} [ ${__shunit_testSuccess} -eq ${SHUNIT_TRUE} ]; then
       __shunit_testsPassed=`expr ${__shunit_testsPassed} + 1`
     else
       __shunit_testsFailed=`expr ${__shunit_testsFailed} + 1`
@@ -1129,6 +1192,30 @@ _shunit_execSuite() {
   done
 
   unset _shunit_test_
+}
+
+# Generates the skipped tests note
+_shunit_generateSkippedTestsAndAssertsMessage() {
+  _shunit_skipped_msg_prefix_="$1"
+  _shunit_skipped_msg_suffix_="$2"
+  _shunit_skipped_msg_=""
+  if ${__SHUNIT_BUILTIN} [ "${__shunit_testsSkipped}" -gt 0 ]; then
+    _shunit_skipped_msg_="${_shunit_skipped_msg_prefix_}${__shunit_ansi_yellow}skipped tests=${__shunit_testsSkipped}${__shunit_ansi_none}"
+  fi
+  if ${__SHUNIT_BUILTIN} [ "${__shunit_assertsSkipped}" -gt 0 ]; then
+    if ${__SHUNIT_BUILTIN} [ "${_shunit_skipped_msg_}" != "" ]; then
+      _shunit_skipped_msg_="${_shunit_skipped_msg_},"
+    else
+      _shunit_skipped_msg_="${_shunit_skipped_msg_prefix_}"
+    fi
+    _shunit_skipped_msg_="${_shunit_skipped_msg_}${__shunit_ansi_yellow}skipped asserts=${__shunit_assertsSkipped}${__shunit_ansi_none}"
+  fi
+  printf "%s" "${_shunit_skipped_msg_}"
+  if ${__SHUNIT_BUILTIN} [ "${_shunit_skipped_msg_}" != "" ]; then
+    echo "${_shunit_skipped_msg_suffix_}"
+  fi
+
+  unset _shunit_skipped_msg_prefix_ _shunit_skipped_msg_suffix_ _shunit_skipped_msg_
 }
 
 # Generates the user friendly report with appropriate OK/FAILED message.
@@ -1157,25 +1244,24 @@ _shunit_generateReport() {
     ${__SHUNIT_CMD_ECHO_ESC} "${_shunit_msg_} tests."
   fi
 
+  _shunit_skipped_msg_=""
   if ${__SHUNIT_BUILTIN} [ ${_shunit_ok_} -eq ${SHUNIT_TRUE} ]; then
     _shunit_msg_="${__shunit_ansi_green}OK${__shunit_ansi_none}"
-    if ${__SHUNIT_BUILTIN} [ "${__shunit_assertsSkipped}" -gt 0 ]; then
-      _shunit_msg_="${_shunit_msg_} (${__shunit_ansi_yellow}skipped=${__shunit_assertsSkipped}${__shunit_ansi_none})"
-    fi
+    _shunit_skipped_msg_=`_shunit_generateSkippedTestsAndAssertsMessage " (" ")"`
+    _shunit_msg_="${_shunit_msg_}${_shunit_skipped_msg_}"
   else
     _shunit_msg_="${__shunit_ansi_red}FAILED${__shunit_ansi_none}"
-    _shunit_msg_="${_shunit_msg_} (${__shunit_ansi_red}failures=${__shunit_assertsFailed}${__shunit_ansi_none}"
-    if ${__SHUNIT_BUILTIN} [ "${__shunit_assertsSkipped}" -gt 0 ]; then
-      _shunit_msg_="${_shunit_msg_},${__shunit_ansi_yellow}skipped=${__shunit_assertsSkipped}${__shunit_ansi_none}"
-    fi
-    _shunit_msg_="${_shunit_msg_})"
+    _shunit_msg_="${_shunit_msg_} (${__shunit_ansi_red}failed tests=${__shunit_testsFailed}${__shunit_ansi_none}"
+    _shunit_msg_="${_shunit_msg_},${__shunit_ansi_red}failed asserts=${__shunit_assertsFailed}${__shunit_ansi_none}"
+    _shunit_skipped_msg_=`_shunit_generateSkippedTestsAndAssertsMessage "," ")"`
+    _shunit_msg_="${_shunit_msg_}${_shunit_skipped_msg_}"
   fi
 
   echo
   ${__SHUNIT_CMD_ECHO_ESC} "${_shunit_msg_}"
   __shunit_reportGenerated=${SHUNIT_TRUE}
 
-  unset _shunit_msg_ _shunit_ok_
+  unset _shunit_msg_ _shunit_ok_ _shunit_skipped_msg_
 }
 
 # Test for whether a function should be skipped.
@@ -1185,7 +1271,10 @@ _shunit_generateReport() {
 # Returns:
 #   boolean: whether the test should be skipped (TRUE/FALSE constant)
 _shunit_shouldSkip() {
-  if ${__SHUNIT_BUILTIN} test ${__shunit_skip} -eq ${SHUNIT_FALSE}; then
+  if ${__SHUNIT_BUILTIN} test ${__shunit_skip_test} -eq ${SHUNIT_TRUE}; then
+    return ${SHUNIT_TRUE}
+  fi
+  if ${__SHUNIT_BUILTIN} test ${__shunit_skip_asserts} -eq ${SHUNIT_FALSE}; then
     return ${SHUNIT_FALSE}
   fi
   _shunit_assertSkip
@@ -1196,8 +1285,10 @@ _shunit_shouldSkip() {
 # Args:
 #   None
 _shunit_assertPass() {
-  __shunit_assertsPassed=`expr ${__shunit_assertsPassed} + 1`
-  __shunit_assertsTotal=`expr ${__shunit_assertsTotal} + 1`
+  __shunit_assertsPassed=`expr "${__shunit_assertsPassed}" + 1`
+  __shunit_assertsPassedInTest=`expr "${__shunit_assertsPassedInTest}" + 1`
+  __shunit_assertsTotal=`expr "${__shunit_assertsTotal}" + 1`
+  __shunit_assertsTotalInTest=`expr "${__shunit_assertsTotalInTest}" + 1`
 }
 
 # Records a test failure.
@@ -1219,7 +1310,9 @@ _shunit_assertFail() {
 #   none
 _shunit_incFailedCount() {
   __shunit_assertsFailed=`expr "${__shunit_assertsFailed}" + 1`
+  __shunit_assertsFailedInTest=`expr "${__shunit_assertsFailedInTest}" + 1`
   __shunit_assertsTotal=`expr "${__shunit_assertsTotal}" + 1`
+  __shunit_assertsTotalInTest=`expr "${__shunit_assertsTotalInTest}" + 1`
 }
 
 # Records a skipped test.
@@ -1228,20 +1321,30 @@ _shunit_incFailedCount() {
 #   None
 _shunit_assertSkip() {
   __shunit_assertsSkipped=`expr "${__shunit_assertsSkipped}" + 1`
+  __shunit_assertsSkippedInTest=`expr "${__shunit_assertsSkippedInTest}" + 1`
   __shunit_assertsTotal=`expr "${__shunit_assertsTotal}" + 1`
+  __shunit_assertsTotalInTest=`expr "${__shunit_assertsTotalInTest}" + 1`
 }
 
 # Dump the current test metrics.
 #
 # Args:
 #   none
+_shunit_test_case_metrics() {
+  echo "< " \
+"total:  ${__shunit_assertsTotalInTest} " \
+"passed:  ${__shunit_assertsPassedInTest} " \
+"failed:  ${__shunit_assertsFailedInTest} " \
+"skipped:  ${__shunit_assertsSkippedInTest} " \
+" >"
+}
 _shunit_metrics() {
-  echo "< \
-total: ${__shunit_assertsTotal} \
-passed: ${__shunit_assertsPassed} \
-failed: ${__shunit_assertsFailed} \
-skipped: ${__shunit_assertsSkipped} \
->"
+  echo "< " \
+"total:  ${__shunit_assertsTotal} " \
+"passed:  ${__shunit_assertsPassed} " \
+"failed:  ${__shunit_assertsFailed} " \
+"skipped:  ${__shunit_assertsSkipped} " \
+" >"
 }
 
 # Prepare a script filename for sourcing.
