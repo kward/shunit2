@@ -13,3 +13,4 @@ contributed in some way or another to shunit2.
 - Rocky Bernstein
 - [rugk](https://github.com/rugk)
 - wood4321 (of code.google.com)
+- [Rainer Poisel](https://github.com/rpoisel)
