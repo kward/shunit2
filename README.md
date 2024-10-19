@@ -27,6 +27,7 @@ can do the job.
   * [Including Line Numbers in Asserts (Macros)](#including-line-numbers-in-asserts-macros)
   * [Test Skipping](#test-skipping)
   * [Running specific tests from the command line](#cmd-line-args)
+  * [Generating test results in JUnit format](#junit-reports)
 * [Appendix](#appendix)
   * [Getting help](#getting-help)
   * [Zsh](#zsh)
@@ -602,7 +603,7 @@ If a specified test function does not exist, `shunit2` will still attempt to run
 
 The specification of tests does not affect how `shunit2` looks for and executes the setup and tear down functions, which will still run as expected.
 
-### <a name="cmd-line-args"></a> Generating test results in JUnit format.
+### <a name="junit-reports"></a> Generating test results in JUnit format.
 
 Most continuous integration tools like CircleCI, are capable to interpret test results in JUnit format, helping you with spacilized sections and triggers tailored to identify faster a failing test. This functionality is still unreleased but you can test it right away, installing shunit2 from source.
 
