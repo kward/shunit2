@@ -602,6 +602,55 @@ If a specified test function does not exist, `shunit2` will still attempt to run
 
 The specification of tests does not affect how `shunit2` looks for and executes the setup and tear down functions, which will still run as expected.
 
+### <a name="cmd-line-args"></a> Generating test results in JUnit format.
+
+Most continuous integration tools like CircleCI, are capable to interpret test results in JUnit format, helping you with spacilized sections and triggers tailored to identify faster a failing test. This functionality is still unreleased but you can test it right away, installing shunit2 from source.
+
+Given that you execute your test script in the following way
+
+```console
+test-script.sh
+```
+
+You can generate the JUnit report like this
+
+```console
+mkdir -p results
+test-script.sh -- --output-junit-xml=results/test-script.xml
+```
+
+It will generate something like
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite
+  failures="0"
+  name="test-script.sh"
+  tests="1"
+  assertions="1"
+>
+  <testcase
+    classname="test-script.sh"
+    name="testOne"
+    assertions="1"
+  >
+  </testcase>
+</testsuite>
+```
+
+You can also specify a more verbose suite name
+
+```console
+test-script.sh -- --output-junit-xml=results/test-script.xml --suite-name=Test_Script
+```
+
+Then say to your CI tool where the results are. In the case of CircleCI is like the following
+
+```yaml
+- store_test_results:
+    path: results
+```
+
 ---
 
 ## <a name="appendix"></a> Appendix
