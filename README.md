@@ -609,13 +609,13 @@ Most continuous integration tools like CircleCI, are capable to interpret test r
 
 Given that you execute your test script in the following way
 
-```console
+```sh
 test-script.sh
 ```
 
 You can generate the JUnit report like this
 
-```console
+```sh
 mkdir -p results
 test-script.sh -- --output-junit-xml=results/test-script.xml
 ```
@@ -641,7 +641,7 @@ It will generate something like
 
 You can also specify a more verbose suite name
 
-```console
+```sh
 test-script.sh -- --output-junit-xml=results/test-script.xml --suite-name=Test_Script
 ```
 
