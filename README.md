@@ -27,6 +27,7 @@ can do the job.
   * [Including Line Numbers in Asserts (Macros)](#including-line-numbers-in-asserts-macros)
   * [Test Skipping](#test-skipping)
   * [Running specific tests from the command line](#cmd-line-args)
+  * [Generating test results in JUnit format](#junit-reports)
 * [Appendix](#appendix)
   * [Getting help](#getting-help)
   * [Zsh](#zsh)
@@ -601,6 +602,55 @@ In either case, three functions will be run as tests, `testOne`, `testTwo`, and 
 If a specified test function does not exist, `shunit2` will still attempt to run that function and thereby cause a failure which `shunit2` will catch and mark as a failed test.  All other tests will run normally.
 
 The specification of tests does not affect how `shunit2` looks for and executes the setup and tear down functions, which will still run as expected.
+
+### <a name="junit-reports"></a> Generating test results in JUnit format.
+
+Most continuous integration tools like CircleCI, are capable to interpret test results in JUnit format, helping you with spacilized sections and triggers tailored to identify faster a failing test. This functionality is still unreleased but you can test it right away, installing shunit2 from source.
+
+Given that you execute your test script in the following way
+
+```sh
+test-script.sh
+```
+
+You can generate the JUnit report like this
+
+```sh
+mkdir -p results
+test-script.sh -- --output-junit-xml=results/test-script.xml
+```
+
+It will generate something like
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite
+  failures="0"
+  name="test-script.sh"
+  tests="1"
+  assertions="1"
+>
+  <testcase
+    classname="test-script.sh"
+    name="testOne"
+    assertions="1"
+  >
+  </testcase>
+</testsuite>
+```
+
+You can also specify a more verbose suite name
+
+```sh
+test-script.sh -- --output-junit-xml=results/test-script.xml --suite-name=Test_Script
+```
+
+Then say to your CI tool where the results are. In the case of CircleCI is like the following
+
+```yaml
+- store_test_results:
+    path: results
+```
 
 ---
 
