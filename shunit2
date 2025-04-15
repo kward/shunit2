@@ -43,6 +43,129 @@ if ${__SHUNIT_BUILTIN} [ "`echo -e test`" = '-e test' ]; then
   __SHUNIT_CMD_ECHO_ESC='echo'
 fi
 
+# Determine if `date` supports nanosecond resolution.
+__SHUNIT_CMD_DATE_SECONDS='date +%s.%N'
+if ${__SHUNIT_BUILTIN} [ "`date +%N`" = '%N' ]; then
+  __SHUNIT_CMD_DATE_SECONDS='date +%s'
+fi
+
+# Determine `bc` command.
+__SHUNIT_CMD_BC='bc'
+if ! (${__SHUNIT_CMD_BC} --help >/dev/null 2>&1); then
+  __SHUNIT_CMD_BC='busybox bc'
+fi
+if ! (${__SHUNIT_CMD_BC} --help >/dev/null 2>&1); then
+  __SHUNIT_CMD_BC=''
+fi
+
+# Determine `dc` command.
+__SHUNIT_CMD_DC='dc'
+if ! (${__SHUNIT_CMD_DC} --help >/dev/null 2>&1); then
+  __SHUNIT_CMD_DC='busybox dc'
+fi
+if ! (${__SHUNIT_CMD_DC} --help >/dev/null 2>&1); then
+  __SHUNIT_CMD_DC=''
+fi
+
+# Format float numbers to the single style from different tools.
+# Args:
+#   num: string: float number to format
+# Returns:
+#   string: formatted number. Empty string if error occurs.
+_shunit_float_format() {
+  # Double-dot number is an error.
+  # No need to format if the number is an integer.
+  case "${1}" in
+    *.*.*)
+      return
+      ;;
+    *.*)
+      ;;
+    *)
+      echo "${1}"
+      return
+      ;;
+  esac
+
+  _shunit_format_result_="$1"
+
+  # Add leading zero if needed.
+  _shunit_format_result_="$(echo "${_shunit_format_result_}" \
+    |command sed 's/^\./0./g')"
+
+  # Remove trailing zeros.
+  _shunit_format_result_="$(echo "${_shunit_format_result_}" \
+    |command sed 's/0\+$//g')"
+
+  # Remove trailing dot.
+  _shunit_format_result_="$(echo "${_shunit_format_result_}" \
+    |command sed 's/\.$//g')"
+
+  # Print the result.
+  echo "${_shunit_format_result_}"
+  unset _shunit_format_result_
+}
+
+# Calculate numbers using bc.
+# Args:
+#   left: string: left operand (may be float point)
+#   operation: string: operation (+ - * /)
+#   right: string: right operand (may be float point)
+# Returns:
+#   string: result
+_shunit_calc_bc() {
+  _shunit_output_="$(echo "$@" \
+    |command ${__SHUNIT_CMD_BC:?})"
+  shunit_return=$?
+  if ${__SHUNIT_BUILTIN} [ ${shunit_return} -eq ${SHUNIT_TRUE} ]; then
+    _shunit_float_format "${_shunit_output_}"
+    shunit_return=$?
+  fi
+
+  unset _shunit_output_
+  return ${shunit_return}
+}
+
+# Calculate numbers using dc.
+# Args:
+#   left: string: left operand (may be float point)
+#   operation: string: operation (+ - * /)
+#   right: string: right operand (may be float point)
+# Returns:
+#   string: result
+_shunit_calc_dc() {
+  _shunit_output_="$(echo "$1" "$3" "$2" "p" \
+    |command ${__SHUNIT_CMD_DC:?})"
+  shunit_return=$?
+  if ${__SHUNIT_BUILTIN} [ ${shunit_return} -eq ${SHUNIT_TRUE} ]; then
+    _shunit_float_format "${_shunit_output_}"
+    shunit_return=$?
+  fi
+
+  unset _shunit_output_
+  return ${shunit_return}
+}
+
+# Calculate numbers using expr.
+# Args:
+#   left: string: left integer number operand
+#   operation: string: operation (+ - * /)
+#   right: string: right integer number operand
+# Returns:
+#   string: result. Empty string if error occurs.
+_shunit_calc_expr() {
+  expr "$@" 2>/dev/null || ${__SHUNIT_BUILTIN} true
+}
+
+# Determine what command to use for calculating numbers.
+__SHUNIT_CMD_CALC='_shunit_calc_bc'
+if ! ("${__SHUNIT_CMD_CALC}" 1 + 2 >/dev/null 2>&1); then
+  __SHUNIT_CMD_CALC=_shunit_calc_dc
+fi
+if ! ("${__SHUNIT_CMD_CALC}" 1 + 2 >/dev/null 2>&1); then
+  __SHUNIT_CMD_CALC=_shunit_calc_expr
+fi
+
 # Commands a user can override if needed.
 __SHUNIT_CMD_TPUT='tput'
 SHUNIT_CMD_TPUT=${SHUNIT_CMD_TPUT:-${__SHUNIT_CMD_TPUT}}
@@ -88,6 +211,12 @@ __shunit_xmlSuiteName=''  # XML-ready text name of current test suite.
 __shunit_junitXmlOutputFile=''  # File to use for JUnit XML output in addition to stdout.
 __shunit_junitXmlTestCases=''  # Test cases info in the JUnit XML format for output
 __shunit_junitXmlCurrentTestCaseErrors=''  # Current test case error info in the JUnit XML format for output
+
+# Time variables
+__shunit_startSuiteTime=''  # When the suite execution was started
+__shunit_endSuiteTime=''  # When the suite execution ended
+__shunit_startCaseTime=''  # When the case execution was started
+__shunit_endCaseTime=''  # When the case execution ended
 
 # ANSI colors (populated by _shunit_configureColor()).
 __shunit_ansi_none=''
@@ -1032,8 +1161,10 @@ _shunit_cleanup() {
     __shunit_clean=${SHUNIT_TRUE}
 
     tearDown || _shunit_warn 'tearDown() returned non-zero return code.'
+    __shunit_endCaseTime=`${__SHUNIT_CMD_DATE_SECONDS}`
     oneTimeTearDown || \
         _shunit_warn 'oneTimeTearDown() returned non-zero return code.'
+    __shunit_endSuiteTime=`${__SHUNIT_CMD_DATE_SECONDS}`
 
     command rm -fr "${__shunit_tmpDir}"
   fi
@@ -1114,6 +1245,8 @@ _shunit_execSuite() {
     # Disable skipping.
     endSkipping
 
+    __shunit_startCaseTime=`${__SHUNIT_CMD_DATE_SECONDS}`
+
     # Execute the per-test setUp() function.
     if ! setUp; then
       _shunit_fatal "setUp() returned non-zero return code."
@@ -1131,12 +1264,16 @@ _shunit_execSuite() {
     if ! tearDown; then
       _shunit_fatal "tearDown() returned non-zero return code."
     fi
+    __shunit_endCaseTime=`${__SHUNIT_CMD_DATE_SECONDS}`
+
+    _shunit_test_execution_time_=`"${__SHUNIT_CMD_CALC}" "${__shunit_endCaseTime}" - "${__shunit_startCaseTime}"`
 
     # Store current test case info in JUnit XML.
     __shunit_junitXmlTestCases="${__shunit_junitXmlTestCases}
   <testcase
     classname=\"${__shunit_xmlSuiteName}\"
     name=\"${_shunit_test_}\"
+    ${_shunit_test_execution_time_:+"time=\"${_shunit_test_execution_time_}\""}
     assertions=\"${__shunit_assertsCurrentTest}\"
   >${__shunit_junitXmlCurrentTestCaseErrors}
   </testcase>"
@@ -1149,7 +1286,7 @@ _shunit_execSuite() {
     fi
   done
 
-  unset _shunit_test_
+  unset _shunit_test_ _shunit_test_execution_time_
 }
 
 # Generates the user friendly report with appropriate OK/FAILED message.
@@ -1179,11 +1316,19 @@ _shunit_generateReport() {
   fi
 
   if ${__SHUNIT_BUILTIN} [ -n "${__shunit_junitXmlOutputFile}" ]; then
+    # Calculate total execution time in seconds.
+    _shunit_suite_execution_time_=`"${__SHUNIT_CMD_CALC}" "${__shunit_endSuiteTime}" - "${__shunit_startSuiteTime}"`
+
+    # Generate a ISO-8601 compliant date.
+    _shunit_suite_start_time_preformatted_=`date -u '+%Y-%m-%dT%H:%M:%S%z' -d "@${__shunit_startSuiteTime}"`
+
     echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 <testsuite
   failures=\"${__shunit_testsFailed}\"
   name=\"${__shunit_xmlSuiteName}\"
   tests=\"${__shunit_testsTotal}\"
+  timestamp=\"${_shunit_suite_start_time_preformatted_}\"
+  ${_shunit_suite_execution_time_:+"time=\"${_shunit_suite_execution_time_}\""}
   assertions=\"${__shunit_assertsTotal}\"
 >${__shunit_junitXmlTestCases}
 </testsuite>" > "${__shunit_junitXmlOutputFile}"
@@ -1209,7 +1354,7 @@ _shunit_generateReport() {
   ${__SHUNIT_CMD_ECHO_ESC} "${_shunit_msg_}"
   __shunit_reportGenerated=${SHUNIT_TRUE}
 
-  unset _shunit_msg_ _shunit_ok_
+  unset _shunit_msg_ _shunit_ok_ _shunit_suite_execution_time_ _shunit_suite_start_time_preformatted_
 }
 
 # Test for whether a function should be skipped.
@@ -1389,6 +1534,8 @@ fi
 # Configure default output coloring behavior.
 _shunit_configureColor "${SHUNIT_COLOR}"
 
+__shunit_startSuiteTime=`${__SHUNIT_CMD_DATE_SECONDS}`
+
 # Execute the oneTimeSetUp function (if it exists).
 if ! oneTimeSetUp; then
   _shunit_fatal "oneTimeSetUp() returned non-zero return code."
@@ -1453,6 +1600,8 @@ _shunit_execSuite
 if ! oneTimeTearDown; then
   _shunit_fatal "oneTimeTearDown() returned non-zero return code."
 fi
+
+__shunit_endSuiteTime=`${__SHUNIT_CMD_DATE_SECONDS}`
 
 # Generate a report summary.
 _shunit_generateReport

@@ -46,6 +46,12 @@ commonRunAndCheck() {
     th_showOutput
   fi
 
+  # Patch time & timestamp attribute to the magic number constant.
+  sed -i \
+    -e 's/time="[0-9]*\(.[0-9]*\)\?"/time="42.25"/g' \
+    -e 's/timestamp="[-0-9+T:]*"/timestamp="1983-10-27T03:36:45+0000"/g' \
+    "${currentXmlF}"
+
   if ! diff "${idealXmlF}" "${currentXmlF}" >/dev/null; then
     fail 'XML output is not equal'
     echo '>>> Ideal' >&2
@@ -106,11 +112,14 @@ EOF
   failures="0"
   name="unittest"
   tests="1"
+  timestamp="1983-10-27T03:36:45+0000"
+  time="42.25"
   assertions="1"
 >
   <testcase
     classname="unittest"
     name="testSuccess"
+    time="42.25"
     assertions="1"
   >
   </testcase>
@@ -141,23 +150,28 @@ EOF
   failures="0"
   name="unittest"
   tests="3"
+  timestamp="1983-10-27T03:36:45+0000"
+  time="42.25"
   assertions="3"
 >
   <testcase
     classname="unittest"
     name="testSuccess"
+    time="42.25"
     assertions="1"
   >
   </testcase>
   <testcase
     classname="unittest"
     name="testS2"
+    time="42.25"
     assertions="1"
   >
   </testcase>
   <testcase
     classname="unittest"
     name="testSSS"
+    time="42.25"
     assertions="1"
   >
   </testcase>
@@ -188,17 +202,21 @@ EOF
   failures="0"
   name="unittest"
   tests="2"
+  timestamp="1983-10-27T03:36:45+0000"
+  time="42.25"
   assertions="5"
 >
   <testcase
     classname="unittest"
     name="testSuccess"
+    time="42.25"
     assertions="3"
   >
   </testcase>
   <testcase
     classname="unittest"
     name="testS2"
+    time="42.25"
     assertions="2"
   >
   </testcase>
@@ -232,11 +250,14 @@ EOF
   failures="2"
   name="unittest"
   tests="3"
+  timestamp="1983-10-27T03:36:45+0000"
+  time="42.25"
   assertions="6"
 >
   <testcase
     classname="unittest"
     name="testSuccess"
+    time="42.25"
     assertions="3"
   >
     <failure
@@ -251,12 +272,14 @@ EOF
   <testcase
     classname="unittest"
     name="testSSS"
+    time="42.25"
     assertions="1"
   >
   </testcase>
   <testcase
     classname="unittest"
     name="testS2"
+    time="42.25"
     assertions="2"
   >
     <failure
@@ -288,11 +311,14 @@ EOF
   failures="0"
   name="mySuiteName"
   tests="1"
+  timestamp="1983-10-27T03:36:45+0000"
+  time="42.25"
   assertions="1"
 >
   <testcase
     classname="mySuiteName"
     name="testSuccess"
+    time="42.25"
     assertions="1"
   >
   </testcase>
@@ -317,11 +343,14 @@ EOF
   failures="0"
   name="Custom name with spaces &amp; some special chars!"
   tests="1"
+  timestamp="1983-10-27T03:36:45+0000"
+  time="42.25"
   assertions="1"
 >
   <testcase
     classname="Custom name with spaces &amp; some special chars!"
     name="testSuccess"
+    time="42.25"
     assertions="1"
   >
   </testcase>
