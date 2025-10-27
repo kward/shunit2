@@ -142,8 +142,8 @@ fi
 
 # Set the constants readonly.
 __shunit_constants=`set |grep '^__SHUNIT_' |cut -d= -f1`
-echo "${__shunit_constants}" |grep '^Binary file' >/dev/null && \
-    __shunit_constants=`set |grep -a '^__SHUNIT_' |cut -d= -f1`
+echo "${__shunit_constants}" |grep '^Binary file' >/dev/null &&
+  __shunit_constants=`set |grep -a '^__SHUNIT_' |cut -d= -f1`
 for __shunit_const in ${__shunit_constants}; do
   if ${__SHUNIT_BUILTIN} [ -z "${ZSH_VERSION:-}" ]; then
     readonly "${__shunit_const}"
@@ -154,6 +154,7 @@ for __shunit_const in ${__shunit_constants}; do
         # Declare readonly constants globally.
         # shellcheck disable=SC2039,SC3045
         readonly -g "${__shunit_const}"
+        ;;
     esac
   fi
 done
@@ -355,7 +356,7 @@ assertNull() {
     shunit_message_="${shunit_message_}$1"
     shift
   fi
-  
+
   ${__SHUNIT_BUILTIN} test -z "${1:-}"
   assertTrue "${shunit_message_}" $?
   shunit_return=$?
