@@ -4,43 +4,8 @@ shUnit2 is a [xUnit](http://en.wikipedia.org/wiki/XUnit) unit test framework for
 
 [![Travis CI](https://api.travis-ci.com/kward/shunit2.svg)](https://app.travis-ci.com/github/kward/shunit2)
 
-# Table of Contents
-
-- [Information](app://obsidian.md/index.html#Information)
-    - [Background](app://obsidian.md/index.html#Background)
-    - [Tested software](app://obsidian.md/index.html#Tested%20software)
-    - [Credits / Contributors](app://obsidian.md/index.html#Credits%20/%20Contributors)
-    - [Feedback](app://obsidian.md/index.html#Feedback)
-- [Quickstart](app://obsidian.md/index.html#Quickstart)
-    - [Overview](app://obsidian.md/index.html#Overview)
-    - [Your first test](app://obsidian.md/index.html#Your%20first%20test)
-    - [Analysis](app://obsidian.md/index.html#Analysis)
-- [Function Reference](app://obsidian.md/index.html#Function%20Reference)
-    - [General Info](app://obsidian.md/index.html#General%20Info)
-    - [Asserts](app://obsidian.md/index.html#Asserts)
-        - [Equality](app://obsidian.md/index.html#Equality)
-        - [Sameness (aka equality) {deprecated}](app://obsidian.md/index.html#Sameness%20\(aka%20equality\)%20{deprecated})
-        - [Containment](app://obsidian.md/index.html#Containment)
-        - [Null](app://obsidian.md/index.html#Null)
-        - [Truth](app://obsidian.md/index.html#Truth)
-    - [Failures](app://obsidian.md/index.html#%3Ca%20name=%22failures%22%3E%3C/a%3E%20Failures)
-    - [Setup/Teardown](app://obsidian.md/index.html#%3Ca%20name=%22setup-teardown%22%3E%3C/a%3E%20Setup/Teardown)
-        - [Skipping](app://obsidian.md/index.html#%3Ca%20name=%22skipping%22%3E%3C/a%3E%20Skipping)
-    - [Suites](app://obsidian.md/index.html#%3Ca%20name=%22suites%22%3E%3C/a%3E%20Suites)
-- [Advanced Usage](app://obsidian.md/index.html#%3Ca%20name=%22advanced-usage%22%3E%3C/a%3E%20Advanced%20Usage)
-    - [Some constants you can use](app://obsidian.md/index.html#%3Ca%20name=%22some-constants-you-can-use%22%3E%3C/a%3E%20Some%20constants%20you%20can%20use)
-    - [Error handling](app://obsidian.md/index.html#%3Ca%20name=%22error-handling%22%3E%3C/a%3E%20Error%20handling)
-    - [Including Line Numbers in Asserts (Macros)](app://obsidian.md/index.html#Including%20Line%20Numbers%20in%20Asserts%20\(Macros\))
-    - [Test Skipping](app://obsidian.md/index.html#Test%20Skipping)
-    - [Running specific tests from the command line.](app://obsidian.md/index.html#%3Ca%20name=%22cmd-line-args%22%3E%3C/a%3E%20Running%20specific%20tests%20from%20the%20command%20line.)
-        - [Generating test results in JUnit format.](app://obsidian.md/index.html#%3Ca%20name=%22junit-reports%22%3E%3C/a%3E%20Generating%20test%20results%20in%20JUnit%20format.)
-- [Appendix](app://obsidian.md/index.html#Appendix)
-    - [Getting Help](app://obsidian.md/index.html#Getting%20Help)
-    - [Zsh](app://obsidian.md/index.html#Zsh)
----
-
 # Information
-If you want to jump straight in, scroll down to the [[#Quickstart]] section.
+If you want to jump straight in, scroll down to the [Quickstart][#Quickstart] section.
 
 ## Background
 shUnit2 was originally developed to provide a consistent testing solution for [log4sh][log4sh], a shell based logging framework similar to [log4j](http://logging.apache.org). During the development of that product, a repeated problem of having things work just fine under one shell (`/bin/bash` on Linux to be specific), and then not working under another shell (`/bin/sh` on Solaris) kept coming up. Although several simple tests were run, they were not adequate and did not catch some corner cases. The decision was finally made to write a proper unit test framework after multiple brown-bag releases were made. _Research was done to look for an existing product that met the testing requirements, but no adequate product was found._
@@ -182,9 +147,11 @@ If you are using distribution packaged shUnit2 which is accessible from `/usr/bi
 # Function Reference
 
 ## General Info
+
 Any string values passed should be properly quoted -- they should be surrounded by single-quote (`'`) or double-quote (`"`) characters -- so that the shell will properly parse them.
 
 ## Asserts
+
 ### Equality
 
 ```
@@ -199,19 +166,18 @@ assertNotEquals [message] unexpected actual
 
 Asserts that _unexpected_ and _actual_ are not equal to one another. The _unexpected_ and _actual_ values can be either strings or integer values as both will be treated as strings. The _message_ is optional, and must be quoted.
 
-### Sameness (aka equality) {deprecated}
-
 ```
 assertSame [message] expected actual
 ```
 
-This function is functionally equivalent to `assertEquals`.
+ {deprecated} This function is functionally equivalent to `assertEquals`.
 
 ```
 assertNotSame [message] unexpected actual
 ```
 
-This function is functionally equivalent to `assertNotEquals`.
+ {deprecated} This function is functionally equivalent to `assertNotEquals`.
+ 
 ### Containment
 
 ```
@@ -276,7 +242,7 @@ Asserts that a given shell test _condition_ is _false_. The condition can be as 
 
 _For examples of more sophisticated expressions, see `assertTrue`._
 
-## <a name="failures"></a> Failures
+## Failures
 
 Just to clarify, **failures do not test the various arguments against one another**. Failures simply fail, optionally with a message, and that is all they do. If you need to test arguments against one another, use asserts.
 
@@ -328,7 +294,7 @@ Fails the test immediately, reporting that the _content_ was not found. The _mes
 
 _Note: no actual search of content is done._
 
-## <a name="setup-teardown"></a> Setup/Teardown
+## Setup/Teardown
 
 ```
 oneTimeSetUp
@@ -362,7 +328,7 @@ This function can be optionally overridden by the user in their test suite.
 
 If this function exists, it will be called after each test completes. It is useful to clean up the environment after each test.
 
-### <a name="skipping"></a> Skipping
+## Skipping
 
 ```
 startSkipping
@@ -382,7 +348,7 @@ isSkipping
 
 This function returns the current state of skipping. It can be compared against `${SHUNIT_TRUE}` or `${SHUNIT_FALSE}` if desired.
 
-## <a name="suites"></a> Suites
+## Suites
 
 The default behavior of shUnit2 is that all tests will be found dynamically. If you have a specific set of tests you want to run, or you don't want to use the standard naming scheme of prefixing your tests with `test`, these functions are for you. Most users will never use them though.
 
@@ -402,9 +368,9 @@ This function adds a function named _name_ to the list of tests scheduled for ex
 
 ---
 
-# <a name="advanced-usage"></a> Advanced Usage
+# Advanced Usage
 
-## <a name="some-constants-you-can-use"></a> Some constants you can use
+## Some constants you can use
 
 There are several constants provided by shUnit2 as variables that might be of use to you.
 
@@ -427,7 +393,7 @@ There are several constants provided by shUnit2 as variables that might be of us
 | `SHUNIT_PARENT`      | The filename of the shell script containing the tests. This is needed specifically for Zsh support.            |
 | `SHUNIT_TEST_PREFIX` | Define this variable to add a prefix in front of each test name that is output in the test report.             |
 
-## <a name="error-handling"></a> Error handling
+## Error handling
 
 The constants values `SHUNIT_TRUE`, `SHUNIT_FALSE`, and `SHUNIT_ERROR` are returned from nearly every function to indicate the success or failure of the function. Additionally the variable `flags_error` is filled with a detailed error message if any function returns with a `SHUNIT_ERROR` value.
 
@@ -551,7 +517,7 @@ As you can see, the total number of tests has not changed, but the report indica
 
 Skipping can be controlled with the following functions: `startSkipping()`, `endSkipping()`, and `isSkipping()`. Once skipping is enabled, it will remain enabled until the end of the current test function call, after which skipping is disabled.
 
-## <a name="cmd-line-args"></a> Running specific tests from the command line.
+## Running tests from the command line.
 
 When running a test script, you may override the default set of tests, or the suite-specified set of tests, by providing additional arguments on the command line.  Each additional argument after the `--` marker is assumed to be the name of a test function to be run in the order specified. E.g.,
 
@@ -571,7 +537,7 @@ If a specified test function does not exist, `shunit2` will still attempt to run
 
 The specification of tests does not affect how `shunit2` looks for and executes the setup and tear down functions, which will still run as expected.
 
-### <a name="junit-reports"></a> Generating test results in JUnit format.
+## Generating test results in JUnit format
 
 Most continuous integration tools like CircleCI, are capable to interpret test results in JUnit format, helping you with specialized sections and triggers tailored to identify faster a failing test. This functionality is still unreleased but you can test it right away, installing shunit2 from source.
 
