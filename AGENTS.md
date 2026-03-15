@@ -7,5 +7,5 @@
 ## Testing
 - Unit tests can be run by calling `test_runner`.
 
-## Documenting
+## Documentation
 - Use ```sh to identify code blocks holding shell scripts.
