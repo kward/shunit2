@@ -5,7 +5,7 @@ shUnit2 is a [xUnit](http://en.wikipedia.org/wiki/XUnit) unit test framework for
 [![Travis CI](https://api.travis-ci.com/kward/shunit2.svg)](https://app.travis-ci.com/github/kward/shunit2)
 
 # Information
-If you want to jump straight in, scroll down to the [Quickstart][#Quickstart] section.
+If you want to jump straight in, scroll down to the [Quickstart](#Quickstart) section.
 
 ## Background
 shUnit2 was originally developed to provide a consistent testing solution for [log4sh][log4sh], a shell based logging framework similar to [log4j](http://logging.apache.org). During the development of that product, a repeated problem of having things work just fine under one shell (`/bin/bash` on Linux to be specific), and then not working under another shell (`/bin/sh` on Solaris) kept coming up. Although several simple tests were run, they were not adequate and did not catch some corner cases. The decision was finally made to write a proper unit test framework after multiple brown-bag releases were made. _Research was done to look for an existing product that met the testing requirements, but no adequate product was found._
@@ -42,9 +42,9 @@ shUnit2 is the original product of many hours of work by Kate Ward, the primary 
 ## Feedback
 Feedback is most certainly welcome for this document. Send your questions, comments, and criticisms via the [shunit2-users](https://groups.google.com/a/forestent.com/forum/#!forum/shunit2-users/new) forum (created 2018-12-09), or file an issue via https://github.com/kward/shunit2/issues.
 
----
 
 # Quickstart
+
 ## Overview
 shUnit is designed to execute all functions in your unit test that are prefixed `test`. It will walk through them one by one in the order they appear. In addition, there are some helper functions that will be called to setup and cleanup the environment.
 
@@ -66,7 +66,7 @@ sequenceDiagram
     shUnit2->>unit_test: tearDown()
   end
 
-  shUnit2->>unit_test: oneTimeTearDown()  
+  shUnit2->>unit_test: oneTimeTearDown()
 ```
 
 ## Your first test
@@ -177,7 +177,7 @@ assertNotSame [message] unexpected actual
 ```
 
  {deprecated} This function is functionally equivalent to `assertNotEquals`.
- 
+
 ### Containment
 
 ```
