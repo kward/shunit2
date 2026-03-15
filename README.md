@@ -49,13 +49,14 @@ Feedback is most certainly welcome for this document. Send your questions, comme
 shUnit is designed to execute all functions in your unit test that are prefixed `test`. It will walk through them one by one in the order they appear. In addition, there are some helper functions that will be called to setup and cleanup the environment.
 
 The overall flow looks like this.
+
 ```mermaid
 sequenceDiagram
   participant unit_test as unit test
-  participant shUnit2
-  participant script
 
-  unit_test-->shUnit2: shUnit2 loaded from unit test
+  unit_test-->>shUnit2: shUnit2 loaded from unit test
+
+  note over unit_test,shUnit2: shUnit2 identifies test*() functions
 
   shUnit2->>unit_test: oneTimeSetUp()
 
@@ -136,7 +137,7 @@ So, what did you get? I guess it told you that this isn't 1999. Bummer, eh? Hope
 
 Hopefully, this is enough to get you started with unit testing. If you want a ton more examples, take a look at the tests provided with [log4sh][log4sh] or [shFlags][shflags]. Both provide excellent examples of more advanced usage. shUnit2 was after all written to meet the unit testing need that [log4sh][log4sh] had.
 
-If you are using distribution packaged shUnit2 which is accessible from `/usr/bin/shunit2` such as Debian, you can load shUnit2 without specifying its path.  So the last 2 lines in the above can be replaced by:
+If you are using distribution packaged shUnit2 which is accessible from `/usr/bin/shunit2` such as Debian, you can load shUnit2 without specifying its path. So the last 2 lines in the above can be replaced by:
 ```sh
 # Load shUnit2.
 . shunit2
@@ -365,6 +366,32 @@ suite_addTest name
 ```
 
 This function adds a function named _name_ to the list of tests scheduled for execution as part of this test suite. This function should only be called from within the `suite()` function.
+
+The sequence looks like this.
+```mermaid
+sequenceDiagram
+  participant unit_test as unit test
+
+  unit_test-->>shUnit2: shUnit2 loaded from unit test
+
+  shUnit2->>unit_test: suite()
+  loop suite() adds tests
+    unit_test->>shUnit2: suite_addTest()
+  end
+
+  note over shUnit2: testing starts
+
+  shUnit2->>unit_test: oneTimeSetUp()
+
+  loop for each test function
+    shUnit2->>unit_test: setUp()
+    shUnit2->>unit_test: testSomeFunction()
+    unit_test-->>script: code called from testSomeFunction()
+    shUnit2->>unit_test: tearDown()
+  end
+
+  shUnit2->>unit_test: oneTimeTearDown()
+```
 
 ---
 
