@@ -1,0 +1,19 @@
+{
+  "name": "shUnit2",
+  "description": "xUnit unit test framework for Bourne based shell scripts",
+
+  "license": "Apache License 2.0",
+
+  "scripts": [ "shunit2" ],
+  "install": "install -b shunit2 ${PREFIX:-/usr/local}/bin/shunit2",
+
+  "commands": {
+    "githooks": "./init_githooks.sh",
+    "test": "./test_runner $@"
+  },
+
+  "commands-description": {
+    "githooks": "Initialize the local git hooks in this repository",
+    "test": "Runs all the unit tests that can be found, and generates a nice report of the tests"
+  }
+}
