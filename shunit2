@@ -1119,17 +1119,20 @@ _shunit_mktempDir() {
 # Args:
 #   None
 _shunit_mktempFunc() {
+  # Not every system provides /bin/sh, so resolve sh from PATH rather than
+  # hardcoding the stub interpreter.
+  _shunit_sh_=`command -v sh`
   for _shunit_func_ in oneTimeSetUp oneTimeTearDown setUp tearDown suite noexec
   do
     _shunit_file_="${__shunit_tmpDir}/${_shunit_func_}"
     command cat <<EOF >"${_shunit_file_}"
-#! /bin/sh
+#!${_shunit_sh_}
 exit ${SHUNIT_TRUE}
 EOF
     command chmod +x "${_shunit_file_}"
   done
 
-  unset _shunit_file_
+  unset _shunit_file_ _shunit_sh_
 }
 
 # Final cleanup function to leave things as we found them.
