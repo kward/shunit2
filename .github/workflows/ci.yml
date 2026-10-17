@@ -1,0 +1,93 @@
+name: CI
+
+on:
+  push:
+    branches: [master, 2.1.x]
+    tags: ['v*']
+  pull_request:
+    branches: [master, 2.1.x]
+  workflow_dispatch:               # "Run workflow" button in the Actions tab
+
+permissions:
+  contents: read                   # jobs only read the code
+
+concurrency:                       # a newer push cancels the older run
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ---------------------------------------------------------------------
+  # Unit tests: one job per (OS, shell) pair.
+  #   ubuntu-latest: sh (dash), bash 5, dash, ksh, mksh, zsh, ash -> 7 jobs
+  #   macos-latest : /bin/sh is bash 3.2 POSIX, /bin/bash is 3.2,
+  #                  plus Homebrew bash 5 ("bash5")     -> 6 jobs
+  # ---------------------------------------------------------------------
+  test:
+    name: test (${{ matrix.os }}, ${{ matrix.shell }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false             # one failing shell doesn't cancel the rest
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        shell: [sh, bash, dash, ksh, zsh]
+        include:                   # extra combinations beyond the 2x5 grid
+          - { os: macos-latest, shell: bash5 }
+          - { os: ubuntu-latest, shell: mksh }
+          - { os: ubuntu-latest, shell: ash }    # busybox ash
+    env:
+      SHUNIT_COLOR: never
+      HOMEBREW_NO_AUTO_UPDATE: 1
+    steps:
+      - uses: actions/checkout@v4
+
+      # Ubuntu ships sh/bash/dash; the others are installed.
+      # (macOS ships sh/bash/dash/ksh/zsh in /bin.)
+      - name: Install shells (Linux)
+        if: runner.os == 'Linux' && contains(fromJSON('["ksh", "mksh", "zsh", "ash"]'), matrix.shell)
+        run: |
+          sudo apt-get update
+          case "${{ matrix.shell }}" in
+            ash)
+              sudo apt-get install -y busybox
+              sudo ln -sf /bin/busybox /bin/ash   # busybox runs as ash by name
+              ;;
+            *)
+              sudo apt-get install -y "${{ matrix.shell }}"
+              ;;
+          esac
+
+      # Homebrew bash 5 may already be present; install it only if missing.
+      - name: Ensure bash 5 (macOS)
+        if: matrix.shell == 'bash5'
+        run: '[ -x "$(brew --prefix)/bin/bash" ] || brew install bash'
+
+      # test_runner SKIPS missing shells and still exits 0, so fail here.
+      # Fixed /bin paths: Homebrew is earlier in PATH and would otherwise
+      # silently replace bash 3.2 with bash 5.
+      - name: Run the test suites
+        run: |
+          case "${{ matrix.shell }}" in
+            bash5) shell_bin="$(brew --prefix)/bin/bash" ;;   # /opt/homebrew (arm64) or /usr/local (Intel)
+            *)     shell_bin="/bin/${{ matrix.shell }}" ;;
+          esac
+          [ -x "$shell_bin" ] || { echo "::error::shell not found: $shell_bin"; exit 1; }
+          ./test_runner -s "$shell_bin"
+
+  # ---------------------------------------------------------------------
+  # ShellCheck, pinned to the version verified locally (0.11.0).
+  # Two relaxations that Phase 3 removes:
+  #   -S warning  : ignores 4 'info' SC2086 findings on 2.1.x
+  #   -e SC3028   : ignores the guarded $RANDOM use in the test helpers
+  # ---------------------------------------------------------------------
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install ShellCheck v0.11.0
+        run: |
+          curl -fsSL https://github.com/koalaman/shellcheck/releases/download/v0.11.0/shellcheck-v0.11.0.linux.x86_64.tar.xz \
+            | tar -xJ -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/shellcheck-v0.11.0" >> "$GITHUB_PATH"
+      - run: shellcheck --version
+      - run: shellcheck -S warning shunit2 ./*_test.sh test_runner
+      - run: shellcheck -s sh -e SC3028 shunit2_test_helpers
